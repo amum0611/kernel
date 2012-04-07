@@ -1,0 +1,417 @@
+/*
+ * Copyright (c) 2005-2012, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.wso2.carbon.tomcat.internal;
+
+import org.apache.catalina.*;
+import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.startup.Catalina;
+import org.apache.catalina.startup.Constants;
+import org.apache.catalina.startup.ContextConfig;
+import org.apache.catalina.startup.Tomcat;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.tomcat.util.ExceptionUtils;
+import org.apache.tomcat.util.digester.Digester;
+import org.wso2.carbon.tomcat.api.CarbonTomcatService;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
+/**
+ * the extended {@link Tomcat} class, which configures itself using the tomcat {@link Digester}
+ */
+public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
+    private static Log log = LogFactory.getLog(CarbonTomcat.class);
+    private ExtendedCatalina catalina = new ExtendedCatalina();
+    private String globalWebXml;
+
+    /**
+     * configuring the {@link CarbonTomcat} using the inbuilt digester mechanism in tomcat
+     *
+     * @param baseDir     normally we set the catalina.home as the baseDir
+     * @param inputStream of catalina-server.xml
+     */
+    public void configure(String baseDir, InputStream inputStream) {
+        this.setBaseDir(baseDir);
+        globalWebXml = new File(System.getProperty("carbon.home")).getAbsolutePath() +
+                       File.separator + "repository" + File.separator + "conf" + File.separator +
+                       "tomcat" + File.separator + "web.xml";
+        //creating a digester to parse our catalina-server.xml
+        Digester digester = catalina.createStartDigester();
+        digester.push(this);
+        try {
+            digester.parse(inputStream);
+        } catch (IOException e) {
+            log.error("error while reading xml stream", e);
+        } catch (SAXException e) {
+            log.error("error while parsing xml stream", e);
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                log.error("error while closing the inputStream", e);
+            }
+        }
+
+    }
+
+    /**
+     * Start the server.
+     *
+     * @throws LifecycleException
+     */
+    @Override
+    public void start() throws LifecycleException {
+        getServer();
+        this.server.start();
+    }
+
+    /**
+     * This gets called by the tomcat configurator via reflection.
+     *
+     * @param server reference
+     */
+    @SuppressWarnings("unused")
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
+
+    /**
+     * the current catalina-server.xml based configuration only allows one service.
+     * Even if there are multiple services, we only take first service in to account
+     *
+     * @return first service found
+     */
+    @Override
+    public Service getService() {
+        Server server = getServer();
+        Service[] findServices = server.findServices();
+        if (findServices != null && findServices.length > 0) {
+            return findServices[0];
+        }
+        throw new IllegalStateException("Unable to locate Service.");
+    }
+
+    @Override
+    public Host getHost() {
+        return findHost();
+    }
+
+    @Override
+    public Engine getEngine() {
+        return findEngine();
+    }
+
+    public Host getHost(String hostName) {
+        return findHost(hostName);
+    }
+
+    private Engine findEngine() {
+        Server server = getServer();
+        Service[] findServices = server.findServices();
+        for (Service service : findServices) {
+            Container container = service.getContainer();
+            if (container instanceof Engine) {
+                return (Engine) container;
+            }
+        }
+        throw new IllegalStateException("Unable to locate Engine.");
+    }
+
+    private Host findHost() {
+        Engine engine = findEngine();
+        Container[] children = engine.findChildren();
+        for (Container container : children) {
+            if (container instanceof Host) {
+                return (Host) container;
+            }
+        }
+        throw new IllegalStateException("Unable to locate Host.");
+    }
+
+    private Host findHost(String hostName) {
+        Engine engine = findEngine();
+        Container[] children = engine.findChildren();
+        for (Container container : children) {
+            if (hostName.equalsIgnoreCase(container.getName())) {
+                return (Host) container;
+            }
+        }
+        throw new IllegalStateException("Unable to locate Host.");
+
+    }
+
+
+    public void init() throws LifecycleException {
+        getServer();
+        this.server.init();
+    }
+
+    /**
+     * End of Tomcat configuration related methods. The following methods are public (exposed via OSGi service)
+     * and can be considered as the true API.
+     */
+
+     /**
+     * adding web-app with default-host and default listeners
+     * @param contextPath       unique web-app context
+     * @param webappFilePath    File location of the web-app
+     * @return {@link Context} object of the added web-app
+     */
+    public Context addWebApp(String contextPath, String webappFilePath) {
+        Host localHost = this.getHost("localhost");
+        return this.addWebApp(localHost, contextPath, webappFilePath, null);
+    }
+
+    /**
+     * adding web-app with the default life-cycle listener
+     * @param host              virtual host for the web-app
+     * @param contextPath       unique web-app context
+     * @param webappFilePath    File location of the web-app
+     * @return {@link Context} object of the added web-app
+     */
+    public Context addWebApp(Host host, String contextPath,
+                                 String webappFilePath) {
+        return this.addWebapp(host,contextPath,webappFilePath,null);
+    }
+
+    /**
+     * adding web-app with default-host
+     * @param contextPath       unique web-app context
+     * @param webappFilePath    File location of the web-app
+     * @param lifecycleListener tomcat life-cycle listener
+     * @return {@link Context} object of the added web-app
+     */
+    public Context addWebApp(String contextPath, String webappFilePath, LifecycleListener lifecycleListener) {
+        Host localHost = this.getHost("localhost");
+        return this.addWebApp(localHost, contextPath, webappFilePath, lifecycleListener);
+    }
+
+    /**
+     * web-app addition
+     *
+     * @param host              virtual host for the webapp
+     * @param contextPath       unique web-app context
+     * @param webappFilePath    File location of the web-app
+     * @param lifecycleListener tomcat life-cycle listener
+     * @return {@link Context} object of the added web-app
+     */
+    @Override
+    public Context addWebApp(Host host, String contextPath,
+                             String webappFilePath, LifecycleListener lifecycleListener) {
+        JarFile webappJarFile = null;
+        JarEntry contextXmlFileEntry;
+        Context ctx = null;
+        try {
+            ctx = new StandardContext();
+            ctx.setName(contextPath);
+            ctx.setPath(contextPath);
+            ctx.setDocBase(webappFilePath);
+            ctx.setRealm(this.getHost().getRealm());
+            ctx.addLifecycleListener(new Tomcat.DefaultWebXmlListener());
+            if (lifecycleListener != null) {
+                ctx.addLifecycleListener(lifecycleListener);
+            }
+            ContextConfig ctxCfg = new ContextConfig();
+            ctx.addLifecycleListener(ctxCfg);
+            // Set global webXml to this context
+            if (new File(globalWebXml).exists()) {
+                ctxCfg.setDefaultWebXml(globalWebXml);
+            } else {
+                ctxCfg.setDefaultWebXml("org/apache/catalin/startup/NO_DEFAULT_XML");
+            }
+            File f = new File(webappFilePath);
+            //During dir based webapp deployment
+            if (f.isDirectory()) {
+                File cf = new File(webappFilePath + File.separator + Constants.ApplicationContextXml);
+                if (cf.exists()) {
+                    ctx.setConfigFile(cf.toURI().toURL());
+                }
+            } else {
+                // Check for embedded contextXml file in this webapp
+                webappJarFile = new JarFile(webappFilePath);
+                contextXmlFileEntry = webappJarFile.getJarEntry(Constants.ApplicationContextXml);
+                if (contextXmlFileEntry != null) {
+                    ctx.setConfigFile(new URL("jar:file:" + webappFilePath + "!/" +
+                            Constants.ApplicationContextXml));
+                }
+            }
+            if (host == null) {
+                host = this.getHost();
+            }
+            host.addChild(ctx);
+            if (ctx.getState().equals(LifecycleState.STOPPED)) {
+                ctx.setRealm(null);
+                ctx.destroy();
+                log.error("webApp" + ctx + "failed to deploy");
+            }
+            log.info("web application context: " + ctx);
+        } catch (Exception e) {
+            log.error("webApp failed to deploy", e);
+        } finally {
+            if (webappJarFile != null) {
+                try {
+                    webappJarFile.close();
+                } catch (Throwable t) {
+                    ExceptionUtils.handleThrowable(t);
+                }
+            }
+        }
+        return ctx;
+    }
+
+    @Override
+    public Tomcat getTomcat() {
+        return this;
+    }
+
+
+    /**
+     * getting port value by giving the connector scheme. we only support 'http' and 'https'
+     * schemes
+     *
+     * @param scheme this value is http or https
+     * @return port value of the scheme, -1 if the matching scheme not found
+     */
+    @Override
+    public int getPort(String scheme) {
+        for (Connector connector : this.getService().findConnectors()) {
+            if (connector.getScheme().equals(scheme)) {
+                return connector.getPort();
+            }
+        }
+        return -1;
+    }
+
+
+    /**
+     * starting the connectors. We have overridden the CatalinaService. It doesn't start the connectors during
+     * Engine startup
+     *
+     * @param portOffset that to be set while starting connectors
+     */
+    @Override
+    public void startConnectors(int portOffset) {
+        //getting the list of connectors bound to this tomcat instance
+        Connector[] connectors = this.getService().findConnectors();
+        for (Connector connector : connectors) {
+            try {
+                int currentPort = connector.getPort();
+                connector.setPort(currentPort + portOffset);
+                connector.start();
+                if (log.isDebugEnabled()) {
+                    log.debug("staring the tomcat connector : " + connector.getProtocol());
+                }
+            } catch (LifecycleException e) {
+                log.error("LifeCycleException while starting tomcat connector", e);
+            }
+        }
+    }
+
+    /**
+     * starting the connectors. We have overridden the CatalinaService. It doesn't start the connectors during
+     * Engine startup
+     *
+     * @param scheme     e.g: http|https.
+     * @param portOffset that to be set while starting connectors
+     */
+    @Override
+    public void startConnector(String scheme, int portOffset) {
+        //getting the list of connectors bound to this tomcat instance
+        Connector[] connectors = this.getService().findConnectors();
+        for (Connector connector : connectors) {
+            if (connector.getScheme().equals(scheme)) {
+                try {
+                    int currentPort = connector.getPort();
+                    connector.setPort(currentPort + portOffset);
+                    connector.start();
+                    if (log.isDebugEnabled()) {
+                        log.debug("staring the tomcat connector : " + connector.getProtocol());
+                    }
+                } catch (LifecycleException e) {
+                    log.error("LifeCycleException while starting tomcat connector", e);
+                }
+            }
+        }
+    }
+
+    /**
+     * stopping all the existing catalina connectors
+     */
+    @Override
+    public void stopConnectors() {
+        //getting the list of connectors bound to this tomcat instance
+        Connector[] connectors = this.getService().findConnectors();
+        for (Connector connector : connectors) {
+            try {
+                connector.stop();
+                if (log.isDebugEnabled()) {
+                    log.debug("stopping the tomcat connector : " + connector.getProtocol());
+                }
+            } catch (LifecycleException e) {
+                log.error("LifeCycleException while starting tomcat connector", e);
+            }
+        }
+    }
+
+    /**
+     * stopping all the existing catalina connectors
+     *
+     * @param scheme e.g: http|https
+     */
+    @Override
+    public void stopConnector(String scheme) {
+        //getting the list of connectors bound to this tomcat instance
+        Connector[] connectors = this.getService().findConnectors();
+        for (Connector connector : connectors) {
+            if (connector.getScheme().equals(scheme)) {
+                try {
+                    connector.stop();
+                    if (log.isDebugEnabled()) {
+                        log.debug("stopping the tomcat connector : " + connector.getProtocol());
+                    }
+                } catch (LifecycleException e) {
+                    log.error("LifeCycleException while stopping tomcat connector", e);
+                }
+            }
+        }
+    }
+
+    /**
+     * we want get access {@link org.apache.catalina.startup.Catalina#createStartDigester()} method,
+     * to configure our <pre>Tomcat</pre> instance using catalina-server.xml
+     */
+    private static class ExtendedCatalina extends Catalina {
+
+        @Override
+        public Digester createStartDigester() {
+            return super.createStartDigester();
+        }
+
+    }
+}
+
+
+

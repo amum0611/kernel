@@ -1,0 +1,78 @@
+CARBON_HOME/repository/conf directory contains all the Carbon configuration files
+
+1. axis2.xml
+   The Apache Axis2 configuration file. Apache Axis2 is used at the core
+   of WSO2 Carbon.
+
+2. carbon.xml
+   The Carbon server configuration file
+
+3. mime.types
+   Defines MIME types to file extension mappings.
+
+4. README
+   This file
+
+5. registry.xml
+   The Carbon registry configuration file. This will be used when the WSO2
+   Embedded Registry is used.
+
+6. synapse.xml
+   The Apache Synapse configuration file. This will be used if Apache Synapse
+   or WSO2 ESB related Carbon components are deployed.
+
+7. mgt-transports.xml
+   Used in standalone mode to configure HTTP/S transports for the Carbon management console
+
+8. user-mgt.xml
+   The User Manager configuration file used for configuring user management
+   details.
+
+9. wrapper.conf
+   The Java Service Wrapper (JSW) configuration file. JSW is used for running
+   Carbon as a Unix daemon or Windows NT service.
+
+10. secret-conf.properties
+   The Secret Manager Configuration that is used by secret vault component
+
+11  cipher-text.properties
+   File based secret repository 
+
+12. embedded-ldap.xml
+   This file contains necessary configurations to control the behavior of embedded LDAP. 
+   You may use this file to enable, disable LDAP server, change connection password etc ...
+   In addition to embedded-ldap server configurations, this file also has Kerberos KDC
+   (Key Distribution Center) specific configurations.
+   If you want to change ports for Embedded LDAP server and KDC server, change them in carbon.xml.
+   (Ports/EmbeddedLDAP section).
+
+13. ports-config.xml
+    This file will be used during starting of multiple instances of the same installation.Here
+    users can specify the ports configuration for each instance so that avoid ports conflicts.
+    For each instance you can specify nio ports (http and https ports) and management console ports
+    (http and https). If you are going to start number of instance you can simply give a ports
+    range so carbon framework will pick ports from this given range.
+
+14. cache.xml
+    This file contains configuration related to the caching implementation in Carbon. The default
+    cache manager used by Carbon is Infinispan. And, it can operate in several modes, such as local,
+    distributed, or replicated. The cache manager is run in the local mode by default, and it is
+    recommended to use the distributed mode or cluster and cloud deployments.
+
+15. ports-config.xml
+    This includes port configurations on Carbon server when deployed as an web app.  This file will be
+    used during the startup of multiple instances of the same installation.Here users can specify the
+    ports configuration for each instance so that avoid ports conflicts.For each instance you can 
+    specify nio ports (http and https ports) and management console ports (http and https). If you are 
+    going to start number of instance you can simply give a ports range so carbon framework will 
+    pick ports from this given range.
+
+16. tomcat-users.xml
+    This is the standard tomcat-users.xml file which can be used for definig users & roles. This
+    is applicable to webapps only, and will be used only if the Security/TomcatRealm entry in the
+    carbon.xml is set to Memory.
+
+17. jgroups-s3_ping-aws.xml
+    This is the JGroups configuration that's to be used in a Amazon EC2 deployment. The JGroups
+    Group Communication library is used by the Infinispan Cache Manager.
+

@@ -1,0 +1,28 @@
+CARBON_HOME/lib contains all the libraries necessary to run Carbon in
+standalone mode
+
+1. endorsed
+   Endorsed Java libraries
+
+2. tomcat
+   Carbon uses embedded Tomcat when running in standalone mode. Embedded
+   Tomcat & its dependencies, and other dependencies needed to startup the
+   standalone Carbon server, are located in this directory.
+
+3. log4j.properties
+   The log4j.properties file used by Carbon
+
+4. README
+   This file
+
+5. core
+   Contains the Carbon web application   
+
+6. api
+   Contains common libraries for OSGi environment and web applications
+
+7. patches
+   Directory to include patches for root level libraries
+
+8. transactions.properties
+   Atomikos properties file      
