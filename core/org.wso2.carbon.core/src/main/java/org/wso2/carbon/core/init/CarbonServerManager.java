@@ -35,6 +35,7 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.eclipse.equinox.http.helper.FilterServletAdaptor;
 import org.osgi.framework.*;
 import org.osgi.service.http.HttpContext;
@@ -799,8 +800,7 @@ public final class CarbonServerManager implements Controllable {
             stopListenerManager();
             new JMXServerManager().stopJmxService();
             log.info("Shutting down OSGi framework...");
-            //TODO : Pradeep Handle this correctly
-            //FrameworkLauncherFactory.getFrameworkLauncher().stop();
+            EclipseStarter.shutdown();
             log.info("Shutdown complete");
             log.info("Halting JVM");
             if (!isShutdownTriggeredByShutdownHook) {
