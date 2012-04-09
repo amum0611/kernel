@@ -46,10 +46,14 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class AppDeployerUtils {
+public final class AppDeployerUtils {
 
+	private AppDeployerUtils() {
+		// hide utility class
+	}
+	
     public static final String APP_UNZIP_DIR;
-    private static String INTERNAL_ARTIFACTS_DIR = "internal-artifacts";
+    private static final String INTERNAL_ARTIFACTS_DIR = "internal-artifacts";
 
     static {
         String javaTempDir = System.getProperty("java.io.tmpdir");
@@ -399,8 +403,8 @@ public class AppDeployerUtils {
      * @throws org.wso2.carbon.CarbonException - error on extraction
      */
     public static String extractCarbonApp(String appCarPath) throws CarbonException {
-        appCarPath = formatPath(appCarPath);
-        String fileName = appCarPath.substring(appCarPath.lastIndexOf('/') + 1);
+        String appCarPathFormatted = formatPath(appCarPath);
+        String fileName = appCarPathFormatted.substring(appCarPathFormatted.lastIndexOf('/') + 1);
         String dest = APP_UNZIP_DIR + File.separator + System.currentTimeMillis() +
                 fileName + File.separator;
         createDir(dest);
@@ -436,7 +440,7 @@ public class AppDeployerUtils {
 
         String fileName = artifactPath.substring(artifactPath.lastIndexOf('/') + 1);
         String dest = parentPath + INTERNAL_ARTIFACTS_DIR + File.separator +
-                fileName.substring(0, fileName.lastIndexOf(".")) + File.separator;
+                fileName.substring(0, fileName.lastIndexOf('.')) + File.separator;
         createDir(dest);
 
         try {
@@ -489,9 +493,9 @@ public class AppDeployerUtils {
      */
     public static String formatPath(String path) {
         // removing white spaces
-        path = path.replaceAll("\\b\\s+\\b", "%20");
+        String pathformatted = path.replaceAll("\\b\\s+\\b", "%20");
         // replacing all "\" with "/"
-        return path.replace('\\', '/');
+        return pathformatted.replace('\\', '/');
     }
 
     /**
@@ -688,8 +692,9 @@ public class AppDeployerUtils {
         byte[] buffer = new byte[40960];
         int len;
 
-        while ((len = in.read(buffer)) >= 0)
+        while ((len = in.read(buffer)) >= 0) {
             out.write(buffer, 0, len);
+        }
 
         in.close();
         out.close();

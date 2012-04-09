@@ -52,7 +52,7 @@ import java.util.HashMap;
  * This handler chain can contain different cApp artifact deployers. Those can be registered or
  * unregistered using this ApplicationManager API.
  */
-public class ApplicationManager implements ApplicationManagerService {
+public final class ApplicationManager implements ApplicationManagerService {
 
     private static final Log log = LogFactory.getLog(ApplicationManager.class);
 
@@ -161,12 +161,12 @@ public class ApplicationManager implements ApplicationManagerService {
 
         CarbonAppPersistenceManager capm = getPersistenceManager(axisConfig);
         String tenantId = AppDeployerUtils.getTenantIdString(axisConfig);
-        archPath = AppDeployerUtils.formatPath(archPath);
-        String fileName = archPath.substring(archPath.lastIndexOf('/') + 1);
+        String archPathToProcess = AppDeployerUtils.formatPath(archPath);
+        String fileName = archPathToProcess.substring(archPathToProcess.lastIndexOf('/') + 1);
         //check whether this app already exists..
         CarbonApplication existingApp = null;
         for (CarbonApplication carbonApp : getCarbonApps(tenantId)) {
-            if (archPath.equals(carbonApp.getAppFilePath())) {
+            if (archPathToProcess.equals(carbonApp.getAppFilePath())) {
                 existingApp = carbonApp;
                 break;
             }
@@ -175,7 +175,7 @@ public class ApplicationManager implements ApplicationManagerService {
         //If the app already exists, check the last updated time and redeploy if needed.
         //Return if not updated..
         if (existingApp != null) {
-            File file = new File(archPath);
+            File file = new File(archPathToProcess);
             if (file.exists()) {
                 String hashValue = CarbonUtils.getMD5(CarbonUtils.getBytesFromFile(file));
                 String hashValueFromRegistry = capm.getHashValue(existingApp.getAppName());
@@ -195,8 +195,8 @@ public class ApplicationManager implements ApplicationManagerService {
         log.info("Deploying Carbon Application : " + fileName + "...");
 
         CarbonApplication currentApp = new CarbonApplication();
-        currentApp.setAppFilePath(archPath);
-        String extractedPath = AppDeployerUtils.extractCarbonApp(archPath);
+        currentApp.setAppFilePath(archPathToProcess);
+        String extractedPath = AppDeployerUtils.extractCarbonApp(archPathToProcess);
 
         // Build the app configuration by providing the artifacts.xml path
         ApplicationConfiguration appConfig = new ApplicationConfiguration(capm, extractedPath +
@@ -216,7 +216,7 @@ public class ApplicationManager implements ApplicationManagerService {
         if (appName == null) {
             log.warn("No application name found in Carbon Application : " + fileName + ". Using " +
                     "the file name as the application name");
-            appName = fileName.substring(0, fileName.lastIndexOf("."));
+            appName = fileName.substring(0, fileName.lastIndexOf('.'));
         }
 
         if (appExists(appName, axisConfig)) {
@@ -256,7 +256,7 @@ public class ApplicationManager implements ApplicationManagerService {
 
         } else {
             log.error("Some dependencies in cApp : " + appName + " were not satisfied. Check " +
-                    "whether all dependent artifacts are included in cApp file : " + archPath);
+                    "whether all dependent artifacts are included in cApp file : " + archPathToProcess);
             return;
         }
 
@@ -680,7 +680,7 @@ public class ApplicationManager implements ApplicationManagerService {
     /**
      * A private class to hold pending cApps to be deployed
      */
-    private class PendingApplication {
+    private final class PendingApplication {
 
         private String path;
         private AxisConfiguration axisConfig;

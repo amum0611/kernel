@@ -165,9 +165,9 @@ public class RegistryConfig {
      * This class represents a resource in a the reg-config.xml
      */
     public class Resourse {
-        String path;
-        String fileName;
-        String registryType;
+        private String path;
+        private String fileName;
+        private String registryType;
 
         public Resourse(String path, String fileName, String regType) {
             this.path = path;
@@ -192,9 +192,9 @@ public class RegistryConfig {
      * This class represents a collection in a the reg-config.xml
      */
     public class Collection {
-        String path;
-        String directory;
-        String registryType;
+        private String path;
+        private String directory;
+        private String registryType;
 
         public Collection(String path, String directory, String regType) {
             this.path = path;

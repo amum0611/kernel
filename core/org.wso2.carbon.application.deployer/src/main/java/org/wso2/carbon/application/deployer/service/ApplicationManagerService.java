@@ -20,7 +20,6 @@ package org.wso2.carbon.application.deployer.service;
 import org.wso2.carbon.application.deployer.handler.AppDeploymentHandler;
 import org.wso2.carbon.application.deployer.handler.AppUndeploymentHandler;
 import org.wso2.carbon.application.deployer.CarbonApplication;
-import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.engine.AxisConfiguration;
 
 import java.util.ArrayList;
@@ -35,28 +34,28 @@ public interface ApplicationManagerService {
      *
      * @param handler - app deployer which implements the AppDeploymentHandler interface
      */
-    public void registerDeploymentHandler(AppDeploymentHandler handler);
+    void registerDeploymentHandler(AppDeploymentHandler handler);
 
     /**
      * All app undeployers register their instances throgh this method
      *
      * @param handler - app undeployer which implements the AppUndeploymentHandler interface
      */
-    public void registerUndeploymentHandler(AppUndeploymentHandler handler);
+    void registerUndeploymentHandler(AppUndeploymentHandler handler);
 
     /**
      * Unregister the specified handler if it is already regitered
      *
      * @param handler - input deployer handler
      */
-    public void unregisterDeploymentHandler(AppDeploymentHandler handler);
+    void unregisterDeploymentHandler(AppDeploymentHandler handler);
 
     /**
      * Unregister the specified handler if it is already regitered
      *
      * @param handler - input undeployer handler
      */
-    public void unregisterUndeploymentHandler(AppUndeploymentHandler handler);
+    void unregisterUndeploymentHandler(AppUndeploymentHandler handler);
 
     /**
      * Deploy the provided carbon App..
@@ -65,7 +64,7 @@ public interface ApplicationManagerService {
      * @param axisConfig - AxisConfiguration of the current tenant
      * @throws Exception - error on registry actions
      */
-    public void deployCarbonApp(String archPath, AxisConfiguration axisConfig) throws Exception;
+    void deployCarbonApp(String archPath, AxisConfiguration axisConfig) throws Exception;
 
     /**
      * Undeploy the provided carbon App..
@@ -73,7 +72,7 @@ public interface ApplicationManagerService {
      * @param carbonApp - CarbonApplication instance
      * @param axisConfig - AxisConfiguration of the current tenant
      */
-    public void undeployCarbonApp(CarbonApplication carbonApp, AxisConfiguration axisConfig);
+    void undeployCarbonApp(CarbonApplication carbonApp, AxisConfiguration axisConfig);
 
     /**
      * Returns all deployed carbon apps in the system
@@ -81,6 +80,6 @@ public interface ApplicationManagerService {
      * @param tenantId - tenant id to find cApps
      * @return List of carbon apps
      */
-    public ArrayList<CarbonApplication> getCarbonApps(String tenantId);
+    ArrayList<CarbonApplication> getCarbonApps(String tenantId);
 
 }

@@ -146,10 +146,10 @@ public class Artifact {
     }
 
     public static class Dependency {
-        String name;
-        String version;
-        String serverRole;
-        Artifact artifact;
+        private String name;
+        private String version;
+        private String serverRole;
+        private Artifact artifact;
 
         public String getName() {
             return name;
