@@ -396,7 +396,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
             } else {
                 PolicyReference policyReference = (PolicyReference) policyElement;
                 String key = policyReference.getURI();
-                int pos = key.indexOf("#");
+                int pos = key.indexOf('#');
                 if (pos == 0) {
                     key = key.substring(1);
                 } else if (pos > 0) {

@@ -563,8 +563,8 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
                         String password = new String(byteArray);
 
                         if (password.startsWith("{")) {
-                            passwordHashMethod = password.substring(password.indexOf("{") +
-                                                                    1, password.indexOf("}"));
+                            passwordHashMethod = password.substring(password.indexOf('{') +
+                                                                    1, password.indexOf('}'));
                         }
 
                         if (!password.equals(getPasswordToStore((String) oldCredential,

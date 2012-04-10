@@ -118,8 +118,8 @@ public class CarbonServlet extends AxisServlet {
                 for (String item : getRequestProcessors.keySet()) {
                     if (queryString.indexOf(item) == 0 &&
                             (queryString.equals(item) ||
-                                    queryString.indexOf("&") == item.length() ||
-                                    queryString.indexOf("=") == item.length())) {
+                                    queryString.indexOf('&') == item.length() ||
+                                    queryString.indexOf('=') == item.length())) {
                         processWithGetProcessor(request, response, item);
                         isRequestHandled = true;
                         break;

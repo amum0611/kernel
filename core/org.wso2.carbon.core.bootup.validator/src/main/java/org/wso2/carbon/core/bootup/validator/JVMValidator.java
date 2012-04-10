@@ -142,7 +142,7 @@ public class JVMValidator extends ConfigurationValidator {
 				int startIndex = arg.indexOf(initHeapArg) + 4;
 				String value = arg.substring(startIndex);
 				if (value.contains("m")) {
-					int endIndex = value.indexOf("m");
+					int endIndex = value.indexOf('m');
 					if (endIndex != -1) {
 						value = value.substring(0, endIndex);
 					}
@@ -166,7 +166,7 @@ public class JVMValidator extends ConfigurationValidator {
 				int startIndex = arg.indexOf(maxHeapArg) + 4;
 				String value = arg.substring(startIndex);
 				if (value.contains("m")) {
-					int endIndex = value.indexOf("m");
+					int endIndex = value.indexOf('m');
 					if (endIndex != -1) {
 						value = value.substring(0, endIndex);
 					}
@@ -191,7 +191,7 @@ public class JVMValidator extends ConfigurationValidator {
 				int startIndex = arg.indexOf(permGenArg) + 16;
 				String value = arg.substring(startIndex);
 				if (value.contains("m")) {
-					int endIndex = value.indexOf("m");
+					int endIndex = value.indexOf('m');
 					if (endIndex != -1) {
 						value = value.substring(0, endIndex);
 					}

@@ -415,13 +415,13 @@ public class RegistryResolver implements Resolver<Target> {
             } else {
                 // Store the split URL for later
                 context.setAttribute("splitPath", parts);
-                int idx = discriminator.indexOf("?");
+                int idx = discriminator.indexOf('?');
                 if (idx > -1) {
                     discriminator = discriminator.substring(0, idx);
                 }
 
                 String suffix = null;
-                idx = discriminator.indexOf(":");
+                idx = discriminator.indexOf(':');
                 if (idx > -1) {
                     suffix = discriminator.substring(idx + 1, discriminator.length());
                     discriminator = discriminator.substring(0, idx);
@@ -458,7 +458,7 @@ public class RegistryResolver implements Resolver<Target> {
             }
         }
 
-        int idx = uri.indexOf("?");
+        int idx = uri.indexOf('?');
         if (idx > -1) {
             String queryString = uri.substring(idx + 1, uri.length());
             context.setAttribute("queryString", queryString);
@@ -629,7 +629,7 @@ public class RegistryResolver implements Resolver<Target> {
     }
 
     public static String getUserName(String userNameWithDomain) throws RegistryException {
-        int atIndex = userNameWithDomain.indexOf("@");
+        int atIndex = userNameWithDomain.indexOf('@');
         if (atIndex == -1) {
             // no domain in the inserted test
             return userNameWithDomain;
@@ -638,7 +638,7 @@ public class RegistryResolver implements Resolver<Target> {
     }
 
     public static int getTenantId(String userNameWithDomain) throws RegistryException {
-        int atIndex = userNameWithDomain.indexOf("@");
+        int atIndex = userNameWithDomain.indexOf('@');
         if (atIndex == -1) {
             // no domain 
             return 0;

@@ -99,7 +99,7 @@ public class PolicyProcessor implements HttpGetRequestProcessor {
                     } else if (policyElements.get(0) instanceof PolicyReference) {
                         String key = ((PolicyReference) policyElements.get(0)).getURI();
                         if (key.startsWith("#")) {
-                            key = key.substring(key.indexOf("#") + 1);
+                            key = key.substring(key.indexOf('#') + 1);
                         }
 
                         Policy p = reg.lookup(key);
@@ -123,7 +123,7 @@ public class PolicyProcessor implements HttpGetRequestProcessor {
                             } else if (policyObject instanceof PolicyReference) {
                                 String key = ((PolicyReference) policyObject).getURI();
                                 if (key.startsWith("#")) {
-                                    key = key.substring(key.indexOf("#") + 1);
+                                    key = key.substring(key.indexOf('#') + 1);
                                 }
                                 Policy p = reg.lookup(key);
                                 if (p == null) {

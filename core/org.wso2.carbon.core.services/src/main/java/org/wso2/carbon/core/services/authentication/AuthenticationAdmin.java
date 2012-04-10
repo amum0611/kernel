@@ -305,7 +305,7 @@ public class AuthenticationAdmin extends AbstractAdmin implements CarbonServerAu
 
             RealmService realmService = CarbonServicesServiceComponent.getRealmService();
 
-            int index = cookie.indexOf("-");
+            int index = cookie.indexOf('-');
             String userNameWithTenant = cookie.substring(0, index);
             String tenantDomain = UserCoreUtil.getTenantDomain(realmService, userNameWithTenant);
             int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);

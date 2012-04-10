@@ -1368,8 +1368,8 @@ public class RemoteRegistry implements Registry {
 
             param = param.trim();
 
-            String paramKey = param.substring(0, param.indexOf("="));
-            String paramValue = param.substring(param.indexOf("=") + 1);
+            String paramKey = param.substring(0, param.indexOf('='));
+            String paramValue = param.substring(param.indexOf('=') + 1);
             paramMap.put(paramKey, paramValue);
 
 //            String[] paramParts = param.trim().split("=");

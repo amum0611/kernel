@@ -61,7 +61,7 @@ public class Main {
         for (String arg : args) {
             index++;
             if (arg.startsWith("-D")) {
-                int indexOfEq = arg.indexOf("=");
+                int indexOfEq = arg.indexOf('=');
                 String property;
                 String value;
                 if (indexOfEq != -1) {

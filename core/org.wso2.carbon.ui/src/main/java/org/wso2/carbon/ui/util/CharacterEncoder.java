@@ -26,10 +26,10 @@ public class CharacterEncoder {
         if (text == null) {
             return text;
         }
-        if (text.indexOf("<") > -1) {
+        if (text.indexOf('<') > -1) {
             text = text.replace("<", "&lt;");
         }
-        if (text.indexOf(">") > -1) {
+        if (text.indexOf('>') > -1) {
             text = text.replace(">", "&gt;");
         }
         return text;

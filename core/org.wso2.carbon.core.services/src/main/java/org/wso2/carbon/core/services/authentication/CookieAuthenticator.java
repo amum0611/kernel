@@ -47,7 +47,7 @@ public class CookieAuthenticator extends AbstractAuthenticator {
 
         String cookieData = getCookieData(msgContext);
 
-        int index = cookieData.indexOf("-");
+        int index = cookieData.indexOf('-');
         return cookieData.substring(0, index);
     }
 
@@ -66,7 +66,7 @@ public class CookieAuthenticator extends AbstractAuthenticator {
 
         String cookieData = getCookieData(msgContext);
 
-        int index = cookieData.indexOf("-");
+        int index = cookieData.indexOf('-');
         String uuid = cookieData.substring(index + 1);
         UserRealm realm;
         try {

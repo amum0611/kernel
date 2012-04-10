@@ -765,8 +765,8 @@ public class LDAPUserStoreManager extends AbstractUserStoreManager {
                             NamingEnumeration e = null;
                             for (e = attr.getAll(); e.hasMore();) {
                                 String value = e.next().toString();
-                                int begin = value.indexOf("=")+1;
-                                int end = value.indexOf(",");
+                                int begin = value.indexOf('=')+1;
+                                int end = value.indexOf(',');
                                 if(begin > -1 && end > -1) {
                                 	value = value.substring(begin, end);
                                 }

@@ -87,7 +87,7 @@ public class Utils {
         // and are assumed to be System properties
         while (indexOfStartingChars < text.indexOf("${") &&
                 (indexOfStartingChars = text.indexOf("${")) != -1 &&
-                (indexOfClosingBrace = text.indexOf("}")) != -1) { // Is a property used?
+                (indexOfClosingBrace = text.indexOf('}')) != -1) { // Is a property used?
             String sysProp = text.substring(indexOfStartingChars + 2,
                     indexOfClosingBrace);
             String propValue = System.getProperty(sysProp);

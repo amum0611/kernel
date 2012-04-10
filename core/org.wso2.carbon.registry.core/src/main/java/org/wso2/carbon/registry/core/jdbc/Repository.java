@@ -1368,7 +1368,7 @@ public class Repository {
             // setMediaType
             if (localName.equals(DumpConstants.MEDIA_TYPE)) {
                 String text = xmlReader.getElementText();
-                if (text.indexOf("/") < 0) {
+                if (text.indexOf('/') < 0) {
                     text = MediaTypesUtils.getMediaType("dummy." + text);
                 }
                 if (text != null) {

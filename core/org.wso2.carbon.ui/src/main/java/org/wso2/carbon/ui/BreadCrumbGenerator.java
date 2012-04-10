@@ -170,7 +170,7 @@ public class BreadCrumbGenerator {
 				List<BreadCrumbItem> breadcrumbItems = null;
 //				if(tokens != null && tokens.length > 0){
 					//String token = tokens[0];
-					//String jspSubContext = token.substring(0, token.indexOf("+"));
+					//String jspSubContext = token.substring(0, token.indexOf('+'));
 					//breadcrumbItems = links.get("../"+jspSubContext);
 //				}
 
@@ -214,7 +214,7 @@ public class BreadCrumbGenerator {
 					//found breadcrumb items for given sub context
 					for(int i = 0;i < jspFileSubContextOrder.size(); i++){
 						String token = tokenJSPFileOrder.get(i);
-						//String jspFileName = token.substring(token.indexOf("+")+1);
+						//String jspFileName = token.substring(token.indexOf('+')+1);
 						//String jspSubContext = jspFileSubContextMap.get(jspFileName);
 
 						String fileContextToken = jspFileSubContextOrder.get(i);

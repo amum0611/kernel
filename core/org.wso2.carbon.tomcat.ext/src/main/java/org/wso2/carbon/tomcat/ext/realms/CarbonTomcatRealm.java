@@ -81,7 +81,7 @@ public class CarbonTomcatRealm extends RealmBase {
     public Principal authenticate(String userName, String credential) {
         String tenantDomain = null;
         if (userName.contains("@")) {
-            tenantDomain = userName.substring(userName.indexOf("@") + 1);
+            tenantDomain = userName.substring(userName.indexOf('@') + 1);
         }
 
         // If SaaS is not enabled, do not allow users from other tenants to call this secured webapp
@@ -138,7 +138,7 @@ public class CarbonTomcatRealm extends RealmBase {
             super(name, null);
             tenantDomain = null;
             if (name.contains("@")) {
-                tenantDomain = name.substring(name.indexOf("@") + 1);
+                tenantDomain = name.substring(name.indexOf('@') + 1);
             }
         }
 

@@ -44,7 +44,7 @@ public class TenantDomainHandler extends AbstractHandler {
                 int tenantDelimiterIndex = toAddress.indexOf("/a/");
                 if (tenantDelimiterIndex != -1) {
                     String temp = toAddress.substring(tenantDelimiterIndex + 3);
-                    tenantDomain = temp.substring(0, temp.indexOf("/"));
+                    tenantDomain = temp.substring(0, temp.indexOf('/'));
                     if (tenantDomain != null) {
                         carbonContext.setTenantDomain(tenantDomain);
                         SuperTenantCarbonContext.getCurrentContext().getTenantId(true);

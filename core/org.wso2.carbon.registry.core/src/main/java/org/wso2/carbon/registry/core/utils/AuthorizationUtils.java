@@ -398,7 +398,7 @@ public class AuthorizationUtils {
         // previous versions of the same resource
 
         String preparedPath = resourcePath;
-        if (resourcePath.indexOf("?") > 0) {
+        if (resourcePath.indexOf('?') > 0) {
             preparedPath = resourcePath.split("\\?")[0];
         } else if (resourcePath.indexOf(RegistryConstants.URL_SEPARATOR) > 0) {
             preparedPath = resourcePath.split("\\;")[0];

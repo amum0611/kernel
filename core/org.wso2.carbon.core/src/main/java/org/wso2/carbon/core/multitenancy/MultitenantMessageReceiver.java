@@ -400,7 +400,7 @@ public class MultitenantMessageReceiver implements MessageReceiver {
         // extract the part of the user after the actual service and set it as 
         int index = servicePart.indexOf('/');
         String service = (index > 0 ?
-                servicePart.substring(servicePart.indexOf("/") + 1) : servicePart);        
+                servicePart.substring(servicePart.indexOf('/') + 1) : servicePart);        
         String servicePath = "/t/" + tenant + "/" + service;
         String restSuffic = (to.endsWith(servicePath) ? "" :
                 to.substring(to.indexOf(servicePath) + servicePath.length() + 1));
@@ -484,7 +484,7 @@ public class MultitenantMessageReceiver implements MessageReceiver {
 
     private String getServiceName(String to, int tenantDelimiterIndex, String tenant) {
         String temp = to.substring(tenantDelimiterIndex + 3 + tenant.length() + 1);
-        int indexOfSlash = temp.indexOf("/");
+        int indexOfSlash = temp.indexOf('/');
         String serviceName = (indexOfSlash != -1) ? temp.substring(0, indexOfSlash) : temp;
         if (log.isDebugEnabled()) {
             log.debug("Service:" + serviceName);
