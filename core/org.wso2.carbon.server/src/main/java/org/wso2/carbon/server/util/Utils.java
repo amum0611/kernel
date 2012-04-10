@@ -249,15 +249,9 @@ public class Utils {
         // Enable osgi debug
         // First try to get from the System property
         String enableOsgiDebug = System.getProperty(LauncherConstants.ENABLE_OSGI_DEBUG);
-        if (enableOsgiDebug == null) {
-            // Next try to get it from the web.xml
-        } else {
-            if (enableOsgiDebug.toLowerCase().equals("true")) {
-                enableOsgiDebug = "lib/core/WEB-INF/eclipse/osgi-debug.options"; // TODO: Can get context root from carbon.xml in the future
-            }
-        }
-
-        if (enableOsgiDebug != null) {
+        if (enableOsgiDebug != null && enableOsgiDebug.toLowerCase().equals("true")) {
+            String carbonRepo = System.getProperty(LauncherConstants.CARBON_HOME)+File.separator + "repository";
+            enableOsgiDebug = carbonRepo + File.separator + "conf" + File.separator + "osgi-debug.options";
             args.add("-debug");
             args.add(enableOsgiDebug);
             System.out.println("OSGi debugging has been enabled with options: " + enableOsgiDebug);
