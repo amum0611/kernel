@@ -89,10 +89,10 @@ public class JspServlet extends HttpServlet {
     
     private Servlet jspServlet = new org.apache.jasper.servlet.JspServlet();
     Bundle bundle;
-    BundlePermissionCollection bundlePermissions;
+    private BundlePermissionCollection bundlePermissions;
     private URLClassLoader jspLoader;
-    String bundleResourcePath;
-    String alias;
+    private String bundleResourcePath;
+    private String alias;
     private UIResourceRegistry uiResourceRegistry;
 
     public JspServlet(Bundle bundle, UIResourceRegistry uiResourceRegistry, String alias) {
@@ -206,8 +206,9 @@ public class JspServlet extends HttpServlet {
         }
 
         public URL getResource(String name) throws MalformedURLException {
-            if (alias != null && name.startsWith(alias))
+            if (alias != null && name.startsWith(alias)) {
                 name = name.substring(alias.length());
+            }
 
             URL url = uiResourceRegistry.getUIResource(name);
             if (url != null) {

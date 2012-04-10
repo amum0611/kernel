@@ -33,11 +33,11 @@ public class MenuAdminClient {
     private static Log log = LogFactory.getLog(MenuAdminClient.class);
     private Menu[] menus;
     private StringBuffer menuContent;
-    HashMap<String, Menu> parentMenuItems;
-    HashMap<String, ArrayList<Menu>> childMenuItems;
-    HashMap<String, String> breadcrumbMap = new HashMap<String, String>();
+    private Map<String, Menu> parentMenuItems;
+    private Map<String, ArrayList<Menu>> childMenuItems;
+    private Map<String, String> breadcrumbMap = new HashMap<String, String>();
     //eg: holds ../service-mgt/index.jsp : region1,services_list_menu
-    HashMap<String, String> indexPageBreadcrumbParamMap;
+    private Map<String, String> indexPageBreadcrumbParamMap;
     public static final String USER_MENU_ITEMS = "UserMenuItems";
     public static final String USER_CUSTOM_MENU_ITEMS = "UserCustomMenuItems";
     public static final String USER_MENU_ITEMS_FILTERED = "UserMenuItemsFiltered";
@@ -46,7 +46,7 @@ public class MenuAdminClient {
 
     }
 
-    public HashMap<String, String> getBreadcrumbMap() {
+    public Map<String, String> getBreadcrumbMap() {
         return breadcrumbMap;
     }
 
@@ -325,7 +325,7 @@ public class MenuAdminClient {
      * @param menuItems
      * @return
      */
-    private String[] sortMenuItems(HashMap menuItems) {
+    private String[] sortMenuItems(Map menuItems) {
         Iterator itrMenuKeys = menuItems.keySet().iterator();
         int[] menuOrder = new int[menuItems.size()];
         String[] menuIds = new String[menuItems.size()];
