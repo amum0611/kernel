@@ -5,7 +5,7 @@ import org.wso2.carbon.caching.core.BaseCache;
 
 public class TenantCache extends BaseCache {
     
-    public final static String TENANT_CACHE = "TENANT_CACHE";
+    public static final String TENANT_CACHE = "TENANT_CACHE";
 
     private static TenantCache tenantCache = null;
 

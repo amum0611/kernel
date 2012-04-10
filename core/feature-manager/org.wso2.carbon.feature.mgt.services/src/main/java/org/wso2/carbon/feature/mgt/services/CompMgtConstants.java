@@ -16,6 +16,6 @@
 package org.wso2.carbon.feature.mgt.services;
 
 public class CompMgtConstants {
-    public final static String COMP_MGT_MODULE_NAME = "ComponentMgtModule";
-    public final static String COMP_MGT_SERVELT_SESSION = "comp.mgt.servlet.session";
+    public static final String COMP_MGT_MODULE_NAME = "ComponentMgtModule";
+    public static final String COMP_MGT_SERVELT_SESSION = "comp.mgt.servlet.session";
 }

@@ -220,8 +220,9 @@ public class JspServlet extends HttpServlet {
         public InputStream getResourceAsStream(String name) {
             try {
                 URL resourceURL = getResource(name);
-                if (resourceURL != null)
+                if (resourceURL != null) {
                     return resourceURL.openStream();
+                }
             } catch (IOException e) {
                 log("Error opening stream for resource '" + name + "'",
                     e); //$NON-NLS-1$ //$NON-NLS-2$

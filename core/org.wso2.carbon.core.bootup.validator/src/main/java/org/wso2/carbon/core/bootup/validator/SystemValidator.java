@@ -47,8 +47,8 @@ public class SystemValidator extends ConfigurationValidator {
     public static final String SWAP_PARAM = "swap";
     public static final String MAX_FREE_DISK_PARAM = "freeDisk";
     public static final String OPEN_FILES_PARAM = "ulimit";
-    public final static int MB_BASE = 1024 * 1024;
-    public final static int MHz_BASE = 1000 * 1000;
+    public static final int MB_BASE = 1024 * 1024;
+    public static final int MHz_BASE = 1000 * 1000;
 
     @Override
     public Map<String, ValidationResult> validate() {

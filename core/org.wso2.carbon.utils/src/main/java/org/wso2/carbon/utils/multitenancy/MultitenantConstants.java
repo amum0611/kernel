@@ -36,8 +36,8 @@ public class MultitenantConstants {
     public static final String TENANT_DOMAIN_HEADER_NAME = "TenantDomain";
     public static final String SUPER_TENANT_DOMAIN = "UserName.SuperTenantDomain";
 
-    public final static String REQUIRE_SUPER_TENANT = "require-super-tenant";
-    public final static String REQUIRE_NOT_SUPER_TENANT = "require-not-super-tenant";
+    public static final String REQUIRE_SUPER_TENANT = "require-super-tenant";
+    public static final String REQUIRE_NOT_SUPER_TENANT = "require-not-super-tenant";
     public static String IS_MASTER_TENANT = "is-master-tenant";
 
     public static final String TENANT_MODULE_BUNDLES = "tenant.module.bundles";

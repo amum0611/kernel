@@ -471,8 +471,9 @@ public class VersionRepository {
               
         long regVersion = versionRetriever.getVersion(versionIndex);                
         
-        if(regVersion == -1)
-        	return false;        
+        if(regVersion == -1) {
+        	return false;     
+        }
          	
         // Remove the tags / 
     	tagsDAO.removeVersionTags(regVersion);   	   	

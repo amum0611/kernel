@@ -38,9 +38,9 @@ public class MenuAdminClient {
     HashMap<String, String> breadcrumbMap = new HashMap<String, String>();
     //eg: holds ../service-mgt/index.jsp : region1,services_list_menu
     HashMap<String, String> indexPageBreadcrumbParamMap;
-    public final static String USER_MENU_ITEMS = "UserMenuItems";
-    public final static String USER_CUSTOM_MENU_ITEMS = "UserCustomMenuItems";
-    public final static String USER_MENU_ITEMS_FILTERED = "UserMenuItemsFiltered";
+    public static final String USER_MENU_ITEMS = "UserMenuItems";
+    public static final String USER_CUSTOM_MENU_ITEMS = "UserCustomMenuItems";
+    public static final String USER_MENU_ITEMS_FILTERED = "UserMenuItemsFiltered";
     
     public MenuAdminClient() {
 

@@ -29,7 +29,7 @@ import org.wso2.carbon.caching.core.BaseCache;
  */
 class TenantDomainCache extends BaseCache {
     
-    public final static String TENANT_DOMAIN_CACHE = "TENANT_DOMAIN_CACHE";
+    public static final String TENANT_DOMAIN_CACHE = "TENANT_DOMAIN_CACHE";
 
     private static TenantDomainCache tenantDomainCache = null;
 

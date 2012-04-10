@@ -21,7 +21,7 @@ import org.wso2.carbon.user.api.UserRealm;
 
 public class RealmCache extends BaseCache {
 
-    public final static String CUSTOM_TENANT_CACHE = "CUSTOM_TENANT_CACHE";
+    public static final String CUSTOM_TENANT_CACHE = "CUSTOM_TENANT_CACHE";
 
     private static RealmCache tenantCache = null;
 

@@ -39,8 +39,8 @@ public class RepositoryAdminServiceClient {
     private static final String BUNDLE = "org.wso2.carbon.feature.mgt.ui.i18n.Resources";
     private ResourceBundle bundle;
 
-    public final static String ENABLED = "Enabled";
-    public final static String DISABLED = "Disabled";
+    public static final String ENABLED = "Enabled";
+    public static final String DISABLED = "Disabled";
 
     public static String AVAILABLE_FEATURES = "available.features";
 

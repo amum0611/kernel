@@ -53,8 +53,9 @@ public class SecuredComponentEntryHttpContext extends BundleEntryHttpContext {
 
     public URL getResource(String resourceName) {
         URL url = super.getResource(resourceName);
-        if (url != null)
+        if (url != null) {
             return url;
+        }
 
         url = uiResourceRegistry.getUIResource(resourceName);
 

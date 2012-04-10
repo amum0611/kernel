@@ -25,7 +25,7 @@ public class UserRolesCache extends BaseCache {
 
     private static UserRolesCache userRolesCache = null;
 
-    private final static String USER_ROLES_CACHE = "USER_ROLES_CACHE";
+    private static final String USER_ROLES_CACHE = "USER_ROLES_CACHE";
 
     private UserRolesCache(String cacheName) {
         super(cacheName);

@@ -30,7 +30,7 @@ import java.util.jar.Manifest;
  * Creates regular OSGi bundles out of regular jar files
  */
 public  class DefaultBundleCreator implements CarbonLaunchExtension {
-    private final static String JARS_DIR =
+    private static final String JARS_DIR =
             "repository" + File.separator + "components" + File.separator + "lib";
 
     public void perform() {

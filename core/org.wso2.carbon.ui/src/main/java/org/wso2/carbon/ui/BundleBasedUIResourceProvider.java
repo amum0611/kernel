@@ -37,12 +37,14 @@ public class BundleBasedUIResourceProvider implements UIResourceProvider {
     public URL getUIResource(String name) {
         String resourceName = bundleResourcePath + name;
         int lastSlash = resourceName.lastIndexOf('/');
-        if (lastSlash == -1)
+        if (lastSlash == -1) {
             return null;
+        }
 
         String path = resourceName.substring(0, lastSlash);
-        if (path.length() == 0)
+        if (path.length() == 0) {
             path = "/";
+        }
         String file = resourceName.substring(lastSlash + 1);
 
         //Searching the resourceBundle for the given bundle resource paths.

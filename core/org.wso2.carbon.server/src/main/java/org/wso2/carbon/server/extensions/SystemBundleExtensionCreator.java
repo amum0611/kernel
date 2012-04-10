@@ -35,10 +35,10 @@ import java.util.jar.Manifest;
  */
 public class SystemBundleExtensionCreator implements CarbonLaunchExtension {
 
-    private final static String EXTENSIONS_DIR =
+    private static final String EXTENSIONS_DIR =
             "repository" + File.separator + "components" + File.separator + "extensions";
 
-    private final static String EXTENSION_PREFIX = "org.wso2.carbon.framework.extension.";
+    private static final String EXTENSION_PREFIX = "org.wso2.carbon.framework.extension.";
 
     public void perform() {
         File dropinsFolder = new File(Utils.getCarbonComponentRepo(), "dropins");

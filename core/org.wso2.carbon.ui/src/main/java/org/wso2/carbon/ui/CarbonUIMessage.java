@@ -25,9 +25,9 @@ public class CarbonUIMessage implements Serializable {
     private static final long serialVersionUID = 7464385412679479148L;
     
     public static final String ID = "carbonUIMessage";
-    public final static String INFO = "info";
-    public final static String ERROR = "error";
-    public final static String WARNING = "warning";
+    public static final String INFO = "info";
+    public static final String ERROR = "error";
+    public static final String WARNING = "warning";
 
     private String message;
     private String messageType;

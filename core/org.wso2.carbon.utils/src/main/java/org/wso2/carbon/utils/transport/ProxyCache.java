@@ -25,7 +25,7 @@ public class ProxyCache {
     private int httpPort = -1;
     private int httpsPort = -1;
     private static ProxyCache instance;
-    private final static Object obj = new Object();
+    private static final Object obj = new Object();
 
     public static  ProxyCache getInstance() {
         synchronized (obj) {

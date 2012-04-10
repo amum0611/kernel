@@ -72,7 +72,7 @@ public class ComponentDeployer {
     /**
      *
      */
-    private final static Map<String, String> processedFileMap = new HashMap<String, String>();
+    private static final Map<String, String> processedFileMap = new HashMap<String, String>();
 
 
     public ComponentDeployer(Bundle componentBundle) {

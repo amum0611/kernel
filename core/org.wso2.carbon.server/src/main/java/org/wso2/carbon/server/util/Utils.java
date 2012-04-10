@@ -29,7 +29,7 @@ import java.util.zip.ZipOutputStream;
 
 public class Utils {
 
-    public final static String JAR_TO_BUNDLE_DIR =
+    public static final String JAR_TO_BUNDLE_DIR =
             System.getProperty("java.io.tmpdir").endsWith(File.separator) ?
                     System.getProperty("java.io.tmpdir") + "jarsToBundles" :
                     System.getProperty("java.io.tmpdir") + File.separator + "jarsToBundles";

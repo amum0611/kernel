@@ -16,9 +16,9 @@
 package org.wso2.carbon.feature.mgt.core.operations;
 
 public class OperationFactory {
-    public final static String INSTALL_ACTION = "org.wso2.carbon.prov.action.install";
-    public final static String UNINSTALL_ACTION = "org.wso2.carbon.prov.action.uninstall";
-    public final static String REVERT_ACTION = "org.wso2.carbon.prov.action.revert";
+    public static final String INSTALL_ACTION = "org.wso2.carbon.prov.action.install";
+    public static final String UNINSTALL_ACTION = "org.wso2.carbon.prov.action.uninstall";
+    public static final String REVERT_ACTION = "org.wso2.carbon.prov.action.revert";
 
     public static ProfileChangeOperation getProfileChangeOperation(String actionType) {
         if (INSTALL_ACTION.equals(actionType)) {

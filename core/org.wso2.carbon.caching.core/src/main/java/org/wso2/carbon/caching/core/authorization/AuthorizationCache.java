@@ -31,7 +31,7 @@ import java.util.Set;
 @SuppressWarnings({"UnusedDeclaration"})
 public class AuthorizationCache {
 
-    public final static String AUTHORIZATION_CACHE = "AUTHORIZATION_CACHE";
+    public static final String AUTHORIZATION_CACHE = "AUTHORIZATION_CACHE";
 
     protected Cache cache = null;
 

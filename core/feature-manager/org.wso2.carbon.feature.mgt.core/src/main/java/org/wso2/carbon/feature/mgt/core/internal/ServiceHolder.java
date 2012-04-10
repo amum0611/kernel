@@ -50,7 +50,7 @@ public class ServiceHolder {
     private static ProvisioningContext provisioningContext;
     private static Configurator p2Configurator;
 
-    public final static String ID = "org.wso2.carbon.feature.mgt.core";
+    public static final String ID = "org.wso2.carbon.feature.mgt.core";
 
     public static IMetadataRepositoryManager getMetadataRepositoryManager() throws ProvisioningException {
         if (metadataRepositoryManager == null) {

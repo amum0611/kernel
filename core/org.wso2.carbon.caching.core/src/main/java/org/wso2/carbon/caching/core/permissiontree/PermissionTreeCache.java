@@ -28,7 +28,7 @@ public class PermissionTreeCache extends BaseCache {
 
     private static PermissionTreeCache permissionCache = null;
 
-    public final static String PERMISSION_CACHE = "PERMISSION_CACHE";
+    public static final String PERMISSION_CACHE = "PERMISSION_CACHE";
 
     private PermissionTreeCache() {
         super(PERMISSION_CACHE);

@@ -42,7 +42,7 @@ import java.util.zip.ZipInputStream;
  */
 public class AxisServiceDeployerBundleCreator implements CarbonLaunchExtension {
 
-    private final static String DEPLOYERS_DIR =
+    private static final String DEPLOYERS_DIR =
             "repository" + File.separator + "components" + File.separator + "axis2deployers";
 
     public void perform() {
