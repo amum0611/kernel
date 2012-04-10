@@ -43,8 +43,8 @@ import java.util.regex.Pattern;
 
 public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
 
-    public final static String LOGGED_USER = CarbonConstants.LOGGED_USER;
-    private final static Log log = LogFactory.getLog(CarbonSecuredHttpContext.class);
+    public static final String LOGGED_USER = CarbonConstants.LOGGED_USER;
+    private static final Log log = LogFactory.getLog(CarbonSecuredHttpContext.class);
     private Bundle bundle = null;
     private Pattern tenantEnabledUriPattern;
     private static final String TENANT_ENABLED_URI_PATTERN = "/"
@@ -581,7 +581,7 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
             return false;
         } else if (requestedURI.indexOf("/registry/atom") == -1 && requestedURI.endsWith("/carbon")) {
             String redirectUrl = contextPath + indexPageURL;
-            if (customWarContext != "" && customWarContext.trim().length() > 0) {
+            if (!("".equals(customWarContext)) && customWarContext.trim().length() > 0) {
                 redirectUrl = "/" + customWarContext + redirectUrl;
             }
             response.sendRedirect(redirectUrl);

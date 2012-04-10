@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -57,7 +58,7 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 	// JSPContextFinder classloader nor the boot classloader.  The last classloader
 	// in the list is either a bundle classloader or the framework's classloader
 	// We assume that the bootclassloader never uses the context classloader to find classes in itself.
-	ArrayList basicFindClassLoaders() {
+	List basicFindClassLoaders() {
 		Class[] stack = contextFinder.getClassContext();
 		ArrayList result = new ArrayList(1);
 		ClassLoader previousLoader = null;
@@ -98,7 +99,7 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 		return true;
 	}
 
-	private ArrayList findClassLoaders() {
+	private List findClassLoaders() {
 		if (System.getSecurityManager() == null) {
 			return basicFindClassLoaders();
 		}
@@ -136,7 +137,7 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 		}
 
 		try {
-			ArrayList toConsult = findClassLoaders();
+			List toConsult = findClassLoaders();
 			for (Iterator loaders = toConsult.iterator(); loaders.hasNext();) {
 				try {
 					return ((ClassLoader) loaders.next()).loadClass(arg0);
@@ -156,7 +157,7 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 			return null;
 		}
 		try {
-			ArrayList toConsult = findClassLoaders();
+			List toConsult = findClassLoaders();
 			for (Iterator loaders = toConsult.iterator(); loaders.hasNext();) {
 				URL result = ((ClassLoader) loaders.next()).getResource(arg0);
 				if (result != null) {
@@ -172,10 +173,11 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 
 	protected Enumeration findResources(String arg0) throws IOException {
 		//Shortcut cycle
-		if (startLoading(arg0) == false)
+		if (!startLoading(arg0)) {
 			return null;
+		}
 		try {
-			ArrayList toConsult = findClassLoaders();
+			List toConsult = findClassLoaders();
 			for (Iterator loaders = toConsult.iterator(); loaders.hasNext();) {
 				Enumeration result = ((ClassLoader) loaders.next()).getResources(arg0);
 				if (result != null && result.hasMoreElements()) {

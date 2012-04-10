@@ -46,7 +46,7 @@ public class BreadCrumbGenerator {
 			,boolean removeLastItem){
 		String breadcrumbCookieString = "";
 		//int lastIndexofSlash = jspFilePath.lastIndexOf(System.getProperty("file.separator"));
-		int lastIndexofSlash = jspFilePath.lastIndexOf("/");
+		//int lastIndexofSlash = jspFilePath.lastIndexOf('/');
 
 		StringBuffer content = new StringBuffer();
 		StringBuffer cookieContent = new StringBuffer();
@@ -71,8 +71,8 @@ public class BreadCrumbGenerator {
 				if(indexPageBreadcrumbParamMap != null && !(indexPageBreadcrumbParamMap.isEmpty())){
 					String params = indexPageBreadcrumbParamMap.get(jspFilePath);
 					if(params != null){
-						region = params.substring(0, params.indexOf(","));
-						menuId = params.substring(params.indexOf(",")+1);
+						region = params.substring(0, params.indexOf(','));
+						menuId = params.substring(params.indexOf(',')+1);
 					}
 				}
 			}
@@ -91,7 +91,8 @@ public class BreadCrumbGenerator {
 				content.append("<table cellspacing=\"0\"><tr>");
 				String homeText = CarbonUIUtil.geti18nString("component.home", "org.wso2.carbon.i18n.Resources", request.getLocale());
                 content.append("<td class=\"breadcrumb-link\"><a href=\"" + CarbonUIUtil.getHomePage() + "\">"+homeText+"</a></td>");
-				cookieContent.append(breadCrumb+"#");
+				cookieContent.append(breadCrumb);
+				cookieContent.append("#");
 				generateBreadcrumbForMenuPath(content, breadcrumbs, breadCrumb,true);
 			}
 		}else{
@@ -125,10 +126,11 @@ public class BreadCrumbGenerator {
 				content.append("<td class=\"breadcrumb-link\"><a href=\"" + CarbonUIUtil.getHomePage() + "\">"+homeText+"</a></td>");
 
 				String menuBreadcrumbs = "";
-				if(breadcrumbCookieString.indexOf("#") > -1){
-					menuBreadcrumbs = breadcrumbCookieString.substring(0, breadcrumbCookieString.indexOf("#"));
+				if(breadcrumbCookieString.indexOf('#') > -1){
+					menuBreadcrumbs = breadcrumbCookieString.substring(0, breadcrumbCookieString.indexOf('#'));
 				}
-				cookieContent.append(menuBreadcrumbs+"#");
+				cookieContent.append(menuBreadcrumbs);
+				cookieContent.append("#");
 
 				generateBreadcrumbForMenuPath(content, breadcrumbs,
 						menuBreadcrumbs,false);
@@ -145,8 +147,8 @@ public class BreadCrumbGenerator {
 				}
 
 				String pageBreadcrumbs = "";
-				if(breadcrumbCookieString.indexOf("#") > -1){
-					pageBreadcrumbs = breadcrumbCookieString.substring(breadcrumbCookieString.indexOf("#")+1);
+				if(breadcrumbCookieString.indexOf('#') > -1){
+					pageBreadcrumbs = breadcrumbCookieString.substring(breadcrumbCookieString.indexOf('#')+1);
 				}
 				StringTokenizer st2 = new StringTokenizer(pageBreadcrumbs,"*");
 				String[] tokens = new String[st2.countTokens()];
@@ -166,11 +168,11 @@ public class BreadCrumbGenerator {
 				//jspSubContext should be the same across all the breadcrumbs
 				//(cookie is updated everytime a page is loaded)
 				List<BreadCrumbItem> breadcrumbItems = null;
-				if(tokens != null && tokens.length > 0){
+//				if(tokens != null && tokens.length > 0){
 					//String token = tokens[0];
 					//String jspSubContext = token.substring(0, token.indexOf("+"));
 					//breadcrumbItems = links.get("../"+jspSubContext);
-				}
+//				}
 
 				LinkedList<String> tokenJSPFileOrder = new LinkedList<String>();
 				LinkedList<String> jspFileSubContextOrder = new LinkedList<String>();
@@ -178,8 +180,8 @@ public class BreadCrumbGenerator {
 				for(int a = 0;a < tokens.length;a++){
 					String token = tokens[a];
 					if(token != null){
-						String jspFileName = token.substring(token.indexOf("+")+1);
-						String jspSubContext = token.substring(0, token.indexOf("+"));
+						String jspFileName = token.substring(token.indexOf('+')+1);
+						String jspSubContext = token.substring(0, token.indexOf('+'));
 						jspFileSubContextMap.put(jspFileName, jspSubContext);
 						tokenJSPFileOrder.add(jspFileName);
 						jspFileSubContextOrder.add(jspSubContext+"^"+jspFileName);
@@ -216,8 +218,8 @@ public class BreadCrumbGenerator {
 						//String jspSubContext = jspFileSubContextMap.get(jspFileName);
 
 						String fileContextToken = jspFileSubContextOrder.get(i);
-						String jspFileName = fileContextToken.substring(fileContextToken.indexOf("^")+1);
-						String jspSubContext = fileContextToken.substring(0,fileContextToken.indexOf("^"));
+						String jspFileName = fileContextToken.substring(fileContextToken.indexOf('^')+1);
+						String jspSubContext = fileContextToken.substring(0,fileContextToken.indexOf('^'));
 
 						if(jspSubContext != null){
 							breadcrumbItems = links.get("../"+jspSubContext);
@@ -249,7 +251,8 @@ public class BreadCrumbGenerator {
 				//add last breadcrumb item
 				if(lastBreadcrumbItemAvailable && !(removeLastItem)){
 					String tmp = getSubContextFromUri(currentBreadcrumbItem.getLink())+"+"+currentBreadcrumbItem.getId();
-					cookieContent.append(tmp+"*");
+					cookieContent.append(tmp);
+					cookieContent.append("*");
 					content.append("<td class=\"breadcrumb-link\">&nbsp;>&nbsp;"+currentBreadcrumbItem.getConvertedText()+"</td>");
 				}
 				content.append("</tr></table>");
@@ -258,11 +261,9 @@ public class BreadCrumbGenerator {
 		breadcrumbContents.put("html-content", content.toString());
 
 		String finalCookieContent = cookieContent.toString();
-		if(removeLastItem){
-			if(breadcrumbCookieString != null
-					&& breadcrumbCookieString.trim().length() > 0){
+		if(removeLastItem && breadcrumbCookieString != null && 
+		    breadcrumbCookieString.trim().length() > 0){
 				finalCookieContent = breadcrumbCookieString;
-			}
 		}
 		breadcrumbContents.put("cookie-content", finalCookieContent);
 		return breadcrumbContents;
@@ -279,9 +280,8 @@ public class BreadCrumbGenerator {
 			int jspExtensionLocation = uri.indexOf(".jsp");
 			String tmp = uri.substring(0, jspExtensionLocation);
 			tmp = tmp.replace("../", "");
-			int firstSlashLocation = tmp.indexOf("/");
-			String subContext = tmp.substring(0, firstSlashLocation);
-			return subContext;
+			int firstSlashLocation = tmp.indexOf('/');
+			return tmp.substring(0, firstSlashLocation);
 		}else{
 			return "";
 		}
@@ -295,7 +295,7 @@ public class BreadCrumbGenerator {
 	 */
 	private static String appendOrdinal(String url, int ordinal) {
 		if(url != null){
-			if (url.indexOf("?") > -1) {
+			if (url.indexOf('?') > -1) {
 				return url + "&ordinal=" + ordinal;
 			} else {
 				return url + "?ordinal=" + ordinal;
