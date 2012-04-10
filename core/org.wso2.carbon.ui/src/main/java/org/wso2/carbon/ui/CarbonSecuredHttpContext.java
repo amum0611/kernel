@@ -43,10 +43,10 @@ import java.util.regex.Pattern;
 
 public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
 
-    public static String LOGGED_USER = CarbonConstants.LOGGED_USER;
-    private static Log log = LogFactory.getLog(CarbonSecuredHttpContext.class);
+    public final static String LOGGED_USER = CarbonConstants.LOGGED_USER;
+    private final static Log log = LogFactory.getLog(CarbonSecuredHttpContext.class);
     private Bundle bundle = null;
-    Pattern tenantEnabledUriPattern;
+    private Pattern tenantEnabledUriPattern;
     private static final String TENANT_ENABLED_URI_PATTERN = "/"
             + MultitenantConstants.TENANT_AWARE_URL_PREFIX + "/[^/]*($|/.*)";
 
@@ -181,7 +181,7 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
                 && requestedURI.indexOf("fileupload") == -1) {
             // replace first context
             String tmp1 = tmp.replaceFirst("/", "");
-            int end = tmp1.indexOf("/");
+            int end = tmp1.indexOf('/');
             if (end > -1) {
                 customWarContext = tmp1.substring(0, end);
                 // one can rename the war file as 'registry'.
@@ -228,12 +228,12 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
                         Cookie[] cookies = request.getCookies();
                         if (cookies != null) {
                             for (Cookie cookie : cookies) {
-                                if (cookie.getName().equals(CarbonConstants.REMEMBER_ME_COOKE_NAME)) {
-                                    if (getAuthenticator(request).reAuthenticateOnSessionExpire(request)) {
+                                if (cookie.getName().equals(CarbonConstants.REMEMBER_ME_COOKE_NAME) && 
+                                		getAuthenticator(request).reAuthenticateOnSessionExpire(request)) {
                                         String cookieValue = cookie.getValue();
                                         CarbonUIAuthenticationUtil.onSuccessAdminLogin(request,
                                                 getUserNameFromCookie(cookieValue));
-                                    }
+                                 
                                 }
                             }
                         }
@@ -285,8 +285,7 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
         }
 
         // if the current uri is marked to be by-passed, let it pass through
-        if (!urlsToBeByPassed.isEmpty()) {
-            if (urlsToBeByPassed.containsKey(resourceURI)) {
+        if (!urlsToBeByPassed.isEmpty() && urlsToBeByPassed.containsKey(resourceURI)) {
                 if (log.isDebugEnabled()) {
                     log.debug("By passing authentication check for URI : " + resourceURI);
                 }
@@ -304,7 +303,7 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
                 backendServerURL = backendServerURL.replace("${carbon.context}", contextPath);
                 session.setAttribute(CarbonConstants.SERVER_URL, backendServerURL);
                 return true;
-            }
+            
         }
         String indexPageURL = CarbonUIUtil.getIndexPageURL(session.getServletContext(),
                 request.getSession());
@@ -365,6 +364,10 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
             } else if (requestedURI.indexOf("login_action.jsp") > -1 && !authenticated) {
             	// User is not yet authenticated and now trying to get authenticated
             	// do nothing, leave for authentication at the end 
+            	if(log.isDebugEnabled()) {
+            		log.debug("User is not yet authenticated and now trying to get authenticated;" +
+            	              "do nothing, leave for authentication at the end");
+            	}
             } else {
                 return true;
             }
@@ -531,6 +534,9 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
                     } catch (Exception ignored) { // Ignore exception when
                         // invalidating and
                         // invalidated session
+                    	if(log.isDebugEnabled()) {
+                    		log.debug("Ignore exception when invalidating session", ignored);
+                    	}
                     }
                 }
                 response.sendRedirect("../.." + indexPageURL);
@@ -629,15 +635,14 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
                     Cookie[] cookies = request.getCookies();
                     if (cookies != null) {
                         for (Cookie cookie : cookies) {
-                            if (cookie.getName().equals(CarbonConstants.REMEMBER_ME_COOKE_NAME)) {
-                                if (getAuthenticator(request).reAuthenticateOnSessionExpire(request)) {
+                            if (cookie.getName().equals(CarbonConstants.REMEMBER_ME_COOKE_NAME)  && 
+                              getAuthenticator(request).reAuthenticateOnSessionExpire(request)) {
                                     String cookieValue = cookie.getValue();
                                     CarbonUIAuthenticationUtil.onSuccessAdminLogin(request,
                                             getUserNameFromCookie(cookieValue));
                                     return true;
-                                }
                             }
-
+                         
                         }
                     }
                 } catch (AuthenticationException e) {
@@ -710,7 +715,7 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
     }
 
     private String getUserNameFromCookie(String cookieValue) {
-        int index = cookieValue.indexOf("-");
+        int index = cookieValue.indexOf('-');
         return cookieValue.substring(0, index);
     }
 }

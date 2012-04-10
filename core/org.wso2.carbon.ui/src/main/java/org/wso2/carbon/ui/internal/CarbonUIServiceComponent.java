@@ -351,7 +351,7 @@ public class CarbonUIServiceComponent {
                     //process collapsed menus in a different manner than other properties
                     if ("collapsedmenus".equals(propertyName)) {
                         ArrayList<String> collapsedMenuItems = new ArrayList<String>();
-                        if (value != null && value.indexOf(",") > -1) {
+                        if (value != null && value.indexOf(',') > -1) {
                             //multiple menu items provided.Tokenize & add iteratively
                             StringTokenizer st = new StringTokenizer(value, ",");
                             while (st.hasMoreTokens()) {

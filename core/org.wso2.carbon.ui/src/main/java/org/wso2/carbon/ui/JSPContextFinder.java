@@ -39,7 +39,7 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 	//This is used to detect cycle that could be caused while delegating the loading to other classloaders
 	//It keeps track on a thread basis of the set of requested classes and resources
 	private static ThreadLocal cycleDetector = new ThreadLocal();
-	static Finder contextFinder;
+	private static Finder contextFinder;
 	static {
 		AccessController.doPrivileged(new PrivilegedAction() {
 			public Object run() {
@@ -64,15 +64,14 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 		for (int i = 1; i < stack.length; i++) {
 			ClassLoader tmp = stack[i].getClassLoader();
 			if (checkClass(stack[i]) && tmp != null && tmp != this) {
-				if (checkClassLoader(tmp)) {
-					if (previousLoader != tmp) {
+				if (checkClassLoader(tmp) && previousLoader != tmp) {
 						result.add(tmp);
 						previousLoader = tmp;
-					}
 				}
 				// stop at the framework classloader or the first bundle classloader
-				if (CarbonUIServiceComponent.getBundle(stack[i]) != null)
+				if (CarbonUIServiceComponent.getBundle(stack[i]) != null) {
 					break;
+				}
 			}
 		}
 		return result;
@@ -88,17 +87,21 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 	// parent hierachy.  A classloader which has the JSPContextFinder as a parent must
 	// not be used as a delegate, otherwise we endup in endless recursion.
 	private boolean checkClassLoader(ClassLoader classloader) {
-		if (classloader == null || classloader == getParent())
+		if (classloader == null || classloader == getParent()) {
 			return false;
-		for (ClassLoader parent = classloader.getParent(); parent != null; parent = parent.getParent())
-			if (parent == this)
+		}
+		for (ClassLoader parent = classloader.getParent(); parent != null; parent = parent.getParent()) {
+			if (parent == this) {
 				return false;
+			}
+		}
 		return true;
 	}
 
 	private ArrayList findClassLoaders() {
-		if (System.getSecurityManager() == null)
+		if (System.getSecurityManager() == null) {
 			return basicFindClassLoaders();
+		}
 		return (ArrayList) AccessController.doPrivileged(this);
 	}
 
@@ -110,8 +113,9 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 	//False is returned when a cycle is being detected
 	private boolean startLoading(String name) {
 		Set classesAndResources = (Set) cycleDetector.get();
-		if (classesAndResources != null && classesAndResources.contains(name))
+		if (classesAndResources != null && classesAndResources.contains(name)) {
 			return false;
+		}
 
 		if (classesAndResources == null) {
 			classesAndResources = new HashSet(3);
@@ -127,17 +131,19 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 
 	protected Class loadClass(String arg0, boolean arg1) throws ClassNotFoundException {
 		//Shortcut cycle
-		if (startLoading(arg0) == false)
+		if (!startLoading(arg0)) {
 			throw new ClassNotFoundException(arg0);
+		}
 
 		try {
 			ArrayList toConsult = findClassLoaders();
-			for (Iterator loaders = toConsult.iterator(); loaders.hasNext();)
+			for (Iterator loaders = toConsult.iterator(); loaders.hasNext();) {
 				try {
 					return ((ClassLoader) loaders.next()).loadClass(arg0);
 				} catch (ClassNotFoundException e) {
 					// go to the next class loader
 				}
+			}
 			return super.loadClass(arg0, arg1);
 		} finally {
 			stopLoading(arg0);
@@ -146,14 +152,16 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 
 	public URL getResource(String arg0) {
 		//Shortcut cycle
-		if (startLoading(arg0) == false)
+		if (!startLoading(arg0)) {
 			return null;
+		}
 		try {
 			ArrayList toConsult = findClassLoaders();
 			for (Iterator loaders = toConsult.iterator(); loaders.hasNext();) {
 				URL result = ((ClassLoader) loaders.next()).getResource(arg0);
-				if (result != null)
+				if (result != null) {
 					return result;
+				}
 				// go to the next class loader
 			}
 			return super.getResource(arg0);
@@ -170,8 +178,9 @@ public class JSPContextFinder extends ClassLoader implements PrivilegedAction {
 			ArrayList toConsult = findClassLoaders();
 			for (Iterator loaders = toConsult.iterator(); loaders.hasNext();) {
 				Enumeration result = ((ClassLoader) loaders.next()).getResources(arg0);
-				if (result != null && result.hasMoreElements())
+				if (result != null && result.hasMoreElements()) {
 					return result;
+				}
 				// go to the next class loader
 			}
 			return super.findResources(arg0);
