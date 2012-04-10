@@ -28,7 +28,13 @@ import java.util.ResourceBundle;
 
 public class ResourcePaginator extends Paginator {
 
-    private static final Log log = LogFactory.getLog(ResourcePaginator.class);
+    private static final String END = "end";
+
+	private static final String MIDDLE = "middle";
+
+	private static final String START = "start";
+
+	private static final Log log = LogFactory.getLog(ResourcePaginator.class);
 
     private String paginationFunction = null;
     private int tdColSpan = 0;
@@ -101,23 +107,27 @@ public class ResourcePaginator extends Paginator {
         } else {
             // FIXME: The equals comparisons below looks buggy. Need to test whether the desired
             // behaviour is met, when there are more than ten pages.
-            String place = "middle";
+            String place = MIDDLE;
             int pageItemFrom = getPageNumber() - 2;
             int pageItemTo = getPageNumber() + 2;
 
-            if (getNumberOfPages() - getPageNumber() <= 5) place = "end";
-            if (getPageNumber() <= 5) place = "start";
+            if (getNumberOfPages() - getPageNumber() <= 5) {
+            	place = END;
+            }
+            if (getPageNumber() <= 5) {
+            	place = START;
+            }
 
-            if (place == "start") {
+            if (START.equals(place)) {
                 pageItemFrom = 1;
                 pageItemTo = 7;
             }
-            if (place == "end") {
+            if (END.equals(place)) {
                 pageItemFrom = getNumberOfPages() - 7;
                 pageItemTo = getNumberOfPages();
             }
 
-            if (place == "end" || place == "middle") {
+            if (END.equals(place)  || MIDDLE.equals(place)) {
                 for (int pageItem = 1; pageItem <= 2; pageItem++) {
                     content.append("<a title=\"").append(pageName.replace("{0}",
                             Integer.toString(pageItem))).append("\" class=\"pageLinks\"");
@@ -145,7 +155,7 @@ public class ResourcePaginator extends Paginator {
                 content.append(">").append(pageItem).append("</a>");
             }
 
-            if (place == "start" || place == "middle") {
+            if (START.equals(place) || MIDDLE.equals(place)) {
                 content.append("...");
                 for (int pageItem = (getNumberOfPages() - 1); pageItem <= getNumberOfPages(); pageItem++) {
 
