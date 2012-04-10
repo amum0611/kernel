@@ -33,8 +33,9 @@ public class ToolsFileUploadExecutor extends AbstractFileUploadExecutor {
         PrintWriter out = response.getWriter();
         try {
             List<FileItemData> fileItems = getAllFileItems();
-            String filePaths = "";
-
+            
+            StringBuffer filePathsStrBuffer = new StringBuffer();
+            
             for (FileItemData fileItem : fileItems) {
                 String uuid = String.valueOf(
                         System.currentTimeMillis() + Math.random());
@@ -47,7 +48,11 @@ public class ToolsFileUploadExecutor extends AbstractFileUploadExecutor {
                                 uuid + File.separator;
                 File dir = new File(serviceUploadDir);
                 if (!dir.exists()) {
-                    dir.mkdirs();
+                    boolean dirCreated = dir.mkdirs();
+                    if (!dirCreated) {
+                    	log.error("Error creating dir " + dir.getPath());
+                    	return false;
+                    }
                 }
                 File uploadedFile = new File(dir, uuid);
                 FileOutputStream fileOutStream = new FileOutputStream(uploadedFile);
@@ -55,10 +60,11 @@ public class ToolsFileUploadExecutor extends AbstractFileUploadExecutor {
                 fileOutStream.flush();
                 fileOutStream.close();
                 response.setContentType("text/plain; charset=utf-8");
-                filePaths = filePaths + uploadedFile.getAbsolutePath() + ",";
+                filePathsStrBuffer.append(uploadedFile.getAbsolutePath());
+                filePathsStrBuffer.append(',');                
             }
-            filePaths = filePaths.substring(0, filePaths.length() - 1);
-            out.write(filePaths);
+
+            out.write(filePathsStrBuffer.substring(0, filePathsStrBuffer.length() - 1));
             out.flush();
         } catch (Exception e) {
             log.error("File upload FAILED", e);

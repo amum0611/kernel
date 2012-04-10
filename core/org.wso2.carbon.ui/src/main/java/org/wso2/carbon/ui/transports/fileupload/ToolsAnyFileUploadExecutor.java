@@ -47,7 +47,7 @@ public class ToolsAnyFileUploadExecutor extends AbstractFileUploadExecutor {
                                              fileResourceMap);
         	}
             List<FileItemData> fileItems = getAllFileItems();
-            String filePaths = "";
+            //String filePaths = "";
 
             for (FileItemData fileItem : fileItems) {
                 String uuid = String.valueOf(
@@ -69,11 +69,11 @@ public class ToolsAnyFileUploadExecutor extends AbstractFileUploadExecutor {
                 fileOutStream.flush();
                 fileOutStream.close();
                 response.setContentType("text/plain; charset=utf-8");
-                filePaths = filePaths + uploadedFile.getAbsolutePath() + ",";
+                //filePaths = filePaths + uploadedFile.getAbsolutePath() + ",";
                 fileResourceMap.put(uuid, uploadedFile.getAbsolutePath());
                 out.write(uuid);
             }
-            filePaths = filePaths.substring(0, filePaths.length() - 1);
+            //filePaths = filePaths.substring(0, filePaths.length() - 1);
             //out.write(filePaths);
             out.flush();
         } catch (Exception e) {
