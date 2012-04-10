@@ -38,6 +38,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.HashMap;
 
 /**
@@ -58,12 +59,12 @@ public final class ApplicationManager implements ApplicationManagerService {
 
     private static ApplicationManager instance = new ApplicationManager();
 
-    private ArrayList<AppDeploymentHandler> appDeploymentHandlers;
-    private ArrayList<AppUndeploymentHandler> appUndeploymentHandlers;
-    private ArrayList<PendingApplication> pendingCarbonApps;
+    private List<AppDeploymentHandler> appDeploymentHandlers;
+    private List<AppUndeploymentHandler> appUndeploymentHandlers;
+    private List<PendingApplication> pendingCarbonApps;
 
-    private HashMap<String, ArrayList<CarbonApplication>> tenantcAppMap;
-    private HashMap<String, CarbonAppPersistenceManager> tenantPMMap;
+    private Map<String, ArrayList<CarbonApplication>> tenantcAppMap;
+    private Map<String, CarbonAppPersistenceManager> tenantPMMap;
 
     private int initialHandlers;
     private int handlerCount;

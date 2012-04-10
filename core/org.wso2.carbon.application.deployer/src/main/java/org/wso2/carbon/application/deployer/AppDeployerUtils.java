@@ -548,7 +548,7 @@ public final class AppDeployerUtils {
      * @param features - contains the list of features needed for each artifact type
      * @return whether each artifact type can be deployed or not
      */
-    public static HashMap<String, Boolean> buildAcceptanceList(HashMap<String, 
+    public static Map<String, Boolean> buildAcceptanceList(Map<String, 
             List<Feature>> features) {
         HashMap<String, Boolean> acceptanceList = new HashMap<String, Boolean>();
 
@@ -568,7 +568,7 @@ public final class AppDeployerUtils {
      * @param featureSets - root element of the required-features.xml
      * @return - map which includes the list of features for each artifact type
      */
-    public static HashMap<String, List<Feature>> readRequiredFeaturs(OMElement featureSets) {
+    public static Map<String, List<Feature>> readRequiredFeaturs(OMElement featureSets) {
         if (featureSets == null) {
             return null;
         }

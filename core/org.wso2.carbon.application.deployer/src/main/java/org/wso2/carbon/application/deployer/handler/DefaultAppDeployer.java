@@ -20,7 +20,6 @@ package org.wso2.carbon.application.deployer.handler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.axis2.engine.AxisConfiguration;
-import org.apache.axis2.deployment.DeploymentConstants;
 import org.wso2.carbon.application.deployer.AppDeployerConstants;
 import org.wso2.carbon.application.deployer.config.Artifact;
 import org.wso2.carbon.application.deployer.config.CappFile;
@@ -33,7 +32,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Bundle;
 
 import java.util.List;
-import java.util.HashMap;
+import java.util.Map;
 import java.io.File;
 
 /**
@@ -52,7 +51,7 @@ public class DefaultAppDeployer implements AppDeploymentHandler {
     public static final String JAXWS_DIR = "servicejars";
     public static final String DS_DIR = "dataservices";
 
-    private HashMap<String, Boolean> acceptanceList = null;
+    private Map<String, Boolean> acceptanceList = null;
 
     /**
      * Deploy the artifacts which can be deployed through this deployer (Axis2 services,
@@ -73,22 +72,23 @@ public class DefaultAppDeployer implements AppDeploymentHandler {
      * @param bundlePath - absolute path to the bundle to be installed..
      */
     private void installBundle(String bundlePath) {
-        bundlePath = AppDeployerUtils.formatPath(bundlePath);
+        String bundlePathFormatted = AppDeployerUtils.formatPath(bundlePath);
 
         // prepare the URL
-        if (bundlePath.startsWith("/")) {
+        if (bundlePathFormatted.startsWith("/")) {
             // on linux
-            bundlePath = "file://" + bundlePath;
+        	bundlePathFormatted = "file://" + bundlePathFormatted;
         } else {
             // on windows
-            bundlePath = "file:///" + bundlePath;
+        	bundlePathFormatted = "file:///" + bundlePathFormatted;
         }
+        
         try {
             Bundle bundle = AppDeployerServiceComponent
-                    .getBundleContext().installBundle(bundlePath);
+                    .getBundleContext().installBundle(bundlePathFormatted);
             bundle.start();
         } catch (BundleException e) {
-            log.error("Error while installing bundle : " + bundlePath);
+            log.error("Error while installing bundle : " + bundlePathFormatted);
         }
     }
 

@@ -35,6 +35,7 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.HashMap;
 import java.net.URL;
 
@@ -50,7 +51,7 @@ public class AppDeployerServiceComponent {
 
     private static BundleContext bundleContext;
     private static ServiceRegistration appManagerRegistration;
-    private static HashMap<String, List<Feature>> requiredFeatures;
+    private static Map<String, List<Feature>> requiredFeatures;
 
     private static final Log log = LogFactory.getLog(AppDeployerServiceComponent.class);
 
@@ -120,7 +121,7 @@ public class AppDeployerServiceComponent {
         return bundleContext;
     }
 
-    public static HashMap<String, List<Feature>> getRequiredFeatures() {
+    public static Map<String, List<Feature>> getRequiredFeatures() {
         return requiredFeatures;
     }
 
