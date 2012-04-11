@@ -23,5 +23,5 @@ package org.wso2.carbon.core.services.callback;
  * to subscribe a callback to be called when a user login happen
  */
 public interface LoginSubscriptionManagerService {
-    public void subscribe(LoginListener listener);
+    void subscribe(LoginListener listener);
 }

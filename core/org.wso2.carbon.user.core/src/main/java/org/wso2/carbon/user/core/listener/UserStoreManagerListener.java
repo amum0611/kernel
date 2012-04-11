@@ -28,7 +28,7 @@ public interface UserStoreManagerListener {
     /**
      * The execution order of identity
      */
-    public static final int IDENTITY_UM_LISTENER_EXECUTION_ORDER_ID = 50;
+    static final int IDENTITY_UM_LISTENER_EXECUTION_ORDER_ID = 50;
     
     // 100 - 150 for registry
     
@@ -36,7 +36,7 @@ public interface UserStoreManagerListener {
      * Get the execution order identifier for this listener.
      * @return The execution order identifier integer value.
      */
-    public int getExecutionOrderId();
+    int getExecutionOrderId();
 
     /**
      * Given the user name and a credential object, the implementation code must
@@ -53,7 +53,7 @@ public interface UserStoreManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean authenticate(String userName, Object credential,
+    boolean authenticate(String userName, Object credential,
                                 UserStoreManager userStoreManager) throws UserStoreException;
 
     /**
@@ -76,7 +76,7 @@ public interface UserStoreManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean addUser(String userName, Object credential, String[] roleList,
+    boolean addUser(String userName, Object credential, String[] roleList,
             Map<String, String> claims, String profileName,
             UserStoreManager userStoreManager) throws UserStoreException;
 
@@ -96,7 +96,7 @@ public interface UserStoreManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean updateCredential(String userName, Object newCredential, Object oldCredential,
+    boolean updateCredential(String userName, Object newCredential, Object oldCredential,
                                     UserStoreManager userStoreManager) throws UserStoreException;
 
     /**
@@ -113,7 +113,7 @@ public interface UserStoreManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean updateCredentialByAdmin(String userName, Object newCredential,
+    boolean updateCredentialByAdmin(String userName, Object newCredential,
                                            UserStoreManager userStoreManager)
             throws UserStoreException;
 
@@ -129,7 +129,7 @@ public interface UserStoreManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean deleteUser(String userName, UserStoreManager userStoreManager)
+    boolean deleteUser(String userName, UserStoreManager userStoreManager)
             throws UserStoreException;
     /**
      * Update the role name of given role
@@ -138,7 +138,7 @@ public interface UserStoreManagerListener {
      * @param newRoleName
      * @throws UserStoreException
      */
-    public boolean updateRoleName(String roleName, String newRoleName) throws UserStoreException;
+    boolean updateRoleName(String roleName, String newRoleName) throws UserStoreException;
 
 
 }

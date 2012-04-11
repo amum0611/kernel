@@ -38,6 +38,6 @@ public interface DiscoveryService {
      * @return a list of service endpoints
      * @throws Exception on error
      */
-    public String[] probe(QName[] types, URI[] scopes, String matchBy,
+    String[] probe(QName[] types, URI[] scopes, String matchBy,
                           int tenantId) throws Exception;
 }

@@ -34,7 +34,7 @@ public interface TenantPersistor {
      * @return The tenant Id
      * @throws Exception
      */
-    public int persistTenant(Tenant tenant) throws Exception;
+    int persistTenant(Tenant tenant) throws Exception;
 
     /**
      * 
@@ -45,7 +45,7 @@ public interface TenantPersistor {
      * @return The tenant Id
      * @throws Exception
      */
-    public int persistTenant(Tenant tenant, boolean checkDomainValidation, String successKey,
+    int persistTenant(Tenant tenant, boolean checkDomainValidation, String successKey,
                              String originatedService) throws Exception;
     
 }

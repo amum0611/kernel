@@ -20,12 +20,12 @@ import org.wso2.carbon.user.core.UserStoreException;
 
 public interface LDAPTenantManager {
 
-    public int addTenant(Tenant tenant) throws UserStoreException;
+    int addTenant(Tenant tenant) throws UserStoreException;
 
-    public void updateTenant(Tenant tenant) throws UserStoreException;
+    void updateTenant(Tenant tenant) throws UserStoreException;
 
-    public void deleteTenant(int tenantId) throws UserStoreException;
+    void deleteTenant(int tenantId) throws UserStoreException;
 
-    public void addPartitionToTenant(Tenant tenant) throws UserStoreException;
+    void addPartitionToTenant(Tenant tenant) throws UserStoreException;
 
 }

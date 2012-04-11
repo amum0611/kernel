@@ -36,7 +36,7 @@ public interface CarbonServerAuthenticator extends BackendAuthenticator {
      * @return
      * @throws RemoteException
      */
-    public boolean isHandle(MessageContext msgContext);
+    boolean isHandle(MessageContext msgContext);
 
     /**
      * Authenticates user based on the credentials contained in the request.
@@ -45,7 +45,7 @@ public interface CarbonServerAuthenticator extends BackendAuthenticator {
      * @return
      * @throws AuthenticationException
      */
-    public boolean isAuthenticated(MessageContext messageContext);
+    boolean isAuthenticated(MessageContext messageContext);
 
     /**
      * If this authenticator implements remember me then implement this method.
@@ -55,12 +55,12 @@ public interface CarbonServerAuthenticator extends BackendAuthenticator {
      * @return True if valid, otherwise false
      * @throws AuthenticationException
      */
-    public boolean authenticateWithRememberMe(MessageContext msgContext);
+    boolean authenticateWithRememberMe(MessageContext msgContext);
     
    /**
      * The name of the Authenticator
      * 
      * @return
      */
-    public String getAuthenticatorName();
+    String getAuthenticatorName();
 }

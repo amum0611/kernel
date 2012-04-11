@@ -38,7 +38,7 @@ public interface RegistryProvider {
      * @return instance of a registry.
      * @throws RegistryException if the operation failed.
      */
-    public Registry getRegistry(String registryURL, String username, String password)
+    Registry getRegistry(String registryURL, String username, String password)
             throws RegistryException;
 
 }

@@ -34,7 +34,7 @@ public interface CarbonQueue<T> {
      * @return the head of this queue.
      * @throws QueueEmptyException when this queue is empty.
      */
-    public T peek() throws QueueEmptyException;
+    T peek() throws QueueEmptyException;
 
     /**
      * Retrieves, but does not remove, the given number of items from the top, which also includes
@@ -45,7 +45,7 @@ public interface CarbonQueue<T> {
      * @return the given number of items from the top, which also includes the head of this queue
      * @throws QueueEmptyException when this queue is empty.
      */
-    public List<T> peek(int count) throws QueueEmptyException;
+    List<T> peek(int count) throws QueueEmptyException;
 
     /**
      * Retrieves and removes, the head of this queue.
@@ -53,7 +53,7 @@ public interface CarbonQueue<T> {
      * @return the head of this queue.
      * @throws QueueEmptyException when this queue is empty.
      */
-    public T pop() throws QueueEmptyException;
+    T pop() throws QueueEmptyException;
 
     /**
      * Retrieves and removes, the given number of items from the top, which also includes the head
@@ -64,36 +64,36 @@ public interface CarbonQueue<T> {
      * @return the given number of items from the top, which also includes the head of this queue.
      * @throws QueueEmptyException when this queue is empty.
      */
-    public List<T> pop(int count) throws QueueEmptyException;
+    List<T> pop(int count) throws QueueEmptyException;
 
     /**
      * Adds the given element onto the queue.
      * @param element the element to add.
      */
-    public void push(T element);
+    void push(T element);
 
     /**
      * Adds the given elements onto the queue.
      * @param elements the elements to add.
      */
-    public void push(List<T> elements);
+    void push(List<T> elements);
 
     /**
      * Method to obtain the size of this queue.
      * @return the size of this queue.
      */
-    public int size();
+    int size();
 
     /**
      * Method to test whether this queue is empty.
      * @return true if the queue is empty or false if not.
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Method to clear this queue.
      */
-    public void clear();
+    void clear();
 
     /**
      * This method returns the index of the given element on this queue.
@@ -103,7 +103,7 @@ public interface CarbonQueue<T> {
      * @return the index of the given element.
      * @throws QueueEmptyException when this queue is empty.
      */
-    public int indexOf(T element) throws QueueEmptyException;
+    int indexOf(T element) throws QueueEmptyException;
 
     /**
      * Method to retrieve the element at the given index of this queue.
@@ -112,6 +112,6 @@ public interface CarbonQueue<T> {
      *
      * @return the element.
      */
-    public T get(int index);
+    T get(int index);
 
 }

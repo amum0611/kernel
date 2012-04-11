@@ -25,5 +25,5 @@ import org.wso2.carbon.registry.core.Registry;
  */
 public interface LoginListener {
     // called in a succesful login.
-    public void onLogin(Registry configRegistry, LoginEvent event);
+    void onLogin(Registry configRegistry, LoginEvent event);
 }

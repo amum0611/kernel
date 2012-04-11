@@ -53,5 +53,5 @@ public interface IServerAdmin {
      */
     boolean shutdownGracefully() throws Exception;
 
-    public ServerData getServerData() throws Exception;
+    ServerData getServerData() throws Exception;
 }

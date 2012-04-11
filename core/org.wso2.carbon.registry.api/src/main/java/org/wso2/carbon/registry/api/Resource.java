@@ -34,49 +34,49 @@ public interface Resource {
      *
      * @return the resource id
      */
-    public String getId();
+    String getId();
 
     /**
      * Get the user name of the resource author.
      *
      * @return the user name of the resource author.
      */
-    public String getAuthorUserName();
+    String getAuthorUserName();
 
     /**
      * Method to get the created time.
      *
      * @return the created time
      */
-    public Date getCreatedTime();
+    Date getCreatedTime();
 
     /**
      * Method to get the last modified date.
      *
      * @return the last modified date.
      */
-    public Date getLastModified();
+    Date getLastModified();
 
     /**
      * Method to get the description.
      *
      * @return the description.
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Method to set the description.
      *
      * @param description the description.
      */
-    public void setDescription(String description);
+    void setDescription(String description);
 
     /**
      * Method to get the path. the unique identifier of the resources in the present state.
      *
      * @return the path.
      */
-    public String getPath();
+    String getPath();
 
     /**
      * If resource is version-ed, the associated version of the resource does not get modified by
@@ -85,14 +85,14 @@ public interface Resource {
      *
      * @return Permanent path (permalink) of the resource.
      */
-    public String getPermanentPath();
+    String getPermanentPath();
 
     /**
      * Get media type.
      *
      * @return the media type.
      */
-    public String getMediaType();
+    String getMediaType();
 
     /**
      * Method to get the state.
@@ -100,21 +100,21 @@ public interface Resource {
      * @return the state.
      */
     @SuppressWarnings("unused")
-    public int getState();
+    int getState();
 
     /**
      * Set media type.
      *
      * @param mediaType the media type.
      */
-    public void setMediaType(String mediaType);
+    void setMediaType(String mediaType);
 
     /**
      * Get the parent path.
      *
      * @return the parent path.
      */
-    public String getParentPath();
+    String getParentPath();
 
     /**
      * Get the property value for the given key, if there are multiple value for that key, it will
@@ -124,7 +124,7 @@ public interface Resource {
      *
      * @return the property value.
      */
-    public String getProperty(String key);
+    String getProperty(String key);
 
     /**
      * Returns the list of values for the given property name. Note that these values are read-only.
@@ -134,7 +134,7 @@ public interface Resource {
      *
      * @return List of values of the given property key.
      */
-    public List<String> getPropertyValues(String key);
+    List<String> getPropertyValues(String key);
 
     /**
      * Returns all properties of the resource. Properties are stored as key (String) -> values
@@ -146,7 +146,7 @@ public interface Resource {
      *
      * @return All properties of the resource.
      */
-    public Properties getProperties();
+    Properties getProperties();
 
     /**
      * Set a property with single value.
@@ -154,7 +154,7 @@ public interface Resource {
      * @param key   the property key.
      * @param value the property value.
      */
-    public void setProperty(String key, String value);
+    void setProperty(String key, String value);
 
     /**
      * Set a property with multiple value.
@@ -162,7 +162,7 @@ public interface Resource {
      * @param key   the property key.
      * @param value the property values.
      */
-    public void setProperty(String key, List<String> value);
+    void setProperty(String key, List<String> value);
 
     /**
      * Add a property value for the provided key. If there are values associated with the key, this
@@ -171,14 +171,14 @@ public interface Resource {
      * @param key   the property key.
      * @param value the property value.
      */
-    public void addProperty(String key, String value);
+    void addProperty(String key, String value);
 
     /**
      * Set properties.
      *
      * @param properties the properties.
      */
-    public void setProperties(Properties properties);
+    void setProperties(Properties properties);
 
     /**
      * Edit property value.
@@ -187,14 +187,14 @@ public interface Resource {
      * @param oldValue the old value.
      * @param newValue the new value.
      */
-    public void editPropertyValue(String key, String oldValue, String newValue);
+    void editPropertyValue(String key, String oldValue, String newValue);
 
     /**
      * Remove property.
      *
      * @param key the property key.
      */
-    public void removeProperty(String key);
+    void removeProperty(String key);
 
     /**
      * Remove property value.
@@ -202,7 +202,7 @@ public interface Resource {
      * @param key   the property key.
      * @param value the property value.
      */
-    public void removePropertyValue(String key, String value);
+    void removePropertyValue(String key, String value);
 
     /**
      * Method to get the content of the resource. If the resource is a collection this will return
@@ -212,7 +212,7 @@ public interface Resource {
      * @return the content.
      * @throws RegistryException throws if the operation fail.
      */
-    public Object getContent() throws RegistryException;
+    Object getContent() throws RegistryException;
 
     /**
      * Set the content of the resource.
@@ -221,14 +221,14 @@ public interface Resource {
      *
      * @throws RegistryException throws if the operation fail.
      */
-    public void setContent(Object content) throws RegistryException;
+    void setContent(Object content) throws RegistryException;
 
     /**
      * Method to get the last updated user name.
      *
      * @return the last updated user name.
      */
-    public String getLastUpdaterUserName();
+    String getLastUpdaterUserName();
 
     /**
      * Method to get the content stream.
@@ -236,7 +236,7 @@ public interface Resource {
      * @return content as an input stream.
      * @throws RegistryException throws if the operation fail.
      */
-    public InputStream getContentStream() throws RegistryException;
+    InputStream getContentStream() throws RegistryException;
 
     /**
      * Method to set the content stream.
@@ -245,21 +245,21 @@ public interface Resource {
      *
      * @throws RegistryException throws if the operation fail.
      */
-    public void setContentStream(InputStream contentStream) throws RegistryException;
+    void setContentStream(InputStream contentStream) throws RegistryException;
 
     /**
      * Get the aspects associated with the resource.
      *
      * @return an array of associated aspects.
      */
-    public List<String> getAspects();
+    List<String> getAspects();
 
     /**
      * Method to add an aspect.
      *
      * @param name the name of the aspect.
      */
-    public void addAspect(String name);
+    void addAspect(String name);
 
     /**
      * Method to remove an aspect.
@@ -267,10 +267,10 @@ public interface Resource {
      * @param name the name of the aspect to remove.
      */
     @SuppressWarnings("unused")
-    public void removeAspect(String name);
+    void removeAspect(String name);
 
     /**
      * Method to discard the resource
      */
-    public void discard();
+    void discard();
 }

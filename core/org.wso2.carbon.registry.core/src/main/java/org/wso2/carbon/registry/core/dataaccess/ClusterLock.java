@@ -36,7 +36,7 @@ public interface ClusterLock {
      * @throws RegistryException if the creation of the cluster lock table failed, or if any
      *                           exceptions occur during the initialization.
      */
-    public void init(DataAccessManager dataAccessManager, String clusterLockTableStatement)
+    void init(DataAccessManager dataAccessManager, String clusterLockTableStatement)
             throws RegistryException;
 
     /**
@@ -46,7 +46,7 @@ public interface ClusterLock {
      *
      * @throws RegistryException if an exception occurred while locking.
      */
-    public void lock(String lockName) throws RegistryException;
+    void lock(String lockName) throws RegistryException;
 
     /**
      * Unlocks a named lock.
@@ -55,6 +55,6 @@ public interface ClusterLock {
      *
      * @throws RegistryException if an exception occurred while unlocking.
      */
-    public void unlock(String lockName) throws RegistryException;
+    void unlock(String lockName) throws RegistryException;
 
 }

@@ -22,5 +22,5 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpSession;
 
 public interface UIAnnouncement {
-    public String getAnnouncementHtml(HttpSession session, ServletConfig config);
+    String getAnnouncementHtml(HttpSession session, ServletConfig config);
 }

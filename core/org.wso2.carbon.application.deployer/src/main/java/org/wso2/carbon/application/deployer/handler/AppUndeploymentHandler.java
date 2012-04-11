@@ -31,5 +31,5 @@ public interface AppUndeploymentHandler {
      * @param carbonApp - all information about the existing artifacts are in this instance
      * @param axisConfig - AxisConfiguration of the current tenant
      */
-    public void undeployArtifacts(CarbonApplication carbonApp, AxisConfiguration axisConfig);
+    void undeployArtifacts(CarbonApplication carbonApp, AxisConfiguration axisConfig);
 }

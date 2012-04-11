@@ -38,7 +38,7 @@ public interface TagsDAO {
      *
      * @throws RegistryException if some error occurs while adding a tag
      */
-    public void addTagging(String tagName, ResourceImpl resource, String userID)
+    void addTagging(String tagName, ResourceImpl resource, String userID)
             throws RegistryException;
 
     /**
@@ -49,7 +49,7 @@ public interface TagsDAO {
      *
      * @throws RegistryException if some error occurs while adding tags
      */
-    public void addTaggings(ResourceImpl resource, TaggingDO[] taggingDOs)
+    void addTaggings(ResourceImpl resource, TaggingDO[] taggingDOs)
             throws RegistryException;
 
     /**
@@ -60,7 +60,7 @@ public interface TagsDAO {
      *
      * @throws RegistryException if some error occurs while copying tags
      */
-    public void copyTags(ResourceImpl fromResource, ResourceImpl toResource)
+    void copyTags(ResourceImpl fromResource, ResourceImpl toResource)
             throws RegistryException;
 
     /**
@@ -73,7 +73,7 @@ public interface TagsDAO {
      * @return whether the given tag exists.
      * @throws RegistryException if some error occurs while checking whether a tag exists.
      */
-    public boolean taggingExists(String tagName, ResourceImpl resourceImpl, String userID)
+    boolean taggingExists(String tagName, ResourceImpl resourceImpl, String userID)
             throws RegistryException;
 
     /**
@@ -84,7 +84,7 @@ public interface TagsDAO {
      *
      * @throws RegistryException if an error occurred while removing the tag.
      */
-    public void removeTags(ResourceImpl resource, String tag)
+    void removeTags(ResourceImpl resource, String tag)
             throws RegistryException;
 
     /**
@@ -96,7 +96,7 @@ public interface TagsDAO {
      *
      * @throws RegistryException if an error occurred while removing the tag.
      */
-    public void removeTags(ResourceImpl resource, String tag, String userID)
+    void removeTags(ResourceImpl resource, String tag, String userID)
             throws RegistryException;
 
     /**
@@ -106,7 +106,7 @@ public interface TagsDAO {
      *
      * @throws RegistryException if an error occurred while removing tags.
      */
-    public void removeTags(ResourceImpl resource)
+    void removeTags(ResourceImpl resource)
             throws RegistryException;
     
     /**
@@ -117,7 +117,7 @@ public interface TagsDAO {
      *
      * @throws RegistryException if an error occurred while removing tags.
      */
-    public void removeVersionTags(long regVersion)
+    void removeVersionTags(long regVersion)
             throws RegistryException;
     
 
@@ -129,7 +129,7 @@ public interface TagsDAO {
      * @return array of tag names.
      * @throws RegistryException if an error occurs while getting the tag names.
      */
-    public String[] getTags(ResourceImpl resourceImpl) throws RegistryException;
+    String[] getTags(ResourceImpl resourceImpl) throws RegistryException;
 
     /**
      * Method to get the data objects of tags added to the given resource.
@@ -139,7 +139,7 @@ public interface TagsDAO {
      * @return list of tagging data objects.
      * @throws RegistryException if an error occurs while getting the tagging data objects.
      */
-    public List<TaggingDO> getTagDOs(ResourceImpl resourceImpl) throws RegistryException;
+    List<TaggingDO> getTagDOs(ResourceImpl resourceImpl) throws RegistryException;
 
     /**
      * Method to obtain the list of paths having any of the given tags.
@@ -149,7 +149,7 @@ public interface TagsDAO {
      * @return a list of paths.
      * @throws RegistryException if an error occurs.
      */
-    public List getPathsWithAnyTag(String[] tags) throws RegistryException;
+    List getPathsWithAnyTag(String[] tags) throws RegistryException;
 
     /**
      * Method to get the number of tags added to the given resource, by the given name.
@@ -160,7 +160,7 @@ public interface TagsDAO {
      * @return the number of tags.
      * @throws RegistryException if an error occurred while getting the number of tags.
      */
-    public long getTagCount(ResourceImpl resourceImpl, String tag) throws RegistryException;
+    long getTagCount(ResourceImpl resourceImpl, String tag) throws RegistryException;
 
     /**
      * Method to get tags added to the given resource, along with the count.
@@ -170,7 +170,7 @@ public interface TagsDAO {
      * @return an array of tags (with counts).
      * @throws RegistryException if an error occurred while getting tags.
      */
-    public Tag[] getTagsWithCount(ResourceImpl resourceImpl) throws RegistryException;
+    Tag[] getTagsWithCount(ResourceImpl resourceImpl) throws RegistryException;
 
     /**
      * Method to get a tagging added to a given resource by the given user.
@@ -182,7 +182,7 @@ public interface TagsDAO {
      * @return the tagging data objects.
      * @throws RegistryException if an error occurs while getting the tagging.
      */
-    public TaggingDO[] getTagging(ResourceImpl resource, String tag, String userID)
+    TaggingDO[] getTagging(ResourceImpl resource, String tag, String userID)
             throws RegistryException;
 
     /**
@@ -193,7 +193,7 @@ public interface TagsDAO {
      * @return the tagging data objects.
      * @throws RegistryException if an error occurs while getting the taggings.
      */
-    public TaggingDO[] getTagging(ResourceImpl resource)
+    TaggingDO[] getTagging(ResourceImpl resource)
             throws RegistryException;
 
     /**
@@ -204,7 +204,7 @@ public interface TagsDAO {
      * @return the tagging data object.
      * @throws RegistryException if an error occurs while getting the tagging.
      */
-    public TaggingDO getTagging(long taggingID)
+    TaggingDO getTagging(long taggingID)
             throws RegistryException;
 
     /**
@@ -217,7 +217,7 @@ public interface TagsDAO {
      * @return the resource with minimum data.
      * @throws RegistryException if an error occurs while retrieving resource data.
      */
-    public ResourceImpl getResourceWithMinimumData(String path) throws RegistryException;
+    ResourceImpl getResourceWithMinimumData(String path) throws RegistryException;
 
     /**
      * Method to move tags.
@@ -227,7 +227,7 @@ public interface TagsDAO {
      *
      * @throws RegistryException if some error occurs while moving tags
      */
-    public void moveTags(ResourceIDImpl source, ResourceIDImpl target) throws RegistryException;
+    void moveTags(ResourceIDImpl source, ResourceIDImpl target) throws RegistryException;
 
     /**
      * Method to move tag paths. This function will move the paths from one path id to another
@@ -238,6 +238,6 @@ public interface TagsDAO {
      *
      * @throws RegistryException if some error occurs while moving tag paths
      */
-    public void moveTagPaths(ResourceIDImpl source, ResourceIDImpl target)
+    void moveTagPaths(ResourceIDImpl source, ResourceIDImpl target)
             throws RegistryException;
 }

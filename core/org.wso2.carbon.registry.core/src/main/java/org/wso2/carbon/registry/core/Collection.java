@@ -30,13 +30,13 @@ public interface Collection extends Resource, org.wso2.carbon.registry.api.Colle
 
     @Deprecated
     @SuppressWarnings("unused")
-    public static final String ALLOW_ALL = "ALLOW_ALL";
+    static final String ALLOW_ALL = "ALLOW_ALL";
     @Deprecated
     @SuppressWarnings("unused")
-    public static final String ALLOW_SELECTED = "ALLOW_SELECTED";
+    static final String ALLOW_SELECTED = "ALLOW_SELECTED";
     @Deprecated
     @SuppressWarnings("unused")
-    public static final String DENY_SELECTED = "DENY_SELECTED";
+    static final String DENY_SELECTED = "DENY_SELECTED";
 
     /**
      * Method to return the absolute paths of the children of the collection

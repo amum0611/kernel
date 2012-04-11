@@ -34,7 +34,7 @@ public interface UIAuthenticationExtender {
      * @param domain    the tenant domain.
      * @param serverURL the URL of the BE server.
      */
-    public void onSuccessAdminLogin(HttpServletRequest request, String userName, String domain,
+    void onSuccessAdminLogin(HttpServletRequest request, String userName, String domain,
                                     String serverURL);
 
 }

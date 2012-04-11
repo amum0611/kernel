@@ -27,20 +27,20 @@ public interface UserRealmService {
      * @return
      * @throws UserStoreException
      */
-    public UserRealm getBootstrapRealm() throws UserStoreException;
+    UserRealm getBootstrapRealm() throws UserStoreException;
 
     /**
      * @param tenantManager
      * @throws UserStoreException
      */
-    public void setTenantManager(TenantManager tenantManager) throws UserStoreException;
+    void setTenantManager(TenantManager tenantManager) throws UserStoreException;
 
     /**
      * Get tenant manager
      *
      * @return TenantManager
      */
-    public TenantManager getTenantManager();
+    TenantManager getTenantManager();
 
     /**
      * Only returns if available in cache.
@@ -49,17 +49,17 @@ public interface UserRealmService {
      * @return
      * @throws UserStoreException
      */
-    public UserRealm getTenantUserRealm(int tenantId) throws UserStoreException;
+    UserRealm getTenantUserRealm(int tenantId) throws UserStoreException;
     
     /**
      * Get the boot strap realm configuration, this is always build from conf/user-mgt.xml
      * @return tge realm configuration
      */
-    public RealmConfiguration getBootstrapRealmConfiguration();
+    RealmConfiguration getBootstrapRealmConfiguration();
 
     /**
      * Get tenant mgt configuration read from tenant-mgt.xml
      */
-    public TenantMgtConfiguration getTenantMgtConfiguration();
+    TenantMgtConfiguration getTenantMgtConfiguration();
     
 }

@@ -25,6 +25,6 @@ package org.wso2.carbon.server;
  */
 public interface CarbonLaunchExtension {
 
-    public void perform();
+    void perform();
 
 }

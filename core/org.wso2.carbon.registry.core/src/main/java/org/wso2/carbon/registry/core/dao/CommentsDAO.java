@@ -37,7 +37,7 @@ public interface CommentsDAO {
      * @return the comment id of the newly added comment.
      * @throws RegistryException if some error occurs while adding a comment
      */
-    public int addComment(ResourceImpl resource, String userID, Comment comment)
+    int addComment(ResourceImpl resource, String userID, Comment comment)
             throws RegistryException;
 
     /**
@@ -48,7 +48,7 @@ public interface CommentsDAO {
      *
      * @throws RegistryException if some error occurs while adding comments
      */
-    public void addComments(ResourceImpl resource, CommentDO[] commentDOs)
+    void addComments(ResourceImpl resource, CommentDO[] commentDOs)
             throws RegistryException;
 
     /**
@@ -59,7 +59,7 @@ public interface CommentsDAO {
      *
      * @throws RegistryException if some error occurs while copying comments
      */
-    public void copyComments(ResourceImpl sourceResource, ResourceImpl targetResource)
+    void copyComments(ResourceImpl sourceResource, ResourceImpl targetResource)
             throws RegistryException;
 
     /**
@@ -70,7 +70,7 @@ public interface CommentsDAO {
      *
      * @throws RegistryException if some error occurs while updating the comment.
      */
-    public void updateComment(long commentId, String text) throws RegistryException;
+    void updateComment(long commentId, String text) throws RegistryException;
 
     /**
      * Method to delete a comment.
@@ -79,7 +79,7 @@ public interface CommentsDAO {
      *
      * @throws RegistryException if some error occurs while deleting the comment.
      */
-    public void deleteComment(long commentId) throws RegistryException;
+    void deleteComment(long commentId) throws RegistryException;
 
     /**
      * Method to remove all comments added to a resource.
@@ -88,7 +88,7 @@ public interface CommentsDAO {
      *
      * @throws RegistryException if some error occurs while removing comments.
      */
-    public void removeComments(ResourceImpl resource) throws RegistryException;
+    void removeComments(ResourceImpl resource) throws RegistryException;
 
     /**
      * Method to get a comment added to a given resource.
@@ -99,7 +99,7 @@ public interface CommentsDAO {
      * @return the comment.
      * @throws RegistryException if an error occurs while getting the comment.
      */
-    public Comment getComment(long commentID, String resourcePath) throws RegistryException;
+    Comment getComment(long commentID, String resourcePath) throws RegistryException;
 
     /**
      * Method to get comments added to a given resource.
@@ -109,7 +109,7 @@ public interface CommentsDAO {
      * @return an array of comments.
      * @throws RegistryException if an error occurs while getting comments.
      */
-    public Comment[] getComments(ResourceImpl resource) throws RegistryException;
+    Comment[] getComments(ResourceImpl resource) throws RegistryException;
 
     /**
      * Gets the resource with sufficient data to differentiate it from another resource. This would
@@ -121,7 +121,7 @@ public interface CommentsDAO {
      * @return the resource with minimum data.
      * @throws RegistryException if an error occurs while retrieving resource data.
      */
-    public ResourceImpl getResourceWithMinimumData(String path) throws RegistryException;
+    ResourceImpl getResourceWithMinimumData(String path) throws RegistryException;
 
     /**
      * Method to move comments.
@@ -131,7 +131,7 @@ public interface CommentsDAO {
      *
      * @throws RegistryException if some error occurs while moving comments
      */
-    public void moveComments(ResourceIDImpl source, ResourceIDImpl target)
+    void moveComments(ResourceIDImpl source, ResourceIDImpl target)
             throws RegistryException;
 
     /**
@@ -143,7 +143,7 @@ public interface CommentsDAO {
      *
      * @throws RegistryException if some error occurs while moving comment paths
      */
-    public void moveCommentPaths(ResourceIDImpl source, ResourceIDImpl target)
+    void moveCommentPaths(ResourceIDImpl source, ResourceIDImpl target)
             throws RegistryException;
     
     /**
@@ -154,6 +154,6 @@ public interface CommentsDAO {
      *
      * @throws RegistryException if an error occurred while removing tags.
      */
-    public void removeVersionComments(long regVersion)
+    void removeVersionComments(long regVersion)
             throws RegistryException;
 }

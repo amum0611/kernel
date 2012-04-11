@@ -25,6 +25,6 @@ public interface RequestDataPersister {
 	 * @param wrappedRequest the request with metering data
 	 * @param wrappedResponse the response with metering data
 	 */
-	public void persist(MeteredServletRequest wrappedRequest,
+	void persist(MeteredServletRequest wrappedRequest,
                         MeteredServletResponse wrappedResponse);
 }

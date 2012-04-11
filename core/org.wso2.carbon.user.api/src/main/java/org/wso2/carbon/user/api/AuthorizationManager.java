@@ -35,7 +35,7 @@ public interface AuthorizationManager {
      * @throws UserStoreException
      * 
      */
-    public boolean isUserAuthorized(String userName, String resourceId, String action)
+    boolean isUserAuthorized(String userName, String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -51,7 +51,7 @@ public interface AuthorizationManager {
      *         the resource and false otherwise
      * @throws UserStoreException
      */
-    public boolean isRoleAuthorized(String roleName, String resourceId, String action)
+    boolean isRoleAuthorized(String roleName, String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -69,7 +69,7 @@ public interface AuthorizationManager {
      * 
      * @deprecated
      */
-    public String[] getExplicitlyAllowedUsersForResource(String resourceId, String action)
+    String[] getExplicitlyAllowedUsersForResource(String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -85,7 +85,7 @@ public interface AuthorizationManager {
      *         the resource
      * @throws UserStoreException
      */
-    public String[] getAllowedRolesForResource(String resourceId, String action)
+    String[] getAllowedRolesForResource(String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -100,7 +100,7 @@ public interface AuthorizationManager {
      *         the resource
      * @throws UserStoreException
      */
-    public String[] getDeniedRolesForResource(String resourceId, String action)
+    String[] getDeniedRolesForResource(String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -116,7 +116,7 @@ public interface AuthorizationManager {
      * 
      * @deprecated
      */
-    public String[] getExplicitlyDeniedUsersForResource(String resourceId, String action)
+    String[] getExplicitlyDeniedUsersForResource(String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -133,7 +133,7 @@ public interface AuthorizationManager {
      * 
      * @deprecated
      */
-    public void authorizeUser(String userName, String resourceId, String action)
+    void authorizeUser(String userName, String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -147,7 +147,7 @@ public interface AuthorizationManager {
      *            The action granted to the role
      * @throws UserStoreException
      */
-    public void authorizeRole(String roleName, String resourceId, String action)
+    void authorizeRole(String roleName, String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -164,7 +164,7 @@ public interface AuthorizationManager {
      * 
      * @deprecated
      */
-    public void denyUser(String userName, String resourceId, String action)
+    void denyUser(String userName, String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -178,7 +178,7 @@ public interface AuthorizationManager {
      *            The action granted to the role
      * @throws UserStoreException
      */
-    public void denyRole(String roleName, String resourceId, String action)
+    void denyRole(String roleName, String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -195,7 +195,7 @@ public interface AuthorizationManager {
      * 
      * @deprecated
      */
-    public void clearUserAuthorization(String userName, String resourceId, String action)
+    void clearUserAuthorization(String userName, String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -207,7 +207,7 @@ public interface AuthorizationManager {
      * 
      * @deprecated
      */
-    public void clearUserAuthorization(String userName) throws UserStoreException;
+    void clearUserAuthorization(String userName) throws UserStoreException;
 
     /**
      * Deletes an already granted authorization of a role.
@@ -220,7 +220,7 @@ public interface AuthorizationManager {
      *            The action granted
      * @throws UserStoreException
      */
-    public void clearRoleAuthorization(String roleName, String resourceId, String action)
+    void clearRoleAuthorization(String roleName, String resourceId, String action)
             throws UserStoreException;
 
     /**
@@ -232,7 +232,7 @@ public interface AuthorizationManager {
      *            The action granted
      * @throws UserStoreException
      */
-    public void clearRoleActionOnAllResources(String roleName, String action)
+    void clearRoleActionOnAllResources(String roleName, String action)
             throws UserStoreException;
 
     /**
@@ -241,7 +241,7 @@ public interface AuthorizationManager {
      * @param roleName
      * @throws UserStoreException
      */
-    public void clearRoleAuthorization(String roleName) throws UserStoreException;
+    void clearRoleAuthorization(String roleName) throws UserStoreException;
 
     /**
      * Deletes all granted authorization on a resource.
@@ -250,7 +250,7 @@ public interface AuthorizationManager {
      *            Resource identification string
      * @throws UserStoreException
      */
-    public void clearResourceAuthorizations(String resourceId) throws UserStoreException;
+    void clearResourceAuthorizations(String resourceId) throws UserStoreException;
 
     /**
      * Returns the complete set of UI resources allowed for User.
@@ -259,7 +259,7 @@ public interface AuthorizationManager {
      * @return
      * @throws UserStoreException
      */
-    public String[] getAllowedUIResourcesForUser(String userName, String permissionRootPath)
+    String[] getAllowedUIResourcesForUser(String userName, String permissionRootPath)
             throws UserStoreException;
 
     /**
@@ -270,7 +270,7 @@ public interface AuthorizationManager {
      * @throws UserStoreException
      *             if the operation failed
      */
-    public int getTenantId() throws UserStoreException;
+    int getTenantId() throws UserStoreException;
 
     /**
      * This will reset the permission of the renamed role
@@ -280,7 +280,7 @@ public interface AuthorizationManager {
      * @param newRoleName
      *            The new role name
      */
-    public void resetPermissionOnUpdateRole(String roleName, String newRoleName)
+    void resetPermissionOnUpdateRole(String roleName, String newRoleName)
             throws UserStoreException;
 
 }

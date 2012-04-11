@@ -32,7 +32,7 @@ public interface SimulationService {
      *
      * @param simulation set this to <b>true</b> to start or <b>false</b> to stop simulation.
      */
-    public void setSimulation(boolean simulation);
+    void setSimulation(boolean simulation);
 
     /**
      * Retrieves results after running a simulation.
@@ -41,6 +41,6 @@ public interface SimulationService {
      *         name and the values are a list of strings, which could contain, <b>Successful</b>,
      *         <b>Failed</b>, or the detail message of the exception that occurred.
      */
-    public Map<String, List<String[]>> getSimulationStatus();
+    Map<String, List<String[]>> getSimulationStatus();
 
 }

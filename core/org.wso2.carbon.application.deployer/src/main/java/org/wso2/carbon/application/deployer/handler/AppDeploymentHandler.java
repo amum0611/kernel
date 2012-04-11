@@ -32,6 +32,6 @@ public interface AppDeploymentHandler {
      * @param carbonApp - store info in this object after deploying
      * @param axisConfig - AxisConfiguration of the current tenant
      */
-    public void deployArtifacts(CarbonApplication carbonApp, AxisConfiguration axisConfig);
+    void deployArtifacts(CarbonApplication carbonApp, AxisConfiguration axisConfig);
 
 }

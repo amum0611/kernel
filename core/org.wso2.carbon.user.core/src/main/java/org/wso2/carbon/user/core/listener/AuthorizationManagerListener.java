@@ -23,21 +23,21 @@ import org.wso2.carbon.user.core.UserStoreException;
 
 public interface AuthorizationManagerListener {
 
-    public static final int REGISTRY_AUTH_ROLE_LISTENER = 20;
+    static final int REGISTRY_AUTH_ROLE_LISTENER = 20;
     /**
      * execution id of the multi-tenancy restriction handler
      */
-    public static final int MULTITENANCY_USER_RESTRICTION_HANDLER = 10;
+    static final int MULTITENANCY_USER_RESTRICTION_HANDLER = 10;
     /**
      * execution id of the permission authorization listener
      */
-    public static final int PERMISSION_AUTHORIZATION_LISTENER = 5;
+    static final int PERMISSION_AUTHORIZATION_LISTENER = 5;
 
     /**
      * Get the execution order identifier for this listener.
      * @return The execution order identifier integer value.
      */
-    public int getExecutionOrderId();
+    int getExecutionOrderId();
 
     /**
      * Checks for user authorization.
@@ -55,7 +55,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean isUserAuthorized(String userName, String resourceId, String action,
+    boolean isUserAuthorized(String userName, String resourceId, String action,
                               AuthorizationManager authorizationManager) throws UserStoreException;
 
     /**
@@ -74,7 +74,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean isRoleAuthorized(String roleName, String resourceId, String action,
+    boolean isRoleAuthorized(String roleName, String resourceId, String action,
                               AuthorizationManager authorizationManager) throws UserStoreException;
 
     /**
@@ -93,7 +93,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean authorizeUser(String userName, String resourceId, String action,
+    boolean authorizeUser(String userName, String resourceId, String action,
                               AuthorizationManager authorizationManager) throws UserStoreException;
 
     /**
@@ -112,7 +112,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean authorizeRole(String roleName, String resourceId, String action,
+    boolean authorizeRole(String roleName, String resourceId, String action,
                               AuthorizationManager authorizationManager) throws UserStoreException;
 
     /**
@@ -131,7 +131,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean denyUser(String userName, String resourceId, String action,
+    boolean denyUser(String userName, String resourceId, String action,
                          AuthorizationManager authorizationManager) throws UserStoreException;
 
     /**
@@ -150,7 +150,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean denyRole(String roleName, String resourceId, String action,
+    boolean denyRole(String roleName, String resourceId, String action,
                          AuthorizationManager authorizationManager) throws UserStoreException;
 
     /**
@@ -169,7 +169,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean clearUserAuthorization(String userName, String resourceId, String action,
+    boolean clearUserAuthorization(String userName, String resourceId, String action,
                                        AuthorizationManager authorizationManager) throws UserStoreException;
 
     /**
@@ -182,7 +182,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean clearUserAuthorization(String userName,
+    boolean clearUserAuthorization(String userName,
                                        AuthorizationManager authorizationManager) throws UserStoreException;
 
     /**
@@ -201,7 +201,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean clearRoleAuthorization(String roleName, String resourceId, String action,
+    boolean clearRoleAuthorization(String roleName, String resourceId, String action,
                                        AuthorizationManager authorizationManager) throws UserStoreException;
 
     /**
@@ -218,7 +218,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean clearRoleActionOnAllResources(String roleName, String action,
+    boolean clearRoleActionOnAllResources(String roleName, String action,
                                               AuthorizationManager authorizationManager)
             throws UserStoreException;
 
@@ -234,7 +234,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean clearRoleAuthorization(String roleName,
+    boolean clearRoleAuthorization(String roleName,
                                        AuthorizationManager authorizationManager) throws UserStoreException;
 
     /**
@@ -249,7 +249,7 @@ public interface AuthorizationManagerListener {
      * @throws UserStoreException
      *            Thrown by the underlying UserStoreManager
      */
-    public boolean clearResourceAuthorizations(String resourceId,
+    boolean clearResourceAuthorizations(String resourceId,
                                             AuthorizationManager authorizationManager)
             throws UserStoreException;
 
@@ -260,7 +260,7 @@ public interface AuthorizationManagerListener {
      * @param newRoleName
      * @throws UserStoreException
      */
-    public boolean resetPermissionOnUpdateRole(String roleName, String newRoleName,
+    boolean resetPermissionOnUpdateRole(String roleName, String newRoleName,
                                                AuthorizationManager authorizationManager)
             throws UserStoreException;
 }

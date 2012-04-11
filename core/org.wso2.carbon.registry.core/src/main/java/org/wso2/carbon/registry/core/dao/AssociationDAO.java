@@ -33,7 +33,7 @@ public interface AssociationDAO {
      *
      * @throws RegistryException if some error occurs while adding associations
      */
-    public void addAssociation(String sourcePath,
+    void addAssociation(String sourcePath,
                                String targetPath,
                                String associationType) throws RegistryException;
 
@@ -46,7 +46,7 @@ public interface AssociationDAO {
      *
      * @throws RegistryException if some error occurs while removing associations
      */
-    public void removeAssociation(String sourcePath,
+    void removeAssociation(String sourcePath,
                                   String targetPath,
                                   String associationType) throws RegistryException;
 
@@ -58,7 +58,7 @@ public interface AssociationDAO {
      * @return the array of all associations
      * @throws RegistryException if some error occurs while getting all associations
      */
-    public Association[] getAllAssociations(String resourcePath) throws RegistryException;
+    Association[] getAllAssociations(String resourcePath) throws RegistryException;
 
     /**
      * Method to get all association of a given type.
@@ -69,7 +69,7 @@ public interface AssociationDAO {
      * @return the array of associations of a given type
      * @throws RegistryException if some error occurs while getting associations of a given type
      */
-    public Association[] getAllAssociationsForType(String resourcePath, String associationType)
+    Association[] getAllAssociationsForType(String resourcePath, String associationType)
             throws RegistryException;
 
     /**
@@ -81,7 +81,7 @@ public interface AssociationDAO {
      *
      * @throws RegistryException if an error occurs while
      */
-    public void replaceAssociations(String oldPath, String newPath) throws RegistryException;
+    void replaceAssociations(String oldPath, String newPath) throws RegistryException;
 
     /**
      * Method to remove all associations for a given path.
@@ -90,7 +90,7 @@ public interface AssociationDAO {
      *
      * @throws RegistryException if an error occurs while
      */
-    public void removeAllAssociations(String resourcePath) throws RegistryException;
+    void removeAllAssociations(String resourcePath) throws RegistryException;
 
     /**
      * Method to copy associations for a given path to a new path.
@@ -100,5 +100,5 @@ public interface AssociationDAO {
      *
      * @throws RegistryException if an error occurs while
      */
-    public void copyAssociations(String fromPath, String toPath) throws RegistryException;
+    void copyAssociations(String fromPath, String toPath) throws RegistryException;
 }

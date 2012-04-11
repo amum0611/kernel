@@ -9,7 +9,7 @@ public interface ServerRolesManagerService {
      * @return server roles - server roles list
      * @throws Exception - if operation fails
      */
-    public String[] readServerRoles(String serverRoleType) throws Exception;
+    String[] readServerRoles(String serverRoleType) throws Exception;
 
     /**
      * delete server role from the registry
@@ -19,7 +19,7 @@ public interface ServerRolesManagerService {
      * @return true is successful
      * @throws Exception - if operation fails
      */
-    public boolean removeServerRoles(String[] serverRoles, String serverRoleType) throws Exception;
+    boolean removeServerRoles(String[] serverRoles, String serverRoleType) throws Exception;
 
     /**
      * put server role to the registry
@@ -29,5 +29,5 @@ public interface ServerRolesManagerService {
      * @return true if successful
      * @throws Exception - if operation fails
      */
-    public boolean addServerRoles(String[] serverRoles, String serverRoleType) throws Exception;
+    boolean addServerRoles(String[] serverRoles, String serverRoleType) throws Exception;
 }

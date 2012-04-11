@@ -32,7 +32,7 @@ public interface ProfileConfigurationManager {
      * @return
      * @throws UserStoreException
      */
-    public ProfileConfiguration getProfileConfig(String profileName) throws UserStoreException;
+    ProfileConfiguration getProfileConfig(String profileName) throws UserStoreException;
 
     /**
      * Adds a profile configuration
@@ -40,7 +40,7 @@ public interface ProfileConfigurationManager {
      * @param profileConfig
      * @throws UserStoreException
      */
-    public void addProfileConfig(ProfileConfiguration profileConfig) throws UserStoreException;
+    void addProfileConfig(ProfileConfiguration profileConfig) throws UserStoreException;
 
     /**
      * Updates a profile configuration
@@ -48,7 +48,7 @@ public interface ProfileConfigurationManager {
      * @param profileConfig
      * @throws UserStoreException
      */
-    public void updateProfileConfig(ProfileConfiguration profileConfig) throws UserStoreException;
+    void updateProfileConfig(ProfileConfiguration profileConfig) throws UserStoreException;
 
     /**
      * Deletes a profile configuration
@@ -56,7 +56,7 @@ public interface ProfileConfigurationManager {
      * @param profileConfig
      * @throws UserStoreException
      */
-    public void deleteProfileConfig(ProfileConfiguration profileConfig) throws UserStoreException;
+    void deleteProfileConfig(ProfileConfiguration profileConfig) throws UserStoreException;
 
     /**
      * Retrieves all profiles
@@ -64,6 +64,6 @@ public interface ProfileConfigurationManager {
      * @return An array of profiles in the system
      * @throws UserStoreException
      */
-    public ProfileConfiguration[] getAllProfiles() throws UserStoreException;
+    ProfileConfiguration[] getAllProfiles() throws UserStoreException;
 
 }

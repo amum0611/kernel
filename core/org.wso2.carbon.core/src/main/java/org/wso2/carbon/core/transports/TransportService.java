@@ -32,7 +32,7 @@ public interface TransportService {
      *
      * @return Name of the transport as a string
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * Get the set of globally defined transport parameters.
@@ -42,7 +42,7 @@ public interface TransportService {
      * @return An array of transport parameters or null
      * @throws Exception On error
 	 */
-	public TransportParameter[] getGlobalTransportParameters(
+	TransportParameter[] getGlobalTransportParameters(
             boolean listener, AxisConfiguration axisConfig) throws Exception;
 
     /**
@@ -54,7 +54,7 @@ public interface TransportService {
      * @return An array of transport parameters or null
      * @throws Exception On error
 	 */
-    public TransportParameter[] getServiceLevelTransportParameters(String service, boolean listener,
+    TransportParameter[] getServiceLevelTransportParameters(String service, boolean listener,
                                                                    AxisConfiguration axisConfig) throws Exception;
 
     /**
@@ -64,7 +64,7 @@ public interface TransportService {
      * @param axisConfig AxisConfiguration of the tenant
      * @return a boolean value
 	 */
-	public boolean isAvailable(boolean listener, AxisConfiguration axisConfig);
+	boolean isAvailable(boolean listener, AxisConfiguration axisConfig);
 
 	/**
 	 * Whether the transport is enabled
@@ -73,7 +73,7 @@ public interface TransportService {
      * @param axisConfig AxisConfiguration of the tenant
      * @return true if the listener is active and false if not
 	 */
-	public boolean isEnabled(boolean listener, AxisConfiguration axisConfig);
+	boolean isEnabled(boolean listener, AxisConfiguration axisConfig);
 
     /**
      * Update the global transport parameters
@@ -83,7 +83,7 @@ public interface TransportService {
      * @param cfgCtx ConfigurationContext of the tenant
      * @throws Exception on error
      */
-    public void updateGlobalTransportParameters(TransportParameter[] params,
+    void updateGlobalTransportParameters(TransportParameter[] params,
                                                 boolean listener, ConfigurationContext cfgCtx) throws Exception;
 
     /**
@@ -95,7 +95,7 @@ public interface TransportService {
      * @param cfgCtx ConfigurationContext of the tenant
      * @throws Exception on error
      */
-    public void updateServiceLevelTransportParameters(String service, TransportParameter[] params,
+    void updateServiceLevelTransportParameters(String service, TransportParameter[] params,
                                                       boolean listener, ConfigurationContext cfgCtx) throws Exception;
 
     /**
@@ -104,7 +104,7 @@ public interface TransportService {
      * @param params An array of transport parameters
      * @return true if the dependencies are available and false if not
      */
-    public boolean dependenciesAvailable(TransportParameter[] params);
+    boolean dependenciesAvailable(TransportParameter[] params);
 
     /**
      * Shutdown the transport
@@ -112,11 +112,11 @@ public interface TransportService {
      * @param listener transport listener or sender
      * @param axisConfig AxisConfiguration of the tenant
      */
-    public void disableTransport(boolean listener, AxisConfiguration axisConfig) throws Exception;
+    void disableTransport(boolean listener, AxisConfiguration axisConfig) throws Exception;
 
-    public void addTransportParameter(TransportParameter param,
+    void addTransportParameter(TransportParameter param,
                                       boolean listener, ConfigurationContext cfgCtx) throws Exception;
 
-    public void removeTransportParameter(String param,
+    void removeTransportParameter(String param,
                                          boolean listener, ConfigurationContext cfgCtx) throws Exception;
 }

@@ -33,7 +33,7 @@ public interface UserRealm {
      * @return The AuthorizationReader the system
      * @throws UserStoreException
      */
-    public AuthorizationManager getAuthorizationManager() throws UserStoreException;
+    AuthorizationManager getAuthorizationManager() throws UserStoreException;
 
     /**
      * Get the UserStoreManager of the system
@@ -41,7 +41,7 @@ public interface UserRealm {
      * @return The UserStoreManager of the system
      * @throws UserStoreException
      */
-    public UserStoreManager getUserStoreManager() throws UserStoreException;
+    UserStoreManager getUserStoreManager() throws UserStoreException;
 
     /**
      * Get the ClaimManager of the system
@@ -49,7 +49,7 @@ public interface UserRealm {
      * @return The ClaimManager of the system
      * @throws UserStoreException
      */
-    public ClaimManager getClaimManager() throws UserStoreException;
+    ClaimManager getClaimManager() throws UserStoreException;
 
     /**
      * Get the ProfileConfigurationManager of the system
@@ -57,5 +57,5 @@ public interface UserRealm {
      * @return The ProfileConfigurationManager of the system
      * @throws UserStoreException
      */
-    public ProfileConfigurationManager getProfileConfigurationManager() throws UserStoreException;
+    ProfileConfigurationManager getProfileConfigurationManager() throws UserStoreException;
 }

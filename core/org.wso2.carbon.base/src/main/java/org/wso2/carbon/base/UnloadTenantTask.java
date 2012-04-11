@@ -30,13 +30,13 @@ public interface UnloadTenantTask<T> {
      * @param tenantId     the tenant's identifier.
      * @param registration the object that needs unloading.
      */
-    public void register(int tenantId, T registration);
+    void register(int tenantId, T registration);
 
     /**
      * The method that will be called by the runtime when a tenant is unloaded.
      *
      * @param tenantId the tenant's identifier.
      */
-    public void cleanup(int tenantId);
+    void cleanup(int tenantId);
 
 }

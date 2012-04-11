@@ -34,6 +34,6 @@ public interface MultitenantCarbonQueueManager {
      *
      * @return the corresponding queue.
      */
-    public CarbonQueue<?> getQueue(String name, int tenantId);
+    CarbonQueue<?> getQueue(String name, int tenantId);
 
 }

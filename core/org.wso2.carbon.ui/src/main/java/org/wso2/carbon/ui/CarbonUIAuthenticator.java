@@ -44,7 +44,7 @@ public interface CarbonUIAuthenticator {
      * @param object The request to authenticate.
      * @return <code>true</code> if this authenticator can handle the request, else <code>false</code>.
      */
-    public boolean isHandle(Object object);
+    boolean isHandle(Object object);
 
     /**
      * Authenticates the given request.
@@ -52,7 +52,7 @@ public interface CarbonUIAuthenticator {
      * @return <code>true</code> if authentication is successful, else <code>false</code>.
      * @throws AuthenticationException If an error occurred during authentication process.
      */
-    public boolean authenticate(Object object) throws AuthenticationException;
+    boolean authenticate(Object object) throws AuthenticationException;
 
     /**
      * Handles authentication during a session expiration. Usually the request is a cookie.
@@ -60,46 +60,46 @@ public interface CarbonUIAuthenticator {
      * @return <code>true</code> if re-authentication is successful, else <code>false</code>.
      * @throws AuthenticationException If an error occurred during authentication process.
      */
-    public boolean reAuthenticateOnSessionExpire(Object object) throws AuthenticationException;
+    boolean reAuthenticateOnSessionExpire(Object object) throws AuthenticationException;
 
     /**
      * Invalidates the authentication session. TODO why we need this ? An authenticator should not maintain a session
      * @param object The request to invalidate TODO (?)
      * @throws Exception If an error occurred during authentication process.
      */
-    public void unauthenticate(Object object) throws Exception;
+    void unauthenticate(Object object) throws Exception;
 
     /**
      * Gets the authenticator priority.
      * @return The integer representing the priority. Higher the value, higher the priority.
      */
-    public int getPriority();
+    int getPriority();
 
     /**
      * Returns the name of the authenticator.
      * @return The name of the authenticator.
      */
-    public String getAuthenticatorName();
+    String getAuthenticatorName();
     
     /**
 	 * By default all the authenticators found in the system are enabled. Can
 	 * use this property to control default behavior.
 	 * @return <code>true</code> if this authenticator is disabled, else <code>false</code>.
 	 */
-	public boolean isDisabled();
+	boolean isDisabled();
 
     /**
      * Gets a list of urls to skip authentication.
      * Also see CarbonSecuredHttpContext.skipSSOSessionInvalidation for more information.
      * @return A list of urls to skip authentication.
      */
-    public List<String> getAuthenticationSkippingUrls();
+    List<String> getAuthenticationSkippingUrls();
 
     /**
      * Gets a list of urls to skip session validation.
      * Also see CarbonSecuredHttpContext.skipSSOSessionInvalidation for more information.
      * @return A list of urls to skip session validation.
      */
-    public List<String> getSessionValidationSkippingUrls();
+    List<String> getSessionValidationSkippingUrls();
 
 }

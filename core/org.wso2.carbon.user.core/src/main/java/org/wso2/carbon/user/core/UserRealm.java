@@ -42,7 +42,7 @@ public interface UserRealm extends org.wso2.carbon.user.api.UserRealm {
      * @param configBean - Configuration details of the realm
      * @throws UserStoreException
      */
-    public void init(RealmConfiguration configBean, Map<String, ClaimMapping> claimMapping,
+    void init(RealmConfiguration configBean, Map<String, ClaimMapping> claimMapping,
                      Map<String, ProfileConfiguration> profileConfigs,
                      int tenantId) throws UserStoreException;
 
@@ -53,7 +53,7 @@ public interface UserRealm extends org.wso2.carbon.user.api.UserRealm {
      * @param tenantId
      * @throws UserStoreException
      */
-    public void init(RealmConfiguration configBean, Map<String, Object> properties, int tenantId)
+    void init(RealmConfiguration configBean, Map<String, Object> properties, int tenantId)
             throws UserStoreException;
 
     /**
@@ -62,7 +62,7 @@ public interface UserRealm extends org.wso2.carbon.user.api.UserRealm {
      * @return The AuthorizationReader the system
      * @throws UserStoreException
      */
-    public AuthorizationManager getAuthorizationManager() throws UserStoreException;
+    AuthorizationManager getAuthorizationManager() throws UserStoreException;
 
     /**
      * Get the UserStoreManager of the system.
@@ -70,10 +70,10 @@ public interface UserRealm extends org.wso2.carbon.user.api.UserRealm {
      * @return The UserStoreManager of the system
      * @throws UserStoreException
      */
-    public UserStoreManager getUserStoreManager() throws UserStoreException;
+    UserStoreManager getUserStoreManager() throws UserStoreException;
 
 
-    public ClaimManager getClaimManager() throws UserStoreException;
+    ClaimManager getClaimManager() throws UserStoreException;
 
     /**
      * Get the ProfileConfigurationManager of the system.
@@ -81,15 +81,15 @@ public interface UserRealm extends org.wso2.carbon.user.api.UserRealm {
      * @return The ProfileConfigurationManager of the system
      * @throws UserStoreException
      */
-    public ProfileConfigurationManager getProfileConfigurationManager() throws UserStoreException;
+    ProfileConfigurationManager getProfileConfigurationManager() throws UserStoreException;
 
     /**
      * Clean up the system. Clean up dead data.
      *
      * @throws UserStoreException
      */
-    public void cleanUp() throws UserStoreException;
+    void cleanUp() throws UserStoreException;
 
-    public RealmConfiguration getRealmConfiguration() throws UserStoreException;
+    RealmConfiguration getRealmConfiguration() throws UserStoreException;
 
 }

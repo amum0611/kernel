@@ -32,7 +32,7 @@ public interface ClaimManager {
      * @return
      * @throws UserStoreException
      */
-    public String getAttributeName(String claimURI) throws UserStoreException;
+    String getAttributeName(String claimURI) throws UserStoreException;
 
     /**
      * The Claim object of the claim URI
@@ -42,7 +42,7 @@ public interface ClaimManager {
      * @return
      * @throws UserStoreException
      */
-    public Claim getClaim(String claimURI) throws UserStoreException;
+    Claim getClaim(String claimURI) throws UserStoreException;
 
     /**
      * Gets the claim mapping.
@@ -52,7 +52,7 @@ public interface ClaimManager {
      * @return
      * @throws UserStoreException
      */
-    public ClaimMapping getClaimMapping(String claimURI) throws UserStoreException;
+    ClaimMapping getClaimMapping(String claimURI) throws UserStoreException;
 
     /**
      * Gets all supported claims by default in the system.
@@ -60,7 +60,7 @@ public interface ClaimManager {
      * @return An array of claim objects supported by default
      * @throws UserStoreException
      */
-    public Claim[] getAllSupportClaimsByDefault() throws UserStoreException;
+    Claim[] getAllSupportClaimsByDefault() throws UserStoreException;
 
     /**
      * Gets all claim objects
@@ -68,7 +68,7 @@ public interface ClaimManager {
      * @return An array of all claim objects
      * @throws UserStoreException
      */
-    public Claim[] getAllClaims() throws UserStoreException;
+    Claim[] getAllClaims() throws UserStoreException;
 
     /**
      * Gets all claims in the dialect
@@ -78,7 +78,7 @@ public interface ClaimManager {
      * @return
      * @throws UserStoreException
      */
-    public Claim[] getAllClaims(String dialectUri) throws UserStoreException;
+    Claim[] getAllClaims(String dialectUri) throws UserStoreException;
 
     /**
      * Gets all mandatory claims
@@ -86,7 +86,7 @@ public interface ClaimManager {
      * @return
      * @throws UserStoreException
      */
-    public Claim[] getAllRequiredClaims() throws UserStoreException;
+    Claim[] getAllRequiredClaims() throws UserStoreException;
 
     /**
      * Gets all claim URIs
@@ -94,7 +94,7 @@ public interface ClaimManager {
      * @return
      * @throws UserStoreException
      */
-    public String[] getAllClaimUris() throws UserStoreException;
+    String[] getAllClaimUris() throws UserStoreException;
 
     /**
      * Adds a new claim mapping
@@ -103,7 +103,7 @@ public interface ClaimManager {
      *            The claim mapping to be added
      * @throws UserStoreException
      */
-    public void addNewClaimMapping(ClaimMapping mapping) throws UserStoreException;
+    void addNewClaimMapping(ClaimMapping mapping) throws UserStoreException;
 
     /**
      * Deletes a claim mapping
@@ -112,7 +112,7 @@ public interface ClaimManager {
      *            The claim mapping to be deleted
      * @throws UserStoreException
      */
-    public void deleteClaimMapping(ClaimMapping mapping) throws UserStoreException;
+    void deleteClaimMapping(ClaimMapping mapping) throws UserStoreException;
 
     /**
      * Updates a claim mapping
@@ -121,6 +121,6 @@ public interface ClaimManager {
      *            The claim mapping to be updated
      * @throws UserStoreException
      */
-    public void updateClaimMapping(ClaimMapping mapping) throws UserStoreException;
+    void updateClaimMapping(ClaimMapping mapping) throws UserStoreException;
 
 }

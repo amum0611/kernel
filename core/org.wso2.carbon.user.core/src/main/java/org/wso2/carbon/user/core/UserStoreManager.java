@@ -44,7 +44,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @throws UserStoreException
      *             An unexpected exception has occured
      */
-    public boolean authenticate(String userName, Object credential) throws UserStoreException;
+    boolean authenticate(String userName, Object credential) throws UserStoreException;
 
     /**
      * Retrieves a list of user names upto a maximum limit
@@ -59,7 +59,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return An arry of user names
      * @throws UserStoreException
      */
-    public String[] listUsers(String filter, int maxItemLimit) throws UserStoreException;
+    String[] listUsers(String filter, int maxItemLimit) throws UserStoreException;
 
     /**
      * Checks whether the user is in the user store
@@ -69,7 +69,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return Returns true if user name is found else returns false.
      * @throws UserStoreException
      */
-    public boolean isExistingUser(String userName) throws UserStoreException;
+    boolean isExistingUser(String userName) throws UserStoreException;
 
     /**
      * Checks whether the role name is in the user store
@@ -78,7 +78,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return
      * @throws UserStoreException
      */
-    public boolean isExistingRole(String roleName) throws UserStoreException;
+    boolean isExistingRole(String roleName) throws UserStoreException;
 
     /**
      * Get all role names
@@ -86,7 +86,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return An array of all role names
      * @throws UserStoreException
      */
-    public String[] getRoleNames() throws UserStoreException;
+    String[] getRoleNames() throws UserStoreException;
 
     /**
      * Get all profile names
@@ -96,7 +96,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return An array of profile names the user has.
      * @throws UserStoreException
      */
-    public String[] getProfileNames(String userName) throws UserStoreException;
+    String[] getProfileNames(String userName) throws UserStoreException;
 
     /**
      * Get roles of a user.
@@ -106,9 +106,9 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return An array of role names that user belongs.
      * @throws UserStoreException
      */
-    public String[] getRoleListOfUser(String userName) throws UserStoreException;
+    String[] getRoleListOfUser(String userName) throws UserStoreException;
 
-    public String[] getUserListOfRole(String roleName) throws UserStoreException;
+    String[] getUserListOfRole(String roleName) throws UserStoreException;
 
     /**
      * Get user claim value in the profile.
@@ -123,7 +123,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return The value
      * @throws UserStoreException
      */
-    public String getUserClaimValue(String userName, String claim, String profileName)
+    String getUserClaimValue(String userName, String claim, String profileName)
             throws UserStoreException;
 
     /**
@@ -139,7 +139,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return A map containing name value pairs
      * @throws UserStoreException
      */
-    public Map<String, String> getUserClaimValues(String userName, String[] claims,
+    Map<String, String> getUserClaimValues(String userName, String[] claims,
             String profileName) throws UserStoreException;
 
     /**
@@ -153,7 +153,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return An array of claims
      * @throws UserStoreException
      */
-    public Claim[] getUserClaimValues(String userName, String profileName)
+    Claim[] getUserClaimValues(String userName, String profileName)
             throws UserStoreException;
 
     /**
@@ -162,14 +162,14 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return An array of all profile names
      * @throws UserStoreException
      */
-    public String[] getAllProfileNames() throws UserStoreException;
+    String[] getAllProfileNames() throws UserStoreException;
 
     /**
      * 
      * @return
      * @throws UserStoreException
      */
-    public boolean isReadOnly() throws UserStoreException;
+    boolean isReadOnly() throws UserStoreException;
 
     /**
      * Add a user to the user store.
@@ -186,10 +186,10 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      *            TODO
      * @throws UserStoreException
      */
-    public void addUser(String userName, Object credential, String[] roleList,
+    void addUser(String userName, Object credential, String[] roleList,
             Map<String, String> claims, String profileName) throws UserStoreException;
 
-    public void addUser(String userName, Object credential, String[] roleList,
+    void addUser(String userName, Object credential, String[] roleList,
             Map<String, String> claims, String profileName, boolean requirePasswordChange) throws UserStoreException;
 
     /**
@@ -203,7 +203,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      *            The old credential/password
      * @throws UserStoreException
      */
-    public void updateCredential(String userName, Object newCredential, Object oldCredential)
+    void updateCredential(String userName, Object newCredential, Object oldCredential)
             throws UserStoreException;
 
     /**
@@ -215,7 +215,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      *            The new credential
      * @throws UserStoreException
      */
-    public void updateCredentialByAdmin(String userName, Object newCredential)
+    void updateCredentialByAdmin(String userName, Object newCredential)
             throws UserStoreException;
 
     /**
@@ -225,7 +225,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      *            The user name
      * @throws UserStoreException
      */
-    public void deleteUser(String userName) throws UserStoreException;
+    void deleteUser(String userName) throws UserStoreException;
 
     /**
      * Adds a role to the system.
@@ -237,7 +237,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      *            The permissions of the role.
      * @throws UserStoreException
      */
-    public void addRole(String roleName, String[] userList, Permission[] permissions)
+    void addRole(String roleName, String[] userList, Permission[] permissions)
             throws UserStoreException;
 
     /**
@@ -247,12 +247,12 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      *            The role name
      * @throws UserStoreException
      */
-    public void deleteRole(String roleName) throws UserStoreException;
+    void deleteRole(String roleName) throws UserStoreException;
 
-    public void updateUserListOfRole(String roleName, String deletedUsers[], String[] newUsers)
+    void updateUserListOfRole(String roleName, String deletedUsers[], String[] newUsers)
             throws UserStoreException;
 
-    public void updateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles)
+    void updateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles)
             throws UserStoreException;
 
     /**
@@ -269,7 +269,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      *            considered.
      * @throws UserStoreException
      */
-    public void setUserClaimValue(String userName, String claimURI, String claimValue,
+    void setUserClaimValue(String userName, String claimURI, String claimValue,
             String profileName) throws UserStoreException;
 
     /**
@@ -284,7 +284,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      *            considered.
      * @throws UserStoreException
      */
-    public void setUserClaimValues(String userName, Map<String, String> claims, String profileName)
+    void setUserClaimValues(String userName, Map<String, String> claims, String profileName)
             throws UserStoreException;
 
     /**
@@ -299,7 +299,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      *            considered.
      * @throws UserStoreException
      */
-    public void deleteUserClaimValue(String userName, String claimURI, String profileName)
+    void deleteUserClaimValue(String userName, String claimURI, String profileName)
             throws UserStoreException;
 
     /**
@@ -314,14 +314,14 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      *            considered.
      * @throws UserStoreException
      */
-    public void deleteUserClaimValues(String userName, String[] claims, String profileName)
+    void deleteUserClaimValues(String userName, String[] claims, String profileName)
             throws UserStoreException;
 
-    public String[] getHybridRoles() throws UserStoreException;
+    String[] getHybridRoles() throws UserStoreException;
     
-    public Date getPasswordExpirationTime(String username) throws UserStoreException; 
+    Date getPasswordExpirationTime(String username) throws UserStoreException; 
  
-    public int getUserId(String username) throws UserStoreException;
+    int getUserId(String username) throws UserStoreException;
     
     /**
      * This method works only if the tenant is super tenant.
@@ -330,7 +330,7 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return
      * @throws UserStoreException
      */
-    public int getTenantId(String username) throws UserStoreException;
+    int getTenantId(String username) throws UserStoreException;
 
     /**
      * this will get the tenant id associated with the user store manager
@@ -338,9 +338,9 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return the tenant id of the authorization manager
      * @throws UserStoreException if the operation failed
      */
-    public int getTenantId() throws UserStoreException;  
+    int getTenantId() throws UserStoreException;  
 
-    public Map<String, String> getProperties(Tenant tenant) throws UserStoreException;
+    Map<String, String> getProperties(Tenant tenant) throws UserStoreException;
 
     /**
      * Update the role name of given role
@@ -349,12 +349,12 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @param newRoleName
      * @throws UserStoreException
      */
-    public void updateRoleName(String roleName, String newRoleName) throws UserStoreException;
+    void updateRoleName(String roleName, String newRoleName) throws UserStoreException;
 
     /**
      * Specified whether current user store supports bulk import.
      * @return <code>true</code> if bulk import supported, else <code>false<code>.
      */
-    public boolean isBulkImportSupported() throws UserStoreException;
+    boolean isBulkImportSupported() throws UserStoreException;
     
 }

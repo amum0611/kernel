@@ -48,6 +48,6 @@ public interface QueryProcessor {
      *          QueryProcessor impl should handle all exceptions and throw RegistryException if the
      *          exception has to propagated to the client.
      */
-    public Collection executeQuery(Registry registry, Resource query, Map parameters)
+    Collection executeQuery(Registry registry, Resource query, Map parameters)
             throws RegistryException;
 }

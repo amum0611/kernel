@@ -34,7 +34,7 @@ public interface ServerInitializer {
      * @throws AxisFault
      * @throws ServerException
      */
-    public void init(ConfigurationContext configurationContext) throws AxisFault, ServerException;
+    void init(ConfigurationContext configurationContext) throws AxisFault, ServerException;
 
 
 }

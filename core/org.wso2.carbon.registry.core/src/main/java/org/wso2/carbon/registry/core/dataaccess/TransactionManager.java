@@ -31,19 +31,19 @@ public interface TransactionManager {
      *
      * @throws RegistryException If an error occurs while starting a transaction
      */
-    public void beginTransaction() throws RegistryException;
+    void beginTransaction() throws RegistryException;
 
     /**
      * Commit the currently active transaction
      *
      * @throws RegistryException If an error occurs while committing a transaction
      */
-    public void commitTransaction() throws RegistryException;
+    void commitTransaction() throws RegistryException;
 
     /**
      * Rollback the currently active transaction
      *
      * @throws RegistryException If an error occurs while rolling back a transaction
      */
-    public void rollbackTransaction() throws RegistryException;
+    void rollbackTransaction() throws RegistryException;
 }

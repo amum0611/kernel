@@ -15,21 +15,21 @@ import org.apache.axis2.context.MessageContext;
  */
 public interface ServerAuthenticator extends BackendAuthenticator {
 
-    public static String CONTINUE_PROCESSING = "org.wso2.carbon.core.services.authentication.continue";
+    static String CONTINUE_PROCESSING = "org.wso2.carbon.core.services.authentication.continue";
 
     /**
      * Does this authenticator can handle the given request.
      * @param msgContext The request as a MessageContext.
      * @return <code>true</code> if this Authenticator is capable of handling the request, else <code>false</code>.
      */
-    public boolean canHandle(MessageContext msgContext);
+    boolean canHandle(MessageContext msgContext);
 
     /**
      * Checks whether user is already authenticated.
      * @param msgContext The request as a MessageContext.
      * @return <code>true</code> if user is already authenticated else <code>false</code>.
      */
-    public boolean isAuthenticated(MessageContext msgContext);
+    boolean isAuthenticated(MessageContext msgContext);
 
     /**
      * This method should implement logic to authenticate a user. i.e. checking whether user name and password
@@ -37,13 +37,13 @@ public interface ServerAuthenticator extends BackendAuthenticator {
      * @param msgContext The incoming request as a message context.
      * @throws AuthenticationFailureException If authentication failed.
      */
-    public void authenticate(MessageContext msgContext) throws AuthenticationFailureException;
+    void authenticate(MessageContext msgContext) throws AuthenticationFailureException;
 
     /**
      * Get the name of the Authenticator.
      * @return The name of the Authenticator.
      */
-    public String getAuthenticatorName();
+    String getAuthenticatorName();
 
 
 }

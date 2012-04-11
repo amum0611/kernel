@@ -12,12 +12,12 @@ public interface BackendAuthenticator {
      * Lower the priority, higher the precedence.
      * @return An integer expressing the priority.
      */
-    public int getPriority();
+    int getPriority();
 
     /**
      * By default all the authenticators found in the system are enabled. Can use this property to
      * control default behavior.
      * @return <code>true</code> if authenticator is disabled else <code>false</code>.
      */
-    public boolean isDisabled();
+    boolean isDisabled();
 }

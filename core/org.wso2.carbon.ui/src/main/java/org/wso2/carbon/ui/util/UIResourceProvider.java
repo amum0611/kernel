@@ -33,7 +33,7 @@ public interface UIResourceProvider {
      * @param path a String specifying the path to the resource
      * @return the resource located at the named path, or null if there is no resource at that path
      */
-    public URL getUIResource(String path);
+    URL getUIResource(String path);
 
     /**
      * Returns a directory-like listing of all the paths to resources within the web application whose longest sub-path
@@ -55,5 +55,5 @@ public interface UIResourceProvider {
      * @return a Set containing the directory listing, or null if there are no resources whose path begins with the
      *          supplied path.
      */
-    public Set<String> getUIResourcePaths(String path);
+    Set<String> getUIResourcePaths(String path);
 }

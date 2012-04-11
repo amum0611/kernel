@@ -20,5 +20,5 @@ import org.wso2.carbon.user.core.UserStoreManager;
 import org.wso2.carbon.user.mgt.common.UserAdminException;
 
 public interface UserBulkImport {
-    public void addUserList(UserStoreManager userStore) throws UserAdminException;
+    void addUserList(UserStoreManager userStore) throws UserAdminException;
 }

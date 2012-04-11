@@ -34,12 +34,12 @@ public interface UserInputCallback {
      *
      * @return the choice of the user.
      */
-    public boolean getConfirmation(Message question, String confirmationContext);
+    boolean getConfirmation(Message question, String confirmationContext);
 
     /**
      * Method to display a message to a user.
      *
      * @param message the message to display.
      */
-    public void displayMessage(Message message);
+    void displayMessage(Message message);
 }

@@ -36,7 +36,7 @@ public interface Registry extends CoreRegistry {
      * @throws RegistryException
      *          is thrown if the resource is not in the registry
      */
-    public Resource getMetaData(String path) throws RegistryException;
+    Resource getMetaData(String path) throws RegistryException;
 
     /**
      * Creates a resource by fetching the resource content from the given URL.
@@ -50,7 +50,7 @@ public interface Registry extends CoreRegistry {
      * @return actual path to the new resource
      * @throws RegistryException if we couldn't get or store the new resource
      */
-    public String importResource(String suggestedPath,
+    String importResource(String suggestedPath,
                                  String sourceURL,
                                  Resource resource) throws RegistryException;
 
@@ -65,7 +65,7 @@ public interface Registry extends CoreRegistry {
      * @return the actual path for the new resource
      * @throws RegistryException if something went wrong
      */
-    public String rename(String currentPath, String newName) throws RegistryException;
+    String rename(String currentPath, String newName) throws RegistryException;
 
     /**
      * Move a resource in the registry.  This is equivalent to 1) delete the resource, then 2) add
@@ -78,7 +78,7 @@ public interface Registry extends CoreRegistry {
      * @return the actual path for the new resource
      * @throws RegistryException if something went wrong
      */
-    public String move(String currentPath, String newPath) throws RegistryException;
+    String move(String currentPath, String newPath) throws RegistryException;
 
     /**
      * Copy a resource in the registry.  The operation is atomic, so if the resource was a
@@ -90,7 +90,7 @@ public interface Registry extends CoreRegistry {
      * @return the actual path for the new resource
      * @throws RegistryException if something went wrong
      */
-    public String copy(String sourcePath, String targetPath) throws RegistryException;
+    String copy(String sourcePath, String targetPath) throws RegistryException;
 
     /**
      * Creates a new version of the resource.
@@ -99,7 +99,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException if something went wrong.
      */
-    public void createVersion(String path) throws RegistryException;
+    void createVersion(String path) throws RegistryException;
 
     /**
      * Get a list of all versions of the resource located at the given path. Version paths are
@@ -110,7 +110,7 @@ public interface Registry extends CoreRegistry {
      * @return a String array containing the individual paths of versions
      * @throws RegistryException if there is an error
      */
-    public String[] getVersions(String path) throws RegistryException;
+    String[] getVersions(String path) throws RegistryException;
 
     /**
      * Reverts a resource to a given version.
@@ -120,7 +120,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException if there is an error
      */
-    public void restoreVersion(String versionPath) throws RegistryException;
+    void restoreVersion(String versionPath) throws RegistryException;
 
     ////////////////////////////////////////////////////////
     // Associations
@@ -138,7 +138,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException Depends on the implementation
      */
-    public void addAssociation(String sourcePath,
+    void addAssociation(String sourcePath,
                                String targetPath,
                                String associationType) throws RegistryException;
 
@@ -151,7 +151,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException Depends on the implementation
      */
-    public void removeAssociation(String sourcePath,
+    void removeAssociation(String sourcePath,
                                   String targetPath,
                                   String associationType) throws RegistryException;
 
@@ -165,7 +165,7 @@ public interface Registry extends CoreRegistry {
      * @return List of Association
      * @throws RegistryException If something went wrong
      */
-    public Association[] getAllAssociations(String resourcePath) throws RegistryException;
+    Association[] getAllAssociations(String resourcePath) throws RegistryException;
 
     /**
      * Get all associations of the given resource for a give association type. This is a chain of
@@ -180,7 +180,7 @@ public interface Registry extends CoreRegistry {
      * @return List of Association
      * @throws RegistryException If something went wrong
      */
-    public Association[] getAssociations(String resourcePath,
+    Association[] getAssociations(String resourcePath,
                                          String associationType) throws RegistryException;
 
     ////////////////////////////////////////////////////////
@@ -196,7 +196,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException is thrown if a resource does not exist in the given path.
      */
-    public void applyTag(String resourcePath, String tag) throws RegistryException;
+    void applyTag(String resourcePath, String tag) throws RegistryException;
 
     /**
      * Returns the paths of all Resources that are tagged with the given tag.
@@ -206,7 +206,7 @@ public interface Registry extends CoreRegistry {
      * @return an array of TaggedResourcePaths
      * @throws RegistryException if an error occurs
      */
-    public TaggedResourcePath[] getResourcePathsWithTag(String tag) throws RegistryException;
+    TaggedResourcePath[] getResourcePathsWithTag(String tag) throws RegistryException;
 
     /**
      * Returns all tags used for tagging the given resource.
@@ -216,7 +216,7 @@ public interface Registry extends CoreRegistry {
      * @return Tags tag names
      * @throws RegistryException is thrown if a resource does not exist in the given path.
      */
-    public Tag[] getTags(String resourcePath) throws RegistryException;
+    Tag[] getTags(String resourcePath) throws RegistryException;
 
     /**
      * Removes a tag on a resource. If the resource at the path is owned by the current user, all
@@ -228,7 +228,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException if there's a problem
      */
-    public void removeTag(String path, String tag) throws RegistryException;
+    void removeTag(String path, String tag) throws RegistryException;
 
     ////////////////////////////////////////////////////////
     // Comments
@@ -243,7 +243,7 @@ public interface Registry extends CoreRegistry {
      * @return the path of the new comment.
      * @throws RegistryException is thrown if a resource does not exist in the given path.
      */
-    public String addComment(String resourcePath, Comment comment) throws RegistryException;
+    String addComment(String resourcePath, Comment comment) throws RegistryException;
 
     /**
      * Change the text of an existing comment.
@@ -255,7 +255,7 @@ public interface Registry extends CoreRegistry {
      *                           RegistryException if the exception has to be propagated to the
      *                           client.
      */
-    public void editComment(String commentPath, String text) throws RegistryException;
+    void editComment(String commentPath, String text) throws RegistryException;
 
     /**
      * Delete an existing comment.
@@ -266,7 +266,7 @@ public interface Registry extends CoreRegistry {
      *                           RegistryException if the exception has to be propagated to the
      *                           client.
      */
-    public void removeComment(String commentPath) throws RegistryException;
+    void removeComment(String commentPath) throws RegistryException;
 
     /**
      * Get all comments for the given resource.
@@ -278,7 +278,7 @@ public interface Registry extends CoreRegistry {
      *                           RegistryException if the exception has to be propagated to the
      *                           client.
      */
-    public Comment[] getComments(String resourcePath) throws RegistryException;
+    Comment[] getComments(String resourcePath) throws RegistryException;
 
     ////////////////////////////////////////////////////////
     // Ratings
@@ -294,7 +294,7 @@ public interface Registry extends CoreRegistry {
      *                           RegistryException if the exception has to be propagated to the
      *                           client.
      */
-    public void rateResource(String resourcePath, int rating) throws RegistryException;
+    void rateResource(String resourcePath, int rating) throws RegistryException;
 
     /**
      * Returns the average rating for the given resource. This is the average of all ratings done by
@@ -305,7 +305,7 @@ public interface Registry extends CoreRegistry {
      * @return Average rating between 1 and 5.
      * @throws RegistryException if an error occurs
      */
-    public float getAverageRating(String resourcePath) throws RegistryException;
+    float getAverageRating(String resourcePath) throws RegistryException;
 
     /**
      * Returns the rating given to the specified resource by the given user
@@ -316,7 +316,7 @@ public interface Registry extends CoreRegistry {
      * @return rating given by the given user
      * @throws RegistryException if there is a problem
      */
-    public int getRating(String path, String userName) throws RegistryException;
+    int getRating(String path, String userName) throws RegistryException;
 
     ////////////////////////////////////////////////////////
     // Other Operations
@@ -331,7 +331,7 @@ public interface Registry extends CoreRegistry {
      * @return a Collection containing any resource paths which match the query
      * @throws RegistryException depends on the implementation.
      */
-    public Collection executeQuery(String path, Map parameters) throws RegistryException;
+    Collection executeQuery(String path, Map parameters) throws RegistryException;
 
     /**
      * Returns the logs of the activities occurred in the registry.
@@ -353,7 +353,7 @@ public interface Registry extends CoreRegistry {
      * @throws RegistryException if there is a problem
      * @see Activity Accepted values for action parameter
      */
-    public Activity[] getLogs(String resourcePath,
+    Activity[] getLogs(String resourcePath,
                               int action,
                               String userName,
                               Date from,
@@ -365,7 +365,7 @@ public interface Registry extends CoreRegistry {
      *
      * @return a String array containing available Aspect names
      */
-    public String[] getAvailableAspects();
+    String[] getAvailableAspects();
 
     /**
      * Associate an Aspect with a resource.
@@ -375,7 +375,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException If some thing went wrong while doing associating the phase
      */
-    public void associateAspect(String resourcePath, String aspect) throws RegistryException;
+    void associateAspect(String resourcePath, String aspect) throws RegistryException;
 
     /**
      * This invokes an action on a specified Aspect, which must be associated with the Resource at
@@ -388,7 +388,7 @@ public interface Registry extends CoreRegistry {
      * @throws RegistryException if the Aspect isn't associated with the Resource, or the action
      *                           isn't valid, or an Aspect-specific problem occurs.
      */
-    public void invokeAspect(String resourcePath, String aspectName, String action)
+    void invokeAspect(String resourcePath, String aspectName, String action)
             throws RegistryException;
 
     /**
@@ -404,7 +404,7 @@ public interface Registry extends CoreRegistry {
      * @throws RegistryException if the Aspect isn't associated or an Aspect-specific problem
      *                           occurs
      */
-    public String[] getAspectActions(String resourcePath, String aspectName)
+    String[] getAspectActions(String resourcePath, String aspectName)
             throws RegistryException;
     /**
      * Search the content of resources
@@ -414,7 +414,7 @@ public interface Registry extends CoreRegistry {
      * @return the result set as a collection
      * @throws RegistryException throws if the operation fail
      */
-    public Collection searchContent(String keywords) throws RegistryException;
+    Collection searchContent(String keywords) throws RegistryException;
 
     /**
      * Create a symbolic link or mount a registry
@@ -424,7 +424,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException throws if the operation fail
      */
-    public void createLink(String path, String target) throws RegistryException;
+    void createLink(String path, String target) throws RegistryException;
 
     /**
      * Create a symbolic link or mount a registry
@@ -435,7 +435,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException throws if the operation fail
      */
-    public void createLink(String path, String target, String subTargetPath)
+    void createLink(String path, String target, String subTargetPath)
             throws RegistryException;
 
     /**
@@ -445,7 +445,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException throws if the operation fail
      */
-    public void removeLink(String path) throws RegistryException;
+    void removeLink(String path) throws RegistryException;
 
     /**
      * Check in the input axiom element into database.
@@ -455,7 +455,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException throws if the operation fail
      */
-    public void restore(String path, Reader reader) throws RegistryException;
+    void restore(String path, Reader reader) throws RegistryException;
 
     /**
      * Check out the given path as an xml.
@@ -465,7 +465,7 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException throws if the operation fail
      */
-    public void dump(String path, Writer writer) throws RegistryException;
+    void dump(String path, Writer writer) throws RegistryException;
 
     /**
      * Gets the URL of the WS-Eventing Service.
@@ -475,7 +475,7 @@ public interface Registry extends CoreRegistry {
      * @return the URL of the WS-Eventing Service
      * @throws RegistryException throws if the operation fail
      */
-    public String getEventingServiceURL(String path) throws RegistryException;
+    String getEventingServiceURL(String path) throws RegistryException;
 
     /**
      * Sets the URL of the WS-Eventing Service.
@@ -485,6 +485,6 @@ public interface Registry extends CoreRegistry {
      *
      * @throws RegistryException throws if the operation fail
      */
-    public void setEventingServiceURL(String path, String eventingServiceURL)
+    void setEventingServiceURL(String path, String eventingServiceURL)
             throws RegistryException;
 }

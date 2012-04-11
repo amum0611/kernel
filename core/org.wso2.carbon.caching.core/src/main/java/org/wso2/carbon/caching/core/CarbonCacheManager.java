@@ -33,14 +33,14 @@ public interface CarbonCacheManager {
      *
      * @param carbonHome the location of the home directory of the Carbon Server.
      */
-    public void initialize(String carbonHome);
+    void initialize(String carbonHome);
 
     /**
      * Method to obtain the name of the default cache.
      *
      * @return the name of the default cache.
      */
-    public String getDefaultCacheName();
+    String getDefaultCacheName();
 
     /**
      * Method to obtain a named cache instance.
@@ -49,7 +49,7 @@ public interface CarbonCacheManager {
      *
      * @return the cache instance.
      */
-    public Cache getCache(String cacheName);
+    Cache getCache(String cacheName);
 
     /**
      * Registers the given cache instance by the given name.
@@ -57,7 +57,7 @@ public interface CarbonCacheManager {
      * @param cacheName the name of the cache.
      * @param cache     the cache instance.
      */
-    public void registerCache(String cacheName, Cache cache);
+    void registerCache(String cacheName, Cache cache);
 
     /**
      * Method to obtain a Cache Factory instance.
@@ -66,5 +66,5 @@ public interface CarbonCacheManager {
      *
      * @throws CacheException if the operation is not allowed or if it fails.
      */
-    public CacheFactory getCacheFactory() throws CacheException;
+    CacheFactory getCacheFactory() throws CacheException;
 }

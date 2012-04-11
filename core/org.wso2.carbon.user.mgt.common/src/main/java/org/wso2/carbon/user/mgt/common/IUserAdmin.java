@@ -29,16 +29,16 @@ public interface IUserAdmin {
      * @see
      * org.wso2.carbon.user.mgt.UserAdmin#listInternalUsers(java.lang.String)
      */
-    public String[] listUsers(String filter) throws UserAdminException;
+    String[] listUsers(String filter) throws UserAdminException;
 
     /*
      * (non-Javadoc)
      * 
      * @see org.wso2.carbon.user.mgt.UserAdmin#getInternalRoles()
      */
-    public FlaggedName[] getAllRolesNames() throws UserAdminException;
+    FlaggedName[] getAllRolesNames() throws UserAdminException;
 
-    public UserStoreInfo getUserStoreInfo() throws UserAdminException;
+    UserStoreInfo getUserStoreInfo() throws UserAdminException;
 
     /*
      * (non-Javadoc)
@@ -47,7 +47,7 @@ public interface IUserAdmin {
      * org.wso2.carbon.user.mgt.UserAdmin#addUserToInternalStore(java.lang.String
      * , java.lang.String, java.lang.String[])
      */
-    public void addUser(String userName, String password, String[] roles,
+    void addUser(String userName, String password, String[] roles,
             ClaimValue[] claims, String profileName) throws UserAdminException;
 
     /*
@@ -56,7 +56,7 @@ public interface IUserAdmin {
      * @see org.wso2.carbon.user.mgt.UserAdmin#changePassword(java.lang.String,
      * java.lang.String)
      */
-    public void changePassword(String userName, String newPassword) throws UserAdminException;
+    void changePassword(String userName, String newPassword) throws UserAdminException;
 
     /*
      * (non-Javadoc)
@@ -65,7 +65,7 @@ public interface IUserAdmin {
      * org.wso2.carbon.user.mgt.UserAdmin#deleteUserFromInternalStore(java.lang
      * .String)
      */
-    public void deleteUser(String userName) throws UserAdminException;
+    void deleteUser(String userName) throws UserAdminException;
 
     /*
      * (non-Javadoc)
@@ -74,7 +74,7 @@ public interface IUserAdmin {
      * org.wso2.carbon.user.mgt.UserAdmin#addRoleToInternalStore(java.lang.String
      * , java.lang.String[], java.lang.String[])
      */
-    public void addRole(String roleName, String[] userList, String[] permissions)
+    void addRole(String roleName, String[] userList, String[] permissions)
             throws UserAdminException;
 
     /*
@@ -84,14 +84,14 @@ public interface IUserAdmin {
      * org.wso2.carbon.user.mgt.UserAdmin#deleteRoleFromInternalStore(java.lang
      * .String)
      */
-    public void deleteRole(String roleName) throws UserAdminException;
+    void deleteRole(String roleName) throws UserAdminException;
 
     /*
      * (non-Javadoc)
      * 
      * @see org.wso2.carbon.user.mgt.UserAdmin#getUsersInRole(java.lang.String)
      */
-    public FlaggedName[] getUsersOfRole(String roleName, String filter) throws UserAdminException;
+    FlaggedName[] getUsersOfRole(String roleName, String filter) throws UserAdminException;
 
     /*
      * (non-Javadoc)
@@ -100,7 +100,7 @@ public interface IUserAdmin {
      * org.wso2.carbon.user.mgt.UserAdmin#updateUsersOfRole(java.lang.String,
      * java.lang.String[], java.lang.String[])
      */
-    public void updateUsersOfRole(String roleName, FlaggedName[] userList)
+    void updateUsersOfRole(String roleName, FlaggedName[] userList)
             throws UserAdminException;
 
     /*
@@ -108,23 +108,23 @@ public interface IUserAdmin {
      * 
      * @see org.wso2.carbon.user.mgt.UserAdmin#getUsersInRole(java.lang.String)
      */
-    public FlaggedName[] getRolesOfUser(String userName) throws UserAdminException;
+    FlaggedName[] getRolesOfUser(String userName) throws UserAdminException;
 
-    public void updateRolesOfUser(String userName, String[] newUserList) throws UserAdminException;
+    void updateRolesOfUser(String userName, String[] newUserList) throws UserAdminException;
     
-    public UIPermissionNode getAllUIPermissions() throws UserAdminException;
+    UIPermissionNode getAllUIPermissions() throws UserAdminException;
 
-    public UIPermissionNode getRolePermissions(String roleName) throws UserAdminException;
+    UIPermissionNode getRolePermissions(String roleName) throws UserAdminException;
 
-    public void setRoleUIPermission(String roleName, String[] rawResources)
+    void setRoleUIPermission(String roleName, String[] rawResources)
             throws UserAdminException;
 
-    public void bulkImportUsers(String fileName, DataHandler handler, String defaultPassword)
+    void bulkImportUsers(String fileName, DataHandler handler, String defaultPassword)
             throws UserAdminException;
 
-    public void changePasswordByUser(String oldPassword, String newPassword)
+    void changePasswordByUser(String oldPassword, String newPassword)
             throws UserAdminException, AxisFault;
 
-    public void updateRoleName(String roleName, String newRoleName) throws UserAdminException ;   
+    void updateRoleName(String roleName, String newRoleName) throws UserAdminException ;   
 
 }

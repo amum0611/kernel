@@ -31,40 +31,40 @@ public interface RealmService extends org.wso2.carbon.user.api.UserRealmService 
      * @return UserRealm
      * @throws UserStoreException
      */
-    public UserRealm getUserRealm(RealmConfiguration tenantRealmConfig) throws UserStoreException;
+    UserRealm getUserRealm(RealmConfiguration tenantRealmConfig) throws UserStoreException;
 
     /**
      * Get the boot strap realm configuration, this is always build from conf/user-mgt.xml
      * @return tge realm configuration
      */
-    public RealmConfiguration getBootstrapRealmConfiguration();
+    RealmConfiguration getBootstrapRealmConfiguration();
 
     /**
      * Get the bootstrap realm 
      * @return
      * @throws UserStoreException
      */
-    public UserRealm getBootstrapRealm() throws UserStoreException;
+    UserRealm getBootstrapRealm() throws UserStoreException;
  ////////////////////////      
     /**
      * 
      * @param tenantManager
      * @throws UserStoreException
      */
-    public void setTenantManager(TenantManager tenantManager) throws UserStoreException;
+    void setTenantManager(TenantManager tenantManager) throws UserStoreException;
 
     /**
      * Get tenant manager
      * @return TenantManager
      */
-    public TenantManager getTenantManager();
+    TenantManager getTenantManager();
     
     /**
      * 
      * @return
      * @throws Exception
      */
-    public MultiTenantRealmConfigBuilder getMultiTenantRealmConfigBuilder() throws UserStoreException;
+    MultiTenantRealmConfigBuilder getMultiTenantRealmConfigBuilder() throws UserStoreException;
     
     /**
      * Only returns if available in cache.
@@ -73,6 +73,6 @@ public interface RealmService extends org.wso2.carbon.user.api.UserRealmService 
      * @return
      * @throws UserStoreException
      */
-    public UserRealm getCachedUserRealm(int tenantId) throws UserStoreException;
+    UserRealm getCachedUserRealm(int tenantId) throws UserStoreException;
     
 }

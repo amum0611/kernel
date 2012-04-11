@@ -24,7 +24,7 @@ public interface TenantManager {
      * @return The Id of the tenant
      * @throws UserStoreException
      */
-    public int addTenant(Tenant tenant) throws UserStoreException;
+    int addTenant(Tenant tenant) throws UserStoreException;
     
     /**
      * Updates a tenant in the system
@@ -32,7 +32,7 @@ public interface TenantManager {
      * @param tenant The tenant to be updated
      * @throws UserStoreException
      */
-    public void updateTenant(Tenant tenant) throws UserStoreException;
+    void updateTenant(Tenant tenant) throws UserStoreException;
 
     /**
      * Gets a Tenant object
@@ -41,7 +41,7 @@ public interface TenantManager {
      * @return The tenant object
      * @throws UserStoreException
      */
-    public Tenant getTenant(int tenantId) throws UserStoreException;
+    Tenant getTenant(int tenantId) throws UserStoreException;
 
     /**
      * Gets all tenants in the system.
@@ -50,7 +50,7 @@ public interface TenantManager {
      * 
      * @throws UserStoreException
      */
-    public Tenant[] getAllTenants() throws UserStoreException;
+    Tenant[] getAllTenants() throws UserStoreException;
 
     /**
      * Retrieves the domain given a tenant Id
@@ -59,7 +59,7 @@ public interface TenantManager {
      * @return
      * @throws UserStoreException
      */
-    public String getDomain(int tenantId) throws UserStoreException;
+    String getDomain(int tenantId) throws UserStoreException;
 
     /**
      * Retrieves the tenant Id given the domain
@@ -68,7 +68,7 @@ public interface TenantManager {
      * @return
      * @throws UserStoreException
      */
-    public int getTenantId(String domain) throws UserStoreException;
+    int getTenantId(String domain) throws UserStoreException;
 
     /**
      * Activates a tenant
@@ -76,7 +76,7 @@ public interface TenantManager {
      * @param tenantId The Id of the tenant
      * @throws UserStoreException
      */
-    public void activateTenant(int tenantId) throws UserStoreException;
+    void activateTenant(int tenantId) throws UserStoreException;
 
     /**
      * De-activates a tenant
@@ -84,7 +84,7 @@ public interface TenantManager {
      * @param tenantId The Id of the tenant
      * @throws UserStoreException
      */
-    public void deactivateTenant(int tenantId) throws UserStoreException;
+    void deactivateTenant(int tenantId) throws UserStoreException;
 
     /**
      * Checks whether a tenant is active
@@ -93,7 +93,7 @@ public interface TenantManager {
      * @return
      * @throws UserStoreException
      */
-    public boolean isTenantActive(int tenantId) throws UserStoreException;
+    boolean isTenantActive(int tenantId) throws UserStoreException;
 
     /**
      * Deletes a tenant from the system
@@ -101,7 +101,7 @@ public interface TenantManager {
      * @param tenantId
      * @throws UserStoreException
      */
-    public void deleteTenant(int tenantId) throws UserStoreException;
+    void deleteTenant(int tenantId) throws UserStoreException;
 
     /**
      * Checks whether the super tenant.
@@ -109,5 +109,5 @@ public interface TenantManager {
      * @return
      * @throws UserStoreException
      */
-    public String getSuperTenantDomain() throws UserStoreException;
+    String getSuperTenantDomain() throws UserStoreException;
 }

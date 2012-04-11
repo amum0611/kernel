@@ -28,14 +28,14 @@ public interface PrivilegedActionExtension {
 	 * @param msgContext
 	 * @return
 	 */
-	public void execute(MessageContext msgContext) throws PrivilegedActionException;
+	void execute(MessageContext msgContext) throws PrivilegedActionException;
 
 	/**
 	 * Return the priority of the extension in the framework
 	 * 
 	 * @return
 	 */
-	public int getPriority();
+	int getPriority();
 
 	/**
 	 * Checks if this extension handles THIS actions
@@ -43,26 +43,26 @@ public interface PrivilegedActionExtension {
 	 * @param msgContext
 	 * @return
 	 */
-	public boolean isHandle(MessageContext msgContext);
+	boolean isHandle(MessageContext msgContext);
 
 	/**
 	 * 
 	 * @return
 	 */
-	public boolean isDisabled();
+	boolean isDisabled();
 
 	/**
 	 * Returns the local name of the SOAP action handled by this extension
 	 * 
 	 * @return
 	 */
-	public String getAction();
+	String getAction();
 
 	/**
 	 * Returns the extension name
 	 * 
 	 * @return
 	 */
-	public String getExtensionName();
+	String getExtensionName();
 
 }

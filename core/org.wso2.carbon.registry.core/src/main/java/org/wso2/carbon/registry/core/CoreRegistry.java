@@ -34,7 +34,7 @@ public interface CoreRegistry extends org.wso2.carbon.registry.api.CoreRegistry 
      * @return the created resource.
      * @throws RegistryException if the operation failed.
      */
-    public Resource newResource() throws RegistryException;
+    Resource newResource() throws RegistryException;
 
     /**
      * Creates a new collection.
@@ -42,7 +42,7 @@ public interface CoreRegistry extends org.wso2.carbon.registry.api.CoreRegistry 
      * @return the created collection.
      * @throws RegistryException if the operation failed.
      */
-    public Collection newCollection() throws RegistryException;
+    Collection newCollection() throws RegistryException;
 
     /**
      * Returns the resource at the given path.
@@ -52,7 +52,7 @@ public interface CoreRegistry extends org.wso2.carbon.registry.api.CoreRegistry 
      * @return Resource instance
      * @throws RegistryException is thrown if the resource is not in the registry
      */
-    public Resource get(String path) throws RegistryException;
+    Resource get(String path) throws RegistryException;
 
     /**
      * Returns the Collection at the given path, with the content paginated according to the
@@ -68,7 +68,7 @@ public interface CoreRegistry extends org.wso2.carbon.registry.api.CoreRegistry 
      *                           Collection, or if the start index is greater than the number of
      *                           children.
      */
-    public Collection get(String path, int start, int pageSize) throws RegistryException;
+    Collection get(String path, int start, int pageSize) throws RegistryException;
 
     /**
      * Check whether a resource exists at the given path
@@ -78,7 +78,7 @@ public interface CoreRegistry extends org.wso2.carbon.registry.api.CoreRegistry 
      * @return true if a resource exists at the given path, false otherwise.
      * @throws RegistryException if an error occurs
      */
-    public boolean resourceExists(String path) throws RegistryException;
+    boolean resourceExists(String path) throws RegistryException;
 
     /**
      * Adds or updates resources in the registry. If there is no resource at the given path,
@@ -91,7 +91,7 @@ public interface CoreRegistry extends org.wso2.carbon.registry.api.CoreRegistry 
      * @return the actual path that the server chose to use for our Resource
      * @throws RegistryException is thrown depending on the implementation.
      */
-    public String put(String suggestedPath, Resource resource) throws RegistryException;
+    String put(String suggestedPath, Resource resource) throws RegistryException;
 
     /**
      * Deletes the resource at the given path. If the path refers to a directory, all child
@@ -101,5 +101,5 @@ public interface CoreRegistry extends org.wso2.carbon.registry.api.CoreRegistry 
      *
      * @throws RegistryException is thrown depending on the implementation.
      */
-    public void delete(String path) throws RegistryException;
+    void delete(String path) throws RegistryException;
 }

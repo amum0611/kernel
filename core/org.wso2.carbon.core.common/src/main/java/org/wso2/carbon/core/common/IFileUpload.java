@@ -19,6 +19,6 @@ package org.wso2.carbon.core.common;
  *
  */
 public interface IFileUpload {
-    public String[] uploadFiles(UploadedFileItem[] uploadedFileItems)  throws Exception;
+    String[] uploadFiles(UploadedFileItem[] uploadedFileItems)  throws Exception;
 
 }

@@ -31,6 +31,6 @@ public interface StatisticsCollector {
      * @param parameters the parameters passed into the method initiating a statistics collection
      *                   request.
      */
-    public void collect(Object ... parameters);
+    void collect(Object ... parameters);
 
 }
