@@ -6,6 +6,7 @@ import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.util.XMLPrettyPrinter;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jaxen.JaxenException;
@@ -67,7 +68,8 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
      *
      */
     public synchronized void beginTransaction(String serviceGroupId) throws PersistenceException {
-        File sgFile = new File(metafilesDir, serviceGroupId + Resources.METAFILE_EXTENSION);
+
+        File sgFile = new File(metafilesDir, getFilePathFromResourceId(serviceGroupId));
 
         try {
             if (resourceMap.get(serviceGroupId) != null &&
@@ -78,7 +80,7 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
 
             OMElement sgElement;
             if (sgFile.exists()) {
-                FileInputStream fis = new FileInputStream(sgFile);
+                FileInputStream fis = FileUtils.openInputStream(sgFile);
                 XMLStreamReader reader = xif.createXMLStreamReader(fis);
 
                 StAXOMBuilder builder = new StAXOMBuilder(reader);
@@ -169,61 +171,12 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
     }
 
     public void init() {
-        if (!metafilesDir.exists()) {
-            metafilesDir.mkdir();
-        }
-    }
-
-    public boolean fileExists(String serviceGroupId) {
-        ResourceFileData fileData = resourceMap.get(serviceGroupId);
-        //if a transaction is started
-        if (fileData != null && fileData.isTransactionStarted() && fileData.getFile() != null) {
-            return fileData.getFile().exists();
-        } else {
-            return new File(metafilesDir, serviceGroupId + Resources.METAFILE_EXTENSION).
-                    exists();
-        }
-    }
-
-    public boolean elementExists(String serviceGroupId, String elementXpathStr) {
         try {
-            ResourceFileData fileData = resourceMap.get(serviceGroupId);
-            AXIOMXPath xpathExpr = new AXIOMXPath(elementXpathStr);
-            //if a transaction is started
-            if (fileData != null && fileData.isTransactionStarted() && fileData.getOMElement() != null) {
-                return xpathExpr.selectSingleNode(fileData.getOMElement()) != null;
-            } else if ((fileData != null && !fileData.isTransactionStarted()) ||
-                    fileData == null) {
-                File f = new File(metafilesDir, serviceGroupId + Resources.METAFILE_EXTENSION);
-                if (f.exists()) {
-                    String filePath = f.getAbsolutePath();
-                    OMElement element = new StAXOMBuilder(filePath).getDocumentElement();
-                    element.detach();
-                    return xpathExpr.selectSingleNode(element) != null;
-                }
+            if (!metafilesDir.exists()) {
+                FileUtils.forceMkdir(metafilesDir);
             }
-        } catch (JaxenException e) {
-            e.printStackTrace();
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            log.error("Error creating the services meta files directory "+metafilesDir.getAbsolutePath(), e);
         }
-        return false;
-    }
-
-    /**
-     * Checks whether a transaction is already started on the given service group.
-     * Since, this implementation does not support nested transactions, use this method
-     * to make sure that a transaction is not started yet for a given SG.
-     *
-     * @param serviceGroupId service group name
-     * @return true if a transaction is started, false otherwise.
-     */
-    public boolean isTransactionStarted(String serviceGroupId) {
-
-        return resourceMap.get(serviceGroupId) != null &&
-                resourceMap.get(serviceGroupId).isTransactionStarted();
-
     }
 }

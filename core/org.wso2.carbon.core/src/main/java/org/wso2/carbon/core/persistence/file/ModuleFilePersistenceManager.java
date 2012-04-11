@@ -6,6 +6,7 @@ import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.util.XMLPrettyPrinter;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jaxen.JaxenException;
@@ -68,18 +69,18 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
      * todo do locking mechanism
      *
      * @param moduleName
-     * @throws java.io.IOException
-     * @throws javax.xml.stream.XMLStreamException
+     * @throws java.io.IOException IOException
+     * @throws javax.xml.stream.XMLStreamException XMLStreamException
      *
      * @throws org.wso2.carbon.core.persistence.PersistenceException
      *
      */
     public synchronized void beginTransaction(String moduleName) throws PersistenceException {
-        File moduleFile = new File(metafilesDir, moduleName + Resources.METAFILE_EXTENSION);
+        File moduleFile = new File(metafilesDir, getFilePathFromResourceId(moduleName));
         try {
             OMElement sgElement;
             if (moduleFile.exists()) {
-                FileInputStream fis = new FileInputStream(moduleFile);
+                FileInputStream fis = FileUtils.openInputStream(moduleFile);
                 XMLStreamReader reader = xif.createXMLStreamReader(fis);
 
                 StAXOMBuilder builder = new StAXOMBuilder(reader);
@@ -143,56 +144,4 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
         }
     }
 
-    public boolean fileExists(String moduleId) {
-        ResourceFileData fileData = resourceMap.get(moduleId);
-        //if a transaction is started
-        if (fileData != null && fileData.isTransactionStarted() && fileData.getFile() != null) {
-            return fileData.getFile().exists();
-        } else {
-            return new File(metafilesDir, moduleId + Resources.METAFILE_EXTENSION).
-                    exists();
-        }
-    }
-
-    public boolean elementExists(String moduleName, String elementXpathStr) {
-        try {
-            ResourceFileData fileData = resourceMap.get(moduleName);
-            AXIOMXPath xpathExpr = new AXIOMXPath(elementXpathStr);
-            //if a transaction is started
-            if (fileData != null && fileData.isTransactionStarted() && fileData.getOMElement() != null) {
-                return xpathExpr.selectSingleNode(fileData.getOMElement()) != null;
-            } else if ((fileData != null && !fileData.isTransactionStarted()) ||
-                    fileData == null) {
-                File f = new File(metafilesDir, moduleName + Resources.METAFILE_EXTENSION);
-                if (f.exists()) {
-                    String filePath = f.getAbsolutePath();
-                    OMElement element = new StAXOMBuilder(filePath).getDocumentElement();
-                    element.detach();
-                    return xpathExpr.selectSingleNode(element) != null;
-                }
-            }
-        } catch (JaxenException e) {
-            e.printStackTrace();
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /**
-     * Checks whether a transaction is already started on the given module.
-     * Since, this implementation does not support nested transactions, use this method
-     * to make sure that a transaction is not yet started for a given module.
-     *
-     * @param moduleId
-     * @return
-     */
-    public boolean isTransactionStarted(String moduleId) {
-
-        return resourceMap.get(moduleId) != null &&
-                resourceMap.get(moduleId).isTransactionStarted();
-
-    }
 }
