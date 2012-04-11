@@ -38,6 +38,10 @@ public class SignatureUtil {
 
     private static String signatureAlgorithm = "SHA1withRSA";
     private static String provider = "BC";
+    
+    private SignatureUtil() {
+    	// hide default constructor for utility class
+    }
  
     public static void init() throws Exception{
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
@@ -54,8 +58,7 @@ public class SignatureUtil {
         sha.reset();
         Certificate cert = getCertificate(alias);
         sha.update(cert.getEncoded());
-        byte[] thumb = sha.digest();
-        return thumb;
+        return sha.digest();
     }
 
     /**
@@ -70,8 +73,7 @@ public class SignatureUtil {
         Signature signer = Signature.getInstance(signatureAlgorithm, provider);
         signer.initVerify(getPublicKey(thumb));
         signer.update(data.getBytes());
-        boolean isVerified = signer.verify(signature);
-        return isVerified;
+        return signer.verify(signature);
     }
     
     /**
@@ -85,8 +87,7 @@ public class SignatureUtil {
         Signature signer = Signature.getInstance(signatureAlgorithm, provider);
         signer.initVerify(getDefaultPublicKey());
         signer.update(data.getBytes());
-        boolean isVerified = signer.verify(signature);
-        return isVerified;
+        return signer.verify(signature);
     }
 
     /**
@@ -99,8 +100,7 @@ public class SignatureUtil {
         Signature signer = Signature.getInstance(signatureAlgorithm, provider);
         signer.initSign(getDefaultPrivateKey());
         signer.update(data.getBytes());
-        byte[] signature = signer.sign();
-        return signature;
+        return signer.sign();
     }
     
     private static PrivateKey getDefaultPrivateKey() throws Exception {
@@ -110,8 +110,7 @@ public class SignatureUtil {
         String password = config
                 .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_PASSWORD);
         String alias = config.getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);
-        PrivateKey privateKey = (PrivateKey)keyStore.getKey(alias, password.toCharArray());
-        return privateKey;
+        return (PrivateKey)keyStore.getKey(alias, password.toCharArray());
     }
     
     private static PublicKey getDefaultPublicKey() throws Exception {
@@ -120,8 +119,7 @@ public class SignatureUtil {
         ServerConfigurationService config = CarbonCoreDataHolder.getServerConfigurationService();
         String alias = config
                 .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);
-        PublicKey publicKey = (PublicKey) keyStore.getCertificate(alias).getPublicKey();
-        return publicKey;
+        return (PublicKey) keyStore.getCertificate(alias).getPublicKey();
 
     }
 
@@ -156,7 +154,7 @@ public class SignatureUtil {
         } else {
             cert = certs[0];
         }
-        if (cert == null || !(cert instanceof X509Certificate)) {
+        if (!(cert instanceof X509Certificate)) {
             throw new Exception("Please check alias. Cannot retrieve valid certificate");
         }
         return cert;

@@ -18,16 +18,13 @@ package org.wso2.carbon.core.util;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.wso2.carbon.user.api.RealmConfiguration;
-import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.UserStoreManager;
-import org.wso2.carbon.user.core.common.DefaultRealm;
 import org.wso2.carbon.user.core.config.RealmConfigXMLProcessor;
 import org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager;
 import org.wso2.carbon.utils.InputReader;
 import org.wso2.carbon.utils.ServerConstants;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;

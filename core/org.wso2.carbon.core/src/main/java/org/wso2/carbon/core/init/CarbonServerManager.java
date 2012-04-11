@@ -678,10 +678,6 @@ public final class CarbonServerManager implements Controllable {
         }
     }
 
-    private static String getProperty(String name) {
-        return System.getProperty(name);
-    }
-
     private void initNetworkUtils(AxisConfiguration axisConfiguration)
             throws AxisFault, SocketException {
         String hostName = serverConfig.getFirstProperty("HostName");

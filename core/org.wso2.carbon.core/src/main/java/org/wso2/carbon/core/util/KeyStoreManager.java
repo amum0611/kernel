@@ -67,8 +67,7 @@ public class KeyStoreManager {
         loadedKeyStores = new ConcurrentHashMap<String, KeyStoreBean>();
         if (userRegistry == null) {
             try {
-                CarbonCoreDataHolder dataHolder = CarbonCoreDataHolder.getInstance();
-                registry = dataHolder.getRegistryService().getGovernanceSystemRegistry();
+                registry = CarbonCoreDataHolder.getRegistryService().getGovernanceSystemRegistry();
             } catch (Exception e) {
                 String message = "Error when retrieving the system governance registry";
                 log.error(message, e);
@@ -309,8 +308,7 @@ public class KeyStoreManager {
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_PASSWORD);
             String alias = config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);
-            PrivateKey privateKey = (PrivateKey) primaryKeyStore.getKey(alias, password.toCharArray());
-            return privateKey;
+            return (PrivateKey) primaryKeyStore.getKey(alias, password.toCharArray());
         }
         throw new CarbonException("Permission denied for accessing primary key store");
     }
@@ -326,8 +324,7 @@ public class KeyStoreManager {
             ServerConfigurationService config = CarbonCoreDataHolder.getServerConfigurationService();
             String alias = config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);
-            PublicKey publicKey = (PublicKey) primaryKeyStore.getCertificate(alias).getPublicKey();
-            return publicKey;
+            return (PublicKey) primaryKeyStore.getCertificate(alias).getPublicKey();
         }
         throw new CarbonException("Permission denied for accessing primary key store");
     }
@@ -341,9 +338,8 @@ public class KeyStoreManager {
     public String getPrimaryPrivateKeyPasssword() throws CarbonException {
         if (tenantId == 0) {
             ServerConfigurationService config = CarbonCoreDataHolder.getServerConfigurationService();
-            String password = config
+            return config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_PASSWORD);
-            return password;
         }
         throw new CarbonException("Permission denied for accessing primary key store");
     }

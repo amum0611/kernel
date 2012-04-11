@@ -34,7 +34,6 @@ import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.CarbonException;
 import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.Resources;
-import org.wso2.carbon.core.persistence.file.ServiceGroupFilePersistenceManager;
 import org.wso2.carbon.core.transports.TransportPersistenceManager;
 import org.wso2.carbon.registry.api.Resource;
 
@@ -364,8 +363,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
         boolean isProxyService = PersistenceUtils.isProxyService(axisService);
         boolean wsdlChangeDetected = false;
-        // this flag is to identify whether we need to call a 'put' on service resource
-        boolean needServiceResourceUpdate = false;
+
         String serviceGroupId = axisService.getAxisServiceGroup().getServiceGroupName();
 
         try {
@@ -620,7 +618,6 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 if (allTransports != null && "true".equals(allTransports)) {
                     serviceElement.addAttribute(Resources.ServiceProperties
                             .EXPOSED_ON_ALL_TANSPORTS, String.valueOf(false), null);
-                    needServiceResourceUpdate = true;
                 }
 
                 // Adding the transports to the configRegistry
@@ -875,14 +872,15 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
      * @return - if param found, stored value. Otherwise the original value
      * @throws Exception - on error
      */
-    public String getExistingValueOrUpdateParameter(AxisService service, String
+    /*public String getExistingValueOrUpdateParameter(AxisService service, String
             paramName, String paramValue) throws Exception {
         String serviceResourcePath = PersistenceUtils.getResourcePath(service);
-        String serviceParamResourcePath = serviceResourcePath + Resources.PARAMETERS
-                + paramName;
+//        String serviceParamResourcePath = serviceResourcePath + Resources.PARAMETERS
+//                + paramName;
 
         String returnValue = paramValue;
         try {
+        */
             /*
             todo uncomment and fix errors getExistingValueOrUpdateParameter
             configRegistry.beginTransaction();
@@ -904,13 +902,13 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
             }
             configRegistry.commitTransaction();
             */
-        } catch (Throwable e) {
+       /* } catch (Throwable e) {
             handleExceptionWithRollback(service.getAxisServiceGroup().getServiceGroupName(),
                     "Unable to update the service parameter " +
                             paramName + " to the service " + service.getName(), e);
         }
         return returnValue;
-    }
+    }*/
 
     /**
      * Removes an exposed transport from a given service.
@@ -922,12 +920,15 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
     public void removeExposedTransports(String serviceName,
                                         String transportProtocol) throws Exception {
         AxisService axisService = axisConfig.getServiceForActivation(serviceName);
+        
+        if (axisService == null) {
+            handleException("No service found for the provided service name : " + serviceName);
+            return;
+        }
+        
         String serviceGroupId = axisService.getAxisServiceGroup().getServiceGroupName();
-        try {
-            if (axisService == null) {
-                handleException("No service found for the provided service name : " + serviceName);
-                return;
-            }
+        
+        try {    
             OMElement serviceElement = getService(axisService);
             Resource transportResource =
                     new TransportPersistenceManager(axisConfig).

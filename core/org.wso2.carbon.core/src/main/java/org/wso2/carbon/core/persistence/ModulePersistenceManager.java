@@ -36,7 +36,6 @@ import org.apache.neethi.PolicyReference;
 import org.wso2.carbon.core.CarbonAxisConfigurator;
 import org.wso2.carbon.core.Resources;
 import org.wso2.carbon.core.multitenancy.TenantAxisConfigurator;
-import org.wso2.carbon.core.persistence.file.ModuleFilePersistenceManager;
 import org.wso2.carbon.core.util.ParameterUtil;
 
 import javax.xml.namespace.QName;
@@ -105,7 +104,6 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
      */
     public OMElement getModule(String moduleName, String moduleVersion) throws Exception {
         try {
-            String modulePath = Resources.MODULES + moduleName + "/" + moduleVersion;
             if (getCurrentFPM().fileExists(moduleName)) {
                 OMElement sgElement = (OMElement) getCurrentFPM().get(moduleName, Resources.ModuleProperties.ROOT_XPATH);
                 //todo how come this SUCCESSFULLY_ADDED to top-level module level? It shud be under <version>. now fixed. test this
@@ -426,7 +424,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
      * @throws Exception - on registry transaction errors
      */
     private void handleGlobalModule(AxisModule module, boolean engage) throws Exception {
-        String moduleXpathStr = PersistenceUtils.getResourcePath(module);
+
         getCurrentFPM().beginTransaction(module.getName());
         if (getCurrentFPM().fileExists(module.getName())) {
             OMElement moduleElement = getModuleFilePM().get(module.getName());
