@@ -528,7 +528,7 @@ public final class CarbonServerManager implements Controllable {
         String clientRepositoryLocation =
                 serverConfig.getFirstProperty(CLIENT_REPOSITORY_LOCATION);
         String clientAxis2XmlLocationn = serverConfig.getFirstProperty(CLIENT_AXIS2_XML_LOCATION);
-        ConfigurationContext clientConfigContext =
+        ConfigurationContext clientConfigContextToReturn =
                 ConfigurationContextFactory.createConfigurationContextFromFileSystem(
                         clientRepositoryLocation, clientAxis2XmlLocationn);
         MultiThreadedHttpConnectionManager httpConnectionManager = new MultiThreadedHttpConnectionManager();
@@ -537,7 +537,7 @@ public final class CarbonServerManager implements Controllable {
         // Set the default max connections per host
         int defaultMaxConnPerHost = 500;
         Parameter defaultMaxConnPerHostParam =
-            clientConfigContext.getAxisConfiguration().getParameter("defaultMaxConnPerHost");
+            clientConfigContextToReturn.getAxisConfiguration().getParameter("defaultMaxConnPerHost");
         if(defaultMaxConnPerHostParam != null){
             defaultMaxConnPerHost = Integer.parseInt((String)defaultMaxConnPerHostParam.getValue());
         }
@@ -546,7 +546,7 @@ public final class CarbonServerManager implements Controllable {
         // Set the max total connections
         int maxTotalConnections = 15000;
         Parameter maxTotalConnectionsParam =
-            clientConfigContext.getAxisConfiguration().getParameter("maxTotalConnections");
+            clientConfigContextToReturn.getAxisConfiguration().getParameter("maxTotalConnections");
         if(maxTotalConnectionsParam != null){
             maxTotalConnections = Integer.parseInt((String)maxTotalConnectionsParam.getValue());
         }
@@ -556,11 +556,11 @@ public final class CarbonServerManager implements Controllable {
         params.setConnectionTimeout(600000);
 
         httpConnectionManager.setParams(params);
-        clientConfigContext.setProperty(HTTPConstants.MULTITHREAD_HTTP_CONNECTION_MANAGER,
+        clientConfigContextToReturn.setProperty(HTTPConstants.MULTITHREAD_HTTP_CONNECTION_MANAGER,
                                         httpConnectionManager);
-        registerHouseKeepingTask(clientConfigContext);
-        clientConfigContext.setProperty(ServerConstants.WORK_DIR, serverWorkDir);
-        return clientConfigContext;
+        registerHouseKeepingTask(clientConfigContextToReturn);
+        clientConfigContextToReturn.setProperty(ServerConstants.WORK_DIR, serverWorkDir);
+        return clientConfigContextToReturn;
     }
 
     private void setAxis2RepoLocation() {
@@ -727,7 +727,7 @@ public final class CarbonServerManager implements Controllable {
 
             Map<String, TransportInDescription> inTransports =
                     serverConfigContext.getAxisConfiguration().getTransportsIn();
-            String serverName = CarbonCoreDataHolder.getServerConfigurationService().getFirstProperty("Name");
+
             if (isGraceful) {
                 log.info("Gracefully restarting " + serverName + "...");
                 new ServerManagement(inTransports,
