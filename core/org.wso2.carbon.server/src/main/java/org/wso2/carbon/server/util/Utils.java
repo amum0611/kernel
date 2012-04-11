@@ -603,7 +603,7 @@ public class Utils {
                 }
 
                 // This is a file. Carry out File processing
-                int lastIndexOfSlash = entryName.lastIndexOf("/");
+                int lastIndexOfSlash = entryName.lastIndexOf('/');
                 String dirPath = "";
                 if (lastIndexOfSlash != -1) {
                     dirPath = entryName.substring(0, lastIndexOfSlash);
@@ -656,7 +656,7 @@ public class Utils {
             String path = entry.getName();
             if (!path.endsWith("/") && path.endsWith(".class")) {
                 //This is package that contains classes. Thus, exportedPackagesList
-                int index = path.lastIndexOf("/");
+                int index = path.lastIndexOf('/');
                 if (index != -1) {
                     path = path.substring(0, index);
                     path = path.replaceAll("/", ".");

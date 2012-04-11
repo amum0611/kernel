@@ -33,7 +33,6 @@ import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.multitenancy.transports.DummyTransportSender;
-import org.wso2.carbon.core.util.SystemFilter;
 import org.wso2.carbon.utils.deployment.GhostDeployerUtils;
 
 import javax.servlet.ServletException;

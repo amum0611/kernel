@@ -78,7 +78,7 @@ public class DumpWriter extends Writer {
                 // the following attempt is to read the name of the attribute..
                 String buffer = strBuffer.toString();
                 buffer = buffer.trim();
-                int lastEqualIndex = buffer.lastIndexOf("=");
+                int lastEqualIndex = buffer.lastIndexOf('=');
                 // last equal index should not be the 1st in the buf, anyway we do the check
                 if (lastEqualIndex == 1) {
                     String msg = "Error in written xml. attribute should serialize with '='.";

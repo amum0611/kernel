@@ -130,7 +130,7 @@ public class RegistryClientUtils {
             if (versionIndex > 0) {
                 resourcePath = resourcePath.substring(0, versionIndex);
             }
-            int slashIndex = resourcePath.lastIndexOf("/");
+            int slashIndex = resourcePath.lastIndexOf('/');
             //getting only the last part of the resource path
             resourcePath = resourcePath.substring(slashIndex, resourcePath.length());
             File tempFile;
@@ -158,12 +158,12 @@ public class RegistryClientUtils {
                     if (versionIndex > 0) {
                         childNode = childNode.substring(0, versionIndex);
                     }
-                    slashIndex = childNode.lastIndexOf("/");
+                    slashIndex = childNode.lastIndexOf('/');
                     //getting only the last part of the resource path
                     childNode = childNode.substring(slashIndex, childNode.length());
                     //tobeDeleted.remove(childNode);
                     if (tobeDeleted.contains(childNode)) {
-                        slashIndex = childNode.lastIndexOf("/");
+                        slashIndex = childNode.lastIndexOf('/');
                         childNode = childNode.substring(slashIndex, childNode.length());
                         File deleteFile = new File(tempFile, childNode);
                         if (deleteFile.exists() && deleteFile.isDirectory()) {

@@ -613,7 +613,7 @@ public class RemoteRegistry implements Registry {
 
     public String importResource(String suggestedPath, String sourceURL, Resource resource)
             throws RegistryException {
-        int idx = suggestedPath.lastIndexOf("/");
+        int idx = suggestedPath.lastIndexOf('/');
         String relativePath = suggestedPath.substring(idx + 1);
 
         if (Pattern.matches("\\p{Alnum}*[~!@#%^&*()\\+=\\-;<>\\s\\[\\]{},/\\\\\"\',]+\\p{Alnum}*",

@@ -123,7 +123,7 @@ public class Breadcrumb extends BodyTagSupport {
 			jspFilePath = jspFilePath.replaceFirst("carbon", "..");
 			
 			//Find subcontext before jsp file
-			int lastIndexofSlash = jspFilePath.lastIndexOf("/");
+			int lastIndexofSlash = jspFilePath.lastIndexOf('/');
 			String subContextToJSP = jspFilePath.substring(0,lastIndexofSlash);
 
 			//Find jsp file name

@@ -101,7 +101,7 @@ public final class UserCoreUtil {
         try {
             if(domainCalculation == null) { //default behavior until realm service comes up
                 if (username.contains("@")) {
-                    tenantDomain = username.substring(username.lastIndexOf("@") + 1);
+                    tenantDomain = username.substring(username.lastIndexOf('@') + 1);
                 }
             } else if (UserCoreConstants.RealmConfig.PROPERTY_VALUE_DOMAIN_CALCULATION_DEFAULT
                     .equals(domainCalculation)) {
@@ -119,7 +119,7 @@ public final class UserCoreUtil {
                         tenantDomain = null; // no domain -- only super tenant
                     }
                 } else if (username.contains("@")) {
-                    tenantDomain = username.substring(username.lastIndexOf("@") + 1);
+                    tenantDomain = username.substring(username.lastIndexOf('@') + 1);
                 } else if (isCrossTenantUniqueUserName) {
                     int tenantId = realmService.getBootstrapRealm().getUserStoreManager().getTenantId(
                             username);
@@ -151,7 +151,7 @@ public final class UserCoreUtil {
         }
         
         if ((isEmailUserName == null || isEmailUserName == false) && username.contains("@")) {
-            username = username.substring(0, username.lastIndexOf("@"));
+            username = username.substring(0, username.lastIndexOf('@'));
         }
         return username;
     }

@@ -224,7 +224,7 @@ public class RegistryResolver implements Resolver<Target> {
                             .getAttribute("logged-user");
             try {
                 registry = embeddedRegistryService.getRegistry(loggedUser);
-                uri = uri.substring(0, uri.lastIndexOf("?"));
+                uri = uri.substring(0, uri.lastIndexOf('?'));
             } catch (RegistryException e) {
                 final StringResponseContext response =
                         new StringResponseContext("Unauthorized",

@@ -380,7 +380,7 @@ public class MediaTypesUtils {
                 resourceName.indexOf('.') + 1 >= resourceName.length()) {
             return null;
         }
-        String extension = resourceName.substring(resourceName.lastIndexOf(".") + 1).toLowerCase();
+        String extension = resourceName.substring(resourceName.lastIndexOf('.') + 1).toLowerCase();
         String mediaTypes = getResourceMediaTypeMappings(RegistryContext.getBaseInstance());
         if (mediaTypes == null) {
             // We don't treat this as an error, since some collections and resources would be

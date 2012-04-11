@@ -558,7 +558,7 @@ public class RegistryAdapter
 //            if (importURL.contains("=")) {
 //                importURL = importURL.substring(importURL.indexOf('=') + 1);
 //            }
-//            importURL = importURL.substring(0, importURL.lastIndexOf(";"));
+//            importURL = importURL.substring(0, importURL.lastIndexOf(';'));
             // removes the "application/resource-import" string from incoming path 
             String importURL = request.getParameter("importURL");
             if (importURL.endsWith(";application/resource-import")) {

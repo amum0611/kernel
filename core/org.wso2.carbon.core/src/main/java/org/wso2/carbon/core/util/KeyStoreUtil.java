@@ -53,7 +53,7 @@ public class KeyStoreUtil {
         String fileName = config
                 .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_FILE);
         String name = null;
-        int index = fileName.lastIndexOf("/");
+        int index = fileName.lastIndexOf('/');
         if (index != -1) {
             name = fileName.substring(index + 1);
         } else {
@@ -71,7 +71,7 @@ public class KeyStoreUtil {
         ServerConfigurationService config = CarbonCoreDataHolder.getServerConfigurationService();
         String fileName = config
                 .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_FILE);
-        int index = fileName.lastIndexOf("/");
+        int index = fileName.lastIndexOf('/');
         if (index != -1) {
             String name = fileName.substring(index + 1);
             if (name.equals(id)) {

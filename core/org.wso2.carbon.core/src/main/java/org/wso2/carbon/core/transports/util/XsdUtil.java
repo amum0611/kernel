@@ -83,7 +83,7 @@ public final class XsdUtil {
         //cater for named xsds - check for the xsd name
         String uri = request.getQueryString();
         if (request.getQueryString().endsWith(".xsd")) {
-            String schemaName = uri.substring(uri.lastIndexOf("=") + 1);
+            String schemaName = uri.substring(uri.lastIndexOf('=') + 1);
 
             Map services = configCtx.getAxisConfiguration().getServices();
             AxisService service = (AxisService) services.get(serviceName);

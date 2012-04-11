@@ -2847,7 +2847,7 @@ public class EmbeddedRegistry implements Registry {
                         Resource resource = null;
                         for (String mountResource : mountResources) {
                             String mountResName =
-                                    mountResource.substring(mountResource.lastIndexOf("/") + 1);
+                                    mountResource.substring(mountResource.lastIndexOf('/') + 1);
                             String relativePath = RegistryUtils.getRelativePath(registryContext,
                                     path);
                             if (mountResName.equals(relativePath.replace("/", "-"))) {

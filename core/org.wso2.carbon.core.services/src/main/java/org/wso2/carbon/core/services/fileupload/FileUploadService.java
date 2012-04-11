@@ -80,7 +80,7 @@ public class FileUploadService extends AbstractAdmin implements IFileUpload {
     private String getFileName(String fileName) {
         String fileNameOnly;
         if (fileName.indexOf("\\") < 0) {
-            fileNameOnly = fileName.substring(fileName.lastIndexOf("/") + 1,
+            fileNameOnly = fileName.substring(fileName.lastIndexOf('/') + 1,
                                               fileName.length());
         } else {
             fileNameOnly = fileName.substring(fileName.lastIndexOf("\\") + 1,

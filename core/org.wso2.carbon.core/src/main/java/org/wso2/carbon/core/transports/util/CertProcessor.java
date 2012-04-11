@@ -109,7 +109,7 @@ public class CertProcessor implements HttpGetRequestProcessor {
                 if(kspath.equals(RegistryResources.SecurityManagement.PRIMARY_KEYSTORE_PHANTOM_RESOURCE)){
                     keyStore = keyStoreManager.getPrimaryKeyStore();
                 }else{
-                    String keyStoreName = kspath.substring(kspath.lastIndexOf("/")+1);
+                    String keyStoreName = kspath.substring(kspath.lastIndexOf('/')+1);
                     keyStore = keyStoreManager.getKeyStore(keyStoreName);
                 }
             }

@@ -104,8 +104,8 @@ public class CarbonTomcatRealm extends RealmBase {
             UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
             int tenantId = userRealmService.getTenantManager().getTenantId(tenantDomain);
             String tenantLessUserName;
-            if(userName.lastIndexOf("@") > -1) {
-                tenantLessUserName = userName.substring(0, userName.lastIndexOf("@"));
+            if(userName.lastIndexOf('@') > -1) {
+                tenantLessUserName = userName.substring(0, userName.lastIndexOf('@'));
             } else {
                 tenantLessUserName = userName;
             }
@@ -153,7 +153,7 @@ public class CarbonTomcatRealm extends RealmBase {
             try {
                 UserRealmService realmService = CarbonRealmServiceHolder.getRealmService();
                 int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
-                int indexOfAt = name.lastIndexOf("@");
+                int indexOfAt = name.lastIndexOf('@');
                 String tenantLessUserName = (indexOfAt == -1) ? name : name.substring(0, indexOfAt);
                 String[] roles = 
                                  CarbonRealmServiceHolder.getRealmService().

@@ -66,7 +66,7 @@ public class MIMEType2FileExtensionMap {
 
     public String getMIMEType(File file) {
         String filename = file.getName();
-        int index = filename.lastIndexOf(".");
+        int index = filename.lastIndexOf('.');
         if (index == -1 || index == filename.length() - 1) {
             return "application/octet-stream";
         } else {
