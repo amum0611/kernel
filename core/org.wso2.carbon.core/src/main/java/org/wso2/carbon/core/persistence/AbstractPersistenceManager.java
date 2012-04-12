@@ -492,8 +492,7 @@ public abstract class AbstractPersistenceManager {
                 return Boolean.parseBoolean(module.getAttributeValue(
                         new QName(Resources.ModuleProperties.GLOBALLY_ENGAGED)));
             } catch (PersistenceDataNotFoundException e) {
-                log.error("Couldn't retrieve data for " + moduleName + moduleVersion + e);
-                e.printStackTrace();
+                log.error("Couldn't retrieve data for " + moduleName + moduleVersion, e);
                 return false;
             }
         }
@@ -602,8 +601,7 @@ public abstract class AbstractPersistenceManager {
             OMAttribute attr = (OMAttribute) xpathExpression.selectSingleNode(resource);
             return attr.getAttributeValue();
         } catch (JaxenException e) {
-            log.error("XPath evaluation failed for " + xpathStr);
-            e.printStackTrace();
+            log.error("XPath evaluation failed for " + xpathStr, e);
         }
         return null;
     }

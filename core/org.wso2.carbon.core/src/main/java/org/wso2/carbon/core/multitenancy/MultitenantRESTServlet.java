@@ -105,7 +105,7 @@ public class MultitenantRESTServlet extends AxisServlet {
         try {
             trsPrefix = request.getRequestURL().toString();
         } catch (Throwable t) {
-            log.info("Old Servlet API (Fallback to HttpServletRequest.getRequestURI) :" + t);
+            log.info("Old Servlet API (Fallback to HttpServletRequest.getRequestURI) :", t);
             trsPrefix = request.getRequestURI();
         }
         sepindex = trsPrefix.indexOf(':');

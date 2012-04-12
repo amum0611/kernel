@@ -307,9 +307,9 @@ public class DeploymentInterceptor implements AxisObserver {
                     }
                 }
 
-                if (service != null) {
+//                if (service != null) {
 //                    service.discard();
-                }
+//                }
 
             } catch (Axis2ModuleNotFound e) {
                 addFaultyServiceDueToModule(e.getModuleName(), axisService);
@@ -403,7 +403,7 @@ public class DeploymentInterceptor implements AxisObserver {
                         removeFaultyServiceDueToModule(moduleName,
                                 (String) axisDescription.getKey());
 
-                        OMElement axisDescriptionResource;
+//                        OMElement axisDescriptionResource;
                         try {
                             //Recover the faulty serviceGroup or service.
                             if (axisDescription instanceof AxisServiceGroup) {
@@ -423,7 +423,7 @@ public class DeploymentInterceptor implements AxisObserver {
 
                             } else if (axisDescription instanceof AxisService) {
                                 AxisService axisService = (AxisService) axisDescription;
-                                axisDescriptionResource = pf.getServicePM().getService(axisService);
+//                                axisDescriptionResource = pf.getServicePM().getService(axisService);
                                 pf.getServicePM().handleExistingServiceInit(axisService);
 
                                 //Start this axisService and remove the special parameter.

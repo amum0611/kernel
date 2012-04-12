@@ -29,7 +29,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.core.Resources;
-import org.wso2.carbon.core.persistence.file.ServiceGroupFilePersistenceManager;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import javax.xml.namespace.QName;
@@ -299,9 +298,9 @@ public class ServiceGroupPersistenceManager extends AbstractPersistenceManager {
 
                 getServiceGroupFilePM().commitTransaction(sgName);
             } catch (IOException ex) {
-                ex.printStackTrace();
+            	log.error("unable to handle new service addition. ", ex);
             } catch (Throwable e) {
-                log.error("unable new service addition. " + serviceGroup.getServiceGroupName(), e);
+                log.error("unable to handle new service addition. " + serviceGroup.getServiceGroupName(), e);
                 handleExceptionWithRollback(sgName, "Unable to handle new service group addition. " +
                         "Service group: " + serviceGroup.getServiceGroupName(), e);
             }

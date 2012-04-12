@@ -56,7 +56,8 @@ import java.util.Iterator;
  */
 public class MultitenantMessageReceiver implements MessageReceiver {
 
-    private static final Log log = LogFactory.getLog(MultitenantMessageReceiver.class);                      
+    private static final String TENANT_DELIMITER = "/t/";
+	private static final Log log = LogFactory.getLog(MultitenantMessageReceiver.class);                      
 
     public void receive(MessageContext mainInMsgContext) throws AxisFault {
 
@@ -129,7 +130,7 @@ public class MultitenantMessageReceiver implements MessageReceiver {
     private void processRequest(MessageContext mainInMsgContext) throws AxisFault {
         ConfigurationContext mainConfigCtx = mainInMsgContext.getConfigurationContext();
         String to = mainInMsgContext.getTo().getAddress();
-        int tenantDelimiterIndex = to.indexOf("/t/");
+        int tenantDelimiterIndex = to.indexOf(TENANT_DELIMITER);
 
         String tenant;
         String serviceAndOperation;
@@ -290,7 +291,7 @@ public class MultitenantMessageReceiver implements MessageReceiver {
                                String tenant, ConfigurationContext tenantConfigCtx,
                                String serviceName, HttpServletRequest request,
                                HttpServletResponse response) throws AxisFault {
-        String serviceWithSlashT = "/t/" + tenant + "/" + serviceName;
+        String serviceWithSlashT = TENANT_DELIMITER + tenant + "/" + serviceName;
         String requestUri = "local://" + tenantConfigCtx.getServicePath() + "/" + serviceName +
                 (to.endsWith(serviceWithSlashT) ?
                         "" :
@@ -314,9 +315,9 @@ public class MultitenantMessageReceiver implements MessageReceiver {
                 // TODO: throw exception: Invalid verb
             }
         } catch (ServletException e) {
-            throw new AxisFault(e.getMessage());
+            throw new AxisFault(e.getMessage(), e);
         } catch (IOException e) {
-            throw new AxisFault(e.getMessage());
+            throw new AxisFault(e.getMessage(), e);
         }
 
         // Send the response
@@ -354,7 +355,7 @@ public class MultitenantMessageReceiver implements MessageReceiver {
                         String tenant,
                         ConfigurationContext tenantConfigCtx,
                         String servicePart) throws AxisFault {
-        String serviceWithSlashT = "/t/" + tenant + "/" + servicePart;
+        String serviceWithSlashT = TENANT_DELIMITER + tenant + "/" + servicePart;
         String requestUri = "local://" + tenantConfigCtx.getServicePath() + "/" + servicePart +
                 (to.endsWith(serviceWithSlashT) ?
                         "" :
@@ -401,7 +402,7 @@ public class MultitenantMessageReceiver implements MessageReceiver {
         int index = servicePart.indexOf('/');
         String service = (index > 0 ?
                 servicePart.substring(servicePart.indexOf('/') + 1) : servicePart);        
-        String servicePath = "/t/" + tenant + "/" + service;
+        String servicePath = TENANT_DELIMITER + tenant + "/" + service;
         String restSuffic = (to.endsWith(servicePath) ? "" :
                 to.substring(to.indexOf(servicePath) + servicePath.length() + 1));
         tenantInMsgCtx.setProperty("REST_URL_POSTFIX", restSuffic);
@@ -480,16 +481,6 @@ public class MultitenantMessageReceiver implements MessageReceiver {
                 tenantMsgCtx.setProperty(key, mainMsgCtx.getProperty(key));
             }
         }
-    }
-
-    private String getServiceName(String to, int tenantDelimiterIndex, String tenant) {
-        String temp = to.substring(tenantDelimiterIndex + 3 + tenant.length() + 1);
-        int indexOfSlash = temp.indexOf('/');
-        String serviceName = (indexOfSlash != -1) ? temp.substring(0, indexOfSlash) : temp;
-        if (log.isDebugEnabled()) {
-            log.debug("Service:" + serviceName);
-        }
-        return serviceName;
     }
 
     private void handleException(MessageContext mainInMsgContext, AxisFault fault)

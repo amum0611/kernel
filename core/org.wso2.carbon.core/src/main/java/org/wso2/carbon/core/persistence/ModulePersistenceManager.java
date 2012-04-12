@@ -404,7 +404,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
                 PolicyComponent attachedPolicyComponent = modulePolicySubject
                         .getAttachedPolicyComponent(key);
 
-                if (attachedPolicyComponent != null && attachedPolicyComponent instanceof Policy) {
+                if (attachedPolicyComponent instanceof Policy) {
                     policy = (Policy) attachedPolicyComponent;
                 }
             }

@@ -35,7 +35,8 @@ import java.sql.SQLException;
  * A tool for updating the password of a user
  */
 public class PasswordUpdater {
-    public static final String DB_URL = "--db-url";
+    private static final String USAGE_MSG_INDENT_SPACES = "         ";
+	public static final String DB_URL = "--db-url";
     public static final String DB_DRIVER = "--db-driver";
     public static final String DB_USERNAME = "--db-username";
     public static final String DB_PASSWORD = "--db-password";
@@ -186,17 +187,17 @@ public class PasswordUpdater {
 
     private void printUsage() {
         System.out.println("Usage: chpasswd --db-url DB_URL [OPTIONS]\n");
-        System.out.println("         " + DB_URL + " : The JDBC database URL. " +
+        System.out.println(USAGE_MSG_INDENT_SPACES + DB_URL + " : The JDBC database URL. " +
                            "e.g. jdbc:h2:/home/carbon/database/WSO2CARBON_DB\n");
         System.out.println("Options");
-        System.out.println("         " + DB_DRIVER + "    : The database driver class. " +
+        System.out.println(USAGE_MSG_INDENT_SPACES + DB_DRIVER + "    : The database driver class. " +
                            "e.g. org.h2.Driver");
-        System.out.println("         " + DB_USERNAME + "  : The database username");
-        System.out.println("         " + DB_PASSWORD + "  : The database password");
-        System.out.println("         " + USERNAME + "     : The username of the user whose " +
+        System.out.println(USAGE_MSG_INDENT_SPACES + DB_USERNAME + "  : The database username");
+        System.out.println(USAGE_MSG_INDENT_SPACES + DB_PASSWORD + "  : The database password");
+        System.out.println(USAGE_MSG_INDENT_SPACES + USERNAME + "     : The username of the user whose " +
                            "password is to be changed. If this is not given, " +
                            "you will be prompted for this field later.");
-        System.out.println("         " + NEW_PASSWORD + " : The new password of the user " +
+        System.out.println(USAGE_MSG_INDENT_SPACES + NEW_PASSWORD + " : The new password of the user " +
                            "whose password is to be changed. If this is not given, " +
                            "you will be prompted for this field later.");
     }

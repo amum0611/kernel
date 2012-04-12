@@ -187,7 +187,7 @@ public class CarbonAxisConfigurator extends DeploymentEngine implements AxisConf
         axisConfig = null;
         try {
             axisConfig = populateAxisConfiguration(getAxis2XmlInputStream());
-        } catch (Exception e) {
+        } catch (DeploymentException e) {
             throw new AxisFault("Exception occured while loading the Axis configuration " +
                     "from " + axis2xml, e);
         }

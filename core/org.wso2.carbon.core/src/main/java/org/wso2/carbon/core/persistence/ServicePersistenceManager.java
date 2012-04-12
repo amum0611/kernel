@@ -213,11 +213,10 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 }
 
                 // If the service scope='soapsession', engage addressing if not already engaged.
-                if (axisService.getScope().equals(Constants.SCOPE_SOAP_SESSION)) {
-                    if (!axisService.isEngaged(ADDRESSING_MODULE)) {
-                        axisService.engageModule(axisService.getAxisConfiguration().getModule(
+                if (axisService.getScope().equals(Constants.SCOPE_SOAP_SESSION) && 
+                		!axisService.isEngaged(ADDRESSING_MODULE)) {
+                        	axisService.engageModule(axisService.getAxisConfiguration().getModule(
                                 ADDRESSING_MODULE));
-                    }
                 }
 
                 // Add the Modules Engaged to this service
@@ -422,10 +421,8 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                             String modName = module.getAttributeValue(new QName(Resources.NAME));
                             String modVersion = module.getAttributeValue(new QName(Resources.VERSION));
                             AxisModule axisModule = getExistingAxisModule(modName, modVersion);
-                            if (!isGloballyEngaged(modName, modVersion)) {
-                                if (!axisService.isEngaged(axisModule)) {
+                            if (!isGloballyEngaged(modName, modVersion) && !axisService.isEngaged(axisModule)) {
                                     axisOperation.engageModule(axisModule);
-                                }
                             }
                         }
                         // Handle operation parameters

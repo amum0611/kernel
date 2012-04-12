@@ -1,8 +1,6 @@
 package org.wso2.carbon.core.persistence.file;
 
 import org.apache.axiom.om.OMElement;
-import org.wso2.carbon.core.Resources;
-
 import java.io.File;
 
 public class ResourceFileData {
@@ -13,13 +11,13 @@ public class ResourceFileData {
     /**
      * A File reference to where the metafile for a service group supposed to exist.
      */
-    private File File;
+    private File file;
     private boolean isTransactionStarted = false;
     private long fileLastModifiedDate;
 
     public ResourceFileData(OMElement OMElement, File file, boolean isTransactionStarted) {
         this.OMElement = OMElement;
-        this.File = file;
+        this.file = file;
         this.isTransactionStarted = isTransactionStarted;
         this.fileLastModifiedDate = file.lastModified();
     }
@@ -33,11 +31,11 @@ public class ResourceFileData {
     }
 
     public File getFile() {
-        return File;
+        return file;
     }
 
     public void setFile(File file) {
-        this.File = file;
+        this.file = file;
         this.fileLastModifiedDate = file.lastModified();
     }
 

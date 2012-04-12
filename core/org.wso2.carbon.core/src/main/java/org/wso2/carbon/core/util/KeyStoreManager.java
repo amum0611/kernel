@@ -203,8 +203,7 @@ public class KeyStoreManager {
         CryptoUtil cryptoUtil = CryptoUtil.getDefaultCryptoUtil();
         String encryptedPassword = resource
                 .getProperty(RegistryResources.SecurityManagement.PROP_PRIVATE_KEY_PASS);
-        String password = new String(cryptoUtil.base64DecodeAndDecrypt(encryptedPassword));
-        return password;
+        return new String(cryptoUtil.base64DecodeAndDecrypt(encryptedPassword));
 
     }
 
