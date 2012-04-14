@@ -287,7 +287,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
             }
             axisModule.getPolicySubject().clear();
 
-            // Load policies from registry into AxisModule.
+            // Load policies from file system into AxisModule.
             String policiesXpath = PersistenceUtils.getResourcePath(axisModule) + "/" + Resources.POLICIES + "/" + Resources.POLICY;
             if (getModuleFilePM().elementExists(moduleName, policiesXpath)) {
                 AXIOMXPath xpathExpr = new AXIOMXPath(policiesXpath);
@@ -299,10 +299,10 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
                     /**
                      * //This is assuming that first element is a <wsp:Policy> element.
                      */
-                    Policy policy = PolicyEngine.getPolicy(policyElement.getFirstElement());
+                    Policy policy = PolicyEngine.getPolicy(policyElement.getFirstChildWithName(
+                            new QName(Resources.WS_POLICY_NAMESPACE, "Policy")));  //note that P is capital);
                     axisModule.getPolicySubject().attachPolicy(policy);
                 }
-
 //                for(Iterator itr = policyElement.getChildrenWithName(new QName(
 //                        "http://schemas.xmlsoap.org/ws/2004/09/policy", "Policy")); itr.hasNext(); ) {
 //                    Policy policy = PolicyEngine.getPolicy((OMElement) itr.next());
