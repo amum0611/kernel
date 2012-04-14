@@ -18,6 +18,7 @@
 package org.wso2.carbon.core.persistence;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMText;
 import org.apache.axiom.om.util.UUIDGenerator;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
@@ -492,8 +493,15 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                         java.util.Collection<PolicyComponent> attachedPolicies = axisService.getPolicySubject().
                                 getAttachedPolicyComponents();
                         if (attachedPolicies != null && !attachedPolicies.isEmpty()) {
-                            List properties = getServiceGroupFilePM().getAll(serviceGroupId,
-                                    bindingXPath + "/" + Resources.ServiceProperties.POLICY_UUID);
+                            List tmpProperties = getServiceGroupFilePM().getAll(serviceGroupId,
+                                    bindingXPath + "/" + Resources.ServiceProperties.POLICY_UUID+"/text()");
+                            List<String> properties = new ArrayList<String>(tmpProperties.size());
+                            
+                            for (Object node : tmpProperties) {
+                                if (node instanceof OMText) {
+                                    properties.add(((OMText) node).getText());
+                                }
+                            }
                             if (properties != null && properties.size() > 0) {
                                 List<String> removablePolicies = new ArrayList<String>();
                                 for (PolicyComponent pc : attachedPolicies) {
