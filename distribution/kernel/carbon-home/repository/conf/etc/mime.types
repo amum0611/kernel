@@ -345,10 +345,13 @@ application/vnd.wap.wmlc			wmlc
 application/vnd.wap.wmlscriptc			wmlsc
 application/vnd.webturbo
 application/vnd.wrq-hp3000-labelled
+application/vnd.wso2.bpel			bpel
+application/vnd.wso2.bpmn			bpmn
 application/vnd.wso2.endpoint
 application/vnd.wso2.governance-archive		gar
 application/vnd.wso2-hyperlink
 application/vnd.wso2.registry-ext-type+xml	rxt
+application/vnd.wso2.xpdl			xpdl
 application/vnd.wt.stf
 application/vnd.xara
 application/vnd.xfdl
