@@ -70,7 +70,12 @@
                                         }
                                     }                           
 		                        }
+                                if (CarbonUIUtil.isContextRegistered(config, "/worklist/")) {
 		                %>
+                        <jsp:include page="../../worklist/header.jsp"/>
+                        <%
+                                }
+                        %>
 		                <li class="middle">
 		                    <label id="logged-user">
 		                        <strong><fmt:message key="signed.in.as"/>:</strong>&nbsp;<%=signedInAs%>@<%=domainName%>
