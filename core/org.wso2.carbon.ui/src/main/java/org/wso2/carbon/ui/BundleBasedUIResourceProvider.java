@@ -52,8 +52,9 @@ public class BundleBasedUIResourceProvider implements UIResourceProvider {
         Bundle resourceBundle = bundleResourceMap.get(resourcePath);
         if (resourceBundle != null) {
             Enumeration entryPaths = resourceBundle.findEntries(path, file, false);
-            if (entryPaths != null && entryPaths.hasMoreElements())
+            if (entryPaths != null && entryPaths.hasMoreElements()) {
                 return (URL) entryPaths.nextElement();
+            }
         }
         return null;
     }

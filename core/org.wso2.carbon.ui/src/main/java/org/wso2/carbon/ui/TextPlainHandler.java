@@ -31,8 +31,9 @@ public class TextPlainHandler extends ContentHandler {
         InputStreamReader r = new InputStreamReader(in);
         StringBuffer sb = new StringBuffer();
         int c;
-        while ((c = r.read()) >= 0)
+        while ((c = r.read()) >= 0) {
             sb.append((char) c);
+        }
         r.close();
         in.close();
         return sb.toString();

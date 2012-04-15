@@ -330,8 +330,9 @@ public class CarbonUIDefinitions {
 
     public  void removeServletItems(Servlet[] servletDefinitionsToRemoved) {
         for(Servlet servlet : servletDefinitionsToRemoved){
-            if(this.servletDefinitions.contains(servlet))
-            this.servletDefinitions.remove(servlet);
+            if(this.servletDefinitions.contains(servlet)) {
+                this.servletDefinitions.remove(servlet);
+            }
             if(log.isDebugEnabled()){
                 log.debug("removing the servlet definition : " + servlet);
 

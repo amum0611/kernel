@@ -323,8 +323,9 @@ public class CarbonUIUtil {
     }
 
     public static String getBundleResourcePath(String resourceName) {
-        if (resourceName == null || resourceName.length() == 0)
+        if (resourceName == null || resourceName.length() == 0) {
             return null;
+        }
 
         String resourcePath = resourceName;
         resourcePath = resourcePath.startsWith("/") ? resourcePath.substring(1) : resourcePath;
