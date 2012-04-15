@@ -16,7 +16,6 @@
 package org.wso2.carbon.server.admin.internal;
 
 import org.apache.axis2.context.ConfigurationContext;
-import org.wso2.carbon.base.ServerConfiguration;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
