@@ -75,11 +75,9 @@ public class AuthenticationHandler extends AbstractHandler {
 
     protected void authenticate(MessageContext msgContext, String remoteIP) throws AxisFault {
         try {
-            if (!isAuthenticated(msgContext, remoteIP)) {
-                if (AbstractAuthenticator.continueProcessing(msgContext)) {
+            if (!isAuthenticated(msgContext, remoteIP) && AbstractAuthenticator.continueProcessing(msgContext)) {
                     throw new AxisFault("Access Denied. Please login first.",
                             ServerConstants.AUTHENTICATION_FAULT_CODE);
-                }
             }
         } catch (AxisFault e) {
             throw e;

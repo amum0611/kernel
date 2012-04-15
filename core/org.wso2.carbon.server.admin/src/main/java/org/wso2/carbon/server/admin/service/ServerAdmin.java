@@ -336,6 +336,9 @@ public class ServerAdmin extends AbstractAdmin implements ServerAdminMBean, ISer
             }
         } catch (Exception ignored) { // Ignore invalidation of invalidated
                                       // sessions
+            if (log.isDebugEnabled()) {
+                log.debug("Ignore invalidation of invalidated sessions", ignored);
+            }
         }
     }
 
