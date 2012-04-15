@@ -354,6 +354,9 @@ public class CarbonUtils {
                     hashValue = getMD5(getBytesFromFile(file));
                 } catch (CarbonException ignore) {
                     // If some error occures in calculating the hash, just ignore it..
+                    if (log.isDebugEnabled()) {
+                        log.debug("Error occured in calculating the hash", ignore);
+                    }
                 }
                 break;
             }

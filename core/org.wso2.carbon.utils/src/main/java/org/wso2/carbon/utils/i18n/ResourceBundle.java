@@ -23,6 +23,8 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * CURRENTLY NOT USED
@@ -60,6 +62,7 @@ import java.util.Properties;
  * Argument values are specified in the various overloaded getString() methods.</p>
  */
 public class ResourceBundle {
+    private static Log log = LogFactory.getLog(ResourceBundle.class);
     // The static cache of properties. The key is the basename + the local +
     // the default local and the element is the Properties object containing
     // the resources
@@ -342,6 +345,9 @@ public class ResourceBundle {
                     in.close();
                 } catch (Exception ex) {
                     // Ignore error on close
+                        if (log.isDebugEnabled()) {
+                            log.debug("Error closing input stream", ex);
+                        }
                 }
             }
         }
