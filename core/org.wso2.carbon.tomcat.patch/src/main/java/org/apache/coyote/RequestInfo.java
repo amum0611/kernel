@@ -99,8 +99,11 @@ public class RequestInfo {
     }
 
     public long getRequestProcessingTime() {
-        if (getStage() == org.apache.coyote.Constants.STAGE_ENDED) return 0;
-        else return (System.currentTimeMillis() - req.getStartTime());
+        if (getStage() == org.apache.coyote.Constants.STAGE_ENDED) {
+           return 0;
+        } else {
+            return (System.currentTimeMillis() - req.getStartTime());
+        }
     }
 
     // -------------------- Statistical data  --------------------
@@ -145,8 +148,9 @@ public class RequestInfo {
         ///////////////////////////////////////////////////
 
         requestCount++;
-        if (req.getResponse().getStatus() >= 400)
+        if (req.getResponse().getStatus() >= 400) {
             errorCount++;
+        }
         long t0 = req.getStartTime();
         long t1 = System.currentTimeMillis();
         long time = t1 - t0;

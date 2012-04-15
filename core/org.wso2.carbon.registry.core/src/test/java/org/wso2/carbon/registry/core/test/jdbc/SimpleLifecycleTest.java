@@ -69,7 +69,11 @@ public class SimpleLifecycleTest extends BaseTestCase {
         public String [] getAvailableActions(RequestContext context) {
             Resource r = context.getResource();
             String state = r.getProperty(STATE_PROP);
-            if (INIT.equals(state)) return actions;
+
+            if (INIT.equals(state)) {
+                return actions;
+            }
+
             return null;
         }
     }
@@ -107,7 +111,9 @@ public class SimpleLifecycleTest extends BaseTestCase {
         assertTrue(aspects.length > 0);
         boolean found = false;
         for (String aspect : aspects) {
-            if (aspect.equals(LIFECYCLE)) found = true;
+            if (aspect.equals(LIFECYCLE)) {
+                found = true;
+            }
         }
         assertTrue("Lifecycle not found in available aspects", found);
 
