@@ -951,6 +951,9 @@ public final class CarbonContextHolder {
                             }
                         } catch (NamingException ignored) {
                             // If we are unable to find the context, we use the default context.
+                            if (log.isDebugEnabled()) {
+                                log.debug("If we are unable to find the context, we use the default context.", ignored);
+                           }
                         }
                     }
                 }
@@ -980,6 +983,10 @@ public final class CarbonContextHolder {
             } catch (NamingException ignored) {
                 // Depending on the JNDI Initial Context factory, the above operation may or may not
                 // throw an exception. But, since we don't mind the exception, we can ignore it.
+                if (log.isDebugEnabled()) {
+                    log.debug(ignored);
+                }
+
             }
             try {
                 log.debug("Creating Sub-Context: " + tenantContextName);
@@ -1511,12 +1518,19 @@ public final class CarbonContextHolder {
                     return Class.forName(className, true, Thread
                             .currentThread().getContextClassLoader());
                 } catch (ClassNotFoundException ignored) {
+                    if (log.isDebugEnabled()) {
+                       log.debug(ignored);
+                    }
+
                 }
                 // try system class loader second
                 try {
                     return Class.forName(className, true, ClassLoader
                             .getSystemClassLoader());
                 } catch (ClassNotFoundException ignored) {
+                    if (log.isDebugEnabled()) {
+                        log.debug(ignored);
+                    }
                 }
                 // return null, if fail to load class
                 return null;

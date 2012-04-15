@@ -87,23 +87,26 @@ public abstract class AbstractTransportListener implements TransportListener, Ma
                              (transport + "Port"));
                 }
             } catch (NumberFormatException ignored) {
+                if (log.isDebugEnabled()) {
+                    log.debug(ignored);
+                }
             }
         }
 
         // Set the proxy port
         if (CarbonUtils.isRunningInStandaloneMode()) {
             transport = transportIn.getName();
-            try {
-                /*Method method = transportManagerClass.getMethod("getProxyPort", String.class);
+            /*try {
+                Method method = transportManagerClass.getMethod("getProxyPort", String.class);
                 proxyPort = (Integer) method.invoke(transportManager, transport);
                 if (proxyPort != -1) {
                     transportIn.addParameter(getParameter("proxyPort", String.valueOf(proxyPort)));
-                }*/
+                }
             } catch (Exception e) {
                 String msg = "Cannot get transport proxy port";
                 log.error(msg, e);
                 throw new AxisFault(msg, e);
-            }
+            }*/
         } else {
             Parameter proxyPortParam = transportIn.getParameter("proxyPort");
             if (proxyPortParam != null) {
