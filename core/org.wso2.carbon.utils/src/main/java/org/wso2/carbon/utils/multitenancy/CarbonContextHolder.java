@@ -152,6 +152,10 @@ public final class CarbonContextHolder {
         } catch (NoClassDefFoundError ignore) {
             // There can be situations where the CarbonContext is accessed, when there is no Axis2
             // library on the classpath.
+            if (log.isDebugEnabled()) {
+                log.debug("There can be situations where the CarbonContext is accessed, when there is no Axis2" +
+                          "library on the classpath.", ignore);
+            }
         } catch (Exception e) {
             String msg = "Unable to read Server Configuration";
             log.error(msg, e);
@@ -178,6 +182,10 @@ public final class CarbonContextHolder {
         } catch (RuntimeException ignore) {
             // We don't mind an exception being thrown in here. Since there can be a possibility of
             // the same class loading twice and then trying to reset the queue manager.
+            if (log.isDebugEnabled()) {
+                log.debug("there can be a possibility of the same class loading twice and then trying " +
+                          "to reset the initial context factory builder", ignore);
+            }
         }
         try {
             NamingManager.
@@ -186,11 +194,19 @@ public final class CarbonContextHolder {
             // We don't mind an exception being thrown in here. Since there can be a possibility of
             // the same class loading twice and then trying to reset the initial context factory
             // builder.
+            if (log.isDebugEnabled()) {
+                log.debug("there can be a possibility of the same class loading twice and then trying " +
+                          "to reset the initial context factory builder", ignore);
+            }
         } catch (RuntimeException ignore) {
             // We don't mind an exception being thrown in here. Since there can be a possibility of
             // the same class loading twice and then trying to reset the initial context factory
             // builder. We are also catching Runtime exceptions here, since some JDKs do throw them
             // instead of the expected NamingException.
+            if (log.isDebugEnabled()) {
+                log.debug("there can be a possibility of the same class loading twice and then trying " +
+                          "to reset the initial context factory builder", ignore);
+            }
         }
     }
 
@@ -1030,6 +1046,9 @@ public final class CarbonContextHolder {
                         } catch (NamingException ignore) {
                             // We are not worried about the exception thrown here, as we are simply
                             // doing a routine cleanup.
+                            if (log.isDebugEnabled()) {
+                                log.debug("Exception while outine cleanup", ignore);
+                            }
                         }
                     }
                     list.clear();
