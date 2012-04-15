@@ -121,7 +121,9 @@ public class ServerAdminServiceComponent {
     }
 
     private void registerMBeans(ServerConfigurationService serverConfig) {
-            if (registeredMBeans) return;
+            if (registeredMBeans) {
+                return;
+            }
             MBeanRegistrar.registerMBean(new ServerAdmin());
             registeredMBeans = true;        
     }
