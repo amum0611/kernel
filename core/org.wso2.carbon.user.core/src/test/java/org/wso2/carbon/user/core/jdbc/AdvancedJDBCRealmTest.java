@@ -38,10 +38,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 public class AdvancedJDBCRealmTest extends BaseTestCase {
 
+    private static Log log = LogFactory.getLog(AdvancedJDBCRealmTest.class);
     private UserRealm realm = null;
     private String TEST_URL = "jdbc:h2:target/advjdbctest/CARBON_TEST";
 
@@ -96,30 +99,45 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
         	TestCase.assertTrue(false);
         }catch(Exception ex){
         	//expected error
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
         try{
         	admin.addUser("dimuthu", null, null, null, null, false);
         	TestCase.assertTrue(false);
         }catch(Exception ex){
         	//expected error
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
         try{
         	admin.addUser(null, "credential", null, null, null, false);
         	TestCase.assertTrue(false);
         }catch(Exception ex){
         	//expected error
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
         try{
         	admin.addUser(" ", "credential", null, null, null, false);
         	TestCase.assertTrue(false);
         }catch(Exception ex){
         	//expected error
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
         try{
         	admin.addUser("dimuthu", "credential", null, null, null, false);
         	fail("Exception at adding the same user again");
         }catch(Exception ex){
         	//expected error
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
 
 
@@ -130,18 +148,27 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
         	fail("Exception at defining a roll with No information");
         }catch(Exception ex){
         	//expected error
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
         try{
         	admin.addRole(null, new String[] { "dimuthu" }, permisions);
             fail("Exception at adding user to a non specified role");
         }catch(Exception ex){
         	//expected error
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
         try{
         	admin.addRole("role1", new String[] { "isuru" }, permisions);
         	fail("Exception at adding a non existing user to the role");
         }catch(Exception ex){                                      
         	//expected error
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
 
 
@@ -152,18 +179,27 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
         	fail("Exception at adding user to a Non-existing role");
         }catch(Exception ex){
         	//expected user
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
         try{
         	admin.addUser(null, "credential", new String[] { "role1" }, userProps, null, false);
         	fail("Exception at adding user to a role with no user name");
         }catch(Exception ex){
         	//expected user
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
         try{
         	admin.addUser("vajira", "credential", new String[] { "role1" }, userProps, null, false);
         	fail("Exception at adding same user to the same roll");
         }catch(Exception ex){
         	//expected user
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
 
         
@@ -176,6 +212,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
         	fail("Exception at when Object credential is not an instance of String");
         }catch(Exception ex){
         	//expected user
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
 
         //update by ADMIN
@@ -196,6 +235,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
         	TestCase.assertTrue(false);
         }catch(Exception ex){
         	//expected exception
+            if (log.isDebugEnabled()) {
+                log.debug("Expected error, hence ignored", ex);
+            }
         }
         
         String[] names = admin.listUsers("*", 100);
@@ -270,6 +312,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
                fail("Exceptions at missing user name");
             }catch(Exception ex){
                     //expected user
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", ex);
+                }
             }
 
            // Renaming Role
@@ -296,12 +341,18 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
             TestCase.assertTrue(false);
            } catch (Exception e) {
             // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
            }
            try {
              admin.updateUserListOfRole("role2", null, new String[] { "d" });
              TestCase.assertTrue(false);
            } catch (Exception e) {
             // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
            }
 
            try {
@@ -309,6 +360,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
                TestCase.assertTrue(false);
            } catch (Exception e) {
                // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
            }
 
            try {
@@ -317,6 +371,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
                TestCase.assertTrue(false);
            } catch (Exception e) {
                // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
            }
 
            try {
@@ -325,6 +382,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
                TestCase.assertTrue(false);
            } catch (Exception e) {
                // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
            }
 
            try {
@@ -333,6 +393,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
                TestCase.assertTrue(false);
            } catch (Exception e) {
                // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
            }
 
            try {
@@ -341,6 +404,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
                TestCase.assertTrue(false);
            } catch (Exception e) {
                // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
            }
 
            try {
@@ -348,6 +414,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
                TestCase.assertTrue(false);
            } catch (Exception e) {
                // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
            }
 
        }
@@ -366,6 +435,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
           fail("Exception at authorizing a role with Null role");
         } catch (Exception e) {
           // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
         try {
           authMan.authorizeRole("rollee", null, "write");
@@ -378,12 +450,18 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
           fail("Exception at authorizing a role with Null action");
         } catch (Exception e) {
           // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
         try {
           authMan.authorizeRole("rolleex","wall","run");
           fail("Exception at authorizing a role with Invalid action");
         } catch (Exception e) {
           // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
 
         //***authorize user
@@ -393,24 +471,36 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
           fail("Exception at authorizing a user with Null name");
         } catch (Exception e) {
           // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
         try {
           authMan.authorizeUser("isuru", null, "read");
           fail("Exception at authorizing a user with Null resourceID");
         } catch (Exception e) {
           // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
         try {
           authMan.authorizeUser("isuru","wall",null);
           fail("Exception at authorizing a user with Null action");
         } catch (Exception e) {
           // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
         try {
           authMan.authorizeUser("isuru","wall","run");
           fail("Exception at authorizing a user with Invalid action");
         } catch (Exception e) {
           // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
         
         assertTrue(authMan.isUserAuthorized("saman", "wall", "write"));
@@ -425,6 +515,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
           fail("Exception at check authorization of a user with Invalid action");
         } catch (Exception e) {
           // exptected error in negative testing
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
 
         String[] AllowedRolesForResource = authMan.getAllowedRolesForResource("wall", "write");
@@ -438,24 +531,35 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
             authMan.clearUserAuthorization("isuru", "wall", "run");
             fail("Exception at clear user authorization");
         }catch(Exception e){
-
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
         try{
             authMan.clearUserAuthorization(null, "wall", "run");
             fail("Exception at clear user authorization");
         }catch(Exception e){
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
 
         }
         try{
             authMan.clearUserAuthorization("isuru", null, "run");
             fail("Exception at clear user authorization");
         }catch(Exception e){
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
 
         }
         try{
             authMan.clearUserAuthorization("isuru","wall", null);
             fail("Exception at clear user authorization");
         }catch(Exception e){
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
 
         }
 
@@ -464,18 +568,27 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
             authMan.clearRoleAuthorization(null, "table", "write");
             fail("Exception at clear role authorization");
         }catch(Exception e){
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
 
         }
         try{
             authMan.clearRoleAuthorization("roleee", null, "write");
             fail("Exception at clear role authorization");
         }catch(Exception e){
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
 
         }
         try{
             authMan.clearRoleAuthorization("roleee", "table", null);
             fail("Exception at clear role authorization");
         }catch(Exception e){
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
 
         }
         
@@ -484,6 +597,9 @@ public class AdvancedJDBCRealmTest extends BaseTestCase {
             authMan.clearResourceAuthorizations(null);
             fail("Exception at clear Resource Authorizations");
         }catch(Exception e){
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
 
         }
 
@@ -504,18 +620,27 @@ public void doClaimStuff() throws Exception {
             fail("Exception at set claim values to null users");
         }catch(Exception e){
             //expected exception
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
         try{
             usWriter.setUserClaimValue("isuru", null, "claim1default", null);
             fail("Exception at set claim values to null claimURI");
         }catch(Exception e){
             //expected exception
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
         try{
             usWriter.setUserClaimValue("isuru", ClaimTestUtil.CLAIM_URI1, null, null);
             fail("Exception at set claim values to null claimValue");
         }catch(Exception e){
             //expected exception
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
 
         String value = usWriter.getUserClaimValue("dimuthu", ClaimTestUtil.CLAIM_URI1, null);
@@ -567,12 +692,18 @@ public void doClaimStuff() throws Exception {
              fail("Exception at null Claim URI");
         }catch(Exception e){
             //expected exception
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
         try{
             usWriter.deleteUserClaimValue(null,ClaimTestUtil.CLAIM_URI1, null);
             fail("Exception at giving null user name to delete user claim values");
         }catch(Exception e){
             //expected exception
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected error, hence ignored", e);
+                }
         }
 
         usWriter.deleteUserClaimValues("dimuthu", allClaims, ClaimTestUtil.HOME_PROFILE_NAME);
