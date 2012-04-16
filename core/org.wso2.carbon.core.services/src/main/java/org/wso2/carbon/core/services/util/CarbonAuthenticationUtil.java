@@ -56,7 +56,7 @@ public class CarbonAuthenticationUtil {
         }
 
         Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSS']'");
+        SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
 
         log.warn("Failed Administrator login attempt \'" + username + "[" + tenantId + "]\' at "
                 + date.format(currentTime) + " from IP address " + remoteAddress);
@@ -94,7 +94,7 @@ public class CarbonAuthenticationUtil {
             carbonContext.setUserRealm(governanceUserRegistry.getUserRealm());
         }
         Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSS']'");
+        SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
 
         if(tenantDomain == null){
             log.info("\'" + username + "\' logged in at " +
@@ -157,7 +157,7 @@ public class CarbonAuthenticationUtil {
         }
 
         Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSS']'");
+        SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
 
         if(tenantDomain == null){
             log.info("\'" + username + "\' logged in at " +
