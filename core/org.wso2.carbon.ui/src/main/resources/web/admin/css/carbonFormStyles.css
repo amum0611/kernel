@@ -56,7 +56,7 @@
     padding-bottom: 5px !important;
 }
 
-.carbonFormTable input[type=text] {
+.carbonFormTable input[type=text],.carbonFormTable input[type=password] {
 /* webkit */
     background-image: -webkit-gradient( linear, left top, left bottom, from( #f7f7f7 ), to( #ffffff ) ); /* mozilla - FF3.6+ */
     background-image: -moz-linear-gradient( top, #f7f7f7 0%, #ffffff 100% ); /* IE 5.5 - 7 */
@@ -72,7 +72,13 @@
     margin-right: 4px;
     margin-bottom: 2px; /*font-family:tahoma, arial, sans-serif;*/
 }
+.carbonFormTable input[disabled=disabled]{
+    background-image: -webkit-gradient( linear, left top, left bottom, from( #dddddd ), to( #eeeeee ) ); /* mozilla - FF3.6+ */
+      background-image: -moz-linear-gradient( top, #dddddd 0%, #eeeeee 100% ); /* IE 5.5 - 7 */
+      filter: progid:DXImageTransform.Microsoft.gradient( gradientType = 0, startColorStr = #ddddddff, endColorStr = #eeeeeeff ); /* IE8 */
+      -ms-filter: progid: DXImageTransform . Microsoft . gradient( gradientType = 0, startColorStr = #ddddddff, endColoStr = #eeeeeeff );
 
+}
 .carbonFormTable td.labelField, .carbonFormTable label.labelField {
 }
 
