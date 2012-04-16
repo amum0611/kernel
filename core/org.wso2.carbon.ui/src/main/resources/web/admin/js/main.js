@@ -1745,7 +1745,7 @@ function sessionAwareFunction(success, message, failure) {
 	        }
 	    });
     }else{
-        $.ajax({
+        jQuery.ajax({
         type:"POST",
         url:'../admin/jsp/session-validate.jsp',
         data: 'random='+random,
