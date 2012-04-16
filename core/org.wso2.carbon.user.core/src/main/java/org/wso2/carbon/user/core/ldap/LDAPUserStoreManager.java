@@ -422,9 +422,9 @@ public class LDAPUserStoreManager extends AbstractUserStoreManager {
             port = Integer.toString(CarbonUtils.getPortFromServerConfig(portInfo));
             connectionURL = rawConnectionURL.replace(portInfo, port);
         }
-
-        //if not enabled, read LDAP url from user.mgt.xml
-        connectionURL = realmConfig.getUserStoreProperty(LDAPConstants.CONNECTION_URL);
+        if(port == null){ //if not enabled, read LDAP url from user.mgt.xml
+            connectionURL = realmConfig.getUserStoreProperty(LDAPConstants.CONNECTION_URL);
+        }
         env.put(Context.PROVIDER_URL, connectionURL);
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
 
