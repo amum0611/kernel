@@ -405,8 +405,6 @@ public final class CarbonServerManager implements Controllable {
 
             populateConnectionProperties();
 
-            new JMXServerManager().startJMXService();
-
             serverConfigContext.setProperty(Constants.CONTAINER_MANAGED, "true");
             serverConfigContext.setProperty(ServerConstants.WORK_DIR, serverWorkDir);
             // This is used inside the sever-admin component.
