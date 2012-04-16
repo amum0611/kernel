@@ -107,12 +107,6 @@
             </includes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>lib/xboot</outputDirectory>
-            <includes>
-                <include>org.wso2.carbon:org.wso2.carbon.xboot:jar</include>
-            </includes>
-        </dependencySet>
-        <dependencySet>
             <outputDirectory>lib/endorsed</outputDirectory>
             <includes>
                 <include>xerces.wso2:xercesImpl:jar</include>

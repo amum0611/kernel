@@ -221,14 +221,6 @@ if [ "$jdk_16" = "" ]; then
    echo " [ERROR] CARBON is supported only on JDK 1.6 and 1.7"
 fi
 
-CARBON_XBOOTCLASSPATH=""
-for f in "$CARBON_HOME"/lib/xboot/*.jar
-do
-    if [ "$f" != "$CARBON_HOME/lib/xboot/*.jar" ];then
-        CARBON_XBOOTCLASSPATH="$CARBON_XBOOTCLASSPATH":$f
-    fi
-done
-
 JAVA_ENDORSED_DIRS="$CARBON_HOME/lib/endorsed":"$JAVA_HOME/jre/lib/endorsed":"$JAVA_HOME/lib/endorsed"
 
 CARBON_CLASSPATH=""
@@ -250,7 +242,6 @@ if $cygwin; then
   CLASSPATH=`cygpath --path --windows "$CLASSPATH"`
   JAVA_ENDORSED_DIRS=`cygpath --path --windows "$JAVA_ENDORSED_DIRS"`
   CARBON_CLASSPATH=`cygpath --path --windows "$CARBON_CLASSPATH"`
-  CARBON_XBOOTCLASSPATH=`cygpath --path --windows "$CARBON_XBOOTCLASSPATH"`
 fi
 
 # ----- Execute The Requested Command -----------------------------------------
@@ -266,10 +257,8 @@ status=$START_EXIT_STATUS
 while [ "$status" = "$START_EXIT_STATUS" ]
 do
     $JAVACMD \
-    -Xbootclasspath/a:"$CARBON_XBOOTCLASSPATH" \
     -Xms256m -Xmx512m -XX:MaxPermSize=256m \
     $JAVA_OPTS \
-    -Dimpl.prefix=Carbon \
     -Dcom.sun.management.jmxremote \
     -classpath "$CARBON_CLASSPATH" \
     -Djava.endorsed.dirs="$JAVA_ENDORSED_DIRS" \
@@ -277,7 +266,6 @@ do
     -Dcatalina.base="$CARBON_HOME/lib/tomcat" \
     -Dwso2.server.standalone=true \
     -Dcarbon.registry.root=/ \
-    -Dcarbon.xbootclasspath="$CARBON_XBOOTCLASSPATH" \
     -Djava.command="$JAVACMD" \
     -Dcarbon.home="$CARBON_HOME" \
     -Dwso2.transports.xml="$CARBON_HOME/repository/conf/mgt-transports.xml" \

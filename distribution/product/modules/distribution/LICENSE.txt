@@ -183,7 +183,6 @@ org.wso2.carbon.user.mgt-3.1.0.jar                                              
 org.wso2.carbon.user.mgt.common-3.1.0.jar                                       bundle         apache2
 org.wso2.carbon.user.mgt.ui-3.1.0.jar                                           bundle         apache2
 org.wso2.carbon.utils-3.1.0.jar                                                 bundle         apache2
-org.wso2.carbon.xboot-3.1.0.jar                                                 bundle         apache2
 org.wso2.pwprovider-1.6.3.jar                                                   bundle         apache2
 poi-3.5.0.wso2v1.jar                                                            bundle         apache2
 poi-ooxml-3.5.0.wso2v1.jar                                                      bundle         apache2
