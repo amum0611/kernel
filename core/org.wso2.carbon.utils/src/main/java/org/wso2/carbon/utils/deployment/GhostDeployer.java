@@ -322,6 +322,9 @@ public class GhostDeployer extends AbstractDeployer {
         String dirName = null;
         if (servicePath != null && servicePath.startsWith(repoPath)) {
             dirName = servicePath.substring(repoPath.length());
+            if(dirName.startsWith(File.separator)) {
+                dirName = dirName.substring(1);
+            }
             if (dirName.indexOf(File.separator) != -1) {
                 dirName = dirName.substring(0, dirName.indexOf(File.separator));
             }
