@@ -607,7 +607,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                 // If a managed connection already exists, use that instead of a new
                 // connection.
                 JDBCDatabaseTransaction.ManagedRegistryConnection temp =
-                        JDBCDatabaseTransaction.getConnection();
+                        JDBCDatabaseTransaction.getManagedRegistryConnection(conn);
                 if (temp != null) {
                     conn.close();
                     conn = temp;
@@ -771,7 +771,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                 // If a managed connection already exists, use that instead of a new
                 // connection.
                 JDBCDatabaseTransaction.ManagedRegistryConnection temp =
-                        JDBCDatabaseTransaction.getConnection();
+                        JDBCDatabaseTransaction.getManagedRegistryConnection(conn);
                 if (temp != null) {
                     conn.close();
                     conn = temp;
@@ -859,7 +859,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                 // If a managed connection already exists, use that instead of a new
                 // connection.
                 JDBCDatabaseTransaction.ManagedRegistryConnection temp =
-                        JDBCDatabaseTransaction.getConnection();
+                        JDBCDatabaseTransaction.getManagedRegistryConnection(conn);
                 if (temp != null) {
                     conn.close();
                     conn = temp;

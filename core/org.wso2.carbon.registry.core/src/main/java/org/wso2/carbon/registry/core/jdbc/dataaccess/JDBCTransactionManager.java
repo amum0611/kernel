@@ -81,7 +81,7 @@ public class JDBCTransactionManager implements TransactionManager {
 
             // If a managed connection already exists, use that instead of a new connection.
             JDBCDatabaseTransaction.ManagedRegistryConnection temp =
-                    JDBCDatabaseTransaction.getConnection();
+                    JDBCDatabaseTransaction.getManagedRegistryConnection(conn);
             if (temp != null) {
                 conn.close();
                 conn = temp;

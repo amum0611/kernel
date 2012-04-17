@@ -244,7 +244,12 @@ public class JDBCDatabaseTransaction implements DatabaseTransaction {
      *
      * @return managed connection.
      */
-    public static Connection getManagedRegistryConnection(Connection conn) {
+    public static ManagedRegistryConnection getManagedRegistryConnection(Connection conn) {
+        // Please be careful with the places in which this method is used. There are around 5 places
+        // which creates a connection, then tries to check whether such a connection exists, and if
+        // it does it would use the managed connection instead of the newly created one. Making the
+        // smallest modification to that could lead into something like mounting getting busted for
+        // example.
         return JDBCDatabaseTransaction.ManagedRegistryConnection.getManagedRegistryConnection(conn,
                 true);
     }
@@ -1121,10 +1126,10 @@ public class JDBCDatabaseTransaction implements DatabaseTransaction {
          *
          * @return the managed connection or null
          */
-        public static Connection getManagedRegistryConnection(Connection connection,
+        public static ManagedRegistryConnection getManagedRegistryConnection(Connection connection,
                                                               boolean reinstate) {
             if (tManagedConnectionMap != null && tManagedConnectionMap.get() != null) {
-                Connection mrc = tManagedConnectionMap.get().get(
+                ManagedRegistryConnection mrc = tManagedConnectionMap.get().get(
                         RegistryUtils.getConnectionId(connection));
                 if (mrc != null && reinstate) {
                     if (tClosedConnectionMap != null && tClosedConnectionMap.get() != null &&
