@@ -1304,7 +1304,8 @@ public class AxisService extends AxisDescription {
                         URL base = new URL(customSchemaNamePrefix);
                         customUrl = new URL(base, attributeValue);
                     } catch (MalformedURLException e) {
-                        log.error("Malformed URL value" + customUrl, e);
+                        log.error("Malformed schema URL: " + customUrl, e);
+                        throw AxisFault.makeFault(e);
                     }
                     attribute.setNodeValue(customUrl.toString());
                 } else if (attributeValue.indexOf("://") == -1 && attributeValue.indexOf("?xsd=") == -1) {
