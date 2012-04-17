@@ -90,6 +90,9 @@ public class IUPropertyUtils {
             final String actualKey = body.substring(1); // Strip off the %
             //String localizedKey = makeLocalizedKey(actualKey, locale.toString());
             body = getLocalizedIUProperty(iu, actualKey, locale);
+            if (body == null) {
+                return null;
+            }
             ILicense lic = MetadataFactory.createLicense(license.getLocation(), body);
             iLicense = lic;
     	}
