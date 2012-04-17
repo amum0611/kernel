@@ -551,7 +551,7 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
                 Attributes attributes = searchResult.getAttributes();
                 Attribute userPassword = attributes.get("userPassword");
 
-                String passwordHashMethod = null;
+                String passwordHashMethod = realmConfig.getUserStoreProperty(PASSWORD_HASH_METHOD);
                 // when admin changes other user passwords he do not have to provide
                 // the old password.
                 if (oldCredential != null) {
