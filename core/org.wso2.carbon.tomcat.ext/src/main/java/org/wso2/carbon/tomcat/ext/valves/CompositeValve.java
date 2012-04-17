@@ -1,5 +1,6 @@
 package org.wso2.carbon.tomcat.ext.valves;
 
+import org.apache.catalina.Realm;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
@@ -10,6 +11,7 @@ import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.registry.core.ghostregistry.GhostRegistry;
 import org.wso2.carbon.tomcat.ext.internal.CarbonRealmServiceHolder;
 import org.wso2.carbon.tomcat.ext.internal.Utils;
+import org.wso2.carbon.tomcat.ext.realms.CarbonTomcatRealm;
 import org.wso2.carbon.user.api.TenantManager;
 import org.wso2.carbon.user.api.UserRealmService;
 import org.wso2.carbon.utils.CarbonUtils;
@@ -47,10 +49,10 @@ public class CompositeValve extends ValveBase {
                     request.getContext().findParameter(ENABLE_SAAS);
             if (enableSaaSParam != null && Boolean.valueOf(enableSaaSParam)) {
                 // Set the SaaS enabled ThreadLocal variable
-                //TODO: uncomment the following code and fix it properly
-                /*if (realm != null) {
-                    realm.enableSaaS();
-                }*/
+                Realm realm = request.getContext().getRealm();
+                if(realm instanceof CarbonTomcatRealm){
+                    ((CarbonTomcatRealm) realm).setEnableSaas(Boolean.valueOf(enableSaaSParam));
+                }
             }
 
             initCarbonContext(request);
