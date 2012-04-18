@@ -23,6 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ *  This is deprecated. Use {@link org.wso2.carbon.integration.framework.utils.FrameworkSettings}.
+ */
+@Deprecated
 public class FrameworkSettings {
 
     public static String CARBON_HOME;
