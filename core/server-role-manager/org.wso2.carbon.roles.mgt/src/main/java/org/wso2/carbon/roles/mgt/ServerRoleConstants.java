@@ -1,6 +1,7 @@
 package org.wso2.carbon.roles.mgt;
 
-public class ServerRoleConstants {
+public final class ServerRoleConstants {
+    private ServerRoleConstants(){}
 
     public static final String REG_BASE_PATH = "serverroles/";
 
