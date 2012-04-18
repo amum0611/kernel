@@ -106,8 +106,10 @@ public class CarbonTomcatRealm extends RealmBase {
         try {
 
             UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
-            //todo if not existent tenant was given this returns -1, handle it
             int tenantId = userRealmService.getTenantManager().getTenantId(tenantDomain);
+            if(tenantId < 0) {
+                return null;
+            }
             if (!userRealmService.getTenantUserRealm(tenantId).getUserStoreManager().
                     authenticate(tenantLessUserName, credential)) {
                 return null;
