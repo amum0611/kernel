@@ -18,6 +18,7 @@
 package org.wso2.carbon.tomcat.ext.realms;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,9 +96,15 @@ public class CarbonTomcatRealm extends RealmBase {
         if (userName.contains("@")) {
             tenantDomain = userName.substring(userName.indexOf('@') + 1);
         }
+        String tenantLessUserName;
+        if(userName.lastIndexOf('@') > -1) {
+            tenantLessUserName = userName.substring(0, userName.lastIndexOf('@'));
+        } else {
+            tenantLessUserName = userName;
+        }
 
         // If SaaS is not enabled, do not allow users from other tenants to call this secured webapp
-        if (checkSaasAccess(tenantDomain)) {
+        if (!checkSaasAccess(tenantDomain, tenantLessUserName)) {
             String requestTenantDomain =
                     CarbonContextHolder.getCurrentCarbonContextHolder().getTenantDomain();
             if (tenantDomain != null &&
@@ -116,12 +123,6 @@ public class CarbonTomcatRealm extends RealmBase {
             UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
             //todo if not existent tenant was given this returns -1, handle it
             int tenantId = userRealmService.getTenantManager().getTenantId(tenantDomain);
-            String tenantLessUserName;
-            if(userName.lastIndexOf('@') > -1) {
-                tenantLessUserName = userName.substring(0, userName.lastIndexOf('@'));
-            } else {
-                tenantLessUserName = userName;
-            }
             if (!userRealmService.getTenantUserRealm(tenantId).getUserStoreManager().
                                   authenticate(tenantLessUserName, credential)) {
                 return null;
@@ -136,15 +137,28 @@ public class CarbonTomcatRealm extends RealmBase {
 
     /**
      * Chechk if saas mode enabled for the given tenant
+     *
      * @param tenantDomain - tenant
-     * @return  true if saas mode denied.
+     * @param userName - name of the user(without tenant part)
+     * @return  false if saas mode denied.
      */
-    private boolean checkSaasAccess(String tenantDomain) {
+    private boolean checkSaasAccess(String tenantDomain, String userName) {
         HashMap saasParams = saasParamaters.get();
         Set saasParamsSet = saasParams.keySet();
 
-        return saasParamsSet.contains("!"+ tenantDomain) ||
-               !(saasParamsSet.contains("*") || saasParamsSet.contains(tenantDomain));
+        if(saasParamsSet.contains("!".concat(tenantDomain))) {
+            return false;
+        } else if(saasParamsSet.contains(tenantDomain)) {
+            ArrayList users = (ArrayList) saasParams.get(tenantDomain);
+            if (users != null && users.contains("!".concat(userName))){
+                return false;
+            } else if(users!= null  && !users.contains(userName)) {
+                return false;
+            }
+        } else if(!saasParamsSet.contains("*")) {
+            return false;
+        }
+        return true;
     }
 
     protected Principal getPrincipal(String userNameWithTenant) {

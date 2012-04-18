@@ -6,6 +6,8 @@ import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.directory.shared.ldap.filter.ExprNode;
+import org.apache.directory.shared.ldap.filter.FilterParser;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.registry.core.ghostregistry.GhostRegistry;
@@ -20,7 +22,9 @@ import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -48,26 +52,33 @@ public class CompositeValve extends ValveBase {
              * <param-value>*</param-value>
              * </context-param>
              *
-             * 2.  All tenants except foo.com & bar.com can access this app
+             * 2. All tenants except foo.com & bar.com can access this app
              *
              * <context-param>
              * <param-name>carbon.saas.tenants</param-name>
-             * <param-value>*, !foo.com,!bar.com</param-value>
+             * <param-value>*;!foo.com;!bar.com</param-value>
              * </context-param>
              *
-             * 3.  Only foo.com & bar.com (all users) can access this app
+             * 3. Only foo.com & bar.com (all users) can access this app
              *
              * <context-param>
              * <param-name>carbon.saas.tenants</param-name>
-             * <param-value>foo.com,bar.com</param-value>
+             * <param-value>foo.com;bar.com</param-value>
              * </context-param>
              *
              * 4. Only users azeez & admin in tenant foo.com & all users in tenant bar.com can access this app
              *
              * <context-param>
              * <param-name>carbon.saas.tenants</param-name>
-             * //todo - we need better syntax here
-             * <param-value>foo.com;users=azeez,admin,bar.com</param-value>
+             * <param-value>foo.com:azeez,admin;bar.com</param-value>
+             * </context-param>
+             *
+             * 5. Only user admin in tenant foo.com can access this app and bob from tenant foo.com can't access the app.
+             *    All users in bar.com can access the app.
+             *
+             * <context-param>
+             * <param-name>carbon.saas.tenants</param-name>
+             * <param-value>foo.com:!bob,admin;bar.com</param-value>
              * </context-param>
              */
             String enableSaaSParam =
@@ -76,12 +87,19 @@ public class CompositeValve extends ValveBase {
                 // Set the SaaS enabled ThreadLocal variable
                 Realm realm = request.getContext().getRealm();
                 if(realm instanceof CarbonTomcatRealm){
-                    String[] enableSaaSParams = enableSaaSParam.trim().split(",");
+                    // replaceAll("\\s","") is to remove all whitespaces
+                    String[] enableSaaSParams = enableSaaSParam.replaceAll("\\s","").split(";");
                     HashMap<String, ArrayList> enableSaaSParamsMap = new HashMap<String, ArrayList>();
+
                     for (String saaSParam : enableSaaSParams) {
-                        enableSaaSParamsMap.put(saaSParam.trim(), new ArrayList());
+                        String[] saaSSubParams = saaSParam.split(":");
+                        ArrayList<String> users = null;
+                        if (saaSSubParams.length > 1) {
+                            users = new ArrayList<String>();
+                            users.addAll(Arrays.asList(saaSSubParams[1].split(",")));
+                        }
+                        enableSaaSParamsMap.put(saaSSubParams[0], users);
                     }
-//                    ((CarbonTomcatRealm) realm).setEnableSaas(Boolean.valueOf(enableSaaSParam));
                     ((CarbonTomcatRealm) realm).setSaaSParams(enableSaaSParamsMap);
                 }
             }
