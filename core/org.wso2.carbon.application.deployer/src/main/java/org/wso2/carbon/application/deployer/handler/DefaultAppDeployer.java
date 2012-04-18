@@ -44,11 +44,9 @@ public class DefaultAppDeployer implements AppDeploymentHandler {
     private static final Log log = LogFactory.getLog(DefaultAppDeployer.class);
 
     public static final String AAR_TYPE = "service/axis2";
-    public static final String JAXWS_TYPE = "service/jaxws";
     public static final String DS_TYPE = "service/dataservice";
     public static final String BUNDLE_TYPE = "bundle";
 
-    public static final String JAXWS_DIR = "servicejars";
     public static final String DS_DIR = "dataservices";
 
     private Map<String, Boolean> acceptanceList = null;
@@ -117,8 +115,6 @@ public class DefaultAppDeployer implements AppDeploymentHandler {
 
             if (AAR_TYPE.equals(artifact.getType())) {
                 destPath = repo + File.separator + CarbonUtils.getAxis2ServicesDir(axisConfig);
-            } else if (JAXWS_TYPE.equals(artifact.getType())) {
-                destPath = repo + File.separator + JAXWS_DIR;
             } else if (DS_TYPE.equals(artifact.getType())) {
                 destPath = repo + File.separator + DS_DIR;
             } else if (AppDeployerConstants.CARBON_APP_TYPE.equals(artifact.getType())) {

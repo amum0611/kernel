@@ -17,20 +17,19 @@
 */
 package org.wso2.carbon.application.deployer.handler;
 
+import org.apache.axis2.engine.AxisConfiguration;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.application.deployer.AppDeployerConstants;
-import org.wso2.carbon.application.deployer.CarbonApplication;
 import org.wso2.carbon.application.deployer.AppDeployerUtils;
+import org.wso2.carbon.application.deployer.CarbonApplication;
 import org.wso2.carbon.application.deployer.config.Artifact;
 import org.wso2.carbon.application.deployer.config.CappFile;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.axis2.engine.AxisConfiguration;
-import org.apache.axis2.deployment.DeploymentConstants;
 
-import java.util.List;
 import java.io.File;
+import java.util.List;
 
 /**
  * This is one of the default undeployment handlers which is registered into the
@@ -72,8 +71,6 @@ public class DefaultAppUndeployer implements AppUndeploymentHandler {
             }
             if (DefaultAppDeployer.AAR_TYPE.equals(artifact.getType())) {
                 destPath = repo + File.separator + CarbonUtils.getAxis2ServicesDir(axisConfig);
-            } else if (DefaultAppDeployer.JAXWS_TYPE.equals(artifact.getType())) {
-                destPath = repo + File.separator + DefaultAppDeployer.JAXWS_DIR;
             } else if (DefaultAppDeployer.DS_TYPE.equals(artifact.getType())) {
                 destPath = repo + File.separator + DefaultAppDeployer.DS_DIR;
             } else if (AppDeployerConstants.CARBON_APP_TYPE.equals(artifact.getType())) {
