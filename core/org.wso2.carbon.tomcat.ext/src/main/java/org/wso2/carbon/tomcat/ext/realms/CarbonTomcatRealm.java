@@ -19,6 +19,9 @@ package org.wso2.carbon.tomcat.ext.realms;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.catalina.realm.GenericPrincipal;
 import org.apache.catalina.realm.RealmBase;
@@ -48,18 +51,27 @@ public class CarbonTomcatRealm extends RealmBase {
      * ThreadLocal variable which keeps track of whether SaaS is enabled for the webapp which
      * is currently being served
      */
-    private static ThreadLocal<Boolean> isSaaSEnabled = new ThreadLocal<Boolean>(){
+    /*private static ThreadLocal<Boolean> isSaaSEnabled = new ThreadLocal<Boolean>(){
         @Override
         protected Boolean initialValue() {
             return Boolean.FALSE;
         }
-    };
+    };*/
+
+    /**
+     * ThreadLocal variable to keep SaaS options of a webapp which is currently used.
+     */
+    private static ThreadLocal<HashMap> saasParamaters = new ThreadLocal<HashMap>();
 
     public CarbonTomcatRealm() throws Exception {
     }
 
-    public void setEnableSaas(boolean value) {
+    /*public void setEnableSaas(boolean value) {
         isSaaSEnabled.set(value);
+    }*/
+
+    public void setSaaSParams(Map enableSaaSParams) {
+        saasParamaters.set((HashMap) enableSaaSParams);
     }
 
     protected String getName() {
@@ -85,7 +97,7 @@ public class CarbonTomcatRealm extends RealmBase {
         }
 
         // If SaaS is not enabled, do not allow users from other tenants to call this secured webapp
-        if (!isSaaSEnabled.get()) {
+        if (checkSaasAccess(tenantDomain)) {
             String requestTenantDomain =
                     CarbonContextHolder.getCurrentCarbonContextHolder().getTenantDomain();
             if (tenantDomain != null &&
@@ -102,6 +114,7 @@ public class CarbonTomcatRealm extends RealmBase {
         try {
 
             UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
+            //todo if not existent tenant was given this returns -1, handle it
             int tenantId = userRealmService.getTenantManager().getTenantId(tenantDomain);
             String tenantLessUserName;
             if(userName.lastIndexOf('@') > -1) {
@@ -119,6 +132,19 @@ public class CarbonTomcatRealm extends RealmBase {
             // not logging because already logged.
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Chechk if saas mode enabled for the given tenant
+     * @param tenantDomain - tenant
+     * @return  true if saas mode denied.
+     */
+    private boolean checkSaasAccess(String tenantDomain) {
+        HashMap saasParams = saasParamaters.get();
+        Set saasParamsSet = saasParams.keySet();
+
+        return saasParamsSet.contains("!"+ tenantDomain) ||
+               !(saasParamsSet.contains("*") || saasParamsSet.contains(tenantDomain));
     }
 
     protected Principal getPrincipal(String userNameWithTenant) {

@@ -20,6 +20,8 @@ import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * tomcat does not allow us to engage a valve programmatically once it is started. Hence we register this
@@ -40,18 +42,47 @@ public class CompositeValve extends ValveBase {
             /**
              * To enable SaaS for webapp, add the following to the web.xml file
              *
+             * 1. All tenants can access this app
              * <context-param>
-             *     <param-name>carbon.enable.saas</param-name>
-             *     <param-value>true</param-value>
+             * <param-name>carbon.saas.tenants</param-name>
+             * <param-value>*</param-value>
+             * </context-param>
+             *
+             * 2.  All tenants except foo.com & bar.com can access this app
+             *
+             * <context-param>
+             * <param-name>carbon.saas.tenants</param-name>
+             * <param-value>*, !foo.com,!bar.com</param-value>
+             * </context-param>
+             *
+             * 3.  Only foo.com & bar.com (all users) can access this app
+             *
+             * <context-param>
+             * <param-name>carbon.saas.tenants</param-name>
+             * <param-value>foo.com,bar.com</param-value>
+             * </context-param>
+             *
+             * 4. Only users azeez & admin in tenant foo.com & all users in tenant bar.com can access this app
+             *
+             * <context-param>
+             * <param-name>carbon.saas.tenants</param-name>
+             * //todo - we need better syntax here
+             * <param-value>foo.com;users=azeez,admin,bar.com</param-value>
              * </context-param>
              */
             String enableSaaSParam =
                     request.getContext().findParameter(ENABLE_SAAS);
-            if (enableSaaSParam != null && Boolean.valueOf(enableSaaSParam)) {
+            if(enableSaaSParam != null) {
                 // Set the SaaS enabled ThreadLocal variable
                 Realm realm = request.getContext().getRealm();
                 if(realm instanceof CarbonTomcatRealm){
-                    ((CarbonTomcatRealm) realm).setEnableSaas(Boolean.valueOf(enableSaaSParam));
+                    String[] enableSaaSParams = enableSaaSParam.trim().split(",");
+                    HashMap<String, ArrayList> enableSaaSParamsMap = new HashMap<String, ArrayList>();
+                    for (String saaSParam : enableSaaSParams) {
+                        enableSaaSParamsMap.put(saaSParam.trim(), new ArrayList());
+                    }
+//                    ((CarbonTomcatRealm) realm).setEnableSaas(Boolean.valueOf(enableSaaSParam));
+                    ((CarbonTomcatRealm) realm).setSaaSParams(enableSaaSParamsMap);
                 }
             }
 
