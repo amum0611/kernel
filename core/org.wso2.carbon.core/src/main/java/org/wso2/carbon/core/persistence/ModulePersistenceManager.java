@@ -17,12 +17,15 @@
 */
 package org.wso2.carbon.core.persistence;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.util.UUIDGenerator;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.description.AxisModule;
 import org.apache.axis2.description.Parameter;
+import org.apache.axis2.description.PolicyInclude;
 import org.apache.axis2.description.PolicySubject;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.AxisConfigurator;
@@ -434,4 +437,40 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
         }
         getCurrentFPM().commitTransaction(module.getName());
     }
+
+    public void persistModulePolicy(String moduleName, String moduleVersion, Policy policy,
+                                    String policyUuid, String policyType, String modulePath) throws Exception {
+        OMFactory omFactory = OMAbstractFactory.getOMFactory();
+        OMElement policyWrapperElement = omFactory.createOMElement(Resources.POLICY, null);
+        policyWrapperElement.addAttribute(Resources.ServiceProperties.POLICY_TYPE, policyType, null);
+
+        OMElement idElement = omFactory.createOMElement(Resources.ServiceProperties.POLICY_UUID, null);
+        idElement.setText("" + policyUuid);
+        policyWrapperElement.addChild(idElement);
+
+        policyWrapperElement.addAttribute(Resources.VERSION, moduleVersion, null);
+
+        OMElement policyElementToPersist = PersistenceUtils.createPolicyElement(policy);
+        policyWrapperElement.addChild(policyElementToPersist);
+
+        if (!getModuleFilePM().elementExists(moduleName, modulePath + "/" + Resources.POLICIES)) {
+            getModuleFilePM().put(moduleName,
+                    omFactory.createOMElement(Resources.POLICIES, null), modulePath);
+        } else {
+            //you must manually delete the existing policy before adding new one. todo for throttling
+            String pathToPolicy = modulePath + "/" + Resources.POLICIES +
+                    "/" + Resources.POLICY +
+                    PersistenceUtils.getXPathTextPredicate(
+                            Resources.ServiceProperties.POLICY_UUID, policyUuid);
+            if (getModuleFilePM().elementExists(moduleName, pathToPolicy)) {
+                getModuleFilePM().delete(moduleName, pathToPolicy);
+            }
+        }
+        getModuleFilePM().put(moduleName, policyWrapperElement, modulePath +
+                "/" + Resources.POLICIES);
+        if (log.isDebugEnabled()) {
+            log.debug("Policy is saved in the file system for "+moduleName);
+        }
+    }
+
 }

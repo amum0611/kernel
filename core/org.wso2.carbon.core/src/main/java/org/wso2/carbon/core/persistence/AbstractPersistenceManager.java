@@ -32,6 +32,7 @@ import org.apache.neethi.PolicyEngine;
 import org.jaxen.JaxenException;
 import org.wso2.carbon.CarbonException;
 import org.wso2.carbon.context.RegistryType;
+import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.Resources;
 import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 import org.wso2.carbon.core.persistence.file.AbstractFilePersistenceManager;
@@ -39,6 +40,7 @@ import org.wso2.carbon.core.persistence.file.ModuleFilePersistenceManager;
 import org.wso2.carbon.core.persistence.file.ServiceGroupFilePersistenceManager;
 import org.wso2.carbon.core.util.ParameterUtil;
 import org.wso2.carbon.registry.core.Registry;
+import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
 import javax.xml.namespace.QName;
@@ -186,7 +188,9 @@ public abstract class AbstractPersistenceManager {
                     } else if (parameter.getValue() instanceof OMNode) {
                         paramElement.addChild((OMNode) parameter.getValue());
                     } else {
-                        throw new PersistenceException("The type of the parameter value is not recognized!");  //todo test whether this is ok -kasung
+                        log.error("Not persisting the parameter because parameter is not recognized "+
+                                paramName+paramType);
+//                        throw new PersistenceException("The type of the parameter value is not recognized!");
                     }
                 }
 
@@ -370,6 +374,7 @@ public abstract class AbstractPersistenceManager {
      * <p/>
      * Transactions should be handled by an upper-layer
      *
+     * @param serviceGroupId SG name
      * @param ad           - AxisDescription instance
      * @param nameProperty - name to be set
      * @param xpathStr     - xpathStr to store AxisDescription
@@ -415,6 +420,7 @@ public abstract class AbstractPersistenceManager {
      * @param resourceXPath  - resource path of the AxisDescription
      * @throws PersistenceDataNotFoundException error in persisting data
      *
+     * @throws org.wso2.carbon.registry.core.exceptions.RegistryException reg ex
      */
     protected void loadDocumentation(String serviceGroupId, AxisDescription ad, String resourceXPath)
             throws RegistryException, PersistenceDataNotFoundException {
@@ -434,11 +440,13 @@ public abstract class AbstractPersistenceManager {
     /**
      * Load policies from the file system and attach to the AxisDescription instance.
      *
+     * @param serviceGroupId SG name
      * @param ad           - AxisDescription instance
      * @param policyIdList - list of policy UUIDs
      * @param serviceXPath - all policies are stored at service level. Therefore, fetch the
      *                     actual policy from service level
      * @throws RegistryException - registry transaction errors
+     * @throws PersistenceDataNotFoundException ex
      */
     protected void loadPolicies(String serviceGroupId, AxisDescription ad, List policyIdList,
                                 String serviceXPath) throws RegistryException, PersistenceDataNotFoundException {
@@ -475,8 +483,8 @@ public abstract class AbstractPersistenceManager {
      * Checks whether the provided module is globally engaged. This is done using a property in
      * the module resource
      *
-     * @param moduleName
-     * @param moduleVersion
+     * @param moduleName module Name
+     * @param moduleVersion module Version
      * @return - true if globally engaged, else false
      */
     protected boolean isGloballyEngaged(String moduleName, String moduleVersion) {
@@ -505,8 +513,8 @@ public abstract class AbstractPersistenceManager {
      * we search for a different version of the same module. If any of the versions exists in the
      * system, return the found AxisModule instance.
      *
-     * @param moduleName
-     * @param moduleVersion
+     * @param moduleName module Name
+     * @param moduleVersion module Version
      * @return - AxisModule instance
      * @throws Exception - on errors while accessing registry or on module not found
      */
@@ -552,8 +560,7 @@ public abstract class AbstractPersistenceManager {
      * @param resourceId The id/name of resource
      * @param msg        - Message to log
      * @param e          - original exception
-     * @throws CarbonException      - carbon exception to throw
-     * @throws PersistenceException
+     * @throws PersistenceException ex
      */
     protected void handleExceptionWithRollback(String resourceId, String msg, Throwable e) throws PersistenceException {
         log.error(msg, e);
@@ -574,9 +581,9 @@ public abstract class AbstractPersistenceManager {
     /**
      * null if module not found
      *
-     * @param moduleName
-     * @param moduleElement
-     * @return
+     * @param moduleName module Name
+     * @param moduleElement module OMElement
+     * @return the axis module
      */
     private AxisModule getAxisModule(String moduleName, OMElement moduleElement) {
         String moduleVersion = null;
@@ -591,9 +598,9 @@ public abstract class AbstractPersistenceManager {
     /**
      * Returns the attribute value
      *
-     * @param resource
-     * @param xpathStr
-     * @return
+     * @param resource omelement
+     * @param xpathStr xpath to attribute/property
+     * @return the attribute value
      */
     public String getProperty(OMElement resource, String xpathStr) {
         try {
@@ -625,4 +632,36 @@ public abstract class AbstractPersistenceManager {
         }
         return pf.getModuleFilePM();
     }
+
+
+    /**
+     * Persists the given <code>Policy</code> object under policies associated with the
+     * <code>servicePath</code> in the registry.
+     *
+     * @param policy      the <code>Policy</code> instance to be persisted
+     * @param policyType Policy Type
+     * @param servicePath       - path in the registry to persist policy
+     * @throws RegistryException  if saving data to the registry is unsuccessful
+     * @throws XMLStreamException if serializing the <code>Policy<code> object is unsuccessful
+     */
+    public void persistPolicyToRegistry(Policy policy, String policyType, String servicePath)
+            throws RegistryException, XMLStreamException {
+        if (log.isDebugEnabled()) {
+            log.debug("Persisting caching policy in the registry");
+        }
+
+        Resource policyResource = PersistenceUtils.createPolicyResource(
+                configRegistry, policy, policy.getId(), policyType);
+        String policyResourcePath = servicePath + RegistryResources.POLICIES
+                + policy.getId();
+        try {
+            configRegistry.put(policyResourcePath, policyResource);
+        } catch (Exception e) {
+            String msg = "Error persisting caching policy in the configRegistry.";
+            log.error(msg, e);
+            configRegistry.rollbackTransaction();
+            throw new RegistryException(e.getMessage(), e);
+        }
+    }
+
 }

@@ -181,7 +181,9 @@ public abstract class AbstractFilePersistenceManager {
                     if (!parent.equals(content.getParent())) {
                         parent.addChild(content);
                     } else {
-                        log.debug("Trying add a child to the same parent. " + resourceName + content.toString());
+                        if (log.isDebugEnabled()) {
+                            log.debug("Trying add a child to the same parent. " + resourceName + content.toString());
+                        }
                     }
                 } else {
                     if (log.isDebugEnabled()) {
@@ -196,8 +198,7 @@ public abstract class AbstractFilePersistenceManager {
                         "The xpath used was " + xpathOfParent);
             }
         } catch (JaxenException e) {
-            log.debug("Error selecting parent in " + resourceName, e);
-            e.printStackTrace();
+            log.error("Error selecting parent in " + resourceName, e);
             throw new PersistenceDataNotFoundException("Error selecting parent in " + resourceName, e);
         }
     }

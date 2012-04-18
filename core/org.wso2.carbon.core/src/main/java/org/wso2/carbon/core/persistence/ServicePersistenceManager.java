@@ -17,7 +17,9 @@
 */
 package org.wso2.carbon.core.persistence;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMText;
 import org.apache.axiom.om.util.UUIDGenerator;
 import org.apache.axis2.AxisFault;
@@ -31,12 +33,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.neethi.Policy;
 import org.apache.neethi.PolicyComponent;
+import org.apache.neethi.PolicyEngine;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.CarbonException;
 import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.Resources;
 import org.wso2.carbon.core.transports.TransportPersistenceManager;
-import org.wso2.carbon.registry.api.Resource;
+import org.wso2.carbon.registry.core.Resource;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -148,9 +151,11 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
             return;
         }
         String sgName = axisService.getAxisServiceGroup().getServiceGroupName();
+        boolean isProxyService = PersistenceUtils.isProxyService(axisService);
         synchronized (WRITE_LOCK) {
             try {
                 getServiceGroupFilePM().beginTransaction(sgName);
+                configRegistry.beginTransaction();
                 //Add service
                 OMElement serviceElement = omFactory.createOMElement(Resources.ServiceProperties.SERVICE_XML_TAG, null);
                 serviceElement.addAttribute(Resources.NAME, axisService.getName(), null);
@@ -211,6 +216,27 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 //                    OMElement policyWrapperEl = omFactory.createOMElement(Resources.POLICY, null, policiesEl);
 //                    getServiceGroupFilePM().put(sgName, policiesEl, PersistenceUtils.getResourcePath(axisService));
                     getServiceGroupFilePM().put(sgName, servicePolicy, policiesPath);
+                }
+
+                //write the policy to registry as well if it's a proxy service
+                if(isProxyService && servicePolicies != null && !servicePolicies.isEmpty()) {
+                    org.wso2.carbon.registry.core.Resource serviceResource = configRegistry.newCollection();
+                    String serviceResourcePath = PersistenceUtils.getRegistryResourcePath(axisService);
+                    configRegistry.put(serviceResourcePath, serviceResource);    //todo does this replace the existing resource? it should be -kasung
+
+                    for (OMElement wrappedServicePolicyElement : servicePolicies) {
+                        Policy servicePolicy = PolicyEngine.getPolicy(wrappedServicePolicyElement.getFirstChildWithName(
+                                new QName(Resources.WS_POLICY_NAMESPACE, "Policy")));  //note that P is capital
+
+                        Resource servicePolicyResource = PersistenceUtils.createPolicyResource(
+                                configRegistry, servicePolicy,
+                                servicePolicy.getId(),
+                                "" + servicePolicy.getType());
+
+                        configRegistry.put(serviceResourcePath + RegistryResources.POLICIES +
+                                servicePolicyResource.getProperty(RegistryResources.ModuleProperties.POLICY_UUID),
+                                servicePolicyResource);
+                    }
                 }
 
                 // If the service scope='soapsession', engage addressing if not already engaged.
@@ -290,11 +316,12 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 }
 
                 getServiceGroupFilePM().commitTransaction(sgName);
-
+                configRegistry.commitTransaction();
                 if (log.isDebugEnabled()) {
                     log.debug("Added new service - " + axisService.getName());
                 }
             } catch (Throwable e) {
+                configRegistry.rollbackTransaction();
                 handleExceptionWithRollback(sgName, "Unable to handle new service addition. Service: " +
                         axisService.getName(), e);
             }
@@ -314,7 +341,6 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
      * }
      * </pre>
      * <br/>
-     * todo the functionality here is broken. Because a given endpoint will have same binding name specially for http and https services. How to handle this?
      *
      * @param axisService     the service
      * @param axisBinding     The binding to be handled
@@ -328,7 +354,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
         if (bindings == null) { //bindings element does not exist
             bindings = omFactory.createOMElement(Resources.ServiceProperties.BINDINGS, null);
         } else {
-            /** //todo check whether detaching is necessary here. I believe it's not. Don't see any harm either. -kasung
+            /**
              * we detach this from parent element because we will be adding this again at the end of
              * method. Otherwise, there will be duplicated items.
              */
@@ -652,7 +678,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                     for (Object node : associations) {
                         String destinationPath = ((OMElement) node).getAttributeValue(
                                 new QName(Resources.Associations.DESTINATION_PATH));
-                        Resource resource = configRegistry.get(destinationPath);       //todo debug check whether destPath get set correctly.
+                        Resource resource = configRegistry.get(destinationPath);
                         String transportProtocol = resource
                                 .getProperty(RegistryResources.Transports.PROTOCOL_NAME);
                         axisService.addExposedTransport(transportProtocol);
@@ -998,10 +1024,10 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
     /**
      * Extract all the policies from the AxisService and create registry Resources for them.
-     * todo Now this method is fully done. See where this methos is used currently and apply brute-force
+     *
      *
      * @param axisService Service to get policies
-     * @return policies list of policies
+     * @return A list of "wrapped" policy elements
      * @throws Exception on error
      */
     private List<OMElement> getServicePolicies(AxisService axisService) throws Exception {
@@ -1017,7 +1043,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
         if (servicePolicy != null) {
             // Add this policy as a resource to the list
-            addPolicyResource(policyElements, servicePolicy, PolicyInclude.AXIS_SERVICE_POLICY);
+            addPolicyElement(policyElements, servicePolicy, PolicyInclude.AXIS_SERVICE_POLICY);
             // Refer this policy from the service
             setResourcePolicyId(axisService.getAxisServiceGroup().getServiceGroupName(),
                     serviceXPath, servicePolicy.getId());
@@ -1042,7 +1068,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
             if (operationPolicy != null) {
                 // Add this policy as a resource to the list
-                addPolicyResource(policyElements, operationPolicy, PolicyInclude.AXIS_OPERATION_POLICY);
+                addPolicyElement(policyElements, operationPolicy, PolicyInclude.AXIS_OPERATION_POLICY);
                 // Refer this policy from the operation resource
                 OMElement idElement = omFactory.createOMElement(Resources.ServiceProperties.POLICY_UUID, null);
                 idElement.setText(operationPolicy.getId());
@@ -1063,7 +1089,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
                 if (messageInPolicy != null) {
                     // Add this policy as a resource to the list
-                    addPolicyResource(policyElements, messageInPolicy, PolicyInclude.AXIS_MESSAGE_POLICY);
+                    addPolicyElement(policyElements, messageInPolicy, PolicyInclude.AXIS_MESSAGE_POLICY);
                     // Refer this policy from the operation resource
                     operationElement.addAttribute(Resources.ServiceProperties
                             .MESSAGE_IN_POLICY_UUID, messageInPolicy.getId(), null);
@@ -1081,7 +1107,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
                 if (messageOutPolicy != null) {
                     // Add this policy as a resource to the list
-                    addPolicyResource(policyElements, messageOutPolicy, PolicyInclude.AXIS_MESSAGE_POLICY);
+                    addPolicyElement(policyElements, messageOutPolicy, PolicyInclude.AXIS_MESSAGE_POLICY);
                     // Refer this policy from the operation resource
                     operationElement.addAttribute(Resources.ServiceProperties
                             .MESSAGE_OUT_POLICY_UUID, messageOutPolicy.getId(), null);
@@ -1090,7 +1116,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
             // Update the operation resource in configRegistry
             getServiceGroupFilePM().put(serviceGroupId, operationElement,
-                    PersistenceUtils.getResourcePath(axisService)); //correct! //todo remove comment
+                    PersistenceUtils.getResourcePath(axisService));
         }
 
         // Get binding policies
@@ -1120,8 +1146,8 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
             if (bindingPolicy != null) {
                 // Add this policy as a resource to the list
-                addPolicyResource(policyElements, bindingPolicy, PolicyInclude.BINDING_POLICY);
-                // Refer this policy from the binding resource    //todo make sure the path is correct
+                addPolicyElement(policyElements, bindingPolicy, PolicyInclude.BINDING_POLICY);
+                // Refer this policy from the binding resource
                 setResourcePolicyId(axisService.getAxisServiceGroup().getServiceGroupName(),
                         PersistenceUtils.getBindingPath(serviceXPath, currentAxisBinding),
                         bindingPolicy.getId());
@@ -1145,7 +1171,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
                 if (boPolicy != null) {
                     // Add this policy as a resource to the list
-                    addPolicyResource(policyElements,
+                    addPolicyElement(policyElements,
                             boPolicy, PolicyInclude.BINDING_OPERATION_POLICY);
                     // Refer this policy from the binding operation
                     OMElement idElement = omFactory.createOMElement(Resources.ServiceProperties.POLICY_UUID, null);
@@ -1166,7 +1192,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
                     if (boMessageInPolicy != null) {
                         // Add this policy as a resource to the list
-                        addPolicyResource(policyElements,
+                        addPolicyElement(policyElements,
                                 boMessageInPolicy, PolicyInclude.BINDING_INPUT_POLICY);
                         // Refer this policy from the binding operation
                         bindingOperationElement.addAttribute(Resources.ServiceProperties
@@ -1185,7 +1211,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
                     if (boMessageOutPolicy != null) {
                         // Add this policy as a resource to the list
-                        addPolicyResource(policyElements,
+                        addPolicyElement(policyElements,
                                 boMessageOutPolicy, PolicyInclude.BINDING_OUTPUT_POLICY);
                         // Refer this policy from the binding operation
                         bindingOperationElement.addAttribute(Resources.ServiceProperties
@@ -1230,8 +1256,8 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
      * @throws Exception - on creating policy resource
      * @see ModulePersistenceManager#handleNewModuleAddition(org.apache.axis2.description.AxisModule, String, String)
      */
-    private void addPolicyResource(List<OMElement> policyElements,
-                                   Policy policy, int policyType) throws Exception {
+    private void addPolicyElement(List<OMElement> policyElements,
+                                  Policy policy, int policyType) throws Exception {
         OMElement policyWrapperElement = omFactory.createOMElement(Resources.POLICY, null);
         policyWrapperElement.addAttribute(Resources.ServiceProperties.POLICY_TYPE, "" + policyType, null);
         //we don't need the version?
@@ -1244,7 +1270,6 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
             OMElement idElement = omFactory.createOMElement(Resources.ServiceProperties.POLICY_UUID, null);
             idElement.setText("" + policy.getId());
             policyWrapperElement.addChild(idElement);
-//            policyWrapperElement.addAttribute(Resources.ServiceProperties.POLICY_UUID, "" + policy.getId(), null); todo make sure policyUUID isn't an attr
             OMElement policyElement = PersistenceUtils.createPolicyElement(policy);
             policyWrapperElement.addChild(policyElement);
             policyElements.add(policyWrapperElement);
@@ -1256,9 +1281,41 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
             idElement.setText("" + policy.getId());
             policyWrapperElement.addChild(idElement);
 
-//            policyWrapperElement.addAttribute(Resources.ServiceProperties.POLICY_UUID, "" + policy.getId(), null);
             policyWrapperElement.addChild(policyElement);
             policyElements.add(policyWrapperElement);
+        }
+    }
+
+    public void persistServicePolicy(String serviceGroupId, Policy policy,
+                                    String policyUuid, String policyType, String servicePath) throws Exception {
+        OMFactory omFactory = OMAbstractFactory.getOMFactory();
+        OMElement policyWrapperElement = omFactory.createOMElement(Resources.POLICY, null);
+        policyWrapperElement.addAttribute(Resources.ServiceProperties.POLICY_TYPE, policyType, null);
+
+        OMElement idElement = omFactory.createOMElement(Resources.ServiceProperties.POLICY_UUID, null);
+        idElement.setText("" + policyUuid);
+        policyWrapperElement.addChild(idElement);
+
+        OMElement policyElementToPersist = PersistenceUtils.createPolicyElement(policy);
+        policyWrapperElement.addChild(policyElementToPersist);
+
+        if (!getServiceGroupFilePM().elementExists(serviceGroupId, servicePath + "/" + Resources.POLICIES)) {
+            getServiceGroupFilePM().put(serviceGroupId,
+                    omFactory.createOMElement(Resources.POLICIES, null), serviceGroupId);
+        } else {
+            //you must manually delete the existing policy before adding new one. todo for throttling
+            String pathToPolicy = servicePath + "/" + Resources.POLICIES +
+                    "/" + Resources.POLICY +
+                    PersistenceUtils.getXPathTextPredicate(
+                            Resources.ServiceProperties.POLICY_UUID, policyUuid);
+            if (getServiceGroupFilePM().elementExists(serviceGroupId, pathToPolicy)) {
+                getServiceGroupFilePM().delete(serviceGroupId, pathToPolicy);
+            }
+        }
+        getServiceGroupFilePM().put(serviceGroupId, policyWrapperElement, servicePath +
+                "/" + Resources.POLICIES);
+        if (log.isDebugEnabled()) {
+            log.debug("Policy is saved in the file system for " + servicePath);
         }
     }
 }
