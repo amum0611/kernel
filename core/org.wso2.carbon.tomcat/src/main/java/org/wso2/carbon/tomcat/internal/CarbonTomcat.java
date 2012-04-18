@@ -194,7 +194,7 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
      */
     public Context addWebApp(Host host, String contextPath,
                                  String webappFilePath) {
-        return this.addWebapp(host,contextPath,webappFilePath,null);
+        return this.addWebApp(host, contextPath, webappFilePath, null);
     }
 
     /**
