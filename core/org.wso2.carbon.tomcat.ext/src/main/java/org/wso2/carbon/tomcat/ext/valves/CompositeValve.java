@@ -74,11 +74,11 @@ public class CompositeValve extends ValveBase {
              * </context-param>
              *
              * 5. Only user admin in tenant foo.com can access this app and bob from tenant foo.com can't access the app.
-             *    All users in bar.com can access the app.
+             *    All users in bar.com can access the app except bob.
              *
              * <context-param>
              * <param-name>carbon.saas.tenants</param-name>
-             * <param-value>foo.com:!bob,admin;bar.com</param-value>
+             * <param-value>foo.com:!azeez,admin;bar.com:*,!bob</param-value>
              * </context-param>
              */
             String enableSaaSParam =

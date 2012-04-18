@@ -49,27 +49,12 @@ public class CarbonTomcatRealm extends RealmBase {
     private static Log log = LogFactory.getLog(CarbonTomcatRealm.class);
 
     /**
-     * ThreadLocal variable which keeps track of whether SaaS is enabled for the webapp which
-     * is currently being served
-     */
-    /*private static ThreadLocal<Boolean> isSaaSEnabled = new ThreadLocal<Boolean>(){
-        @Override
-        protected Boolean initialValue() {
-            return Boolean.FALSE;
-        }
-    };*/
-
-    /**
      * ThreadLocal variable to keep SaaS options of a webapp which is currently used.
      */
     private static ThreadLocal<HashMap> saasParamaters = new ThreadLocal<HashMap>();
 
     public CarbonTomcatRealm() throws Exception {
     }
-
-    /*public void setEnableSaas(boolean value) {
-        isSaaSEnabled.set(value);
-    }*/
 
     public void setSaaSParams(Map enableSaaSParams) {
         saasParamaters.set((HashMap) enableSaaSParams);
@@ -97,7 +82,7 @@ public class CarbonTomcatRealm extends RealmBase {
             tenantDomain = userName.substring(userName.indexOf('@') + 1);
         }
         String tenantLessUserName;
-        if(userName.lastIndexOf('@') > -1) {
+        if (userName.lastIndexOf('@') > -1) {
             tenantLessUserName = userName.substring(0, userName.lastIndexOf('@'));
         } else {
             tenantLessUserName = userName;
@@ -108,12 +93,12 @@ public class CarbonTomcatRealm extends RealmBase {
             String requestTenantDomain =
                     CarbonContextHolder.getCurrentCarbonContextHolder().getTenantDomain();
             if (tenantDomain != null &&
-                    !tenantDomain.equals(requestTenantDomain)) {
+                !tenantDomain.equals(requestTenantDomain)) {
                 if (requestTenantDomain.trim().length() == 0) {
                     requestTenantDomain = "0";
                 }
                 log.warn("Illegal access attempt by " + userName +
-                                 " to secured resource hosted by tenant " + requestTenantDomain);
+                         " to secured resource hosted by tenant " + requestTenantDomain);
                 return null;
             }
         }
@@ -124,7 +109,7 @@ public class CarbonTomcatRealm extends RealmBase {
             //todo if not existent tenant was given this returns -1, handle it
             int tenantId = userRealmService.getTenantManager().getTenantId(tenantDomain);
             if (!userRealmService.getTenantUserRealm(tenantId).getUserStoreManager().
-                                  authenticate(tenantLessUserName, credential)) {
+                    authenticate(tenantLessUserName, credential)) {
                 return null;
             }
 
@@ -139,23 +124,25 @@ public class CarbonTomcatRealm extends RealmBase {
      * Chechk if saas mode enabled for the given tenant
      *
      * @param tenantDomain - tenant
-     * @param userName - name of the user(without tenant part)
-     * @return  false if saas mode denied.
+     * @param userName     - name of the user(without tenant part)
+     * @return false if saas mode denied.
      */
     private boolean checkSaasAccess(String tenantDomain, String userName) {
         HashMap saasParams = saasParamaters.get();
         Set saasParamsSet = saasParams.keySet();
 
-        if(saasParamsSet.contains("!".concat(tenantDomain))) {
+        if (saasParamsSet.contains("!".concat(tenantDomain))) {
             return false;
-        } else if(saasParamsSet.contains(tenantDomain)) {
+        } else if (saasParamsSet.contains(tenantDomain)) {
             ArrayList users = (ArrayList) saasParams.get(tenantDomain);
-            if (users != null && users.contains("!".concat(userName))){
+            if (users != null && users.contains("!".concat(userName))) {
                 return false;
-            } else if(users!= null  && !users.contains(userName)) {
+            } else if (users != null && !users.contains(userName) && !users.contains("*")) {
                 return false;
+            } else {
+                return true;
             }
-        } else if(!saasParamsSet.contains("*")) {
+        } else if (!saasParamsSet.contains("*")) {
             return false;
         }
         return true;
