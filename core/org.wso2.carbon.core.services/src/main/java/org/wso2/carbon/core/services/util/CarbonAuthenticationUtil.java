@@ -30,6 +30,7 @@ import org.wso2.carbon.registry.core.RegistryConstants;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.session.UserRegistry;
 import org.wso2.carbon.utils.ServerConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
@@ -80,6 +81,9 @@ public class CarbonAuthenticationUtil {
         UserRegistry governanceRegistry = registryService.getGovernanceSystemRegistry(tenantId);
         if (httpSess != null) {
             httpSess.setAttribute(ServerConstants.USER_LOGGED_IN, username);
+            if (tenantDomain != null) {
+                httpSess.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
+            }
             httpSess.setAttribute(RegistryConstants.ROOT_REGISTRY_INSTANCE, registryService
                     .getRegistry(username, tenantId));
 
@@ -142,6 +146,9 @@ public class CarbonAuthenticationUtil {
         UserRegistry governanceRegistry = registryService.getGovernanceSystemRegistry(tenantId);
         if (thriftSession != null) {
             thriftSession.setAttribute(ServerConstants.USER_LOGGED_IN, username);
+            if (tenantDomain != null) {
+                thriftSession.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
+            }
             thriftSession.setAttribute(RegistryConstants.ROOT_REGISTRY_INSTANCE, registryService
                     .getRegistry(username, tenantId));
 

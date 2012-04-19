@@ -33,7 +33,7 @@ import java.util.*;
  * Configuration used by the CarbonCaching implementation.
  */
 @SuppressWarnings("unused")
-public class CacheConfiguration {
+public final class CacheConfiguration {
 
     private static CacheConfiguration instance = new CacheConfiguration();
     
@@ -94,7 +94,7 @@ public class CacheConfiguration {
      *
      * @throws CacheException if the operation failed.
      */
-    public synchronized void load(String configFilePath) throws CacheException {
+    public void load(String configFilePath) throws CacheException {
         if (this.configuration != null) {
             // The cache configuration has already been loaded.
             return;
@@ -113,7 +113,11 @@ public class CacheConfiguration {
             OMElement documentElement = new StAXOMBuilder(configInputStream).getDocumentElement();
             Map<String, List<String>> configuration = new HashMap<String, List<String>>();
             readChildElements(documentElement, new Stack<String>(), configuration);
-            this.configuration = configuration;
+            synchronized (this) {
+                if (this.configuration == null) {
+                    this.configuration = configuration;
+                }
+            }
             log.debug("Successfully loaded Cache Configuration");
         } catch (XMLStreamException e) {
             throw new CacheException("Unable to parse the cache configuration.", e);

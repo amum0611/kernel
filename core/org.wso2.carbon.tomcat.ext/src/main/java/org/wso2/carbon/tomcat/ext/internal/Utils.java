@@ -18,6 +18,9 @@
 package org.wso2.carbon.tomcat.ext.internal;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 /**
  * A collection of useful utility methods
@@ -26,8 +29,14 @@ public class Utils {
 
     public static String getTenantDomain(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        if (requestURI.indexOf("/t/") == -1) {  // Super tenant?
-            return null;
+        if (requestURI.indexOf("/t/") == -1) {
+            //check for admin services - tenant admin services are deployed in super tenant flow
+            HttpSession session = request.getSession(false);
+            String domain = null;
+            if (session != null) {
+                domain = (String)session.getAttribute(MultitenantConstants.TENANT_DOMAIN);
+            }
+            return domain;
         }
         String temp = requestURI.substring(requestURI.indexOf("/t/") + 3);
         if (temp.indexOf('/') != -1) {
