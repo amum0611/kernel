@@ -34,7 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Utility class to handle user kernal utilities.
+ * Utility class to handle user kernel utilities.
  */
 public final class UserCoreUtil {
 
