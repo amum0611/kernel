@@ -34,30 +34,29 @@ import java.util.Hashtable;
  */
 public class Activator implements BundleActivator {
 
-    private static Log log= LogFactory.getLog(Activator.class);
+    private static Log log = LogFactory.getLog(Activator.class);
     private ServerManager serverManager;
     private ServiceRegistration serviceRegistration;
 
 
     public void start(BundleContext bundleContext) throws Exception {
-    	try{
-    	    this.serverManager = new ServerManager();
-    	    serverManager.init();
-    	    serverManager.start();
-    	    serviceRegistration = bundleContext.registerService(CarbonTomcatService.class.getName(),serverManager.getTomcatInstance(),null);
-    	    log.info("registering the JNDI stream handler");
-    	    //registering JNDI stream handler
-    	    Hashtable<String, String[]> properties = new Hashtable<String, String[]>();
-    	    properties.put(URLConstants.URL_HANDLER_PROTOCOL, new String[]{"jndi"});
-    	    bundleContext.registerService(URLStreamHandlerService.class.getName(),
-                new JNDIURLStreamHandlerService(), properties);
-    	}catch(Throwable t){
-    	    log.fatal("Error while starting server " + t.getMessage(), t);
-    	    //do not throw because framework will keep trying. catching throwable is a bad thing, but
+        try {
+            this.serverManager = new ServerManager();
+            serverManager.init();
+            serverManager.start();
+            serviceRegistration = bundleContext.registerService(CarbonTomcatService.class.getName(), serverManager.getTomcatInstance(), null);
+            log.info("registering the JNDI stream handler");
+            //registering JNDI stream handler
+            Hashtable<String, String[]> properties = new Hashtable<String, String[]>();
+            properties.put(URLConstants.URL_HANDLER_PROTOCOL, new String[]{"jndi"});
+            bundleContext.registerService(URLStreamHandlerService.class.getName(),
+                    new JNDIURLStreamHandlerService(), properties);
+        } catch (Throwable t) {
+            log.fatal("Error while starting server " + t.getMessage(), t);
+            //do not throw because framework will keep trying. catching throwable is a bad thing, but
             //looks like we have no other option.
-    	}
+        }
     }
-
 
 
     public void stop(BundleContext bundleContext) throws Exception {

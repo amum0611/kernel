@@ -124,10 +124,6 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
         return findEngine();
     }
 
-    public Host getHost(String hostName) {
-        return findHost(hostName);
-    }
-
     private Engine findEngine() {
         Server server = getServer();
         Service[] findServices = server.findServices();
@@ -151,19 +147,6 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
         throw new IllegalStateException("Unable to locate Host.");
     }
 
-    private Host findHost(String hostName) {
-        Engine engine = findEngine();
-        Container[] children = engine.findChildren();
-        for (Container container : children) {
-            if (hostName.equalsIgnoreCase(container.getName())) {
-                return (Host) container;
-            }
-        }
-        throw new IllegalStateException("Unable to locate Host.");
-
-    }
-
-
     public void init() throws LifecycleException {
         getServer();
         this.server.init();
@@ -181,7 +164,7 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
      * @return {@link Context} object of the added web-app
      */
     public Context addWebApp(String contextPath, String webappFilePath) {
-        Host localHost = this.getHost("localhost");
+        Host localHost = (Host)this.getEngine().findChild("localhost");
         return this.addWebApp(localHost, contextPath, webappFilePath, null);
     }
 
@@ -205,7 +188,7 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
      * @return {@link Context} object of the added web-app
      */
     public Context addWebApp(String contextPath, String webappFilePath, LifecycleListener lifecycleListener) {
-        Host localHost = this.getHost("localhost");
+        Host localHost = (Host)this.getEngine().findChild("localhost");
         return this.addWebApp(localHost, contextPath, webappFilePath, lifecycleListener);
     }
 

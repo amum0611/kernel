@@ -45,20 +45,20 @@ public class ServerManager {
         bundleCtxtClassLoader = Thread.currentThread().getContextClassLoader();
         String carbonHome = System.getProperty("carbon.home");
         String catalinaHome = new File(carbonHome).getAbsolutePath() + File.separator + "lib" +
-                              File.separator + "tomcat";
+                File.separator + "tomcat";
         String catalinaXML = new File(carbonHome).getAbsolutePath() + File.separator +
-                             "repository" + File.separator + "conf" + File.separator +
-                             "tomcat" + File.separator + "catalina-server.xml";
+                "repository" + File.separator + "conf" + File.separator +
+                "tomcat" + File.separator + "catalina-server.xml";
         try {
             inputStream = new FileInputStream(new File(catalinaXML));
         } catch (FileNotFoundException e) {
             log.error("could not locate the file catalina-server.xml", e);
         }
-         //setting catalina.base system property. tomcat configurator refers this property while tomcat instance creation.
+        //setting catalina.base system property. tomcat configurator refers this property while tomcat instance creation.
         //you can override the property in wso2server.sh
         if (System.getProperty("catalina.base") == null) {
             System.setProperty("catalina.base", System.getProperty("carbon.home") + File.separator +
-                                                "lib" + File.separator + "tomcat");
+                    "lib" + File.separator + "tomcat");
         }
         tomcat = new CarbonTomcat();
         tomcat.configure(catalinaHome, inputStream);
