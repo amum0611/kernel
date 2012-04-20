@@ -25,8 +25,10 @@ public class ServletTransportManager {
         ServletTransportManager.portOffset = Integer.parseInt(portOffset);
         ServletTransportManager.httpPort = CarbonTomcatServiceHolder.getCarbonTomcatService().getPort("http") +
                 ServletTransportManager.portOffset;
+        System.setProperty("mgt.transport.http.port", String.valueOf(ServletTransportManager.httpPort ));
         ServletTransportManager.httpsPort = CarbonTomcatServiceHolder.getCarbonTomcatService().getPort("https") +
                 ServletTransportManager.portOffset;
+        System.setProperty("mgt.transport.https.port", String.valueOf(ServletTransportManager.httpsPort ));
     }
 
     @SuppressWarnings("unused")
