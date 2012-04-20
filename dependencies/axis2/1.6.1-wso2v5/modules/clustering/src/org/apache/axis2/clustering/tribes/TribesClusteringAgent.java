@@ -300,7 +300,7 @@ public class TribesClusteringAgent implements ClusteringAgent {
             Parameter port = httpTransport.getParameter("port");
             if (port != null) {
                 memberInfo.put("httpPort",
-                               Integer.valueOf((String)port.getValue()) + portOffset);
+                               String.valueOf(Integer.valueOf((String)port.getValue()) + portOffset));
             }
         }
         TransportInDescription httpsTransport = axisConfig.getTransportIn("https");
@@ -308,7 +308,7 @@ public class TribesClusteringAgent implements ClusteringAgent {
             Parameter port = httpsTransport.getParameter("port");
             if (port != null) {
                 memberInfo.put("httpsPort",
-                               Integer.valueOf((String)port.getValue()) + portOffset);
+                               String.valueOf(Integer.valueOf((String)port.getValue()) + portOffset));
             }
         }
         Parameter isActiveParam = getParameter(ClusteringConstants.Parameters.IS_ACTIVE);
