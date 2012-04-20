@@ -170,12 +170,29 @@ public final class CarbonConstants {
     public static final String SERVICE_DEPLOYMENT_TIME_PARAM = "serviceDeploymentTime";
 
     public static final String SERVICE_LAST_USED_TIME = "lastUsedTime";
+    public static final String GHOST_WEBAPP_PARAM = "GhostWebApp";
+    public static final String GHOST_WEBAPPS_FOLDER = "ghostWebapps";
+    public static final String WEB_APP_LAST_USED_TIME = "lastUsedTime";
+    public static final String GHOST_WEBAPP = "webApplication";
+    public static final String GHOST_ATTR_WEBAPP_CONTEXT_PATH = "contextPath";
+    public static final String GHOST_ATTR_WEBAPP_DISPLAY_NAME = "displayName";
+    public static final String GHOST_ATTR_WEBAPP_FILE = "file";
+    public static final String GHOST_ATTR_LAST_MODIFIED_TIME = "lastModifiedTime";
+    public static final String GHOST_ATTR_WEBAPP_SESSIONS = "sessions";
+    public static final String TOMCAT_GENERIC_WEBAPP_DEPLOYER = "tomcatGenericWebappsDeplyer";
+
 
     /**
      * The allowed idle time for a service deployed
      */
     public static final String SERVICE_IDLE_TIME = "service.idle.time";
     public static final int SERVICE_CLEANUP_PERIOD_SECS = 60;
+
+    /**
+     * The allowed idle time for a webapp deployed
+     */
+    public static final String WEBAPP_IDLE_TIME = "webapp.idle.time";
+    public static final int WEBAPP_CLEANUP_PERIOD_SECS = 60;
 
     //Constants useing for context config
     public static final String CONTEXTS = "contexts";
