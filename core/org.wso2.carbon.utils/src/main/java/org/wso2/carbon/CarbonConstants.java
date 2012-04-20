@@ -305,6 +305,7 @@ public final class CarbonConstants {
     public static final String CARBON_HOME_ENV = "CARBON_HOME";
     public static final String CARBON_HOME_PARAMETER = "${carbon.home}";
     public static final String CARBON_CONFIG_DIR_PATH_ENV = "CARBON_CONFIG_DIR_PATH";
+    public static final String CARBON_CATALINA_DIR_PATH_ENV = "CARBON_CATALINA_DIR_PATH";
     public static final String CARBON_TENANTS_DIR_PATH_ENV = "CARBON_TENANTS_DIR_PATH";
     public static final String CARBON_LOGS_PATH_ENV = "CARBON_LOGS";
     public static final String AXIS2_REPO_ENV = "AXIS2_REPO";

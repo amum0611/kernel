@@ -53,6 +53,7 @@ import java.util.*;
 public class CarbonUtils {
 
     private static final String REPOSITORY = "repository";
+    
 	private static final String TRUE = "true";
 	private static Log log = LogFactory.getLog(CarbonUtils.class);
     private static boolean isServerConfigInitialized;
@@ -182,6 +183,19 @@ public class CarbonUtils {
         return carbonHome;
     }
 
+	public static String getCarbonCatalinaHome() {
+		String carbonCatalinaHomePath = System.getProperty(ServerConstants.CARBON_CATALINA_HOME);
+		if (carbonCatalinaHomePath == null) {
+			carbonCatalinaHomePath = System.getenv(CarbonConstants.CARBON_CATALINA_DIR_PATH_ENV);
+			if (carbonCatalinaHomePath == null) {
+				return getCarbonHome() + File.separator + "lib" + File.separator + "tomcat"
+						+ File.separator + "work" + File.separator + "Catalina";
+			}
+		}
+		return carbonCatalinaHomePath;
+
+	}
+	
     public static String getCarbonTenantsDirPath() {
         String carbonTenantsDirPath = System.getProperty(ServerConstants.CARBON_TENANTS_DIR_PATH);
         if (carbonTenantsDirPath == null) {
