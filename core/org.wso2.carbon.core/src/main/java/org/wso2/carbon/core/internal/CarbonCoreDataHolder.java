@@ -29,49 +29,49 @@ import org.wso2.carbon.user.core.service.RealmService;
  * This singleton data holder contains all the data required by the Carbon core OSGi bundle
  */
 public class CarbonCoreDataHolder {
-    private static CarbonCoreDataHolder instance = new CarbonCoreDataHolder();
-    private static Log log = LogFactory.getLog(CarbonCoreDataHolder.class);
+    private  static CarbonCoreDataHolder instance = new CarbonCoreDataHolder();
+    private  Log log = LogFactory.getLog(CarbonCoreDataHolder.class);
 
-    private static BundleContext bundleContext;
-    private static RealmService realmService;
-    private static RegistryService registryService;
-    private static HttpService httpService;
-    private static ListenerManager listenerManager;
-    private static ConfigurationContext mainServerConfigContext;
-    private static ServerConfigurationService serverConfigurationService;
+    private  BundleContext bundleContext;
+    private  RealmService realmService;
+    private  RegistryService registryService;
+    private  HttpService httpService;
+    private  ListenerManager listenerManager;
+    private  ConfigurationContext mainServerConfigContext;
+    private  ServerConfigurationService serverConfigurationService;
 
-    public static CarbonCoreDataHolder getInstance() {
+    public  static CarbonCoreDataHolder getInstance() {
         return instance;
     }
 
     private CarbonCoreDataHolder() {
     }
 
-    public static BundleContext getBundleContext() {
+    public BundleContext getBundleContext() {
         return bundleContext;
     }
 
-    public static void setBundleContext(BundleContext bundleContext) {
-        CarbonCoreDataHolder.bundleContext = bundleContext;
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 
-    public static void setRealmService(RealmService realmService) {
-        CarbonCoreDataHolder.realmService = realmService;
+    public  void setRealmService(RealmService realmService) {
+        this.realmService = realmService;
     }
 
-    public static void setRegistryService(RegistryService registryService) {
-        CarbonCoreDataHolder.registryService = registryService;
+    public  void setRegistryService(RegistryService registryService) {
+        this.registryService = registryService;
     }
 
-    public static void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
-        CarbonCoreDataHolder.serverConfigurationService = serverConfigurationService;
+    public  void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+        this.serverConfigurationService = serverConfigurationService;
     }
 
-    public static void setHttpService(HttpService httpService) {
-        CarbonCoreDataHolder.httpService = httpService;
+    public  void setHttpService(HttpService httpService) {
+        this.httpService = httpService;
     }
 
-    public static HttpService getHttpService() throws Exception {
+    public  HttpService getHttpService() throws Exception {
         if (httpService == null) {
             String msg = "Before activating Carbon Core bundle, an instance of "
                     + HttpService.class.getName() + " should be in existance";
@@ -81,7 +81,7 @@ public class CarbonCoreDataHolder {
         return httpService;
     }
 
-    public static RealmService getRealmService() throws Exception {
+    public  RealmService getRealmService() throws Exception {
         if (realmService == null) {
             String msg = "Before activating Carbon Core bundle, an instance of "
                     + "UserRealm service should be in existance";
@@ -91,7 +91,7 @@ public class CarbonCoreDataHolder {
         return realmService;
     }
 
-    public static RegistryService getRegistryService() throws Exception {
+    public  RegistryService getRegistryService() throws Exception {
         if (registryService == null) {
             String msg = "Before activating Carbon Core bundle, an instance of "
                     + "RegistryService should be in existance";
@@ -101,29 +101,29 @@ public class CarbonCoreDataHolder {
         return registryService;
     }
 
-    public static ServerConfigurationService getServerConfigurationService() {
-        if (CarbonCoreDataHolder.serverConfigurationService == null) {
+    public  ServerConfigurationService getServerConfigurationService() {
+        if (this.serverConfigurationService == null) {
             String msg = "Before activating Carbon Core bundle, an instance of "
                     + "ServerConfigurationService should be in existance";
             log.error(msg);
         }
-        return CarbonCoreDataHolder.serverConfigurationService;
+        return this.serverConfigurationService;
     }
 
-    public static ListenerManager getListenerManager() {
+    public  ListenerManager getListenerManager() {
         return listenerManager;
     }
 
-    public static void setListenerManager(ListenerManager listenerManager) {
-        CarbonCoreDataHolder.listenerManager = listenerManager;
+    public  void setListenerManager(ListenerManager listenerManager) {
+        this.listenerManager = listenerManager;
     }
 
 
-    public static void setMainServerConfigContext(ConfigurationContext mainServerConfigContext) {
-        CarbonCoreDataHolder.mainServerConfigContext = mainServerConfigContext;
+    public  void setMainServerConfigContext(ConfigurationContext mainServerConfigContext) {
+        this.mainServerConfigContext = mainServerConfigContext;
     }
 
-    public static ConfigurationContext getMainServerConfigContext() {
+    public  ConfigurationContext getMainServerConfigContext() {
         return mainServerConfigContext;
     }
 }

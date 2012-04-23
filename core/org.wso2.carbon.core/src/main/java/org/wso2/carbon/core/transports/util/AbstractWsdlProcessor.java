@@ -60,8 +60,10 @@ public abstract class AbstractWsdlProcessor implements HttpGetRequestProcessor {
             axisService = GhostDeployerUtils.deployActualService(axisConfig, axisService);
         }
 
-        String hideAdminServiceWSDLs = CarbonCoreDataHolder.getServerConfigurationService().getFirstProperty(
-                CarbonConstants.AXIS2_CONFIG_PARAM + "." + CarbonConstants.HIDE_ADMIN_SERVICE_WSDLS);
+        String hideAdminServiceWSDLs =
+                CarbonCoreDataHolder.getInstance().
+                        getServerConfigurationService().getFirstProperty(CarbonConstants.AXIS2_CONFIG_PARAM +
+                                                                         "." + CarbonConstants.HIDE_ADMIN_SERVICE_WSDLS);
 
         OutputStream outputStream = response.getOutputStream();
         if (axisService != null) {

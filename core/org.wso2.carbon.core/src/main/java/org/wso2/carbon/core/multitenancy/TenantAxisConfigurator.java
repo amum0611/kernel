@@ -448,7 +448,8 @@ public class TenantAxisConfigurator extends DeploymentEngine implements AxisConf
                                                           tenantId, tenantDomain);
         scheduler = Executors.newScheduledThreadPool(1);
         String deploymentInterval =
-                CarbonCoreDataHolder.getServerConfigurationService().getFirstProperty("Axis2Config.DeploymentUpdateInterval");
+                CarbonCoreDataHolder.getInstance().
+                        getServerConfigurationService().getFirstProperty("Axis2Config.DeploymentUpdateInterval");
         int deploymentIntervalInt = 15;
         if(deploymentInterval != null) {
            deploymentIntervalInt = Integer.parseInt(deploymentInterval); 
@@ -485,7 +486,9 @@ public class TenantAxisConfigurator extends DeploymentEngine implements AxisConf
 
     private static void setHostName(AxisConfiguration axisConfig) throws DeploymentException {
         try {
-            String hostName = CarbonCoreDataHolder.getServerConfigurationService().getFirstProperty("HostName");
+            String hostName =
+                    CarbonCoreDataHolder.getInstance().
+                            getServerConfigurationService().getFirstProperty("HostName");
             if (hostName != null) {
                 Parameter param = ParameterUtil.createParameter(HOST_ADDRESS, hostName);
                 axisConfig.addParameter(param);

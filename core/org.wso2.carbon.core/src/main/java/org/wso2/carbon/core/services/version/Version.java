@@ -26,7 +26,8 @@ import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 public class Version {
 
     public String getVersion() throws Exception {
-        ServerConfigurationService serverConfig = CarbonCoreDataHolder.getServerConfigurationService();
+        ServerConfigurationService serverConfig =
+                CarbonCoreDataHolder.getInstance().getServerConfigurationService();
         return serverConfig.getFirstProperty("Name") + "-" +
                serverConfig.getFirstProperty("Version") ;
     }

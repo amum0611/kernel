@@ -42,7 +42,7 @@ public class HouseKeepingTask extends TimerTask {
         this.workDir = workDir;
         this.fileResourceMap = fileResourceMap;
         fileTimeoutMillis =
-                Integer.parseInt(CarbonCoreDataHolder.getServerConfigurationService().
+                Integer.parseInt(CarbonCoreDataHolder.getInstance().getServerConfigurationService().
                         getFirstProperty("HouseKeeping.MaxTempFileLifetime")) * 60 * 1000;
     }
 

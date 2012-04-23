@@ -145,7 +145,8 @@ public class PolicyProcessor implements HttpGetRequestProcessor {
                         } else {
                             String ipAddress = "http://" + NetworkUtils.getLocalHostname() + ":" +
                                                CarbonUtils.getTransportPort(configCtx, "http");
-                            ServerConfigurationService serverCofig = CarbonCoreDataHolder.getServerConfigurationService();
+                            ServerConfigurationService serverCofig =
+                                    CarbonCoreDataHolder.getInstance().getServerConfigurationService();
                             outputStream.write(("<html><head>" +
                                                 "<title>WSO2 Server v" +
                                                 serverCofig.getFirstProperty("Version") +

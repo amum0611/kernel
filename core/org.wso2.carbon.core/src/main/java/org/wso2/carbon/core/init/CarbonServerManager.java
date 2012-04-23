@@ -304,7 +304,7 @@ public final class CarbonServerManager implements Controllable {
                 isEmbedEnv = false;
             }
 
-            serverConfig = CarbonCoreDataHolder.getServerConfigurationService();
+            serverConfig = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
             //Checking Carbon home
             carbonHome = System.getProperty(ServerConstants.CARBON_HOME);
             if (carbonHome == null) {
@@ -415,7 +415,7 @@ public final class CarbonServerManager implements Controllable {
 
             //TODO As a tempory solution this part is added here. But when ui bundle are seperated from the core bundles
             //TODO this should be fixed.
-            ServerConfigurationService config = CarbonCoreDataHolder.getServerConfigurationService();
+            ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
             String type = config.getFirstProperty("Security.TrustStore.Type");
             String password = config.getFirstProperty("Security.TrustStore.Password");
             String storeFile = new File(config.getFirstProperty("Security.TrustStore.Location")).getAbsolutePath();
@@ -441,12 +441,12 @@ public final class CarbonServerManager implements Controllable {
             serviceRegistry.register(bundleContext.getBundles());
             new OSGiAxis2ServiceDeployer(serverConfigContext, bundleContext).registerBundleListener(); // This will register the OSGi bundle listener
 
-            HttpService httpService = CarbonCoreDataHolder.getHttpService();
+            HttpService httpService = CarbonCoreDataHolder.getInstance().getHttpService();
             HttpContext defaultHttpContext = httpService.createDefaultHttpContext();
 
             registerCarbonServlet(httpService, defaultHttpContext);
 
-            RealmService realmService = CarbonCoreDataHolder.getRealmService();
+            RealmService realmService = CarbonCoreDataHolder.getInstance().getRealmService();
             UserRealm teannt0Realm = realmService.getBootstrapRealm();
             CarbonJMXAuthenticator.setUserRealm(teannt0Realm);
 
@@ -455,7 +455,7 @@ public final class CarbonServerManager implements Controllable {
             if (CarbonUtils.useRegistryBasedRepository()) {
                 log.info("Using registry based repository");
                 UserRegistry userRegistry =
-                        CarbonCoreDataHolder.getRegistryService().getLocalRepository();
+                        CarbonCoreDataHolder.getInstance().getRegistryService().getLocalRepository();
                 RegistryBasedRepositoryUpdater.scheduleAtFixedRate(userRegistry,
                         "/repository/deployment/server",
                         axis2RepoLocation, 0, 10);
@@ -589,7 +589,7 @@ public final class CarbonServerManager implements Controllable {
 
 
     private void populateConnectionProperties() throws Exception {
-        RegistryService registryService = CarbonCoreDataHolder.getRegistryService();
+        RegistryService registryService = CarbonCoreDataHolder.getInstance().getRegistryService();
         Registry registry = registryService.getConfigSystemRegistry();
         String contextRoot = serverConfigContext.getContextRoot();
         String servicePath = serverConfigContext.getServicePath();
@@ -625,7 +625,7 @@ public final class CarbonServerManager implements Controllable {
 
     public void stopListenerManager() throws AxisFault {
         try {
-            ListenerManager listenerManager = CarbonCoreDataHolder.getListenerManager();
+            ListenerManager listenerManager = CarbonCoreDataHolder.getInstance().getListenerManager();
             if (listenerManager != null) {
                 listenerManager.destroy();
             }
@@ -868,7 +868,7 @@ public final class CarbonServerManager implements Controllable {
                 servicePath = "/" + servicePath;
             }
             try {
-                CarbonCoreDataHolder.getHttpService().unregister(servicePath);
+                CarbonCoreDataHolder.getInstance().getHttpService().unregister(servicePath);
             } catch (Exception e) {
                 log.error("Failed to Un-register Servlets ", e);
             }

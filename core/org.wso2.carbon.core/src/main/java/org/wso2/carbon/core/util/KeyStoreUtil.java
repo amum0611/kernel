@@ -49,7 +49,8 @@ public class KeyStoreUtil {
     }
 
     public static String getKeyStoreFileName(String fullName) {
-        ServerConfigurationService config = CarbonCoreDataHolder.getServerConfigurationService();
+        ServerConfigurationService config =
+                CarbonCoreDataHolder.getInstance().getServerConfigurationService();
         String fileName = config
                 .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_FILE);
         String name = null;
@@ -68,7 +69,8 @@ public class KeyStoreUtil {
     }
 
     public static boolean isPrimaryStore(String id) {
-        ServerConfigurationService config = CarbonCoreDataHolder.getServerConfigurationService();
+        ServerConfigurationService config =
+                CarbonCoreDataHolder.getInstance().getServerConfigurationService();
         String fileName = config
                 .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_FILE);
         int index = fileName.lastIndexOf('/');

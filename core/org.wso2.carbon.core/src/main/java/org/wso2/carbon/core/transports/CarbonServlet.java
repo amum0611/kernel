@@ -72,7 +72,7 @@ public class CarbonServlet extends AxisServlet {
 
     private void populateGetRequestProcessors() throws ServletException {
         try {
-            OMElement docEle = XMLUtils.toOM(CarbonCoreDataHolder.getServerConfigurationService().getDocumentElement());
+            OMElement docEle = XMLUtils.toOM(CarbonCoreDataHolder.getInstance().getServerConfigurationService().getDocumentElement());
             if (docEle != null) {
                 SimpleNamespaceContext nsCtx = new SimpleNamespaceContext();
                 nsCtx.addNamespace("wsas", ServerConstants.CARBON_SERVER_XML_NAMESPACE);

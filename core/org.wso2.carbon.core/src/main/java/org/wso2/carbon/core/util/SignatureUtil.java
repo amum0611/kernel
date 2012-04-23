@@ -106,7 +106,7 @@ public class SignatureUtil {
     private static PrivateKey getDefaultPrivateKey() throws Exception {
         KeyStoreManager keyStoreMan = KeyStoreManager.getInstance(null);
         KeyStore keyStore = keyStoreMan.getPrimaryKeyStore();
-        ServerConfigurationService config = CarbonCoreDataHolder.getServerConfigurationService();
+        ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
         String password = config
                 .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_PASSWORD);
         String alias = config.getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);
@@ -116,7 +116,7 @@ public class SignatureUtil {
     private static PublicKey getDefaultPublicKey() throws Exception {
         KeyStoreManager keyStoreMan = KeyStoreManager.getInstance(null);
         KeyStore keyStore = keyStoreMan.getPrimaryKeyStore();
-        ServerConfigurationService config = CarbonCoreDataHolder.getServerConfigurationService();
+        ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
         String alias = config
                 .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);
         return (PublicKey) keyStore.getCertificate(alias).getPublicKey();

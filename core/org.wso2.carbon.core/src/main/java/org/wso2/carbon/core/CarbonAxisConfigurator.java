@@ -432,7 +432,8 @@ public class CarbonAxisConfigurator extends DeploymentEngine implements AxisConf
                                                           MultitenantConstants.SUPER_TENANT_NAME);
         scheduler = Executors.newScheduledThreadPool(1);
         String deploymentInterval =
-                CarbonCoreDataHolder.getServerConfigurationService().getFirstProperty("Axis2Config.DeploymentUpdateInterval");
+                CarbonCoreDataHolder.getInstance().
+                        getServerConfigurationService().getFirstProperty("Axis2Config.DeploymentUpdateInterval");
         int deploymentIntervalInt = 15;
         if(deploymentInterval != null) {
            deploymentIntervalInt = Integer.parseInt(deploymentInterval);

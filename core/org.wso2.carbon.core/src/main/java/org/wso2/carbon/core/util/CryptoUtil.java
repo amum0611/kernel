@@ -45,7 +45,8 @@ public class CryptoUtil {
 
     public static CryptoUtil getDefaultCryptoUtil(){
         if(instance == null){
-            ServerConfigurationService config = CarbonCoreDataHolder.getServerConfigurationService();
+            ServerConfigurationService config =
+                    CarbonCoreDataHolder.getInstance().getServerConfigurationService();
             String alias = config.getFirstProperty("Security.KeyStore.KeyAlias");
             String pkPassword = config.getFirstProperty( "Security.KeyStore.KeyPassword");
             instance = new CryptoUtil(alias,pkPassword);
