@@ -437,7 +437,11 @@ public final class TenantAxisUtils {
         String tenantDomain = SuperTenantCarbonContext.getCurrentContext(tenantCfgCtx).getTenantDomain();
         try {
             doPreConfigContextTermination(tenantCfgCtx);
-            tenantCfgCtx.shutdownModulesAndServices();
+            try {
+                tenantCfgCtx.shutdownModulesAndServices();
+            } catch (Exception e) {
+                log.warn("Cannot shutdown modules & services for tenant " + tenantDomain, e);
+            }
             tenantCfgCtx.terminate();
             doPostConfigContextTermination(tenantCfgCtx);
             tenantConfigContexts.remove(tenantDomain);
