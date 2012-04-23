@@ -902,7 +902,10 @@ public class PermissionTree {
                         read.unlock();
                     }
                     
-                    log.info("Newly loaded permission tree from database for tenant " + tenantId);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Newly loaded permission tree from database for tenant " + 
+                                   tenantId);
+                    }
                 }
             }
         }
