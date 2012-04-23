@@ -32,7 +32,7 @@ import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 
 /**
  * This task takes care of deployment in WSO2 Carbon servers.
- *
+ * <p/>
  * It will do a deployment synchronization, followed by hot deployment
  */
 public class CarbonDeploymentSchedulerTask extends SchedulerTask {
@@ -54,7 +54,7 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
         this.axisConfig = axisConfig;
     }
 
-    public void runAxisDeployment(){
+    public void runAxisDeployment() {
         synchronized (this) {
             super.run();
         }
@@ -67,13 +67,12 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
             SuperTenantCarbonContext.getCurrentContext().setTenantId(tenantId);
             SuperTenantCarbonContext.getCurrentContext().setTenantDomain(tenantDomain);
 
-            boolean isRepoChanged = doDeploymentSynchronization();
-            if (log.isDebugEnabled()) {
-                log.debug("Running hot deployment...");
-            }
+            deploymentSyncUpdate();
             synchronized (this) {
-                super.run();
+                super.run();  // artifact meta files which need to be committed may be generated during this super.run() call
             }
+            boolean isRepoChanged = deploymentSyncCommit();
+
             if (isRepoChanged) {
                 sendRepositorySyncMessage();
             }
@@ -82,35 +81,62 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
         }
     }
 
-    private boolean doDeploymentSynchronization() {
+    private void deploymentSyncUpdate() {
         if (log.isDebugEnabled()) {
-            log.debug("Running deployment synchronizer...");
+            log.debug("Running deployment synchronizer update...");
         }
-        boolean status = false;
         BundleContext bundleContext = CarbonCoreDataHolder.getInstance().getBundleContext();
         ServiceReference reference = bundleContext.getServiceReference(DeploymentSynchronizer.class.getName());
         if (reference != null) {
             ServiceTracker serviceTracker = new ServiceTracker(bundleContext,
-                                                               DeploymentSynchronizer.class.getName(),
-                                                               null);
+                    DeploymentSynchronizer.class.getName(),
+                    null);
             try {
                 serviceTracker.open();
                 for (Object obj : serviceTracker.getServices()) {
                     DeploymentSynchronizer depsync = (DeploymentSynchronizer) obj;
-                    if(!isInitialUpdateDone || isRepoUpdateFailed){
+                    if (!isInitialUpdateDone || isRepoUpdateFailed) {
                         depsync.update(tenantId);
                         isInitialUpdateDone = true;
                         isRepoUpdateFailed = false;
                     }
-                    status = depsync.commit(tenantId);
                 }
             } catch (Exception e) {
-                log.error("Deployment synchronization for tenant " + tenantId + " failed", e);
+                log.error("Deployment synchronization update for tenant " + tenantId + " failed", e);
             } finally {
                 serviceTracker.close();
             }
         }
-        return status;
+    }
+
+
+    private boolean deploymentSyncCommit() {
+        if (log.isDebugEnabled()) {
+            log.debug("Running deployment synchronizer commit...");
+        }
+        boolean isFilesCommitted = false;
+        BundleContext bundleContext = CarbonCoreDataHolder.getInstance().getBundleContext();
+        ServiceReference reference = bundleContext.getServiceReference(DeploymentSynchronizer.class.getName());
+        if (reference != null) {
+            ServiceTracker serviceTracker = new ServiceTracker(bundleContext,
+                    DeploymentSynchronizer.class.getName(),
+                    null);
+            try {
+                serviceTracker.open();
+                for (Object obj : serviceTracker.getServices()) {
+                    DeploymentSynchronizer depsync = (DeploymentSynchronizer) obj;
+                    isFilesCommitted = depsync.commit(tenantId);
+                    if (isFilesCommitted) {
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Deployment synchronization commit for tenant " + tenantId + " failed", e);
+            } finally {
+                serviceTracker.close();
+            }
+        }
+        return isFilesCommitted;
     }
 
     private void sendRepositorySyncMessage() {
@@ -120,20 +146,20 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
         ClusteringAgent clusteringAgent =
                 CarbonCoreDataHolder.getInstance().getMainServerConfigContext().
                         getAxisConfiguration().getClusteringAgent();
-        if(clusteringAgent != null) {
+        if (clusteringAgent != null) {
             int numberOfRetries = 0;
             while (numberOfRetries < 60) {
                 try {
                     clusteringAgent.sendMessage(new SynchronizeRepositoryRequest(tenantId), true);
                     break;
                 } catch (ClusteringFault e) {
-                    numberOfRetries ++;
+                    numberOfRetries++;
                     if (numberOfRetries < 60) {
                         log.warn("Could not send SynchronizeRepositoryRequest for tenant " +
-                                  tenantId + ". Retry will be attempted in 2s.", e);
+                                tenantId + ". Retry will be attempted in 2s.", e);
                     } else {
                         log.error("Could not send SynchronizeRepositoryRequest for tenant " +
-                                  tenantId + ". Several retries failed", e);
+                                tenantId + ". Several retries failed", e);
                     }
                     try {
                         Thread.sleep(2000);
