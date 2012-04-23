@@ -1286,8 +1286,25 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
         }
     }
 
-    public void persistServicePolicy(String serviceGroupId, Policy policy,
-                                    String policyUuid, String policyType, String servicePath) throws Exception {
+    /**
+     *
+     * @param serviceGroupId
+     * @param policy
+     * @param policyUuid
+     * @param policyType
+     * @param servicePath
+     * @param engagementPath The xpath to where the policy is applied. This could be serviceXPath, or operationPath etc.
+     * @throws Exception
+     */
+    public void persistServicePolicy(String serviceGroupId, Policy policy, String policyUuid,
+                                     String policyType, String servicePath, String engagementPath) throws Exception {
+        if (engagementPath == null) {
+            engagementPath = servicePath;
+        }
+        boolean transactionStarted = getServiceGroupFilePM().isTransactionStarted(serviceGroupId);
+        if (!transactionStarted) {
+            getServiceGroupFilePM().beginTransaction(serviceGroupId);
+        }
         OMFactory omFactory = OMAbstractFactory.getOMFactory();
         OMElement policyWrapperElement = omFactory.createOMElement(Resources.POLICY, null);
         policyWrapperElement.addAttribute(Resources.ServiceProperties.POLICY_TYPE, policyType, null);
@@ -1314,6 +1331,11 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
         }
         getServiceGroupFilePM().put(serviceGroupId, policyWrapperElement, servicePath +
                 "/" + Resources.POLICIES);
+
+        getServiceGroupFilePM().put(serviceGroupId, idElement.cloneOMElement(), engagementPath);
+        if(!transactionStarted) {
+            getServiceGroupFilePM().commitTransaction(serviceGroupId);
+        }
         if (log.isDebugEnabled()) {
             log.debug("Policy is saved in the file system for " + servicePath);
         }

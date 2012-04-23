@@ -109,7 +109,6 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
         try {
             if (getCurrentFPM().fileExists(moduleName)) {
                 OMElement sgElement = (OMElement) getCurrentFPM().get(moduleName, Resources.ModuleProperties.ROOT_XPATH);
-                //todo how come this SUCCESSFULLY_ADDED to top-level module level? It shud be under <version>. now fixed. test this
                 if (getModuleFilePM().getAttribute(moduleName, Resources.ModuleProperties.VERSION_XPATH +
                         PersistenceUtils.getXPathAttrPredicate(Resources.ModuleProperties.VERSION_ID, moduleVersion) +
                         "/@" + Resources.SUCCESSFULLY_ADDED) != null) {
@@ -196,9 +195,6 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
             module.addAttribute(Resources.ModuleProperties.GLOBALLY_ENGAGED,
                     String.valueOf(isGloballyEngaged), null);
 
-//            String registryResourcePath = RegistryResources.MODULES + moduleName
-//                    + "/" + moduleVersion;
-            //todo For modules/ xml root element is modules
             getModuleFilePM().put(moduleName, module, Resources.ModuleProperties.ROOT_XPATH);
 
             String xpathOfCurrentModuleVersion = Resources.ModuleProperties.VERSION_XPATH +
@@ -429,7 +425,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
     private void handleGlobalModule(AxisModule module, boolean engage) throws Exception {
 
         getCurrentFPM().beginTransaction(module.getName());
-        if (getCurrentFPM().fileExists(module.getName())) {
+        if (getCurrentFPM().elementExists(module.getName(), PersistenceUtils.getResourcePath(module))) {
             OMElement moduleElement = getModuleFilePM().get(module.getName());
             moduleElement.addAttribute(Resources.ModuleProperties.GLOBALLY_ENGAGED, String.valueOf(engage), null);
         } else {
@@ -440,6 +436,10 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
 
     public void persistModulePolicy(String moduleName, String moduleVersion, Policy policy,
                                     String policyUuid, String policyType, String modulePath) throws Exception {
+        boolean transactionStarted = getModuleFilePM().isTransactionStarted(moduleName);
+        if (!transactionStarted) {
+            getModuleFilePM().beginTransaction(moduleName);
+        }
         OMFactory omFactory = OMAbstractFactory.getOMFactory();
         OMElement policyWrapperElement = omFactory.createOMElement(Resources.POLICY, null);
         policyWrapperElement.addAttribute(Resources.ServiceProperties.POLICY_TYPE, policyType, null);
@@ -468,6 +468,9 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
         }
         getModuleFilePM().put(moduleName, policyWrapperElement, modulePath +
                 "/" + Resources.POLICIES);
+        if (!transactionStarted) {
+            getModuleFilePM().commitTransaction(moduleName);
+        }
         if (log.isDebugEnabled()) {
             log.debug("Policy is saved in the file system for "+moduleName);
         }
