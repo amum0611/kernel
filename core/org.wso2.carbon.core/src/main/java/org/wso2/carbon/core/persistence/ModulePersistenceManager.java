@@ -179,10 +179,9 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
             //Create a new module version
             OMElement module = omFactory.createOMElement(Resources.VERSION, null);
 
-//            if (!moduleVersion.equals(Resources.ModuleProperties.UNDEFINED)) {
-            //todo is it ok to add the version attribute to <module> tag? this isn't the case now -kasung
+
             module.addAttribute(Resources.ModuleProperties.VERSION_ID, moduleVersion, null);
-//            }
+
             AxisConfigurator configurator = axisConfig.getConfigurator();
             boolean isGloballyEngaged = false;
             if (configurator instanceof CarbonAxisConfigurator) {
@@ -232,7 +231,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
                 policyWrapperElement.addChild(idElement);
                 policyWrapperElement.addAttribute(
                         Resources.ServiceProperties.POLICY_TYPE, "" + modulePolicy.getType(), null);
-                policyWrapperElement.addAttribute(Resources.VERSION, axisModule.getVersion().toString(), null);
+                policyWrapperElement.addAttribute(Resources.VERSION, moduleVersion, null);
                 policyWrapperElement.addChild(policyElement);
 
                 getModuleFilePM().put(moduleName, policyWrapperElement, policiesXpath);
@@ -241,7 +240,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
 
             getModuleFilePM().commitTransaction(moduleName);
             if (log.isDebugEnabled()) {
-                log.debug("Added new module - " + axisModule.getName() + "- version undefined");
+                log.debug("Added new module - " + axisModule.getName() + "- version " + moduleVersion);
             }
         } catch (Throwable e) {
             handleExceptionWithRollback(moduleName, "Unable to handle new module addition. Module: " +
@@ -263,6 +262,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
     public void handleExistingModuleInit(OMElement moduleResource,
                                          AxisModule axisModule) throws Exception {
         String moduleName = axisModule.getName();
+        String version = PersistenceUtils.getModuleVersion(axisModule);
         try {
             getModuleFilePM().beginTransaction(moduleName);
 
@@ -290,7 +290,6 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
             String policiesXpath = PersistenceUtils.getResourcePath(axisModule) + "/" + Resources.POLICIES + "/" + Resources.POLICY;
             if (getModuleFilePM().elementExists(moduleName, policiesXpath)) {
                 AXIOMXPath xpathExpr = new AXIOMXPath(policiesXpath);
-//                OMElement policyElement = xpathExpr.selectNodes(moduleResource);
                 List policyElements = xpathExpr.selectNodes(moduleResource);
 
                 for (Object node : policyElements) {
@@ -302,11 +301,6 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
                             new QName(Resources.WS_POLICY_NAMESPACE, "Policy")));  //note that P is capital);
                     axisModule.getPolicySubject().attachPolicy(policy);
                 }
-//                for(Iterator itr = policyElement.getChildrenWithName(new QName(
-//                        "http://schemas.xmlsoap.org/ws/2004/09/policy", "Policy")); itr.hasNext(); ) {
-//                    Policy policy = PolicyEngine.getPolicy((OMElement) itr.next());
-//                    axisModule.getPolicySubject().attachPolicy(policy);
-//                }
             }
 
             PersistenceUtils.handleGlobalParams(axisModule, moduleResource);
@@ -314,11 +308,11 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
 
             if (log.isDebugEnabled()) {
                 log.debug("Initialized module - " + Utils.getModuleName(axisModule.getName(),
-                        axisModule.getVersion().toString()));
+                        version));
             }
         } catch (Throwable e) {
             handleExceptionWithRollback(moduleName, "Unable to handle module init. Module: " + Utils
-                    .getModuleName(axisModule.getName(), axisModule.getVersion().toString()), e);
+                    .getModuleName(axisModule.getName(), version), e);
             PersistenceUtils.markFaultyModule(axisModule);
         }
     }
@@ -331,9 +325,10 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
      * @throws Exception - on error
      */
     public void removeModuleParameter(AxisModule module, Parameter parameter) throws Exception {
+        String version = PersistenceUtils.getModuleVersion(module);
         removeParameter(module.getName(), parameter.getName(), Resources.ModuleProperties.VERSION_XPATH +
                 PersistenceUtils.getXPathAttrPredicate(
-                        Resources.ModuleProperties.VERSION_ID, module.getVersion().toString()));
+                        Resources.ModuleProperties.VERSION_ID, version));
     }
 
     /**
@@ -346,9 +341,10 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
      */
     public void updateModuleParameter(AxisModule module, Parameter parameter) throws Exception {
         try {
+            String version = PersistenceUtils.getModuleVersion(module);
 //            /module/version[id="2.32"]
             String xpath = Resources.ModuleProperties.VERSION_XPATH +
-                    PersistenceUtils.getXPathAttrPredicate(Resources.ModuleProperties.VERSION_ID, module.getVersion().toString());
+                    PersistenceUtils.getXPathAttrPredicate(Resources.ModuleProperties.VERSION_ID, version);
             updateParameter(module.getName(), parameter, xpath);
         } catch (Throwable e) {
             handleExceptionWithRollback(module.getName(), "Unable to update module parameter " +
@@ -363,10 +359,11 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
      * @throws Exception - on error
      */
     public void removeModule(AxisModule module) throws Exception {
+        String version = PersistenceUtils.getModuleVersion(module);
         //call removeresource with xpath
         removeResource(module.getName(), Resources.ModuleProperties.VERSION_XPATH +
                 PersistenceUtils.getXPathAttrPredicate(
-                        Resources.ModuleProperties.VERSION_ID, module.getVersion().toString()));
+                        Resources.ModuleProperties.VERSION_ID, version));
     }
 
     /**
@@ -472,7 +469,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
             getModuleFilePM().commitTransaction(moduleName);
         }
         if (log.isDebugEnabled()) {
-            log.debug("Policy is saved in the file system for "+moduleName);
+            log.debug("Policy is saved in the file system for " + moduleName);
         }
     }
 

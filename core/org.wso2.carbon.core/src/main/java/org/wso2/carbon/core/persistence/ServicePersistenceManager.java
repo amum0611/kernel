@@ -192,7 +192,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                     Map.Entry entry = (Map.Entry) o;
                     AxisBinding axisBinding = ((AxisEndpoint) entry.getValue()).getBinding();
 
-//                    ROOT_XPATH[@name="xxx"]/bindings
+                    //  ROOT_XPATH[@name="xxx"]/bindings
                     String bindingsPath = PersistenceUtils.getResourcePath(axisService) +
                             "/" + Resources.ServiceProperties.BINDINGS;
                     if (!getServiceGroupFilePM().elementExists(sgName, bindingsPath +
@@ -212,9 +212,6 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                     getServiceGroupFilePM().put(sgName, policiesEl, PersistenceUtils.getResourcePath(axisService));
                 }
                 for (OMElement servicePolicy : servicePolicies) {
-//                    OMElement policiesEl = omFactory.createOMElement(Resources.POLICY, null);
-//                    OMElement policyWrapperEl = omFactory.createOMElement(Resources.POLICY, null, policiesEl);
-//                    getServiceGroupFilePM().put(sgName, policiesEl, PersistenceUtils.getResourcePath(axisService));
                     getServiceGroupFilePM().put(sgName, servicePolicy, policiesPath);
                 }
 
@@ -251,16 +248,13 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 for (Object node : axisService.getEngagedModules()) {
                     AxisModule axisModule = (AxisModule) node;
                     //we just put each modules inside top-level service element
-                    if (!isGloballyEngaged(axisModule.getName(), axisModule.getVersion().toString())
+                    String version = PersistenceUtils.getModuleVersion(axisModule);
+                    if (!isGloballyEngaged(axisModule.getName(), version)
                             && !axisService.getParent().isEngaged(axisModule.getName())) {
                         OMElement module = omFactory.createOMElement(
                                 Resources.ModuleProperties.MODULE_XML_TAG, null);
                         module.addAttribute(Resources.NAME, axisModule.getName(), null);
-                        if (axisModule.getVersion() != null) {
-                            module.addAttribute(Resources.VERSION, axisModule.getVersion().toString(), null);
-                        } else {
-                            module.addAttribute(Resources.VERSION, Resources.ModuleProperties.UNDEFINED, null);
-                        }
+                        module.addAttribute(Resources.VERSION, version, null);
                         module.addAttribute(Resources.ModuleProperties.TYPE,
                                 Resources.Associations.ENGAGED_MODULES, null);
 
@@ -273,12 +267,12 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                     AxisOperation axisOperation = (AxisOperation) iter.next();
                     for (Object o : axisOperation.getEngagedModules()) {
                         AxisModule axisModule = (AxisModule) o;
-//                        String moduleResourcePath = PersistenceUtils.getResourcePath(axisModule);
-                        if (!isGloballyEngaged(axisModule.getName(), axisModule.getVersion().toString())
+                        String version = PersistenceUtils.getModuleVersion(axisModule);
+                        if (!isGloballyEngaged(axisModule.getName(), version)
                                 && !axisService.getParent().isEngaged(axisModule.getName())
                                 && !axisService.isEngaged(axisModule.getName())) {
                             OMElement module = PersistenceUtils.createModule(axisModule.getName(),
-                                    axisModule.getVersion().toString(),
+                                    version,
                                     Resources.Associations.ENGAGED_MODULES);
 
                             getServiceGroupFilePM().put(sgName, module, PersistenceUtils
@@ -470,10 +464,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
                     for (Object o : axisOperation.getEngagedModules()) {
                         AxisModule axisModule = (AxisModule) o;
-                        String version = Resources.ModuleProperties.UNDEFINED;
-                        if (axisModule.getVersion() != null) {
-                            version = axisModule.getVersion().toString();
-                        }
+                        String version = PersistenceUtils.getModuleVersion(axisModule);
 
                         if (!isGloballyEngaged(axisModule.getName(), version)
                                 && !axisService.getParent().isEngaged(axisModule.getName())

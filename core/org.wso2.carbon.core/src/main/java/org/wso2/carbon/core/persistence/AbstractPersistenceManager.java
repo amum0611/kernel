@@ -268,16 +268,13 @@ public abstract class AbstractPersistenceManager {
         if (!isStarted) {
             getServiceGroupFilePM().beginTransaction(serviceGroupId);
         }
+        String version = PersistenceUtils.getModuleVersion(module);
         if (engage) {
             OMElement moduleElement = PersistenceUtils.createModule(module.getName(),
-                    module.getVersion().toString(),
+                    version,
                     Resources.Associations.ENGAGED_MODULES);
             getServiceGroupFilePM().put(serviceGroupId, moduleElement, xpathStr);
         } else {
-            String version = module.getVersion().toString();
-            if (version == null) {
-                version = Resources.ModuleProperties.UNDEFINED;
-            }
             OMElement moduleElement = (OMElement) getServiceGroupFilePM().get(serviceGroupId,
                     xpathStr + "/" + Resources.ModuleProperties.MODULE_XML_TAG +
                             PersistenceUtils.getXPathAttrPredicate(Resources.NAME, module.getName()) +

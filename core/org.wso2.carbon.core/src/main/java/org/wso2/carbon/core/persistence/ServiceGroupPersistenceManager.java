@@ -279,12 +279,10 @@ public class ServiceGroupPersistenceManager extends AbstractPersistenceManager {
                 // Handle ServiceGroup-Module engagement
                 for (Object o : serviceGroup.getEngagedModules()) {
                     AxisModule axisModule = (AxisModule) o;
-                    if (!axisConfig.isEngaged(axisModule.getName())) {
-                        OMElement module = omFactory.createOMElement("module", null);
-                        module.addAttribute(Resources.NAME, axisModule.getName(), null);
-                        if (axisModule.getVersion() != null) {
-                            module.addAttribute(Resources.VERSION, axisModule.getVersion().toString(), null);
-                        }
+                    if (!axisConfig.isEngaged(axisModule.getName()) ) {
+                        String version = PersistenceUtils.getModuleVersion(axisModule);
+                        OMElement module = PersistenceUtils.createModule(axisModule.getName(), version,
+                                Resources.Associations.ENGAGED_MODULES);
                         //todo DEBUG apparently, this didn't work. CHECK IT
                         getServiceGroupFilePM().put(sgName, module, Resources.ServiceGroupProperties.ROOT_XPATH);
                     }

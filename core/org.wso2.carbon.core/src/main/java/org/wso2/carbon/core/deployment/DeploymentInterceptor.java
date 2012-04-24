@@ -360,7 +360,7 @@ public class DeploymentInterceptor implements AxisObserver {
                 if (pf.getModuleFilePM().elementExists(moduleName,
                         PersistenceUtils.getResourcePath(axisModule))) {
                     try {
-                        //todo this is totally unnecessary. This does unnecessary parsing that is not needed. Remove this just doing the 'if' is enough
+                        //todo this is unnecessary. This does unnecessary parsing that is not needed. Remove this just the above condition is enough
                         module = (OMElement) pf.getModuleFilePM().
                                 get(moduleName, Resources.ModuleProperties.VERSION_XPATH +
                                         PersistenceUtils.getXPathAttrPredicate(

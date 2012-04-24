@@ -114,10 +114,7 @@ public final class PersistenceUtils {
      * @return module resource path
      */
     public static String getResourcePath(AxisModule module) {
-        String version = Resources.ModuleProperties.UNDEFINED;
-        if (module.getVersion() != null) {
-            version = module.getVersion().toString();
-        }
+        String version = getModuleVersion(module);
         //  /version[@id="xxx"]
         return Resources.ModuleProperties.VERSION_XPATH + PersistenceUtils.
                 getXPathAttrPredicate(Resources.ModuleProperties.VERSION_ID, version);
@@ -223,8 +220,9 @@ public final class PersistenceUtils {
      * @param axisModule - AxisModule instance to be marked as faulty
      */
     public static void markFaultyModule(AxisModule axisModule) {
+        String version = PersistenceUtils.getModuleVersion(axisModule);
         axisModule.getParent().getFaultyModules().put(Utils.getModuleName(axisModule.getName(),
-                axisModule.getVersion().toString()), axisModule.getName());
+                version), axisModule.getName());
     }
 
     /**
@@ -392,14 +390,14 @@ public final class PersistenceUtils {
      * Creates a registry Resource for a given Policy
      *
      * @param configRegistry config registry
-     * @param policy     - Policy instance
-     * @param policyId   - policy uuid
-     * @param policyType - policy type
+     * @param policy         - Policy instance
+     * @param policyId       - policy uuid
+     * @param policyType     - policy type
      * @return - created policy resource
      * @throws Exception - error on serialization
      */
     public static Resource createPolicyResource(Registry configRegistry,
-                                            Policy policy, String policyId, String policyType)
+                                                Policy policy, String policyId, String policyType)
             throws RegistryException {
         try {
             Resource policyResource = configRegistry.newResource();
@@ -415,11 +413,10 @@ public final class PersistenceUtils {
             policyResource.setProperty(RegistryResources.ServiceProperties.POLICY_TYPE, policyType);
             return policyResource;
         } catch (XMLStreamException e) {
-            log.error("Error creating the registry resource for "+policyId, e);
-            throw new RegistryException("Error creating the registry resource for "+policyId, e);
+            log.error("Error creating the registry resource for " + policyId, e);
+            throw new RegistryException("Error creating the registry resource for " + policyId, e);
         }
     }
-
 
     /**
      * Returns the policyUUID (Resources.POLICY_UUID) from the given policyWrapperElement OMElement
@@ -433,4 +430,11 @@ public final class PersistenceUtils {
         return policyWrapperElement.getFirstChildWithName(new QName(Resources.ServiceProperties.POLICY_UUID)).getText();
     }
 
+    public static String getModuleVersion(AxisModule axisModule) {
+        String version = Resources.ModuleProperties.UNDEFINED;
+        if (axisModule.getVersion() != null) {
+            version = axisModule.getVersion().toString();
+        }
+        return version;
+    }
 }
