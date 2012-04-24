@@ -435,13 +435,13 @@ public final class TenantAxisUtils {
         Map<String, ConfigurationContext> tenantConfigContexts =
                 getTenantConfigurationContexts(mainServerConfigContext);
         String tenantDomain = SuperTenantCarbonContext.getCurrentContext(tenantCfgCtx).getTenantDomain();
+        tenantCfgCtx.getAxisConfiguration().getConfigurator().cleanup();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException ignored) {
+        }
         try {
             doPreConfigContextTermination(tenantCfgCtx);
-            try {
-                tenantCfgCtx.shutdownModulesAndServices();
-            } catch (Exception e) {
-                log.warn("Cannot shutdown modules & services for tenant " + tenantDomain, e);
-            }
             tenantCfgCtx.terminate();
             doPostConfigContextTermination(tenantCfgCtx);
             tenantConfigContexts.remove(tenantDomain);
