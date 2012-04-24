@@ -37,7 +37,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.eclipse.equinox.http.helper.FilterServletAdaptor;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -45,20 +49,27 @@ import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.base.CarbonBaseConstants;
 import org.wso2.carbon.base.CarbonContextHolderBase;
 import org.wso2.carbon.base.api.ServerConfigurationService;
-import org.wso2.carbon.core.*;
+import org.wso2.carbon.core.CarbonAxisConfigurator;
+import org.wso2.carbon.core.CarbonConfigurationContextFactory;
+import org.wso2.carbon.core.CarbonThreadCleanup;
+import org.wso2.carbon.core.RegistryResources;
+import org.wso2.carbon.core.ServerInitializer;
+import org.wso2.carbon.core.ServerManagement;
+import org.wso2.carbon.core.ServerStatus;
 import org.wso2.carbon.core.deployment.OSGiAxis2ServiceDeployer;
 import org.wso2.carbon.core.deployment.RegistryBasedRepositoryUpdater;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 import org.wso2.carbon.core.internal.CarbonCoreServiceComponent;
+import org.wso2.carbon.core.multitenancy.GenericArtifactUnloader;
 import org.wso2.carbon.core.internal.HTTPGetProcessorListener;
 import org.wso2.carbon.core.multitenancy.MultitenantServerManager;
-import org.wso2.carbon.core.multitenancy.ServiceUnloader;
 import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 import org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
 import org.wso2.carbon.core.security.CarbonJMXAuthenticator;
 import org.wso2.carbon.core.transports.CarbonServlet;
 import org.wso2.carbon.core.transports.TransportPersistenceManager;
-import org.wso2.carbon.core.util.*;
+import org.wso2.carbon.core.util.HouseKeepingTask;
+import org.wso2.carbon.core.util.ParameterUtil;
 import org.wso2.carbon.core.util.Utils;
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.Resource;
@@ -66,17 +77,30 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.session.UserRegistry;
 import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.service.RealmService;
-import org.wso2.carbon.utils.*;
+import org.wso2.carbon.utils.Axis2ConfigItemHolder;
+import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.utils.ConfigurationContextService;
+import org.wso2.carbon.utils.Controllable;
+import org.wso2.carbon.utils.FileManipulator;
+import org.wso2.carbon.utils.MBeanRegistrar;
+import org.wso2.carbon.utils.NetworkUtils;
+import org.wso2.carbon.utils.ServerConstants;
+import org.wso2.carbon.utils.ServerException;
+import org.wso2.carbon.utils.WSO2Constants;
 import org.wso2.carbon.utils.deployment.Axis2ServiceRegistry;
 import org.wso2.carbon.utils.deployment.GhostDeployerUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletException;
-import java.io.*;
+import java.io.File;
 import java.lang.management.ManagementPermission;
 import java.net.SocketException;
-import java.util.*;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -135,8 +159,8 @@ public final class CarbonServerManager implements Controllable {
      */
     private final Object pendingItemsLock = new Object();
 
-
-    private static final ScheduledExecutorService servicesCleanupExec
+    private GenericArtifactUnloader genericArtifactUnloader = new GenericArtifactUnloader();
+    private static final ScheduledExecutorService artifactsCleanupExec
             = Executors.newScheduledThreadPool(1);
 
     public CarbonServerManager() {
@@ -461,10 +485,13 @@ public final class CarbonServerManager implements Controllable {
                         axis2RepoLocation, 0, 10);
             }
 
+            //Registering the GenericArtifactUnloader service as an OSGi Service
+            bundleContext.registerService(GenericArtifactUnloader.class.getName(),
+                                          genericArtifactUnloader, null);
+
             // schedule the services cleanup task
             if (GhostDeployerUtils.isGhostOn()) {
-                ServiceUnloader serviceUnloader = new ServiceUnloader(serverConfigContext);
-                servicesCleanupExec.scheduleAtFixedRate(serviceUnloader,
+                artifactsCleanupExec.scheduleAtFixedRate(genericArtifactUnloader,
                         CarbonConstants.SERVICE_CLEANUP_PERIOD_SECS,
                         CarbonConstants.SERVICE_CLEANUP_PERIOD_SECS, TimeUnit.SECONDS);
             }
@@ -897,7 +924,7 @@ public final class CarbonServerManager implements Controllable {
         clientConfigContext = null;
 
         // stop service cleanup scheduler
-        servicesCleanupExec.shutdownNow();
+        artifactsCleanupExec.shutdownNow();
     }
 
 
