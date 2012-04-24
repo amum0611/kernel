@@ -5,6 +5,7 @@ import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
+import org.wso2.carbon.tomcat.CarbonTomcatException;
 
 import javax.servlet.Servlet;
 
@@ -12,13 +13,16 @@ import javax.servlet.Servlet;
  * interface that exposes {@link org.wso2.carbon.tomcat.internal.CarbonTomcat} functionality
  */
 public interface CarbonTomcatService {
-    Context addWebApp(String contextPath, String webappFilePath);
+    Context addWebApp(String contextPath, String webappFilePath) throws CarbonTomcatException;
 
-    Context addWebApp(Host host, String contextPath, String webappFilePath);
+    Context addWebApp(Host host, String contextPath, String webappFilePath)
+            throws CarbonTomcatException;
 
-    Context addWebApp(Host host, String contextPath, String webappFilePath, LifecycleListener lifecycleListener);
+    Context addWebApp(Host host, String contextPath, String webappFilePath, LifecycleListener lifecycleListener)
+            throws CarbonTomcatException;
 
-    Context addWebApp(String contextPath, String webappFilePath, LifecycleListener lifecycleListener);
+    Context addWebApp(String contextPath, String webappFilePath, LifecycleListener lifecycleListener)
+            throws CarbonTomcatException;
 
     Wrapper addServlet(String contextPath, String servletName, Servlet servlet);
 

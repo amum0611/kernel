@@ -28,12 +28,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tomcat.util.ExceptionUtils;
 import org.apache.tomcat.util.digester.Digester;
+import org.wso2.carbon.tomcat.CarbonTomcatException;
 import org.wso2.carbon.tomcat.api.CarbonTomcatService;
 import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -163,7 +165,8 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
      * @param webappFilePath    File location of the web-app
      * @return {@link Context} object of the added web-app
      */
-    public Context addWebApp(String contextPath, String webappFilePath) {
+    public Context addWebApp(String contextPath, String webappFilePath)
+            throws CarbonTomcatException {
         Host localHost = (Host)this.getEngine().findChild("localhost");
         return this.addWebApp(localHost, contextPath, webappFilePath, null);
     }
@@ -176,7 +179,7 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
      * @return {@link Context} object of the added web-app
      */
     public Context addWebApp(Host host, String contextPath,
-                                 String webappFilePath) {
+                                 String webappFilePath) throws CarbonTomcatException {
         return this.addWebApp(host, contextPath, webappFilePath, null);
     }
 
@@ -187,7 +190,8 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
      * @param lifecycleListener tomcat life-cycle listener
      * @return {@link Context} object of the added web-app
      */
-    public Context addWebApp(String contextPath, String webappFilePath, LifecycleListener lifecycleListener) {
+    public Context addWebApp(String contextPath, String webappFilePath, LifecycleListener lifecycleListener)
+            throws CarbonTomcatException {
         Host localHost = (Host)this.getEngine().findChild("localhost");
         return this.addWebApp(localHost, contextPath, webappFilePath, lifecycleListener);
     }
@@ -203,7 +207,8 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
      */
     @Override
     public Context addWebApp(Host host, String contextPath,
-                             String webappFilePath, LifecycleListener lifecycleListener) {
+                             String webappFilePath, LifecycleListener lifecycleListener)
+            throws CarbonTomcatException {
         JarFile webappJarFile = null;
         JarEntry contextXmlFileEntry;
         Context ctx = null;
@@ -251,8 +256,12 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
                 log.error("webApp" + ctx + "failed to deploy");
             }
             log.info("web application context: " + ctx);
-        } catch (Exception e) {
-            log.error("webApp failed to deploy", e);
+        } catch (MalformedURLException e) {
+            throw new CarbonTomcatException("Webapp failed to deploy", e);
+        } catch (LifecycleException e) {
+            throw new CarbonTomcatException("Webapp failed to deploy", e);
+        } catch (IOException e) {
+            throw new CarbonTomcatException("Webapp failed to deploy", e);
         } finally {
             if (webappJarFile != null) {
                 try {
