@@ -50,6 +50,7 @@ import org.apache.catalina.tribes.UniqueId;
 import org.apache.catalina.tribes.group.GroupChannel;
 import org.apache.catalina.tribes.group.Response;
 import org.apache.catalina.tribes.group.RpcChannel;
+import org.apache.catalina.tribes.group.interceptors.NonBlockingCoordinator;
 import org.apache.catalina.tribes.transport.MultiPointSender;
 import org.apache.catalina.tribes.transport.ReplicationTransmitter;
 import org.apache.commons.logging.Log;
@@ -94,6 +95,8 @@ public class TribesClusteringAgent implements ClusteringAgent {
     private MembershipManager primaryMembershipManager;
     private RpcInitializationRequestHandler rpcInitRequestHandler;
     private MembershipScheme membershipScheme;
+
+    private NonBlockingCoordinator coordinator;
 
     /**
      * The mode in which this member operates such as "loadBalance" or "application"
@@ -146,6 +149,10 @@ public class TribesClusteringAgent implements ClusteringAgent {
         return configurationManager;
     }
 
+    public boolean isCoordinator(){
+        return coordinator.isCoordinator();
+    }
+
     /**
      * Initialize the cluster.
      *
@@ -157,6 +164,8 @@ public class TribesClusteringAgent implements ClusteringAgent {
         primaryMembershipManager = new MembershipManager(configurationContext);
 
         channel = new Axis2GroupChannel();
+        coordinator = new NonBlockingCoordinator();
+        channel.addInterceptor(coordinator);
         channel.setHeartbeat(true);
         channelSender = new ChannelSender(channel, primaryMembershipManager, synchronizeAllMembers());
         axis2ChannelListener =

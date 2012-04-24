@@ -185,14 +185,21 @@ public interface ClusteringAgent extends ParameterInclude {
      */
     Set<String> getDomains();
 
-
     /**
-     * Send a message to all members in this member's primary cluster
+     * Checks whether this member is the coordinator for the cluster
      *
-     * @param msg  The message to be sent
-     * @param isRpcMessage Indicates whether the message has to be sent in RPC mode
-     * @return A list of responses if the message is sent in RPC mode
-     * @throws ClusteringFault If an error occurs while sending the message
+     * @return true if this member is the coordinator, and false otherwise
      */
+    boolean isCoordinator();
+
+
+        /**
+        * Send a message to all members in this member's primary cluster
+        *
+        * @param msg  The message to be sent
+        * @param isRpcMessage Indicates whether the message has to be sent in RPC mode
+        * @return A list of responses if the message is sent in RPC mode
+        * @throws ClusteringFault If an error occurs while sending the message
+        */
     List<ClusteringCommand> sendMessage(ClusteringMessage msg, boolean isRpcMessage) throws ClusteringFault;
 }
