@@ -156,7 +156,7 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
                     el.detach();
                 } else {
                     throw new PersistenceDataNotFoundException(
-                            "The Element specified by path not found" + serviceGroupId + xpathStrOfElement);
+                            "The Element specified by path not found " + serviceGroupId + xpathStrOfElement);
 
                 }
             } else {

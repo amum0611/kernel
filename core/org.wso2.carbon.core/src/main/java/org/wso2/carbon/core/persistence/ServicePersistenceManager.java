@@ -90,7 +90,14 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
         try {
             String xpathStr = PersistenceUtils.getResourcePath(axisService);
             String sgName = axisService.getAxisServiceGroup().getServiceGroupName();
-            if (getCurrentFPM().fileExists(sgName)) {
+            if (getServiceGroupFilePM().isTransactionStarted(sgName)
+                    && getServiceGroupFilePM().elementExists(sgName, xpathStr)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Successfully retrieved resource for " +
+                            axisService.getName() + " Service");
+                }
+                return (OMElement) getServiceGroupFilePM().get(sgName, xpathStr);
+            } else if (getCurrentFPM().fileExists(sgName)) {
                 OMElement serviceElement;
                 try {
                     serviceElement = (OMElement) getCurrentFPM().get(sgName, xpathStr);
@@ -99,12 +106,12 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 }
                 if (serviceElement != null &&
                         serviceElement.getAttributeValue(new QName(Resources.SUCCESSFULLY_ADDED)) != null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Successfully retrieved resource for " +
+                                axisService.getName() + " Service");
+                    }
                     return serviceElement;
                 }
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Successfully retrieved resource for " +
-                        axisService.getName() + " Service");
             }
         } catch (Throwable e) {
             handleException("Could not get the Service resource from file ", e);
@@ -216,7 +223,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 }
 
                 //write the policy to registry as well if it's a proxy service
-                if(isProxyService && servicePolicies != null && !servicePolicies.isEmpty()) {
+                if (isProxyService && servicePolicies != null && !servicePolicies.isEmpty()) {
                     org.wso2.carbon.registry.core.Resource serviceResource = configRegistry.newCollection();
                     String serviceResourcePath = PersistenceUtils.getRegistryResourcePath(axisService);
                     configRegistry.put(serviceResourcePath, serviceResource);    //todo does this replace the existing resource? it should be -kasung
@@ -237,10 +244,10 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 }
 
                 // If the service scope='soapsession', engage addressing if not already engaged.
-                if (axisService.getScope().equals(Constants.SCOPE_SOAP_SESSION) && 
-                		!axisService.isEngaged(ADDRESSING_MODULE)) {
-                        	axisService.engageModule(axisService.getAxisConfiguration().getModule(
-                                ADDRESSING_MODULE));
+                if (axisService.getScope().equals(Constants.SCOPE_SOAP_SESSION) &&
+                        !axisService.isEngaged(ADDRESSING_MODULE)) {
+                    axisService.engageModule(axisService.getAxisConfiguration().getModule(
+                            ADDRESSING_MODULE));
                 }
 
                 // Add the Modules Engaged to this service
@@ -443,7 +450,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                             String modVersion = module.getAttributeValue(new QName(Resources.VERSION));
                             AxisModule axisModule = getExistingAxisModule(modName, modVersion);
                             if (!isGloballyEngaged(modName, modVersion) && !axisService.isEngaged(axisModule)) {
-                                    axisOperation.engageModule(axisModule);
+                                axisOperation.engageModule(axisModule);
                             }
                         }
                         // Handle operation parameters
@@ -511,9 +518,9 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                                 getAttachedPolicyComponents();
                         if (attachedPolicies != null && !attachedPolicies.isEmpty()) {
                             List tmpProperties = getServiceGroupFilePM().getAll(serviceGroupId,
-                                    bindingXPath + "/" + Resources.ServiceProperties.POLICY_UUID+"/text()");
+                                    bindingXPath + "/" + Resources.ServiceProperties.POLICY_UUID + "/text()");
                             List<String> properties = new ArrayList<String>(tmpProperties.size());
-                            
+
                             for (Object node : tmpProperties) {
                                 if (node instanceof OMText) {
                                     properties.add(((OMText) node).getText());
@@ -627,7 +634,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 List<String> availableTransports = axisService.getExposedTransports();
                 ListIterator<String> transportItr = availableTransports.listIterator();
 
-                // Removing transports from the configRegistry
+                // Removing transports from file
                 List associations = getServiceGroupFilePM().getAssociations(serviceGroupId,
                         serviceElementPath, Resources.Associations.EXPOSED_TRANSPORTS);
                 for (Object node : associations) {
@@ -642,7 +649,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                             .EXPOSED_ON_ALL_TANSPORTS, String.valueOf(false), null);
                 }
 
-                // Adding the transports to the configRegistry
+                // Adding the transports to the file
                 while (transportItr.hasNext()) {
                     String transport = transportItr.next();
                     Resource transportResource =
@@ -769,15 +776,15 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
     public void setServiceProperty(AxisService service, String propertyName,
                                    String propertyValue) throws Exception {
         try {
-            String serviceResourcePath = PersistenceUtils.getResourcePath(service);
+            String serviceXPath = PersistenceUtils.getResourcePath(service);
             String sgName = service.getAxisServiceGroup().getServiceGroupName();
             boolean transactionStarted = getServiceGroupFilePM().isTransactionStarted(sgName);
             if (!transactionStarted) {
                 getServiceGroupFilePM().beginTransaction(sgName);
             }
 
-            if (getServiceGroupFilePM().elementExists(sgName, serviceResourcePath)) {
-                OMElement serviceElement = (OMElement) getServiceGroupFilePM().get(sgName, serviceResourcePath);
+            if (getServiceGroupFilePM().elementExists(sgName, serviceXPath)) {
+                OMElement serviceElement = (OMElement) getServiceGroupFilePM().get(sgName, serviceXPath);
                 serviceElement.addAttribute(propertyName, propertyValue, null);
             }
 
@@ -903,28 +910,28 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
         String returnValue = paramValue;
         try {
         */
-            /*
-            todo uncomment and fix errors getExistingValueOrUpdateParameter
-            configRegistry.beginTransaction();
-            Resource serviceParamResource;
-            if (!configRegistry.resourceExists(serviceParamResourcePath)) {
-                serviceParamResource = configRegistry.newResource();
-                serviceParamResource
-                        .addProperty(Resources.ParameterProperties.NAME, paramName);
-                serviceParamResource
-                        .addProperty(Resources.ParameterProperties.VALUE, paramValue);
-                serviceParamResource.setContent("<parameter name=\"" + paramName
-                        + "\">" + paramValue + "</parameter>");
-                configRegistry.put(serviceParamResourcePath, serviceParamResource);
-                serviceParamResource.discard();
-            } else {
-                serviceParamResource = configRegistry.get(serviceParamResourcePath);
-                returnValue = serviceParamResource
-                        .getProperty(Resources.ParameterProperties.VALUE);
-            }
-            configRegistry.commitTransaction();
-            */
-       /* } catch (Throwable e) {
+    /*
+    todo uncomment and fix errors getExistingValueOrUpdateParameter
+    configRegistry.beginTransaction();
+    Resource serviceParamResource;
+    if (!configRegistry.resourceExists(serviceParamResourcePath)) {
+        serviceParamResource = configRegistry.newResource();
+        serviceParamResource
+                .addProperty(Resources.ParameterProperties.NAME, paramName);
+        serviceParamResource
+                .addProperty(Resources.ParameterProperties.VALUE, paramValue);
+        serviceParamResource.setContent("<parameter name=\"" + paramName
+                + "\">" + paramValue + "</parameter>");
+        configRegistry.put(serviceParamResourcePath, serviceParamResource);
+        serviceParamResource.discard();
+    } else {
+        serviceParamResource = configRegistry.get(serviceParamResourcePath);
+        returnValue = serviceParamResource
+                .getProperty(Resources.ParameterProperties.VALUE);
+    }
+    configRegistry.commitTransaction();
+    */
+    /* } catch (Throwable e) {
             handleExceptionWithRollback(service.getAxisServiceGroup().getServiceGroupName(),
                     "Unable to update the service parameter " +
                             paramName + " to the service " + service.getName(), e);
@@ -942,16 +949,15 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
     public void removeExposedTransports(String serviceName,
                                         String transportProtocol) throws Exception {
         AxisService axisService = axisConfig.getServiceForActivation(serviceName);
-        
+
         if (axisService == null) {
             handleException("No service found for the provided service name : " + serviceName);
             return;
         }
-        
+
         String serviceGroupId = axisService.getAxisServiceGroup().getServiceGroupName();
-        
-        try {    
-            OMElement serviceElement = getService(axisService);
+
+        try {
             Resource transportResource =
                     new TransportPersistenceManager(axisConfig).
                             getTransportResource(transportProtocol);
@@ -961,14 +967,23 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 getServiceGroupFilePM().beginTransaction(serviceGroupId);
             }
 
+            OMElement serviceElement = getService(axisService);
+            String transportXPath = PersistenceUtils.getResourcePath(axisService) +
+                    "/" + Resources.Associations.ASSOCIATION_XML_TAG +
+                    PersistenceUtils.getXPathAttrPredicate(
+                            Resources.Associations.DESTINATION_PATH, transportResource.getPath()) +
+                    PersistenceUtils.getXPathAttrPredicate(
+                            Resources.ModuleProperties.TYPE, Resources.Associations.EXPOSED_TRANSPORTS);
             if (transportResource != null) {
-                getServiceGroupFilePM().delete(serviceGroupId,
-                        PersistenceUtils.getResourcePath(axisService) +
-                                "/" + Resources.Associations.ASSOCIATION_XML_TAG +
-                                PersistenceUtils.getXPathAttrPredicate(
-                                        Resources.Associations.DESTINATION_PATH, transportResource.getPath()) +
-                                PersistenceUtils.getXPathAttrPredicate(
-                                        Resources.ModuleProperties.TYPE, Resources.Associations.EXPOSED_TRANSPORTS));
+                if (getServiceGroupFilePM().elementExists(serviceGroupId, transportXPath)) {
+                    getServiceGroupFilePM().delete(serviceGroupId,
+                            PersistenceUtils.getResourcePath(axisService) +
+                                    "/" + Resources.Associations.ASSOCIATION_XML_TAG +
+                                    PersistenceUtils.getXPathAttrPredicate(
+                                            Resources.Associations.DESTINATION_PATH, transportResource.getPath()) +
+                                    PersistenceUtils.getXPathAttrPredicate(
+                                            Resources.ModuleProperties.TYPE, Resources.Associations.EXPOSED_TRANSPORTS));
+                }
                 transportResource.discard();
             }
 
@@ -996,8 +1011,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 transportResource.discard();
             }
 
-            serviceElement.addAttribute(
-                    Resources.ServiceProperties.EXPOSED_ON_ALL_TANSPORTS, String.valueOf(false), null);
+            setServiceProperty(axisService, Resources.ServiceProperties.EXPOSED_ON_ALL_TANSPORTS, String.valueOf(false));
 
             if (!transactionStarted) {
                 getServiceGroupFilePM().commitTransaction(serviceGroupId);
@@ -1015,7 +1029,6 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
     /**
      * Extract all the policies from the AxisService and create registry Resources for them.
-     *
      *
      * @param axisService Service to get policies
      * @return A list of "wrapped" policy elements
@@ -1278,7 +1291,6 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
     }
 
     /**
-     *
      * @param serviceGroupId
      * @param policy
      * @param policyUuid
@@ -1324,7 +1336,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 "/" + Resources.POLICIES);
 
         getServiceGroupFilePM().put(serviceGroupId, idElement.cloneOMElement(), engagementPath);
-        if(!transactionStarted) {
+        if (!transactionStarted) {
             getServiceGroupFilePM().commitTransaction(serviceGroupId);
         }
         if (log.isDebugEnabled()) {
