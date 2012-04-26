@@ -51,8 +51,9 @@ public class SecureTheWorldValve extends ValveBase {
         // Skip carbon auth calls
         String carbonWebContext = ServerConfiguration.getInstance().getFirstProperty("WebContextRoot");
         String contextPath = req.getContextPath();
-        if((carbonWebContext.equals("/") && contextPath.equals("")) ||
-                (carbonWebContext.equals(contextPath))){
+        String requestPath = req.getCoyoteRequest().toString();
+        if(!requestPath.contains("/services/t/") &&
+           ((carbonWebContext.equals("/") && contextPath.equals("")) || carbonWebContext.equals(contextPath))){
             getNext().invoke(req, res);
             return;
         }
@@ -98,7 +99,7 @@ public class SecureTheWorldValve extends ValveBase {
             // do not allow unauthorized access from other tenants
             if (tenantDomain != null &&
                 !tenantDomain.equals(requestTenantDomain) ||
-                    !tenantFromUserName.equals(requestTenantDomain)) {
+                    (!tenantFromUserName.equals("") && !tenantFromUserName.equals(requestTenantDomain))) {
                 if (requestTenantDomain == null || requestTenantDomain.trim().length() == 0) {
                     requestTenantDomain = "0";
                 }
@@ -109,6 +110,9 @@ public class SecureTheWorldValve extends ValveBase {
             RealmService realmService = CarbonRealmServiceHolder.getRealmService();
             try {
                 int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
+                if(tenantId == -1){
+                    return false;
+                }
                 UserRealm userRealm = realmService.getTenantUserRealm(tenantId);
                 if (realmService.getTenantUserRealm(tenantId).getUserStoreManager().
                         authenticate(tenantLessUserName, password)) {
@@ -129,7 +133,7 @@ public class SecureTheWorldValve extends ValveBase {
      * <p>Since we should be dealing with Base64 encoded Strings that is a reasonable
      * assumption.</p>
      * <p><h4>End of data</h4>
-     * We don't try to stop the converion when we find the "=" end of data padding char.
+     * We don't try to stop the conversion when we find the "=" end of data padding char.
      * We simply add zero bytes to the unencode buffer.</p>
      * @param encoded The encoded String
      * @return the decoded String
