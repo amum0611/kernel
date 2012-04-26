@@ -37,6 +37,9 @@ import java.io.IOException;
 
 /**
  * This valves forces HTTP basic auth for all incoming requests
+ *
+ * Add this valve to catalina-server.xml as follows if you want to secure the world
+ * <Valve className="org.wso2.carbon.tomcat.ext.valves.SecureTheWorldValve"/>
  */
 @SuppressWarnings("unused")
 public class SecureTheWorldValve extends ValveBase {
