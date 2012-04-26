@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Tomcat valve for detecting stuck or long running threads
  */
+@SuppressWarnings("unused")
 public class CarbonStuckThreadDetectionValve extends ValveBase {
 
     /**

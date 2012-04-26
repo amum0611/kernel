@@ -29,7 +29,7 @@ public class Utils {
 
     public static String getTenantDomain(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        if (requestURI.indexOf("/t/") == -1) {
+        if (!requestURI.contains("/t/")) {
             //check for admin services - tenant admin services are deployed in super tenant flow
             HttpSession session = request.getSession(false);
             String domain = null;
