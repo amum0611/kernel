@@ -101,7 +101,6 @@ public class CompositeValve extends ValveBase {
                 }
             }
 
-            initCarbonContext(request);
             TomcatValveContainer.invokeValves(request, response);
             int status = response.getStatus();
             if (status != Response.SC_MOVED_TEMPORARILY && status != Response.SC_FORBIDDEN) {
@@ -110,57 +109,7 @@ public class CompositeValve extends ValveBase {
             }
         } catch (Exception e) {
             log.error("Could not handle request: " + request.getRequestURI(), e);
-        } finally {
-            // This will destroy the carbon context holder on the current thread after
-            // invoking
-            // subsequent valves.
-            CarbonContextHolder.destroyCurrentCarbonContextHolder();
         }
-    }
-
-
-    public void initCarbonContext(Request request) throws Exception {
-        if (!isWebappMgtEnabled()) {
-            return;
-        }
-        String tenantDomain = Utils.getTenantDomain(request);
-        CarbonContextHolder carbonContextHolder =
-                CarbonContextHolder.getThreadLocalCarbonContextHolder();
-        carbonContextHolder.setTenantDomain(tenantDomain);
-        UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
-        if (userRealmService != null) {
-            TenantManager tenantManager = userRealmService.getTenantManager();
-            int tenantId = tenantManager.getTenantId(tenantDomain);
-            carbonContextHolder.setTenantId(tenantId);
-            carbonContextHolder.setProperty(CarbonContextHolder.USER_REALM,
-                                            userRealmService.getTenantUserRealm(tenantId));
-
-            RegistryService registryService = CarbonRealmServiceHolder.getRegistryService();
-            carbonContextHolder.setProperty(CarbonContextHolder.CONFIG_SYSTEM_REGISTRY_INSTANCE,
-                                            new GhostRegistry(registryService, tenantId,
-                                                              RegistryType.SYSTEM_CONFIGURATION));
-            carbonContextHolder.setProperty(CarbonContextHolder.GOVERNANCE_SYSTEM_REGISTRY_INSTANCE,
-                                            new GhostRegistry(registryService, tenantId,
-                                                              RegistryType.SYSTEM_GOVERNANCE));
-        }
-    }
-
-    /**
-     * Checks whether the webapp.mgt Carbon components are available
-     *
-     * @return true - if webapp.mgt components are available, false - otherwise
-     */
-    private boolean isWebappMgtEnabled() {
-        File osgiPluginsDir =
-                new File(CarbonUtils.getCarbonHome() + File.separator + "repository" +
-                         File.separator + "components" + File.separator + "plugins");
-        String[] plugins = osgiPluginsDir.list();
-        for (String plugin : plugins) {
-            if (plugin.contains("org.wso2.carbon.webapp.")) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }
