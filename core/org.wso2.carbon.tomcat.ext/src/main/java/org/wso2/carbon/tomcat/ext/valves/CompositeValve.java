@@ -10,6 +10,7 @@ import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.registry.core.ghostregistry.GhostRegistry;
 import org.wso2.carbon.tomcat.ext.internal.CarbonRealmServiceHolder;
+import org.wso2.carbon.tomcat.ext.saas.TenantSaaSRules;
 import org.wso2.carbon.tomcat.ext.internal.Utils;
 import org.wso2.carbon.tomcat.ext.realms.CarbonTomcatRealm;
 import org.wso2.carbon.user.api.TenantManager;
@@ -67,7 +68,7 @@ public class CompositeValve extends ValveBase {
              *
              * <context-param>
              * <param-name>carbon.saas.tenants</param-name>
-             * <param-value>foo.com:azeez,admin;bar.com</param-value>
+             * <param-value>foo.com:users=azeez,admin;bar.com</param-value>
              * </context-param>
              *
              * 5. Only user admin in tenant foo.com can access this app and bob from tenant foo.com can't access the app.
@@ -75,29 +76,60 @@ public class CompositeValve extends ValveBase {
              *
              * <context-param>
              * <param-name>carbon.saas.tenants</param-name>
-             * <param-value>foo.com:!azeez,admin;bar.com:*,!bob</param-value>
+             * <param-value>foo.com:users=!azeez,admin;bar.com:users=*,!bob</param-value>
              * </context-param>
+             *
+             * * 6. Only users azeez,bob in tenant foo.com can access this app. Also users who belongs to role devops in
+             *    tenant foo.com also can access the app and users who belongs to role developers in tenant foo.com can't
+             *    access the app. All users belong all roles in bar.com can access the app except users belongs to devops.
+             *
+             * <context-param>
+             * <param-name>carbon.saas.tenants</param-name>
+             * <param-value>foo.com:roles=!developers,devops:users=azeez,bob;bar.com:roles=*,!devops</param-value>
+             * </context-param>
+             *
+             * Note: Denial rules will take precedence.
              */
             String enableSaaSParam =
                     request.getContext().findParameter(ENABLE_SAAS);
             if(enableSaaSParam != null) {
                 // Set the SaaS enabled ThreadLocal variable
                 Realm realm = request.getContext().getRealm();
-                if(realm instanceof CarbonTomcatRealm){
+                if (realm instanceof CarbonTomcatRealm) {
                     // replaceAll("\\s","") is to remove all whitespaces
-                    String[] enableSaaSParams = enableSaaSParam.replaceAll("\\s","").split(";");
-                    HashMap<String, ArrayList> enableSaaSParamsMap = new HashMap<String, ArrayList>();
+                    String[] enableSaaSParams = enableSaaSParam.replaceAll("\\s", "").split(";");
+                    //Store SaaS rules for tenants
+                    HashMap<String, TenantSaaSRules> tenantSaaSRulesMap = new HashMap<String, TenantSaaSRules>();
 
                     for (String saaSParam : enableSaaSParams) {
                         String[] saaSSubParams = saaSParam.split(":");
+                        String tenant = saaSSubParams[0];
+                        TenantSaaSRules tenantSaaSRules = new TenantSaaSRules();
                         ArrayList<String> users = null;
+                        ArrayList<String> roles = null;
                         if (saaSSubParams.length > 1) {
-                            users = new ArrayList<String>();
-                            users.addAll(Arrays.asList(saaSSubParams[1].split(",")));
+                            tenantSaaSRules.setTenant(tenant);
+                            //This will include users or roles
+                            for (int i = 1; i < saaSSubParams.length; i++) {
+                                String[] saaSTypes = saaSSubParams[i].split("=");
+                                if ("users".equals(saaSTypes[0]) && saaSTypes.length == 2) {
+                                    users = new ArrayList<String>();
+                                    users.addAll(Arrays.asList(saaSTypes[1].split(",")));
+                                } else if ("roles".equals(saaSTypes[0]) && saaSTypes.length == 2) {
+                                    roles = new ArrayList<String>();
+                                    roles.addAll(Arrays.asList(saaSTypes[1].split(",")));
+                                }
+                            }
                         }
-                        enableSaaSParamsMap.put(saaSSubParams[0], users);
+                        if (users != null) {
+                            tenantSaaSRules.setUsers(users);
+                        }
+                        if (roles != null) {
+                            tenantSaaSRules.setRoles(roles);
+                        }
+                        tenantSaaSRulesMap.put(tenant, tenantSaaSRules);
                     }
-                    ((CarbonTomcatRealm) realm).setSaaSParams(enableSaaSParamsMap);
+                    ((CarbonTomcatRealm) realm).setSaaSRules(tenantSaaSRulesMap);
                 }
             }
 

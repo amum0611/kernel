@@ -21,7 +21,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.catalina.realm.GenericPrincipal;
@@ -29,6 +29,7 @@ import org.apache.catalina.realm.RealmBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.tomcat.ext.internal.CarbonRealmServiceHolder;
+import org.wso2.carbon.tomcat.ext.saas.TenantSaaSRules;
 import org.wso2.carbon.user.api.UserRealmService;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
@@ -49,15 +50,15 @@ public class CarbonTomcatRealm extends RealmBase {
     private static Log log = LogFactory.getLog(CarbonTomcatRealm.class);
 
     /**
-     * ThreadLocal variable to keep SaaS options of a webapp which is currently used.
+     * ThreadLocal variables to keep SaaS rule data of a webapp which is currently used.
      */
-    private static ThreadLocal<HashMap> saasParamaters = new ThreadLocal<HashMap>();
+    private static ThreadLocal<HashMap> tenantSaaSRulesMap = new ThreadLocal<HashMap>();
 
     public CarbonTomcatRealm() throws Exception {
     }
 
-    public void setSaaSParams(Map enableSaaSParams) {
-        saasParamaters.set((HashMap) enableSaaSParams);
+    public void setSaaSRules(HashMap<String, TenantSaaSRules> tenantSaaSRulesMap) {
+        CarbonTomcatRealm.tenantSaaSRulesMap.set(tenantSaaSRulesMap);
     }
 
     protected String getName() {
@@ -88,21 +89,6 @@ public class CarbonTomcatRealm extends RealmBase {
             tenantLessUserName = userName;
         }
 
-        // If SaaS is not enabled, do not allow users from other tenants to call this secured webapp
-        if (!checkSaasAccess(tenantDomain, tenantLessUserName)) {
-            String requestTenantDomain =
-                    CarbonContextHolder.getCurrentCarbonContextHolder().getTenantDomain();
-            if (tenantDomain != null &&
-                !tenantDomain.equals(requestTenantDomain)) {
-                if (requestTenantDomain.trim().length() == 0) {
-                    requestTenantDomain = "0";
-                }
-                log.warn("Illegal access attempt by " + userName +
-                         " to secured resource hosted by tenant " + requestTenantDomain);
-                return null;
-            }
-        }
-
         try {
 
             UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
@@ -110,6 +96,23 @@ public class CarbonTomcatRealm extends RealmBase {
             if(tenantId < 0) {
                 return null;
             }
+            String[] roles = userRealmService.getTenantUserRealm(tenantId).getUserStoreManager().getRoleListOfUser(tenantLessUserName);
+
+            // If SaaS is not enabled, do not allow users from other tenants to call this secured webapp
+            if (!checkSaasAccess(tenantDomain, tenantLessUserName, roles)) {
+                String requestTenantDomain =
+                        CarbonContextHolder.getCurrentCarbonContextHolder().getTenantDomain();
+                if (tenantDomain != null &&
+                    !tenantDomain.equals(requestTenantDomain)) {
+                    if (requestTenantDomain.trim().length() == 0) {
+                        requestTenantDomain = "0";
+                    }
+                    log.warn("Illegal access attempt by " + userName +
+                             " to secured resource hosted by tenant " + requestTenantDomain);
+                    return null;
+                }
+            }
+
             if (!userRealmService.getTenantUserRealm(tenantId).getUserStoreManager().
                     authenticate(tenantLessUserName, credential)) {
                 return null;
@@ -123,31 +126,55 @@ public class CarbonTomcatRealm extends RealmBase {
     }
 
     /**
-     * Chechk if saas mode enabled for the given tenant
+     * Check if saas mode enabled and access granted for the given tenant
+     * Denial Rules are given precedency.
      *
      * @param tenantDomain - tenant
      * @param userName     - name of the user(without tenant part)
+     * @param userRoles    - user roles of the tenant
      * @return false if saas mode denied.
      */
-    private boolean checkSaasAccess(String tenantDomain, String userName) {
-        HashMap saasParams = saasParamaters.get();
-        Set saasParamsSet = saasParams.keySet();
+    private boolean checkSaasAccess(String tenantDomain, String userName, String[] userRoles) {
+        HashMap<String, TenantSaaSRules> tenantSaaSRulesMap = CarbonTomcatRealm.tenantSaaSRulesMap.get();
+        Set saaSTenants = tenantSaaSRulesMap.keySet();
+        List<String> userRolesList = Arrays.asList(userRoles);
+        boolean isUserAccepted = false;
+        boolean isRoleAccepted = false;
+        boolean isTenantAccepted = false;
 
-        if (saasParamsSet.contains("!".concat(tenantDomain))) {
-            return false;
-        } else if (saasParamsSet.contains(tenantDomain)) {
-            ArrayList users = (ArrayList) saasParams.get(tenantDomain);
-            if (users != null && users.contains("!".concat(userName))) {
-                return false;
-            } else if (users != null && !users.contains(userName) && !users.contains("*")) {
-                return false;
-            } else {
-                return true;
-            }
-        } else if (!saasParamsSet.contains("*")) {
+        if (userName == null || tenantDomain == null) {
             return false;
         }
-        return true;
+
+        if (saaSTenants.contains("!".concat(tenantDomain))) {
+            return false;
+        } else if (saaSTenants.contains(tenantDomain)) {
+            TenantSaaSRules tenantSaaSRules = tenantSaaSRulesMap.get(tenantDomain);
+            ArrayList<String> users = tenantSaaSRules.getUsers();
+            ArrayList<String> roles = tenantSaaSRules.getRoles();
+            if (users != null && users.contains("!".concat(userName))) {
+                return false;
+            } else if (roles != null && userRolesList != null) {
+                boolean contains = false;
+                for (String userRole : userRolesList) {
+                    if (roles.contains("!".concat(userRole))) {
+                        return false;
+                    } else if (roles.contains(userRole)) {
+                        contains = true;
+                    }
+                }
+                if (contains || roles.contains("*")) {
+                    isRoleAccepted = true;
+                }
+            } else if (users != null && (users.contains(userName) || users.contains("*"))) {
+                isUserAccepted = true;
+            }
+        } else if (saaSTenants.contains(tenantDomain) && !tenantSaaSRulesMap.get(tenantDomain).isTenantRulesDefined() ||
+                   saaSTenants.contains("*")) {
+            isTenantAccepted = true;
+        }
+
+        return (isUserAccepted || isTenantAccepted || isRoleAccepted);
     }
 
     protected Principal getPrincipal(String userNameWithTenant) {
