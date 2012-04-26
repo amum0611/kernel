@@ -58,10 +58,10 @@
             <groupId>ws-commons</groupId>
             <artifactId>tcpmon</artifactId>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>org.wso2.ciphertool</groupId>
             <artifactId>org.wso2.ciphertool</artifactId>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>com.h2database.wso2</groupId>
             <artifactId>h2-database-engine</artifactId>

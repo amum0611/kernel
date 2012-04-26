@@ -84,15 +84,15 @@ for f in "$CARBON_HOME"/lib/org.wso2.ciphertool-*.jar
 do
   CARBON_CLASSPATH=$CARBON_CLASSPATH:$f
 done
-for f in "$CARBON_HOME"/repository/components/plugins/org.wso2.carbon.logging-*.jar
+for f in "$CARBON_HOME"/repository/components/plugins/org.wso2.carbon.logging_*.jar
 do
   CARBON_CLASSPATH=$CARBON_CLASSPATH:$f
 done
-for f in "$CARBON_HOME"/lib/api/org.wso2.carbon.logging-*.jar
+for f in "$CARBON_HOME"/lib/org.wso2.carbon.logging-*.jar
 do
   CARBON_CLASSPATH=$CARBON_CLASSPATH:$f
 done
-for f in "$CARBON_HOME"/lib/api/axiom-*.jar
+for f in "$CARBON_HOME"/repository/components/plugins/axiom_*.jar
 do
   CARBON_CLASSPATH=$CARBON_CLASSPATH:$f
 done

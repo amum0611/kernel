@@ -43,6 +43,7 @@
                 <module>carbon-p2-plugin</module>
                 <module>commons/securevault</module>
                 <module>commons/xmlschema/1.4.7-wso2v1</module>
+		<module>commons/ciphertool</module>
                 <module>transports/1.1.0-wso2v6</module>
                 <module>eclipse-p2/org.eclipse.equinox.p2.touchpoint.eclipse</module>
 		
