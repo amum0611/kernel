@@ -86,6 +86,10 @@ public class SecureTheWorldValve extends ValveBase {
             } else {
                 tenantLessUserName = userName;
             }
+            String tenantFromUserName = "";
+            if (userName.lastIndexOf('@') > -1) {
+                tenantFromUserName = userName.substring(userName.indexOf('@') + 1);
+            }
             String password = usernpass.substring(usernpass.indexOf(":") + 1);
 
             String requestTenantDomain =
@@ -93,7 +97,8 @@ public class SecureTheWorldValve extends ValveBase {
             String tenantDomain = Utils.getTenantDomain(req);
             // do not allow unauthorized access from other tenants
             if (tenantDomain != null &&
-                !tenantDomain.equals(requestTenantDomain)) {
+                !tenantDomain.equals(requestTenantDomain) ||
+                    !tenantFromUserName.equals(requestTenantDomain)) {
                 if (requestTenantDomain == null || requestTenantDomain.trim().length() == 0) {
                     requestTenantDomain = "0";
                 }
