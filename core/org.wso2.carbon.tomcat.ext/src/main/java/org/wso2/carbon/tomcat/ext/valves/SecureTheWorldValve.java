@@ -98,8 +98,9 @@ public class SecureTheWorldValve extends ValveBase {
             String tenantDomain = Utils.getTenantDomain(req);
             // do not allow unauthorized access from other tenants
             if (tenantDomain != null &&
-                !tenantDomain.equals(requestTenantDomain) ||
-                    (!tenantFromUserName.equals("") && !tenantFromUserName.equals(requestTenantDomain))) {
+                    !tenantDomain.equals(requestTenantDomain) ||
+                    (!(tenantFromUserName.equals("") && (tenantDomain == null)) &&
+                            !tenantFromUserName.equals(requestTenantDomain))) {
                 if (requestTenantDomain == null || requestTenantDomain.trim().length() == 0) {
                     requestTenantDomain = "0";
                 }
