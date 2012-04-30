@@ -158,6 +158,13 @@ public interface ClusteringAgent extends ParameterInclude {
      *         the values returned may not be valid
      */
     List<Member> getMembers();
+    
+    /**
+     * Get the number of members alive.
+     * 
+     * @return the number of members alive.
+     */
+    int getAliveMemberCount();
 
     /**
      * Set the load balance event handler which will be notified when load balance events occur.

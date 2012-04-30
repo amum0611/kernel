@@ -62,6 +62,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -123,6 +124,10 @@ public class TribesClusteringAgent implements ClusteringAgent {
 
     public List<org.apache.axis2.clustering.Member> getMembers() {
         return members;
+    }
+    
+    public int getAliveMemberCount() {
+        return primaryMembershipManager.getMembers().length;
     }
 
     public void addGroupManagementAgent(GroupManagementAgent agent,
