@@ -90,6 +90,11 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.5</version> 
              </plugin>
+             <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+                <version>1.7.4</version>
+             </plugin>
         </plugins>
         <testResources>
             <testResource>
@@ -155,5 +160,10 @@
 	<module>org.wso2.carbon.core.bootup.validator</module>
         <module>feature-manager</module>
         <module>server-role-manager</module>
+        <module>org.wso2.carbon.coordination.common</module>
+        <module>org.wso2.carbon.coordination.core</module>
+        <module>org.wso2.carbon.ndatasource.common</module>
+        <module>org.wso2.carbon.ndatasource.core</module>
+        <module>org.wso2.carbon.ndatasource.rdbms</module>
     </modules>
 </project>
