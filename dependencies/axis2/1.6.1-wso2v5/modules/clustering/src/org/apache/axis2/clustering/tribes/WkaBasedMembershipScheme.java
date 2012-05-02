@@ -43,6 +43,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -120,10 +121,14 @@ public class WkaBasedMembershipScheme implements MembershipScheme {
         ReceiverBase receiver = (ReceiverBase) channel.getChannelReceiver();
 
         // ------------ START: Configure and add the local member ---------------------
-        Parameter localHost = getParameter(TribesConstants.LOCAL_MEMBER_HOST);
-        String host;
-        if (localHost != null) {
-            host = ((String) localHost.getValue()).trim();
+        Parameter localMemberHost = getParameter(TribesConstants.LOCAL_MEMBER_HOST);
+        Parameter localMemberBindAddress = getParameter(TribesConstants.LOCAL_MEMBER_BIND_ADDRESS);
+        /*if(localMemberBindAddress == null){
+            localMemberBindAddress = localMemberHost;
+        }*/
+        /*String host;
+        if (localMemberBindAddress != null) {
+            host = ((String) localMemberBindAddress.getValue()).trim();
         } else { // In cases where the localhost needs to be automatically figured out
             try {
                 try {
@@ -140,6 +145,40 @@ public class WkaBasedMembershipScheme implements MembershipScheme {
             }
         }
         receiver.setAddress(host);
+        receiver.setBind(InetAddress.getByAddress());*/
+        String host = null;
+        String bindAddress = null;
+        if (localMemberHost == null && localMemberBindAddress == null) {
+            try {
+                host = Utils.getIpAddress();
+                bindAddress = host;
+                receiver.setAddress(host);
+            } catch (SocketException e) {
+                String msg = "Could not get local IP address";
+                log.error(msg, e);
+                throw new ClusteringFault(msg, e);
+            }
+        } else if (localMemberHost != null && localMemberBindAddress == null) {
+            host = ((String) localMemberHost.getValue()).trim();
+            bindAddress = host;
+            receiver.setAddress(host);
+        } else if (localMemberHost == null && localMemberBindAddress != null) {
+            host = ((String) localMemberBindAddress.getValue()).trim();
+            bindAddress = host;
+            receiver.setAddress(host);
+        } else if (localMemberHost != null && localMemberBindAddress != null) {
+            host = ((String) localMemberHost.getValue()).trim();
+            receiver.setAddress(host);
+            bindAddress = ((String) localMemberBindAddress.getValue()).trim();
+            try {
+                receiver.setBind(InetAddress.getByName(bindAddress));
+            } catch (UnknownHostException e) {
+                String msg = "Could not get local member bind address";
+                log.error(msg, e);
+                throw new ClusteringFault(msg, e);
+            }
+        }
+
         try {
             localMember.setHostname(host);
         } catch (IOException e) {
@@ -148,14 +187,17 @@ public class WkaBasedMembershipScheme implements MembershipScheme {
             throw new ClusteringFault(msg, e);
         }
 
-        Parameter localPort = getParameter(TribesConstants.LOCAL_MEMBER_PORT);
+        Parameter localBindPort = getParameter(TribesConstants.LOCAL_MEMBER_BIND_PORT);
+        if(localBindPort == null){
+            localBindPort = getParameter(TribesConstants.LOCAL_MEMBER_PORT);
+        }
         int port;
         try {
-            if (localPort != null) {
-                port = Integer.parseInt(((String) localPort.getValue()).trim());
-                port = getLocalPort(new ServerSocket(), localMember.getHostname(), port, 4000, 100);
+            if (localBindPort != null) {
+                port = Integer.parseInt(((String) localBindPort.getValue()).trim());
+                port = getLocalPort(new ServerSocket(), bindAddress, port, 4000, 100);
             } else { // In cases where the localport needs to be automatically figured out
-                port = getLocalPort(new ServerSocket(), localMember.getHostname(), -1, 4000, 100);
+                port = getLocalPort(new ServerSocket(), bindAddress, -1, 4000, 100);
             }
         } catch (IOException e) {
             String msg =
@@ -170,7 +212,14 @@ public class WkaBasedMembershipScheme implements MembershipScheme {
         byte[] payload = "ping".getBytes();
         localMember.setPayload(payload);
         receiver.setPort(port);
-        localMember.setPort(port);
+
+        Parameter localPort = getParameter(TribesConstants.LOCAL_MEMBER_PORT);
+        if (localPort != null ) {
+            localMember.setPort(Integer.parseInt(((String) localPort.getValue()).trim()));
+        } else {
+            localMember.setPort(port);
+        }
+
         localMember.setDomain(localDomain);
         staticMembershipInterceptor.setLocalMember(localMember);
 

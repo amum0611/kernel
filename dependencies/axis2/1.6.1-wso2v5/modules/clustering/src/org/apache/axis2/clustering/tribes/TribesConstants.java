@@ -48,7 +48,9 @@ public final class TribesConstants {
     public static final byte[] RPC_CHANNEL_ID = "axis2.rpc.channel".getBytes();
 
     public static final String LOCAL_MEMBER_HOST = "localMemberHost";
+    public static final String LOCAL_MEMBER_BIND_ADDRESS = "localMemberBindAddress";
     public static final String LOCAL_MEMBER_PORT = "localMemberPort";
+    public static final String LOCAL_MEMBER_BIND_PORT = "localMemberBindPort";
 
     public static final String MCAST_ADDRESS = "mcastAddress";
     public static final String MCAST_BIND_ADDRESS = "multicastBindAddress";
