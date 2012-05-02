@@ -15,11 +15,13 @@
  */
 package org.wso2.carbon.core.util;
 
-
 import org.apache.axiom.om.util.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
+import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.utils.i18n.Messages;
 
 import javax.crypto.Cipher;
@@ -34,8 +36,15 @@ import java.security.cert.Certificate;
  */
 public class CryptoUtil {
 
+	private static Log log = LogFactory.getLog(CryptoUtil.class);
+	
     private String keyAlias;
+    
     private String keyPass;
+    
+    private ServerConfigurationService serverConfigService;
+    
+    private RegistryService registryService;
 
     private static CryptoUtil instance = null;
 
@@ -43,22 +52,59 @@ public class CryptoUtil {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public static CryptoUtil getDefaultCryptoUtil(){
-        if(instance == null){
-            ServerConfigurationService config =
-                    CarbonCoreDataHolder.getInstance().getServerConfigurationService();
-            String alias = config.getFirstProperty("Security.KeyStore.KeyAlias");
-            String pkPassword = config.getFirstProperty( "Security.KeyStore.KeyPassword");
-            instance = new CryptoUtil(alias,pkPassword);
+    /**
+     * This method returns CryptoUtil object, where this should only be used at runtime,
+     * after the server is properly initialized, or else, use the overloaded method,
+     * CryptoUtil#getDefaultCryptoUtil(ServerConfigurationService).
+     * @return
+     */
+    public static CryptoUtil getDefaultCryptoUtil() {
+        return getDefaultCryptoUtil(CarbonCoreDataHolder.getInstance().
+            		getServerConfigurationService(), lookupRegistryService());
+    }
+    
+    public static RegistryService lookupRegistryService() {
+    	try {
+    		return CarbonCoreDataHolder.getInstance().getRegistryService();
+    	} catch (Exception e) {
+    		log.error("Error in getting RegistryService from CarbonCoreDataHolder: " +
+    	            e.getMessage(), e);
+			return null;
+		}
+    }
+    
+    /**
+     * This method is used to get the CryptoUtil object given the ServerConfigurationService 
+     * service. This approach must be used if the CryptoUtil class is used in the server startup, 
+     * where the ServerConfigurationService may not be available at CarbonCoreDataHolder.
+     * The same is also for RegistryService.
+     * @param serverConfigService The ServerConfigurationService object
+     * @param registryService The RegistryService object
+     * @return The created or cached CryptoUtil instance
+     */
+    public synchronized static CryptoUtil getDefaultCryptoUtil(
+    		ServerConfigurationService serverConfigService,
+    		RegistryService registryService) {
+        if (instance == null) {
+            instance = new CryptoUtil(serverConfigService, registryService);
         }
         return instance;
     }
     
+    private CryptoUtil(ServerConfigurationService serverConfigService, 
+    		RegistryService registryService) {
+        this.serverConfigService = serverConfigService;
+        this.registryService = registryService;
+    	this.keyAlias = this.serverConfigService.getFirstProperty("Security.KeyStore.KeyAlias");
+    	this.keyPass = this.serverConfigService.getFirstProperty("Security.KeyStore.KeyPassword");
+    }
     
-    private CryptoUtil(String keyAlias, String keyPass) {
-
-        this.keyAlias = keyAlias;
-        this.keyPass = keyPass;
+    public ServerConfigurationService getServerConfigService() {
+    	return serverConfigService;
+    }
+    
+    public RegistryService getRegistryService() {
+    	return registryService;
     }
 
     /**
@@ -71,7 +117,8 @@ public class CryptoUtil {
     public byte[] encrypt(byte[] plainTextBytes) throws CryptoException {
         try {
             
-            KeyStoreManager keyMan = KeyStoreManager.getInstance(null);
+            KeyStoreManager keyMan = KeyStoreManager.getInstance(null, 
+            		this.getServerConfigService(), this.getRegistryService());
             KeyStore keyStore = keyMan.getPrimaryKeyStore();
             
             Certificate[] certs = keyStore.getCertificateChain(keyAlias);
@@ -110,7 +157,8 @@ public class CryptoUtil {
     public byte[] decrypt(byte[] cipherTextBytes) throws CryptoException {
         try {
            
-            KeyStoreManager keyMan = KeyStoreManager.getInstance(null);
+            KeyStoreManager keyMan = KeyStoreManager.getInstance(null, 
+            		this.getServerConfigService(), this.getRegistryService());
             KeyStore keyStore = keyMan.getPrimaryKeyStore();
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(keyAlias,
                                                         keyPass.toCharArray());

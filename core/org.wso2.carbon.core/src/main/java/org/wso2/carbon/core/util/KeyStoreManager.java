@@ -25,6 +25,7 @@ import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
+import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.session.UserRegistry;
 import org.wso2.carbon.utils.CarbonUtils;
 
@@ -57,17 +58,24 @@ public class KeyStoreManager {
     private UserRegistry registry = null;
     private ConcurrentHashMap<String, KeyStoreBean> loadedKeyStores = null;
     private int tenantId = 0;
+    
+    private ServerConfigurationService serverConfigService;
+    
+    private RegistryService registryService;
 
     /**
-     * The private constructor of KeyStoreManager. This class implements a Singleton
+     * The private constructor of KeyStoreManager. This class implements a singleton.
      *
      * @param userRegistry governance registry instance
      */
-    private KeyStoreManager(UserRegistry userRegistry) {
+    private KeyStoreManager(UserRegistry userRegistry, ServerConfigurationService serverConfigService,
+    		RegistryService registryService) {
+    	this.serverConfigService = serverConfigService;
+    	this.registryService = registryService;
         loadedKeyStores = new ConcurrentHashMap<String, KeyStoreBean>();
         if (userRegistry == null) {
             try {
-                registry = CarbonCoreDataHolder.getInstance().getRegistryService().getGovernanceSystemRegistry();
+                registry = this.getRegistryService().getGovernanceSystemRegistry();
             } catch (Exception e) {
                 String message = "Error when retrieving the system governance registry";
                 log.error(message, e);
@@ -77,23 +85,39 @@ public class KeyStoreManager {
             tenantId = userRegistry.getTenantId();
         }
     }
-
+    
+    public ServerConfigurationService getServerConfigService() {
+    	return serverConfigService;
+    }
+    
+    public RegistryService getRegistryService() {
+    	return registryService;
+    }
 
     /**
      * Get a KeyStoreManager instance for that tenant. This method will return an KeyStoreManager
-     * instance if exists, or creates a new one
+     * instance if exists, or creates a new one. Only use this at runtime, or else,
+     * use KeyStoreManager#getInstance(UserRegistry, ServerConfigurationService).
      *
      * @param userRegistry Governance Registry instance of the corresponding tenant
      * @return KeyStoreManager instance for that tenant
      */
     public static KeyStoreManager getInstance(UserRegistry userRegistry) {
-        CarbonUtils.checkSecurity();
+        return getInstance(userRegistry, CarbonCoreDataHolder.getInstance().
+        		getServerConfigurationService(), CryptoUtil.lookupRegistryService());
+    }
+    
+    public static KeyStoreManager getInstance(UserRegistry userRegistry, 
+    		ServerConfigurationService serverConfigService,
+    		RegistryService registryService) {
+    	CarbonUtils.checkSecurity();
         String tenantId = "0";
         if (userRegistry != null) {
             tenantId = Integer.valueOf(userRegistry.getTenantId()).toString();
         }
         if (!mtKeyStoreManagers.containsKey(tenantId)) {
-            mtKeyStoreManagers.put(tenantId, new KeyStoreManager(userRegistry));
+            mtKeyStoreManagers.put(tenantId, new KeyStoreManager(userRegistry, 
+            		serverConfigService, registryService));
         }
         return mtKeyStoreManagers.get(tenantId);
     }
@@ -215,7 +239,7 @@ public class KeyStoreManager {
      * @throws Exception Registry exception or Security Exception
      */
     public void updateKeyStore(String name, KeyStore keyStore) throws Exception {
-        ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
+        ServerConfigurationService config = this.getServerConfigService();
 
         if (KeyStoreUtil.isPrimaryStore(name)) {
             String file = new File(
@@ -267,7 +291,7 @@ public class KeyStoreManager {
         if (tenantId == 0) {
             if (primaryKeyStore == null) {
 
-                ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
+                ServerConfigurationService config = this.getServerConfigService();
                 String file =
                         new File(config
                                          .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_FILE))
@@ -302,7 +326,7 @@ public class KeyStoreManager {
      */
     public PrivateKey getDefaultPrivateKey() throws Exception {
         if (tenantId == 0) {
-            ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
+            ServerConfigurationService config = this.getServerConfigService();
             String password = config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_PASSWORD);
             String alias = config
@@ -320,7 +344,7 @@ public class KeyStoreManager {
      */
     public PublicKey getDefaultPublicKey() throws Exception {
         if (tenantId == 0) {
-            ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
+            ServerConfigurationService config = this.getServerConfigService();
             String alias = config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);
             return (PublicKey) primaryKeyStore.getCertificate(alias).getPublicKey();
@@ -336,7 +360,7 @@ public class KeyStoreManager {
      */
     public String getPrimaryPrivateKeyPasssword() throws CarbonException {
         if (tenantId == 0) {
-            ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
+            ServerConfigurationService config = this.getServerConfigService();
             return config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_PASSWORD);
         }
@@ -351,7 +375,7 @@ public class KeyStoreManager {
      */
     public X509Certificate getDefaultPrimaryCertificate() throws Exception {
         if (tenantId == 0) {
-            ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
+            ServerConfigurationService config = this.getServerConfigService();
             String alias = config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);
             return (X509Certificate) getPrimaryKeyStore().getCertificate(alias);
