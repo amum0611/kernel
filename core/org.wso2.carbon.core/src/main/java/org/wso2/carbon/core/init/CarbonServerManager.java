@@ -485,10 +485,6 @@ public final class CarbonServerManager implements Controllable {
                         axis2RepoLocation, 0, 10);
             }
 
-            //Registering the GenericArtifactUnloader service as an OSGi Service
-            bundleContext.registerService(GenericArtifactUnloader.class.getName(),
-                                          genericArtifactUnloader, null);
-
             // schedule the services cleanup task
             if (GhostDeployerUtils.isGhostOn()) {
                 artifactsCleanupExec.scheduleAtFixedRate(genericArtifactUnloader,

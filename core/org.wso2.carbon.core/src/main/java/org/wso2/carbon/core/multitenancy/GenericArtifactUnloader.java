@@ -18,39 +18,32 @@
 
 package org.wso2.carbon.core.multitenancy;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 import org.wso2.carbon.core.ArtifactUnloader;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 
 /**
- * The thread which runs the unload task by calling unload methods of all
- * ArtifactUnloaders which are registered with this
+ * The thread which runs the unload task using the ServiceTracker by calling unload methods of all
+ * ArtifactUnloaders which are registered as OSGI services.
  */
 public class GenericArtifactUnloader implements Runnable {
-    private List<ArtifactUnloader> artifactUnloaders = new ArrayList<ArtifactUnloader>();
-
 
     @Override
     public void run() {
-        for (ArtifactUnloader artifactUnloader : artifactUnloaders) {
-            artifactUnloader.unload();
+        BundleContext bundleContext = CarbonCoreDataHolder.getInstance().getBundleContext();
+        if (bundleContext != null) {
+            ServiceTracker tracker =
+                    new ServiceTracker(bundleContext,
+                                       ArtifactUnloader.class.getName(), null);
+            tracker.open();
+            Object[] services = tracker.getServices();
+            if (services != null) {
+                for (Object service : services) {
+                    ((ArtifactUnloader) service).unload();
+                }
+            }
+            tracker.close();
         }
-    }
-
-    /**
-     *
-     * @param artifactUnloader - ArtifactUnloader to be registered
-     */
-    public void registerArtifactUnloader(ArtifactUnloader artifactUnloader) {
-        artifactUnloaders.add(artifactUnloader);
-    }
-
-    /**
-     *
-     * @param artifactUnloader - ArtifactUnloader to be unregistered
-     */
-    public void unregisterArtifactUnloader(ArtifactUnloader artifactUnloader) {
-        artifactUnloaders.remove(artifactUnloader);
     }
 }
