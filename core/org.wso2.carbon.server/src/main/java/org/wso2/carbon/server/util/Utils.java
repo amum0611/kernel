@@ -91,7 +91,6 @@ public class Utils {
         System.out.println("\t-Dwso2.transports.xml=<transportXmlPath>\tLocation of the mgt-transports.xml file.");
         System.out.println("\t-DserverRoles=<roles>\t\tA comma separated list of roles. Used in deploying cApps");
         System.out.println("\t-Dcarbon.use.registry.repo\tUse registry based repository.");
-        System.out.println("\t-Dcarbon.unpack.wars\t\tUnpack webapp archives(.war).");
         System.out.println("\t-DdisableHttpLog\t\tDisable HTTP access logging");
         System.out.println("\t-DapplyPatches\t\t\tUse this system property when there are patches to be applied/reverted to/from the system. ");
         System.out.println("\t\t\t\t\tDrop the patches to $CARBON_HOME/repository/componenets/patches directory and restart the system with this property. ");
