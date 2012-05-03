@@ -20,6 +20,7 @@ package org.wso2.carbon.tomcat.internal;
 import org.apache.catalina.*;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.Catalina;
 import org.apache.catalina.startup.Constants;
 import org.apache.catalina.startup.ContextConfig;
@@ -389,6 +390,16 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
                 }
             }
         }
+    }
+
+    /**
+     * check if unpack wars enabled
+     *
+     * @return true if enabled.
+     */
+    public boolean isUnpackWARs() {
+        StandardHost standardHost = (StandardHost) this.getHost();
+        return standardHost.isUnpackWARs();
     }
 
     /**

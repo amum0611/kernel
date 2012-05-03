@@ -37,4 +37,10 @@ public interface CarbonTomcatService {
     void startConnector(String scheme, int port);
 
     void stopConnector(String scheme);
+
+    /**
+     * check if unpack wars enabled
+     * @return true if enabled.
+     */
+    boolean isUnpackWARs();
 }
