@@ -188,7 +188,7 @@
 .button:hover, .button:focus {
      background: #ededed;
 }
-input.button[disabled='disabled'] {
+input.button[disabled='disabled'] ,button.button[disabled='disabled'] {
     color:#888;
      background: #ededed;
 }
