@@ -67,13 +67,6 @@ public class AuthenticationAdmin extends AbstractAdmin implements CarbonServerAu
     private static final int DEFAULT_PRIORITY_LEVEL = 5;
     private static final String AUTHENTICATOR_NAME = "DefaultCarbonAuthenticator";
 
-    private static final String IP_ADDRESS_PATTERN =
-            "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-                    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-                    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
-                    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
-
-
     public boolean login(String username, String password, String remoteAddress)
             throws AuthenticationException {
         HttpSession httpSession = getHttpSession();
@@ -87,7 +80,12 @@ public class AuthenticationAdmin extends AbstractAdmin implements CarbonServerAu
                 return false;
             }
 
-            validateRemoteAddress(remoteAddress);
+            if (remoteAddress != null) {
+                AuthenticationUtil.validateRemoteAddress(remoteAddress);
+            } else {
+                remoteAddress
+                        = AuthenticationUtil.getRemoteAddress(MessageContext.getCurrentMessageContext());
+            }
 
             RegistryService registryService = CarbonServicesServiceComponent.getRegistryService();
             RealmService realmService = CarbonServicesServiceComponent.getRealmService();
@@ -129,39 +127,6 @@ public class AuthenticationAdmin extends AbstractAdmin implements CarbonServerAu
         }
     }
 
-    private void validateRemoteAddress(String address) throws AuthenticationException {
-
-        if (address == null || address.isEmpty()) {
-            return;
-        }
-
-        address = address.replaceAll("\\s+", "");
-        address = address.trim();
-
-        if (!isValidIPAddress(address)) {
-            if (!isValidDNSAddress(address)) {
-                throw new AuthenticationException("Authentication Failed : Invalid remote address passed - " + address);
-            }
-        }
-    }
-
-    private boolean isValidDNSAddress(String address) {
-        try {
-            InetAddress ipAddress = InetAddress.getByName(address);
-            return isValidIPAddress(ipAddress.getHostAddress());
-        } catch (UnknownHostException e) {
-            log.warn("Could not find IP address for domain name : " + address);
-        }
-
-        return false;
-    }
-
-    private boolean isValidIPAddress(String ipAddress) {
-
-      Pattern pattern = Pattern.compile(IP_ADDRESS_PATTERN);
-      Matcher matcher = pattern.matcher(ipAddress);
-      return matcher.matches();
-    }
 
     public RememberMeData loginWithRememberMeOption(String username, String password, String remoteAddress)
             throws AuthenticationException {

@@ -54,7 +54,7 @@ public class BasicAccessAuthenticator extends AbstractAuthenticator {
     @Override
     protected String getUserNameFromRequest(MessageContext msgContext) {
 
-        String authorizationHeader = getHeader("Authorization", msgContext);
+        String authorizationHeader = AuthenticationUtil.getHeader("Authorization", msgContext);
 
         if (authorizationHeader == null) {
             log.debug("Authorization header missing !!");
@@ -230,7 +230,7 @@ public class BasicAccessAuthenticator extends AbstractAuthenticator {
          * 2. If there is an Authorization header and if it has "Basic" tag
          */
 
-        String authorizationHeader = getHeader("Authorization", msgContext);
+        String authorizationHeader = AuthenticationUtil.getHeader("Authorization", msgContext);
 
         if (authorizationHeader == null) {
             return true;
@@ -281,7 +281,7 @@ public class BasicAccessAuthenticator extends AbstractAuthenticator {
      */
     protected boolean isRememberMeRequest(String userNameInRequest, MessageContext messageContext) {
 
-        String rememberMeHeader = getHeader("RememberMe", messageContext);
+        String rememberMeHeader = AuthenticationUtil.getHeader("RememberMe", messageContext);
 
         return rememberMeHeader != null && rememberMeHeader.equals("true");
     }

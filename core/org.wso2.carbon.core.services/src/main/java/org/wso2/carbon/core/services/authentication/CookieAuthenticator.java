@@ -53,7 +53,7 @@ public class CookieAuthenticator extends AbstractAuthenticator {
 
     protected String getCookieData(MessageContext msgContext) {
 
-        return getHeader("RememberMeCookieData", msgContext);
+        return AuthenticationUtil.getHeader("RememberMeCookieData", msgContext);
     }
 
     /**

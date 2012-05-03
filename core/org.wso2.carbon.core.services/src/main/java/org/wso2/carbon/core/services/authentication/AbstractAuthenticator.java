@@ -285,7 +285,13 @@ public abstract class AbstractAuthenticator extends AbstractAdmin implements Ser
      * @return Remote address (IP/Hostname) as a string.
      */
     protected String getRemoteAddress(MessageContext msgCtx) {
-        return (String) msgCtx.getProperty(MessageContext.REMOTE_ADDR);
+        try {
+            return AuthenticationUtil.getRemoteAddress(msgCtx);
+        } catch (AuthenticationException e) {
+            log.error("Invalid remote address detected.", e);
+        }
+
+        return null;
     }
 
     /**
@@ -447,42 +453,5 @@ public abstract class AbstractAuthenticator extends AbstractAdmin implements Ser
      */
     protected abstract BundleContext getBundleContext() throws Exception;
 
-    /**
-     * Gets the given header name from message context. It first checks in the HTTP servlet request.
-     * If servlet request is not found, header is looked up in the message context TRANSPORT_HEADERS.
-     * @param headerName Name of the header.
-     * @param messageContext The message context.
-     * @return Header value.
-     */
-    protected String getHeader(String headerName, MessageContext messageContext) {
 
-        HttpServletRequest request = (HttpServletRequest) messageContext
-                .getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
-
-        // First check header in servlet request. But for some transports (nhttp)
-        // servlet request is null. In those cases we have to lookup through
-        // transport headers in message context.
-        if (request != null) {
-
-            String tmp = request.getHeader(headerName);
-            if (tmp == null) {
-                tmp = request.getHeader(headerName.toLowerCase());
-            }
-
-            return tmp;
-        } else {
-
-            Map map = (Map) messageContext.getProperty(MessageContext.TRANSPORT_HEADERS);
-            if (map != null) {
-                String tmp = (String) map.get(headerName);
-                if (tmp == null) {
-                    tmp = (String) map.get(headerName.toLowerCase());
-                }
-
-                return tmp;
-            }
-        }
-
-        return null;
-    }
 }
