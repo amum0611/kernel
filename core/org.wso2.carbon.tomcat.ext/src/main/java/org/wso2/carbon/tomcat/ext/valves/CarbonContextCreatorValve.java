@@ -58,9 +58,6 @@ public class CarbonContextCreatorValve extends ValveBase {
     }
 
     public void initCarbonContext(Request request) throws Exception {
-        if (!isWebappMgtEnabled()) {
-            return;
-        }
         String tenantDomain = Utils.getTenantDomain(request);
         CarbonContextHolder carbonContextHolder =
                 CarbonContextHolder.getThreadLocalCarbonContextHolder();
@@ -81,23 +78,5 @@ public class CarbonContextCreatorValve extends ValveBase {
                                             new GhostRegistry(registryService, tenantId,
                                                               RegistryType.SYSTEM_GOVERNANCE));
         }
-    }
-
-    /**
-     * Checks whether the webapp.mgt Carbon components are available
-     *
-     * @return true - if webapp.mgt components are available, false - otherwise
-     */
-    private boolean isWebappMgtEnabled() {
-        File osgiPluginsDir =
-                new File(CarbonUtils.getCarbonHome() + File.separator + "repository" +
-                         File.separator + "components" + File.separator + "plugins");
-        String[] plugins = osgiPluginsDir.list();
-        for (String plugin : plugins) {
-            if (plugin.contains("org.wso2.carbon.webapp.")) {
-                return true;
-            }
-        }
-        return false;
     }
 }
