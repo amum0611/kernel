@@ -50,6 +50,7 @@ import org.wso2.carbon.utils.PreAxisConfigurationPopulationObserver;
 import org.wso2.carbon.utils.WSO2Constants;
 import org.wso2.carbon.utils.deployment.Axis2ModuleRegistry;
 import org.wso2.carbon.utils.deployment.GhostDeployerRegistry;
+import org.wso2.carbon.utils.deployment.GhostDeployerUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
@@ -86,6 +87,7 @@ public class TenantAxisConfigurator extends DeploymentEngine implements AxisConf
     private final BundleContext bundleContext;
     private final Bundle[] moduleBundles;
     private final Bundle[] deployerBundles;
+    private File repositoryDir;
 
     private ScheduledExecutorService scheduler;
     private CarbonDeploymentSchedulerTask schedulerTask;
@@ -202,7 +204,40 @@ public class TenantAxisConfigurator extends DeploymentEngine implements AxisConf
         }
     }
 
+     /**
+     * Overriding this method because we want to override the service dir path. Ghost deployer will
+     * set the proper services path.
+     *
+     * @param repositoryName - path to repository
+     */
+    @Override
+    protected void prepareRepository(String repositoryName) {
+        repositoryDir = new File(repositoryName);
+        // set a fake services dir which is not there
+        if (servicesPath != null && !GhostDeployerUtils.isGhostOn()) {
+            servicesDir = new File(servicesPath);
+            if (!servicesDir.exists()) {
+                servicesDir = new File(repositoryDir, servicesPath);
+            }
+        } else {
+            servicesDir = new File(repositoryDir, DeploymentConstants.SERVICE_PATH);
+        }
+        if (modulesPath != null) {
+            modulesDir = new File(modulesPath);
+            if (!modulesDir.exists()) {
+                modulesDir = new File(repositoryDir, modulesPath);
+            }
+        } else {
+            modulesDir = new File(repositoryDir, DeploymentConstants.MODULE_PATH);
+        }
+        if (!modulesDir.exists()) {
+            log.info(Messages.getMessage("nomoduledirfound", getRepositoryPath(repositoryDir)));
+        }
+    }
 
+    public File getRepositoryDir() {
+        return repositoryDir;
+    }
 
     /**
      * First create a Deployment engine, use that to create an AxisConfiguration
