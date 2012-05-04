@@ -163,7 +163,7 @@ public class RDBMSConfiguration {
 	}
 	
 	public void setPassword(String password) {
-		if (this.getPasswordPersist() != null) {
+		if (this.getPasswordPersist() == null) {
 			this.passwordPersist = new Password();
 		}
 		this.passwordPersist.setValue(password);
