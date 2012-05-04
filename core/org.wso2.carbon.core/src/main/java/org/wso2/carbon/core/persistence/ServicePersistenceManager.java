@@ -58,6 +58,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
      * Constructor gets the axis config and calls the super constructor.
      *
      * @param axisConfig - AxisConfiguration
+     * @param pf PersistenceFactory instance
      * @throws AxisFault - if the config registry is not found
      */
     public ServicePersistenceManager(AxisConfiguration axisConfig, PersistenceFactory pf) throws AxisFault {
@@ -72,11 +73,14 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
      */
     public ServicePersistenceManager(AxisConfiguration axisConfig) throws AxisFault {
         super(axisConfig);
-        PersistenceFactory pf = new PersistenceFactory(axisConfig);
-        if (this.pf == null) {
-            this.pf = pf;
+        try {
+            if (this.pf == null) {
+                this.pf = PersistenceFactory.getInstance(axisConfig);
+            }
+            this.fpm = this.pf.getServiceGroupFilePM();
+        } catch (Exception e) {
+            log.error("Error getting PersistenceFactory instance", e);
         }
-        this.fpm = this.pf.getServiceGroupFilePM();
     }
 
     /**

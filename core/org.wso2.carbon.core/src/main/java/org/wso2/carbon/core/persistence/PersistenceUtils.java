@@ -24,6 +24,7 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.description.*;
+import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.util.Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -150,7 +151,6 @@ public final class PersistenceUtils {
     }
 
     /**
-     * todo fix this when you are at servicePM
      * Finds a policy with the given uuid in the provided list of policies
      *
      * @param policyId          - uuid to find
@@ -168,30 +168,6 @@ public final class PersistenceUtils {
         }
         return null;
     }
-
-    /**
-     *
-     * todo is this used anywhere?          getAxisModule
-     * Finds module name and version from the given resource and retrieves the AxisModule instance
-     * from the config context
-     *
-     * @param moduleResource - Registry resource for the module
-     * @param axisConfig     - AxisConfiguration instance
-     * @return - the AxisModule instance if found
-     * @throws Axis2ModuleNotFound - if the module is not found
-     */
-//    public static AxisModule getAxisModule(Resource moduleResource, AxisConfiguration
-//            axisConfig) throws Axis2ModuleNotFound {
-//        String modName = moduleResource.getProperty(RegistryResources.ModuleProperties.NAME);
-//        String modVersion = moduleResource
-//                .getProperty(RegistryResources.ModuleProperties.VERSION);
-//        AxisModule axisModule = axisConfig.getModule(modName, modVersion);
-//
-//        if (axisModule == null)
-//            throw new Axis2ModuleNotFound("Module: " + modName + " not found", modName);
-//
-//        return axisModule;
-//    }
 
     /**
      * Checks whether the given service is a proxy service
@@ -247,31 +223,6 @@ public final class PersistenceUtils {
                     Boolean.TRUE.toString()));
         }
     }
-
-//    /**
-//     *
-//     * todo is this used anywhere?          handleGlobalParams
-//     * Set the needed global params for the module by reading from registry resource
-//     *
-//     * @param axisModule     - AxisModule instance
-//     * @param moduleResource - module resource
-//     * @throws AxisFault - on axis level errors
-//     * @deprecated
-//     */
-//    public static void handleGlobalParams(AxisModule axisModule,
-//                                          Resource moduleResource) throws AxisFault {
-//        if (Boolean.parseBoolean(moduleResource
-//                .getProperty(RegistryResources.ModuleProperties.GLOBALLY_ENGAGED))) {
-//            axisModule.addParameter(new Parameter(GLOBALLY_ENGAGED_PARAM_NAME,
-//                    Boolean.TRUE.toString()));
-//            axisModule.getParent().engageModule(axisModule);
-//        }
-//
-//        if (Boolean.parseBoolean(moduleResource.getProperty(GLOBALLY_ENGAGED_CUSTOM))) {
-//            axisModule.addParameter(new Parameter(GLOBALLY_ENGAGED_PARAM_NAME,
-//                    Boolean.TRUE.toString()));
-//        }
-//    }
 
     /**
      * [@attrName="attrValue"]

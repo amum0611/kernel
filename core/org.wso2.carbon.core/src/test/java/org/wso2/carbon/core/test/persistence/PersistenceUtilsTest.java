@@ -73,7 +73,7 @@ public class PersistenceUtilsTest extends BaseTestCase {
             ac = new AxisConfiguration();
             String fs = File.separator;
             String repoPath = new File(".").getAbsolutePath()+fs+"target"+fs+"axis2-repo"+(Math.random());
-            new File(repoPath).mkdir();
+            new File(repoPath). mkdir();
             ac.setRepository(new URL("file://"+repoPath));
 
             SuperTenantCarbonContext.getCurrentContext(ac).setRegistry(
@@ -84,7 +84,7 @@ public class PersistenceUtilsTest extends BaseTestCase {
             // The following line of code is kept for backward compatibility. Remove this once we
             // are certain that this is not required. -- Senaka.
             ac.addParameter(WSO2Constants.CONFIG_SYSTEM_REGISTRY_INSTANCE, registry);
-            pf = new PersistenceFactory(ac);
+            pf = PersistenceFactory.getInstance(ac);
         } catch (Exception e) {
             fail("Fail to add Parameter to registry. Caused by:" + e.getMessage());
         }

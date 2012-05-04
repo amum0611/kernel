@@ -78,9 +78,9 @@ public class DeploymentInterceptor implements AxisObserver {
 
     public void init(AxisConfiguration axisConfig) {
         extractTenantInfo(axisConfig);
-        pf = new PersistenceFactory(axisConfig);
         try {
-            axisConfig.addParameter(Resources.PERSISTENCE_FACTORY_PARAM_NAME, pf);
+            pf = PersistenceFactory.getInstance(axisConfig);
+            //axisConfig.addParameter(Resources.PERSISTENCE_FACTORY_PARAM_NAME, pf);
             if (registry == null) {
                 registry =
                         dataHolder.getRegistryService().getConfigSystemRegistry();

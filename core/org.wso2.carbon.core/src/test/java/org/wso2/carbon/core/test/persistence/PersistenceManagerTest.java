@@ -88,11 +88,11 @@ public class PersistenceManagerTest extends BaseTestCase {
         }
 
         try {
-            ac = new AxisConfiguration();                                                    
+            ac = new AxisConfiguration();
             String fs = File.separator;
-            String repoPath = new File(".").getAbsolutePath()+fs+"target"+fs+"axis2-repo"+(Math.random());
+            String repoPath = new File(".").getAbsolutePath() + fs + "target" + fs + "axis2-repo" + (Math.random());
             new File(repoPath).mkdir();
-            ac.setRepository(new URL("file://"+repoPath));
+            ac.setRepository(new URL("file://" + repoPath));
             SuperTenantCarbonContext.getCurrentContext(ac).setRegistry(
                     RegistryType.SYSTEM_CONFIGURATION, configRegistry);
             SuperTenantCarbonContext.getCurrentContext(ac).setRegistry(
@@ -101,7 +101,7 @@ public class PersistenceManagerTest extends BaseTestCase {
 //            The following line of code is kept for backward compatibility. Remove this once we
 //            are certain that this is not required. -- Senaka.
             ac.addParameter(WSO2Constants.CONFIG_SYSTEM_REGISTRY_INSTANCE, configRegistry);
-            pf = new PersistenceFactory(ac);
+            pf = PersistenceFactory.getInstance(ac);
         } catch (Exception e) {
             fail("Fail to add Parameter to registry. Caused by:" + e.getMessage());
         }
@@ -162,7 +162,7 @@ public class PersistenceManagerTest extends BaseTestCase {
         OMNode node = pf.getServiceGroupFilePM().get(asvGroup.getServiceGroupName(),
                 serviceElementPath);
         assertTrue(node instanceof OMElement);
-        
+
         OMElement el = (OMElement) node;
         String s = el.getFirstChildWithName(new QName(Resources.ServiceProperties.POLICY_UUID)).getText();
         assertTrue("SecureMessagePolicy".equals(s));
@@ -247,8 +247,8 @@ public class PersistenceManagerTest extends BaseTestCase {
         pf.getServiceGroupPM().updateServiceGroupParameter(asvGroup, para);
 
         OMElement paramElement = (OMElement) pf.getServiceGroupFilePM().get(
-                asvGroup.getServiceGroupName(), Resources.ServiceGroupProperties.ROOT_XPATH+
-                "/"+Resources.ParameterProperties.PARAMETER); //there's only one parameter element
+                asvGroup.getServiceGroupName(), Resources.ServiceGroupProperties.ROOT_XPATH +
+                "/" + Resources.ParameterProperties.PARAMETER); //there's only one parameter element
 
         assertEquals("testGParam", paramElement.getAttributeValue(new QName(Resources.NAME)));
         assertEquals("true", paramElement.getAttributeValue(new QName("locked")));
@@ -270,7 +270,7 @@ public class PersistenceManagerTest extends BaseTestCase {
         pf.getServicePM().updateServiceParameter(asv, param);
 
         String serviceElementPath = PersistenceUtils.getResourcePath(asv);
-        String serviceParamElementPath = serviceElementPath+"/"+Resources.ParameterProperties.PARAMETER+
+        String serviceParamElementPath = serviceElementPath + "/" + Resources.ParameterProperties.PARAMETER +
                 PersistenceUtils.getXPathAttrPredicate(Resources.NAME, param.getName());
 
         OMElement el = (OMElement) pf.getServiceGroupFilePM().get(asvGroup.getServiceGroupName(),
@@ -290,15 +290,15 @@ public class PersistenceManagerTest extends BaseTestCase {
         OMElement re = pf.getModulePM().getModule("newModule", "1.0");
         assertNotNull(re);
 
-        String modulePath = Resources.ModuleProperties.VERSION_XPATH+PersistenceUtils.
+        String modulePath = Resources.ModuleProperties.VERSION_XPATH + PersistenceUtils.
                 getXPathAttrPredicate(Resources.ModuleProperties.VERSION_ID, "1.0");
         String modulePathPU = PersistenceUtils.getResourcePath(am);
         assertEquals(modulePath, modulePathPU);
-        
+
         String s1 = pf.getModuleFilePM().get("newModule").getAttributeValue(new QName(Resources.NAME));
         String s2 = ((OMElement) pf.getModuleFilePM().get("newModule", modulePath)).
                 getAttributeValue(new QName(Resources.ModuleProperties.VERSION_ID));
-        
+
         assertTrue(s1.equals("newModule"));
         assertTrue(s2.equals("1.0"));
     }
@@ -311,7 +311,7 @@ public class PersistenceManagerTest extends BaseTestCase {
         OMElement re = pf.getModulePM().getModule("newModule", Resources.ModuleProperties.UNDEFINED);
         assertNotNull(re);
 
-        String modulePath = Resources.ModuleProperties.VERSION_XPATH+PersistenceUtils.
+        String modulePath = Resources.ModuleProperties.VERSION_XPATH + PersistenceUtils.
                 getXPathAttrPredicate(Resources.ModuleProperties.VERSION_ID, Resources.ModuleProperties.UNDEFINED);
         String modulePathPU = PersistenceUtils.getResourcePath(am);
         assertEquals(modulePath, modulePathPU);
@@ -342,20 +342,20 @@ public class PersistenceManagerTest extends BaseTestCase {
         param.setParameterElement(Ome);
 
         pf.getModulePM().updateModuleParameter(am, param);
-        
-        String moduleParamPath = PersistenceUtils.getResourcePath(am)+
-                "/"+Resources.ParameterProperties.PARAMETER+
+
+        String moduleParamPath = PersistenceUtils.getResourcePath(am) +
+                "/" + Resources.ParameterProperties.PARAMETER +
                 PersistenceUtils.getXPathAttrPredicate(Resources.NAME, param.getName());
 
         OMElement modParam = (OMElement) pf.getModuleFilePM().get("Module1", moduleParamPath);
         assertNotNull("The parameter added to module should not be null", modParam);
         String s1 = modParam.getAttributeValue(new QName(Resources.NAME));
         assertTrue(s1.equals("TestParam"));
-        
+
         List modVerList = pf.getModuleFilePM().getAll("Module1", PersistenceUtils.getResourcePath(am));
         assertTrue("There can be only one OMElement for a given module name and version", modVerList.size() == 1);
     }
-                                                           
+
     public void testDeleteService() throws Exception {
         AxisServiceGroup asvGroup = new AxisServiceGroup(ac);
         asvGroup.setServiceGroupName("ExistingSvGroup1");
@@ -385,7 +385,7 @@ public class PersistenceManagerTest extends BaseTestCase {
 
         String serviceElementPath = PersistenceUtils.getResourcePath(asv);
 
-        String serviceParamResourcePath = serviceElementPath+"/"+Resources.ParameterProperties.PARAMETER
+        String serviceParamResourcePath = serviceElementPath + "/" + Resources.ParameterProperties.PARAMETER
                 + PersistenceUtils.getXPathAttrPredicate(Resources.NAME, param.getName());
 
         pf.getServicePM().removeServiceParameter(asv, param);
@@ -433,7 +433,7 @@ public class PersistenceManagerTest extends BaseTestCase {
         pf.getServicePM().engageModuleForService(am, asv);
 
         String serviceElementPath = PersistenceUtils.getResourcePath(asv);
-        
+
         String s1 = "";
         String s2 = "";
         //gettting association for modules is different from other assocs
@@ -449,65 +449,65 @@ public class PersistenceManagerTest extends BaseTestCase {
         assertTrue(s2.equals("1.0"));
     }
 
-/**
-    public void testFilePersistenceTransactions() throws Exception {
-        
-//        ServiceGroupFilePersistenceManager sfpm = pf.getServiceGroupFilePM();
-        AxisServiceGroup asvGroup = new AxisServiceGroup(ac);
-        asvGroup.setServiceGroupName("testFPTGroup");
-        AxisService asv = new AxisService("testFPTService");
-        asvGroup.addService(asv);
-        pf.getServiceGroupPM().handleNewServiceGroupAddition(asvGroup);
-        pf.getServicePM().handleNewServiceAddition(asv);
-        int increment = 0;
-        
-        for (int i = 0; i < 1; i++) {
-            new Thread(
-                    new ConcurrentTransactionsTest()).start();
+    /**
+     * public void testFilePersistenceTransactions() throws Exception {
+     * <p/>
+     * //        ServiceGroupFilePersistenceManager sfpm = pf.getServiceGroupFilePM();
+     * AxisServiceGroup asvGroup = new AxisServiceGroup(ac);
+     * asvGroup.setServiceGroupName("testFPTGroup");
+     * AxisService asv = new AxisService("testFPTService");
+     * asvGroup.addService(asv);
+     * pf.getServiceGroupPM().handleNewServiceGroupAddition(asvGroup);
+     * pf.getServicePM().handleNewServiceAddition(asv);
+     * int increment = 0;
+     * <p/>
+     * for (int i = 0; i < 1; i++) {
+     * new Thread(
+     * new ConcurrentTransactionsTest()).start();
+     * <p/>
+     * Parameter param = new Parameter();
+     * param.setName("testParam"+ increment++);
+     * param.setValue("testValue"+ increment++);
+     * param.setParameterType(5);
+     * pf.getServicePM().updateServiceParameter(asv, param);
+     * }
+     * <p/>
+     * String serviceElementPath = PersistenceUtils.getResourcePath(asv);
+     * String serviceParamElementPath = serviceElementPath+"/"+Resources.ParameterProperties.PARAMETER+
+     * PersistenceUtils.getXPathAttrPredicate(Resources.NAME, "testParam0");
+     * <p/>
+     * OMElement el = (OMElement) pf.getServiceGroupFilePM().get(asvGroup.getServiceGroupName(),
+     * serviceParamElementPath);
+     * String s1 = el.getAttributeValue(new QName(Resources.NAME));
+     * String s2 = el.getAttributeValue(new QName(Resources.ParameterProperties.TYPE)); //this fails most probably
+     * <p/>
+     * assertTrue("testParam".equals(s1));
+     * assertTrue("5".equals(s2));
+     * }
+     */
 
-            Parameter param = new Parameter();
-            param.setName("testParam"+ increment++);
-            param.setValue("testValue"+ increment++);
-            param.setParameterType(5);
-            pf.getServicePM().updateServiceParameter(asv, param);
-        }
+    static class ConcurrentTransactionsTest implements Runnable {
+        static int x = 100;
 
-        String serviceElementPath = PersistenceUtils.getResourcePath(asv);
-        String serviceParamElementPath = serviceElementPath+"/"+Resources.ParameterProperties.PARAMETER+
-                PersistenceUtils.getXPathAttrPredicate(Resources.NAME, "testParam0");
-
-        OMElement el = (OMElement) pf.getServiceGroupFilePM().get(asvGroup.getServiceGroupName(),
-                serviceParamElementPath);
-        String s1 = el.getAttributeValue(new QName(Resources.NAME));
-        String s2 = el.getAttributeValue(new QName(Resources.ParameterProperties.TYPE)); //this fails most probably
-
-        assertTrue("testParam".equals(s1));
-        assertTrue("5".equals(s2));
-    }
-*/   
- 
-    static class ConcurrentTransactionsTest implements Runnable{
-        static int x = 100; 
         public void run() {
-            PersistenceFactory pfNew = new PersistenceFactory(ac);
-            ServiceGroupFilePersistenceManager sfpmNew = pfNew.getServiceGroupFilePM();
-
             try {
+                PersistenceFactory pfNew = PersistenceFactory.getInstance(ac);
+                ServiceGroupFilePersistenceManager sfpmNew = pfNew.getServiceGroupFilePM();
                 Parameter param = new Parameter();
                 param.setName("testParam" + x++);
                 param.setValue("testValue" + x++);
                 param.setParameterType(5);
 
                 pfNew.getServicePM().updateServiceParameter(ac.getService("testFPTService"), param);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        
+
         public void setValues() {
-            
+
         }
-        
+
     }
-    
+
 }

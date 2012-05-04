@@ -90,11 +90,14 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
      */
     public ModulePersistenceManager(AxisConfiguration axisConfig) throws AxisFault {
         super(axisConfig);
-        PersistenceFactory pf = new PersistenceFactory(axisConfig);
-        if (this.pf == null) {
-            this.pf = pf;
+        try {
+            if (this.pf == null) {
+                this.pf = PersistenceFactory.getInstance(axisConfig);
+            }
+            this.fpm = this.pf.getModuleFilePM();
+        } catch (Exception e) {
+            log.error("Error getting PersistenceFactory instance", e);
         }
-        this.fpm = this.pf.getModuleFilePM();
     }
 
     /**

@@ -48,13 +48,21 @@ public class PersistenceFactory {
     /**
      * For carbon components use this#getInstance method
      *
-     * @param axisConfig
+     * @param axisConfig the axis configuration
      */
-    public PersistenceFactory(AxisConfiguration axisConfig) {
+    private PersistenceFactory(AxisConfiguration axisConfig) {
         this.axisConfig = axisConfig;
     }
 
-    public static PersistenceFactory getInstance(AxisConfiguration axisConfig) throws Exception {
+    /**
+     * Only one PersistenceFactory instance should be there per server instance
+     *
+     * @param axisConfig the axis configuration
+     * @return the PersistenceFactory instance
+     * @throws AxisFault if error in adding PersistenceFactory instance to axisconfig as a parameter
+     */
+    public static PersistenceFactory getInstance(AxisConfiguration axisConfig) throws AxisFault {
+
         Object obj = axisConfig.getParameterValue(Resources.PERSISTENCE_FACTORY_PARAM_NAME);
         PersistenceFactory pf = null;
         if (obj instanceof PersistenceFactory) {
@@ -66,17 +74,25 @@ public class PersistenceFactory {
         return pf;
     }
 
+    /**
+     * @return The ServicePersistenceManager instance
+     */
     public ServicePersistenceManager getServicePM() {
-        try {
-            spm = new ServicePersistenceManager(axisConfig, this);
-        } catch (AxisFault axisFault) {
-            log.error("Error while initializing " +
-                    "the ServicePersistenceManager instance", axisFault);
+        if (spm == null) {
+            try {
+                spm = new ServicePersistenceManager(axisConfig, this);
+            } catch (AxisFault axisFault) {
+                log.error("Error while initializing " +
+                        "the ServicePersistenceManager instance", axisFault);
+            }
         }
-
         return spm;
     }
 
+    /**
+     *
+     * @return The ServiceGroupManager instance for the current tenant/supertenant
+     */
     public ServiceGroupPersistenceManager getServiceGroupPM() {
         if (sgpm == null) {
             try {
@@ -89,6 +105,10 @@ public class PersistenceFactory {
         return sgpm;
     }
 
+    /**
+     *
+     * @return The OperationPersistenceManager instance
+     */
     public OperationPersistenceManager getOperationPM() {
         if (opm == null) {
             try {
@@ -101,6 +121,10 @@ public class PersistenceFactory {
         return opm;
     }
 
+    /**
+     *
+     * @return The ModulePersistenceManager instance
+     */
     public ModulePersistenceManager getModulePM() {
         if (mpm == null) {
             try {

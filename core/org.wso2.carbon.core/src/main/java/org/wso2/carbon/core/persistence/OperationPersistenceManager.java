@@ -49,11 +49,14 @@ public class OperationPersistenceManager extends AbstractPersistenceManager {
      */
     public OperationPersistenceManager(AxisConfiguration axisConfig) throws AxisFault {
         super(axisConfig);
-        PersistenceFactory pf = new PersistenceFactory(axisConfig);
-        if (this.pf == null) {
-            this.pf = pf;
+        try {
+            if (this.pf == null) {
+                this.pf = PersistenceFactory.getInstance(axisConfig);
+            }
+            this.fpm = this.pf.getServiceGroupFilePM();
+        } catch (Exception e) {
+            log.error("Error getting PersistenceFactory instance", e);
         }
-        this.fpm = this.pf.getServiceGroupFilePM();
     }
 
     /**
