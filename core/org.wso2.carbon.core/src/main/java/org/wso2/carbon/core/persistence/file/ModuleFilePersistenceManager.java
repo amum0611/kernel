@@ -1,11 +1,10 @@
 package org.wso2.carbon.core.persistence.file;
 
-import org.apache.axiom.om.*;
+import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.engine.AxisConfiguration;
-import org.apache.axis2.util.XMLPrettyPrinter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,10 +18,6 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Acts as the immediate lower level of ModulePersistenceManager class.
@@ -70,8 +65,8 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
      *
      * @param moduleName
      * @throws java.io.IOException IOException
-     * @throws javax.xml.stream.XMLStreamException XMLStreamException
-     *
+     * @throws javax.xml.stream.XMLStreamException
+     *                             XMLStreamException
      * @throws org.wso2.carbon.core.persistence.PersistenceException
      *
      */

@@ -1,11 +1,12 @@
 package org.wso2.carbon.core.persistence.file;
 
-import org.apache.axiom.om.*;
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.engine.AxisConfiguration;
-import org.apache.axis2.util.XMLPrettyPrinter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -176,7 +177,7 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
                 FileUtils.forceMkdir(metafilesDir);
             }
         } catch (IOException e) {
-            log.error("Error creating the services meta files directory "+metafilesDir.getAbsolutePath(), e);
+            log.error("Error creating the services meta files directory " + metafilesDir.getAbsolutePath(), e);
         }
     }
 }

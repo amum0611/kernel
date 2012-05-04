@@ -24,7 +24,6 @@ import org.apache.axis2.description.Parameter;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.core.persistence.file.ServiceGroupFilePersistenceManager;
 
 public class OperationPersistenceManager extends AbstractPersistenceManager {
 

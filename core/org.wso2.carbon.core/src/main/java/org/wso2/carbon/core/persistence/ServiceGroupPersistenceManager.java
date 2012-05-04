@@ -282,7 +282,7 @@ public class ServiceGroupPersistenceManager extends AbstractPersistenceManager {
                 // Handle ServiceGroup-Module engagement
                 for (Object o : serviceGroup.getEngagedModules()) {
                     AxisModule axisModule = (AxisModule) o;
-                    if (!axisConfig.isEngaged(axisModule.getName()) ) {
+                    if (!axisConfig.isEngaged(axisModule.getName())) {
                         String version = PersistenceUtils.getModuleVersion(axisModule);
                         OMElement module = PersistenceUtils.createModule(axisModule.getName(), version,
                                 Resources.Associations.ENGAGED_MODULES);
@@ -299,7 +299,7 @@ public class ServiceGroupPersistenceManager extends AbstractPersistenceManager {
 
                 getServiceGroupFilePM().commitTransaction(sgName);
             } catch (IOException ex) {
-            	log.error("unable to handle new service addition. ", ex);
+                log.error("unable to handle new service addition. ", ex);
             } catch (Throwable e) {
                 log.error("unable to handle new service addition. " + serviceGroup.getServiceGroupName(), e);
                 handleExceptionWithRollback(sgName, "Unable to handle new service group addition. " +

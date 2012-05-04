@@ -25,9 +25,6 @@ import org.wso2.carbon.core.Resources;
 import org.wso2.carbon.core.persistence.file.ModuleFilePersistenceManager;
 import org.wso2.carbon.core.persistence.file.ServiceGroupFilePersistenceManager;
 
-import java.io.File;
-import java.net.URL;
-
 /**
  * Factory to create different PersistenceManager instances
  */
@@ -90,7 +87,6 @@ public class PersistenceFactory {
     }
 
     /**
-     *
      * @return The ServiceGroupManager instance for the current tenant/supertenant
      */
     public ServiceGroupPersistenceManager getServiceGroupPM() {
@@ -106,7 +102,6 @@ public class PersistenceFactory {
     }
 
     /**
-     *
      * @return The OperationPersistenceManager instance
      */
     public OperationPersistenceManager getOperationPM() {
@@ -122,7 +117,6 @@ public class PersistenceFactory {
     }
 
     /**
-     *
      * @return The ModulePersistenceManager instance
      */
     public ModulePersistenceManager getModulePM() {

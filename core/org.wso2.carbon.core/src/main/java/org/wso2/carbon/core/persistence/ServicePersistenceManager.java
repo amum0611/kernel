@@ -58,7 +58,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
      * Constructor gets the axis config and calls the super constructor.
      *
      * @param axisConfig - AxisConfiguration
-     * @param pf PersistenceFactory instance
+     * @param pf         PersistenceFactory instance
      * @throws AxisFault - if the config registry is not found
      */
     public ServicePersistenceManager(AxisConfiguration axisConfig, PersistenceFactory pf) throws AxisFault {

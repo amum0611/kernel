@@ -84,14 +84,15 @@ public abstract class AbstractFilePersistenceManager {
 
     /**
      * with commons-io 2.2, you may simply replace this with FileUtils#getFile()
+     *
      * @param resourceId resource id
      * @return system dependent file path with correct separator
      */
     protected String getFilePathFromResourceId(String resourceId) {
-        String[] names = resourceId.split("/");        
+        String[] names = resourceId.split("/");
         StringBuilder sb = new StringBuilder(names[0]);
         char fs = File.separatorChar;
-        for(int i = 1; i < names.length; i++) {
+        for (int i = 1; i < names.length; i++) {
             sb.append(fs).append(names[i]);
         }
         return sb.append(Resources.METAFILE_EXTENSION).toString();
@@ -115,8 +116,8 @@ public abstract class AbstractFilePersistenceManager {
      *
      * @param resourceId module name or service group name as applicable
      * @return An OMNode. This could be an OMElement, OMAttribute etc. Cast as necessary.
-     * @throws PersistenceDataNotFoundException if the file don't have a root element
-     *
+     * @throws PersistenceDataNotFoundException
+     *          if the file don't have a root element
      * @see #get(String, String)
      */
     public abstract OMElement get(String resourceId) throws PersistenceDataNotFoundException;
@@ -128,8 +129,8 @@ public abstract class AbstractFilePersistenceManager {
      * @param resourceId module name or service group name as applicable
      * @param xpathStr   The path in the xml file where the said xml content can be found
      * @return An OMNode. This could be an OMElement, OMAttribute etc. Cast as necessary.
-     * @throws PersistenceDataNotFoundException if no data found for the given xpathString or syntax error
-     *
+     * @throws PersistenceDataNotFoundException
+     *          if no data found for the given xpathString or syntax error
      * @see #getAttribute(String, String)
      */
     public OMNode get(String resourceId, String xpathStr) throws PersistenceDataNotFoundException {
@@ -149,8 +150,8 @@ public abstract class AbstractFilePersistenceManager {
      * @param resourceId module name or service group name as applicable
      * @param xpathStr   The path in the xml file where the said xml content can be found
      * @return An OMNode. This could be an OMElement, OMAttribute etc. Cast as necessary.
-     * @throws PersistenceDataNotFoundException if no data found for the given xpathString or syntax error
-     *
+     * @throws PersistenceDataNotFoundException
+     *          if no data found for the given xpathString or syntax error
      * @see #get(String, String)
      */
     public OMAttribute getAttribute(String resourceId, String xpathStr) throws PersistenceDataNotFoundException {
@@ -166,8 +167,8 @@ public abstract class AbstractFilePersistenceManager {
      * @param resourceName  service group name / module name
      * @param content       the OMElement to be added as a child to the location of xpathOfParent
      * @param xpathOfParent The parent path in the xml file where the said xml content should be added.
-     * @throws PersistenceDataNotFoundException if parent is null or xpath syntax error
-     *
+     * @throws PersistenceDataNotFoundException
+     *          if parent is null or xpath syntax error
      */
     public void put(String resourceName, OMElement content, String xpathOfParent) throws
             PersistenceDataNotFoundException {
@@ -204,14 +205,13 @@ public abstract class AbstractFilePersistenceManager {
     }
 
     /**
-     *
      * Puts an attribute
      *
      * @param resourceName   The service group ID or module id
      * @param attr           Content to be added
      * @param xpathOfElement The Xpath of the OMElement where this attribute should be added
-     * @throws PersistenceDataNotFoundException if parent is null or xpath syntax error
-     *
+     * @throws PersistenceDataNotFoundException
+     *          if parent is null or xpath syntax error
      */
     public void put(String resourceName, OMAttribute attr, String xpathOfElement) throws
             PersistenceDataNotFoundException {
@@ -263,11 +263,11 @@ public abstract class AbstractFilePersistenceManager {
                 }
             }
         } catch (JaxenException e) {
-            log.error("Xpath error "+elementXpathStr, e);            
+            log.error("Xpath error " + elementXpathStr, e);
         } catch (XMLStreamException e) {
             log.error(e.getMessage() + resourceId, e);
         } catch (FileNotFoundException e) {
-            log.error(e.getMessage()+resourceId, e);
+            log.error(e.getMessage() + resourceId, e);
         }
         return false;
     }
@@ -317,8 +317,8 @@ public abstract class AbstractFilePersistenceManager {
     /**
      * @param resourceId module name or service group name as applicable
      * @param xpathStr   xpath to the element which needs to be deleted
-     * @throws PersistenceDataNotFoundException if path given xpathStr is not found or syntax error
-     *
+     * @throws PersistenceDataNotFoundException
+     *          if path given xpathStr is not found or syntax error
      */
     public abstract void delete(String resourceId, String xpathStr) throws PersistenceDataNotFoundException;
 
