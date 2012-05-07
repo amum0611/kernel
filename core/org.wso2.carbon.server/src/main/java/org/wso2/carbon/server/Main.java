@@ -22,7 +22,10 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.server.extensions.*;
 import org.wso2.carbon.server.util.Utils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
     private static Log log = LogFactory.getLog(Main.class);
@@ -43,6 +46,8 @@ public class Main {
 
         //To keep track of the time taken to start the Carbon server.
         System.setProperty("wso2carbon.start.time", System.currentTimeMillis() + "");
+
+        writePID(System.getProperty(LauncherConstants.CARBON_HOME));
 
         processCmdLineArgs(args);
         invokeExtensions();
@@ -110,6 +115,30 @@ public class Main {
     public static void launchCarbon(){
         CarbonLauncher carbonLauncher = new CarbonLauncher();
         carbonLauncher.launch();
+    }
+
+    /**
+     * Write the process ID of this process to the file
+     */
+    private static void writePID(String carbonHome) {
+        String pid;
+        if((pid = System.getProperty("carbon.pid")) != null){
+            BufferedWriter out = null;
+            try {
+                FileWriter writer = new FileWriter(carbonHome + File.separator + "wso2carbon.pid");
+                out = new BufferedWriter(writer);
+                out.write(pid);
+            } catch (IOException e) {
+                log.warn("Cannot write wso2carbon.pid file");
+            } finally {
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+        }
     }
 }
 
