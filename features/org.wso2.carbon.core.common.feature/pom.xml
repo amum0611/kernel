@@ -96,7 +96,6 @@
 			        <bundleDef>au.com.bytecode.opencsv.wso2:opencsv</bundleDef>
 				<bundleDef>org.wso2.securevault:org.wso2.securevault</bundleDef>
                                 <bundleDef>com.h2database.wso2:h2-database-engine</bundleDef>
-                                <bundleDef>org.apache.axis2:axis2-transport-base</bundleDef>
                                 <bundleDef>org.apache.axis2:axis2-transport-jms</bundleDef>
                                 <bundleDef>org.apache.axis2.wso2:axis2-json</bundleDef>
                                 <bundleDef>org.codehaus.jettison.wso2:jettison</bundleDef>
