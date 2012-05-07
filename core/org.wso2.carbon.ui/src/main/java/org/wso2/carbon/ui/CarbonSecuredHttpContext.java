@@ -319,7 +319,7 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
             }
         }
 
-        // If a custom index page is used send teh login request with the
+        // If a custom index page is used send the login request with the
         // indexpage specified
         if (request.getParameter(CarbonConstants.INDEX_PAGE_URL) != null) {
             indexPageURL = request.getParameter(CarbonConstants.INDEX_PAGE_URL);
@@ -580,11 +580,7 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
             response.sendRedirect(contextPath + indexPageURL);
             return false;
         } else if (requestedURI.indexOf("/registry/atom") == -1 && requestedURI.endsWith("/carbon")) {
-            String redirectUrl = contextPath + indexPageURL;
-            if (!("".equals(customWarContext)) && customWarContext.trim().length() > 0) {
-                redirectUrl = "/" + customWarContext + redirectUrl;
-            }
-            response.sendRedirect(redirectUrl);
+            response.sendRedirect(contextPath + indexPageURL);
             return false;
         } else if (requestedURI.endsWith(".css") || requestedURI.endsWith(".gif")
                 || requestedURI.endsWith(".GIF") || requestedURI.endsWith(".jpg")
