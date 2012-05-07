@@ -465,6 +465,7 @@ public class TenantAxisConfigurator extends DeploymentEngine implements AxisConf
         if (disableArtifactLoading == null || "false".equals(disableArtifactLoading.getValue())) {
             moduleDeployer = new ModuleDeployer(axisConfig);
             new Axis2ModuleRegistry(axisConfig).register(moduleBundles);
+            // Add Ghost deployer registry only if ghost is on
             if (GhostDeployerUtils.isGhostOn()) {
                 new GhostDeployerRegistry(axisConfig).register(deployerBundles);
             } else {
