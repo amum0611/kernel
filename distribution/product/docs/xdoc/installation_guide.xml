@@ -121,8 +121,8 @@
                 environment variable to your Java home using the
                 export command or by editing /etc/profile, and add the Java /bin
                 directory to your PATH</li>
-    <li> Execute the WSO2 Carbon start script or the daemon script from the bin
-                directory. e.g. ./wso2server.sh OR ./daemon.sh start OR
+    <li> Execute the WSO2 Carbon start script  from the bin
+                directory. e.g. ./wso2server.sh OR
                 ./wso2server.sh --start</li>
     <li>Access the management console of WSO2 Carbon instance using the URL https://localhost:9443/carbon.
         (Note that server start up may take time)</li>
@@ -143,9 +143,6 @@
                 environment variable to your Java installation, and the PATH environment
                 variable to the Java /bin directory.</li>
     <li>Execute the WSO2 Carbon start script from the bin folder. e.g. wso2server.bat
-            </li>
-    <li>If you would like to install the WSO2 Carbon as a Windows service, use the
-                install.bat script
             </li>
     <li>Access the management console of WSO2 Carbon instance using the URL https://localhost:9443/carbon.
             </li>

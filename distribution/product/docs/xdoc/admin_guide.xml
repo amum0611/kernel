@@ -94,8 +94,6 @@ directory.('CARBON_SRC_HOME' refers to the directory in the file system where WS
                     <li>tcpmon.sh/tcpmon.bat - Launches TCPMon, the TCP connection monitor</li>
                     <li>chpasswd.sh/chpasswd.bat -Use this script to change the administrator password without signing
                     in to the server<br/></li>
-                    <li>daemon.sh -Start WSO2 Carbon as a daemon on Unix/Linux systems<br/></li>
-                    <li>install.bat - Install WSO2 Carbon as a background service on Windows<br/></li>
                     <li>repowriter.sh/repowriter.bat</li>
                 </ul>
 

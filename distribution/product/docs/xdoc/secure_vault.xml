@@ -173,7 +173,7 @@
             <br/>
             <strong>Limitation :</strong>
             This option is only valid, when Carbon server is started with sh
-            wso2server.sh . But when Carbon server is started as a daemon, This option can not be
+            wso2server.sh . But when Carbon server is started using nohup, This option can not be
             used
             <br/>
             <br/>
@@ -198,7 +198,7 @@
             3. Open and enter your primary keystore password in the 1st line of the text file and
             save it.
             <br/>
-            4. Then restart the Carbon Server as daemon. sh wso2server.sh -start
+            4. Then restart the Carbon Server using nohup. sh wso2server.sh -start
             <br/>
 
             By default Password provider assumes that both private key and keystore passwords are
