@@ -11,32 +11,24 @@ Standalone Mode
 
 2. All the shell scripts and .bat files are available in CARBON_HOME/bin directory.
 
-3. To start Carbon, one can use either wso2server.sh or daemon.sh in all *nix
+3. To start Carbon, use wso2server.sh in all *nix
    system & wso2server.bat file on Windows operating systems.
 
 4. Either of the following commands can be used to start Carbon
-      i)  ./wso2server.sh {console|start|stop|restart|status|dump|version}
-     ii)  ./daemon.sh {console|start|stop|restart|status|dump}
-    iii)  wso2server.bat {start|stop|version}
+      i)  ./wso2server.sh {start|stop|restart|version}
+     ii)  wso2server.bat {start|stop|version}
 
             Usage: wso2server.sh [command] [system-properties]
 
             command:
                 --debug <port> 	Start the server in remote debugging mode.
                         port: The remote debugging port.
-                --run		Run the server
-                --start		Start Carbon as a Unix daemon in the background
-                --console	Start Carbon as a Unix daemon in the foreground
-                --stop		Stop the Carbon Unix daemon
-                --status	Get the status of the Carbon Unix daemon
-                --dump		Print a thread dump of the Carbon Unix daemon
-                --restart	Restart the Carbon Unix daemon
+                --start		Start Carbon using nohup
+                --stop		Stop the Carbon server process
+                --restart	Restart the Carbon server process
                 --startHttpTransports	Immediately starts all Tomcat HTTP connectors.
                 --cleanRegistry	Clean registry space
-                --reset		Clean the cache & component repository and the
-                            registry space
                 --version	What version of the product are you running?
-                --n <number of instances> 	Number of instances to start if you have installed the Multiple-instance Feature
 
 
             system-properties:

@@ -1,6 +1,6 @@
 #!/bin/sh
 # ----------------------------------------------------------------------------
-#  Copyright 2005-2009 WSO2, Inc. http://www.wso2.org
+#  Copyright 2005-2012 WSO2, Inc. http://www.wso2.org
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@
 # -----------------------------------------------------------------------------
 
 # OS specific support.  $var _must_ be set to either true or false.
+#ulimit -n 100000
 
 cygwin=false;
 darwin=false;
@@ -130,6 +131,10 @@ if [ -z "$JAVA_HOME" ]; then
   exit 1
 fi
 
+if [ -e "$CARBON_HOME/wso2carbon.pid" ]; then
+  PID=`cat $CARBON_HOME/wso2carbon.pid`
+fi
+
 # ----- Process the input command ----------------------------------------------
 for c in $*
 do
@@ -140,29 +145,16 @@ do
           if [ -z "$PORT" ]; then
                 PORT=$c
           fi
-    elif [ "$c" = "--n" ] || [ "$c" = "-n" ] || [ "$c" = "n" ]; then
-          CMD="--n"
-          continue
-    elif [ "$CMD" = "--n" ]; then
-          if [ -z "$INSTANCES" ]; then
-                INSTANCES=$c
-          fi
     elif [ "$c" = "--stop" ] || [ "$c" = "-stop" ] || [ "$c" = "stop" ]; then
           CMD="stop"
     elif [ "$c" = "--start" ] || [ "$c" = "-start" ] || [ "$c" = "start" ]; then
           CMD="start"
-    elif [ "$c" = "--console" ] || [ "$c" = "-console" ] || [ "$c" = "console" ]; then
-          CMD="console"
     elif [ "$c" = "--version" ] || [ "$c" = "-version" ] || [ "$c" = "version" ]; then
           CMD="version"
     elif [ "$c" = "--restart" ] || [ "$c" = "-restart" ] || [ "$c" = "restart" ]; then
           CMD="restart"
-    elif [ "$c" = "--dump" ] || [ "$c" = "-dump" ] || [ "$c" = "dump" ]; then
-          CMD="dump"
     elif [ "$c" = "--test" ] || [ "$c" = "-test" ] || [ "$c" = "test" ]; then
           CMD="test"
-    elif [ "$c" = "--status" ] || [ "$c" = "-status" ] || [ "$c" = "status" ]; then
-          CMD="status"
     fi
 done
 
@@ -177,34 +169,24 @@ if [ "$CMD" = "--debug" ]; then
   CMD="RUN"
   JAVA_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=$PORT"
   echo "Please start the remote debugging client to continue..."
-elif [ "$CMD" = "--n" ]; then
-  if [ "$INSTANCES" = "" ] || [ ! -z `echo $INSTANCES | sed 's/[0-9]//g'` ]]; then
-    echo " Please specify the number of instances to start after the --n option"
-    exit 1
-  fi
 elif [ "$CMD" = "start" ]; then
+  if [ -e "$CARBON_HOME/wso2carbon.pid" ]; then
+    if  ps -p $PID >&- ; then
+      echo "Process is already running"
+      exit 0
+    fi
+  fi
   export CARBON_HOME=$CARBON_HOME
-  $CARBON_HOME/bin/daemon.sh start
+  nohup $CARBON_HOME/bin/wso2server.sh &
   exit 0
 elif [ "$CMD" = "stop" ]; then
   export CARBON_HOME=$CARBON_HOME
-  $CARBON_HOME/bin/daemon.sh stop
-  exit 0
-elif [ "$CMD" = "console" ]; then
-  export CARBON_HOME=$CARBON_HOME
-  $CARBON_HOME/bin/daemon.sh console
+  kill -term `cat $CARBON_HOME/wso2carbon.pid`
   exit 0
 elif [ "$CMD" = "restart" ]; then
   export CARBON_HOME=$CARBON_HOME
-  $CARBON_HOME/bin/daemon.sh restart
-  exit 0
-elif [ "$CMD" = "dump" ]; then
-  export CARBON_HOME=$CARBON_HOME
-  $CARBON_HOME/bin/daemon.sh dump
-  exit 0
-elif [ "$CMD" = "status" ]; then
-  export CARBON_HOME=$CARBON_HOME
-  $CARBON_HOME/bin/daemon.sh status
+  kill -term `cat $CARBON_HOME/wso2carbon.pid`
+  nohup $CARBON_HOME/bin/wso2server.sh &
   exit 0
 elif [ "$CMD" = "test" ]; then
     JAVACMD="exec "$JAVACMD""
@@ -265,12 +247,17 @@ status=$START_EXIT_STATUS
 
 while [ "$status" = "$START_EXIT_STATUS" ]
 do
-    $JAVACMD \
+    exec $JAVACMD \
     -Xbootclasspath/a:"$CARBON_XBOOTCLASSPATH" \
     -Xms256m -Xmx512m -XX:MaxPermSize=256m \
+    -XX:OnOutOfMemoryError="kill -9 `echo $$`;nohup ./wso2server.sh &" \
+    -XX:HeapDumpPath=repository/logs/heap-dump.hprof \
+    -XX:ErrorFile=repository/logs/hs_err_pid.log \
+    -XX:OnError="nohup ./wso2server.sh &" \
     $JAVA_OPTS \
     -Dcom.sun.management.jmxremote \
     -classpath "$CARBON_CLASSPATH" \
+    -Dcarbon.pid=$$ \
     -Djava.endorsed.dirs="$JAVA_ENDORSED_DIRS" \
     -Djava.io.tmpdir="$CARBON_HOME/tmp" \
     -Dcatalina.base="$CARBON_HOME/lib/tomcat" \

@@ -60,27 +60,14 @@ this directory.
 	# wso2server.bat/sh -Dsetup
 	It will create the tables. Thereafter shutdown the server and open a console/shell and run the script as enumerated above.
 	You may delete the driver, which is inside the "home/wso2/repository/components/extensions" directory, as it is no more required.
- 
 
-2. daemon.sh
-    - Runs CARBON within the Java Service Wrapper.
-      Suitable for starting and stopping wrapped Java applications on
-      UNIX platforms. See http://wrapper.tanukisoftware.org
-
-      By placing the symbolic link in /etc/init.d, you could run CARBON
-      as a daemon as follows:
-                                 
-      Usage:
-      /etc/init.d/wso2server {console | start | stop | restart | status | dump}
-
-
-3. README.txt
+2. README.txt
     - This file
 
-4. version.txt
+3. version.txt
     - A simple text file used for storing the version
 
-5. wso2server.sh & wso2server.bat
+3. wso2server.sh & wso2server.bat
     - The main script file used for running the server.
 
     Usage: wso2server.sh [commands] [system-properties]
@@ -89,14 +76,10 @@ this directory.
                 --debug <port>  Start the server in remote debugging mode.
                                 port: The remote debugging port.
 
-                --run           Run the server.
                 --startHttpTransports	Immediately starts all Tomcat HTTP connectors.
-                --start         Start Carbon as a Unix daemon in the background.
-                --console       Start Carbon as a Unix daemon in the foreground.
-                --stop          Stop the Carbon Unix daemon.
-                --status        Get the status of the Carbon Unix daemon.
-                --dump          Print a thread dump of the Carbon Unix daemon.
-                --restart       Restart the Carbon Unix daemon.
+                --start		Start Carbon using nohup
+                --stop		Stop the Carbon server process
+                --restart	Restart the Carbon server process
                 --cleanRegistry Clean registry space.
                                 [CAUTION] All Registry data will be lost..
                 --version       The version of the product you are running.
@@ -141,15 +124,11 @@ this directory.
 		-Dcomponents.repository=[path]
 				Overwrite the default location we keep all the OSGi bundles. 
 
-6. wsdl2java.sh & wsdl2java.bat - Tool for generating Java code from WSDLs
+5. wsdl2java.sh & wsdl2java.bat - Tool for generating Java code from WSDLs
 
-7. install.bat                  - Install Carbon Windows NT service
+6. java2wsdl.sh & java2wsdl.bat - Tool for generating WSDL from Java code
 
-8. uninstall.bat                - Uninstall Carbon Windows NT service
-
-9. java2wsdl.sh & java2wsdl.bat - Tool for generating WSDL from Java code
-
-10. ciphertool.sh & ciphertool.bat - Tool for encrypting and decrypting simple texts such as passwords.
+7. ciphertool.sh & ciphertool.bat - Tool for encrypting and decrypting simple texts such as passwords.
     The arguments that are inputs to this tool with their meanings are shown bellow.
 
 	keystore        - If keys are in a store , it's location
@@ -166,5 +145,5 @@ this directory.
 	trusted         - Is KeyStore a trusted store? If presents this, consider as a trusted store
 	passphrase      - if a simple symmetric encryption using a pass phrase shall be used
 
-11. build.xml - Build configuration for the ant command. Running the ant command in this directory, will copy the libraries that are required 
+8. build.xml - Build configuration for the ant command. Running the ant command in this directory, will copy the libraries that are required
     to run remote registry clients in to the repository/lib directory.

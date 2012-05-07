@@ -77,9 +77,6 @@ rem of arguments (up to the command line limit, anyway).
 
 :setupArgs
 if ""%1""=="""" goto doneStart
-if ""%1""==""-start""   goto startWinService
-if ""%1""==""--start""  goto startWinService
-if ""%1""==""start""    goto startWinService
 
 if ""%1""==""-run""     goto commandLifecycle
 if ""%1""==""--run""    goto commandLifecycle
@@ -88,10 +85,6 @@ if ""%1""==""run""      goto commandLifecycle
 if ""%1""==""-restart""  goto commandLifecycle
 if ""%1""==""--restart"" goto commandLifecycle
 if ""%1""==""restart""   goto commandLifecycle
-
-if ""%1""==""-stop""    goto stopWinService
-if ""%1""==""--stop""   goto stopWinService
-if ""%1""==""stop""     goto stopWinService
 
 if ""%1""==""debug""    goto commandDebug
 if ""%1""==""-debug""   goto commandDebug
@@ -125,13 +118,6 @@ goto findJdk
 echo Please specify the debug port after the --debug option
 goto end
 
-rem ----- commandLifecycle -----------------------------------------------------
-:commandLifecycle
-goto findJdk
-
-rem ----- doneStart ------------------------------------------------------------
-rem This label provides a place for the argument list loop to break out
-rem and for NT handling to skip to.
 
 :doneStart
 if "%OS%"=="Windows_NT" @setlocal
@@ -176,98 +162,6 @@ echo CARBON_HOME environment variable is set to %CARBON_HOME%
 if "%ERRORLEVEL%"=="121" goto runJava
 :end
 goto endlocal
-
-:startWinService
-rem
-rem Locating Carbon Home
-rem
-rem %~dp0 is the location of this script under NT
-set _REALPATH=%~dp0..\
-
-rem Decide on the wrapper binary.
-set _WRAPPER_BASE=wrapper
-set _WRAPPER_DIR=%_REALPATH%bin\native\
-set _WRAPPER_EXE=%_WRAPPER_DIR%%_WRAPPER_BASE%-windows-x86-32.exe
-if exist "%_WRAPPER_EXE%" goto conf
-set _WRAPPER_EXE=%_WRAPPER_DIR%%_WRAPPER_BASE%-windows-x86-64.exe
-if exist "%_WRAPPER_EXE%" goto conf
-set _WRAPPER_EXE=%_WRAPPER_DIR%%_WRAPPER_BASE%.exe
-if exist "%_WRAPPER_EXE%" goto conf
-echo Unable to locate a Wrapper executable using any of the following names:
-echo %_WRAPPER_DIR%%_WRAPPER_BASE%-windows-x86-32.exe
-echo %_WRAPPER_DIR%%_WRAPPER_BASE%-windows-x86-64.exe
-echo %_WRAPPER_DIR%%_WRAPPER_BASE%.exe
-pause
-goto :eof
-rem
-rem Locating wrapper.conf
-rem
-:conf
-set _WRAPPER_CONF="%_REALPATH%repository\conf\wrapper.conf"
-rem
-
-rem Starting the Carbon Windows service.
-rem
-"%_WRAPPER_EXE%" -t %_WRAPPER_CONF% 2>&1 | findstr "failed" >NUL
-if not errorlevel 1 goto install
-echo The Carbon Windows Service is now running.
-goto endlocal
-
-:install
-echo The Carbon Windows Service is not installed. Would you like to install it now? (y/n)
-set INPUT=
-set /P INPUT=Type input: %=%
-if "%INPUT%"=="" goto install
-if "%INPUT%"=="n" goto noservice
-echo Installing Windows service
-"%_WRAPPER_EXE%" -i %_WRAPPER_CONF%
-"%_WRAPPER_EXE%" -t %_WRAPPER_CONF%
-echo The Carbon Windows Service is now running.
-goto endlocal
-
-rem If we reached here, it means that the service has failed.
-echo [ERROR] Failed to start the Carbon Windows Service.
-
-:noservice
-echo Sorry. You can't use -start or -stop without installing the Windows service.
-goto endlocal
-
-:stopWinService
-rem
-rem Locating Carbon Home
-rem
-rem %~dp0 is the location of this script under NT
-set _REALPATH=%~dp0..\
-
-rem Decide on the wrapper binary.
-set _WRAPPER_BASE=wrapper
-set _WRAPPER_DIR=%_REALPATH%bin\native\
-set _WRAPPER_EXE=%_WRAPPER_DIR%%_WRAPPER_BASE%-windows-x86-32.exe
-if exist "%_WRAPPER_EXE%" goto conf
-set _WRAPPER_EXE=%_WRAPPER_DIR%%_WRAPPER_BASE%-windows-x86-64.exe
-if exist "%_WRAPPER_EXE%" goto conf
-set _WRAPPER_EXE=%_WRAPPER_DIR%%_WRAPPER_BASE%.exe
-if exist "%_WRAPPER_EXE%" goto conf
-echo Unable to locate a Wrapper executable using any of the following names:
-echo %_WRAPPER_DIR%%_WRAPPER_BASE%-windows-x86-32.exe
-echo %_WRAPPER_DIR%%_WRAPPER_BASE%-windows-x86-64.exe
-echo %_WRAPPER_DIR%%_WRAPPER_BASE%.exe
-goto :eof
-
-rem
-rem Locating wrapper.conf
-rem
-:conf
-set _WRAPPER_CONF="%_REALPATH%repository\conf\wrapper.conf"
-rem
-rem Stopping the Carbon Windows service.
-rem
-"%_WRAPPER_EXE%" -p %_WRAPPER_CONF%
-echo The Carbon Windows Service is now stopped.
-goto endlocal
-
-rem If we reached here, it means that the service has failed.
-echo [ERROR] Failed to stop the Carbon Windows Service.
 
 :endlocal
 

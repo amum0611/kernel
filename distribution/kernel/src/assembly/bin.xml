@@ -49,12 +49,7 @@
             <fileMode>755</fileMode>
 
         </fileSet>
-        <!--<fileSet>
-            <directory>
-                ../../core/org.wso2.carbon.server/target/org.wso2.carbon.server-${pom.version}-bin.dir
-            </directory>
-            <outputDirectory></outputDirectory>
-        </fileSet>-->
+
         <!-- copy scripts for embedded database -->
         <fileSet>
             <directory>src/scripts</directory>
