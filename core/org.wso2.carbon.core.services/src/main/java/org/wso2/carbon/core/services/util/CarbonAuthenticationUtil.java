@@ -84,8 +84,8 @@ public class CarbonAuthenticationUtil {
             if (tenantDomain != null) {
                 httpSess.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
             }
-            httpSess.setAttribute(RegistryConstants.ROOT_REGISTRY_INSTANCE, registryService
-                    .getRegistry(username, tenantId));
+
+            setRootRegistry(httpSess, username, tenantId);
 
             SuperTenantCarbonContext carbonContext = SuperTenantCarbonContext.getCurrentContext(httpSess);
             carbonContext.setUsername(username);
@@ -121,6 +121,26 @@ public class CarbonAuthenticationUtil {
         LoginAttempt loginAttempt = new LoginAttempt(username, tenantId, remoteAddress, new Date(),
                 true, null);
         LoginStatDatabase.recordLoginAttempt(loginAttempt);
+    }
+
+    /**
+     * Sets the root registry for user and for given tenant id.
+     * @param httpSession  The http session
+     * @param username  The user name
+     * @param tenantId The tenant id
+     * @throws Exception If an error occurred while creating the registry
+     */
+    public static void setRootRegistry(HttpSession httpSession, String username, int tenantId) throws Exception {
+
+        if (httpSession.getAttribute(RegistryConstants.ROOT_REGISTRY_INSTANCE) != null) {
+            return;
+        }
+
+        RegistryService registryService = CarbonServicesServiceComponent.getRegistryService();
+
+        httpSession.setAttribute(RegistryConstants.ROOT_REGISTRY_INSTANCE, registryService
+                    .getRegistry(username, tenantId));
+
     }
 
     /**
