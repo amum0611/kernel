@@ -43,7 +43,7 @@ public class TestUtil {
             return;
         }
         assert carbonHome != null : "carbonHome cannot be null";
-        File srcFile = new File(secVerifierDir + "target" + File.separator + "SecVerifier.aar");
+        File srcFile = new File(secVerifierDir  + "SecVerifier.aar");
         assert srcFile.exists() : srcFile.getAbsolutePath() + " does not exist";
 
         String deploymentPath = carbonHome + File.separator + "repository" + File.separator

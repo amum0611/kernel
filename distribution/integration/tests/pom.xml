@@ -136,7 +136,7 @@
                     <testFailureIgnore>false</testFailureIgnore>
                     <skip>false</skip>
                     <systemPropertyVariables>
-                        <sec.verifier.dir>${basedir}/../security-verifier/</sec.verifier.dir>
+                        <sec.verifier.dir>${basedir}/target/security-verifier/</sec.verifier.dir> 
                         <carbon.zip>${basedir}/../../kernel/target/wso2carbon-core-${project.version}.zip</carbon.zip>
                         <emma.home>${basedir}/target/emma</emma.home>
                     </systemPropertyVariables>
@@ -155,6 +155,19 @@
                             <outputDirectory>${project.build.directory}/emma</outputDirectory>
                             <includeTypes>jar</includeTypes>
                             <includeArtifactIds>emma,org.wso2.carbon.integration.framework</includeArtifactIds>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-secVerifier</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/security-verifier</outputDirectory>
+                            <includeTypes>aar</includeTypes>
+                            <includeArtifactIds>SecVerifier</includeArtifactIds>
+                            <stripVersion>true</stripVersion>
                         </configuration>
                     </execution>
                 </executions>
