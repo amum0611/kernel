@@ -32,9 +32,10 @@ public class Main {
 
     /**
      * Launch the Carbon server.
-     *  1) Process and set system properties
-     *  2) Invoke extensions.
-     *  3) Launch OSGi framework.
+     * 1) Process and set system properties
+     * 2) Invoke extensions.
+     * 3) Launch OSGi framework.
+     *
      * @param args command line arguments.
      */
     public static void main(String[] args) {
@@ -56,9 +57,10 @@ public class Main {
 
     /**
      * Process command line arguments and set corresponding system properties.
+     *
      * @param args cmd line args
      */
-    public static void processCmdLineArgs(String[] args){
+    public static void processCmdLineArgs(String[] args) {
         String cmd = null;
         int index = 0;
 
@@ -92,9 +94,9 @@ public class Main {
     }
 
     /**
-     *  Invoke the extensions specified in the carbon.xml
+     * Invoke the extensions specified in the carbon.xml
      */
-    public static void invokeExtensions(){
+    public static void invokeExtensions() {
         //TODO Read extensions from the carbon.xml and execute them - Sameera.
 
         //converting jars found under components/lib and putting them in components/dropins dir
@@ -110,19 +112,38 @@ public class Main {
     }
 
     /**
-     *  Launch the Carbon Server.
+     * Launch the Carbon Server.
      */
-    public static void launchCarbon(){
+    public static void launchCarbon() {
         CarbonLauncher carbonLauncher = new CarbonLauncher();
         carbonLauncher.launch();
     }
 
     /**
      * Write the process ID of this process to the file
+     *
+     * @param carbonHome carbon.home sys property value.
      */
     private static void writePID(String carbonHome) {
-        String pid;
-        if((pid = System.getProperty("carbon.pid")) != null){
+        byte[] bo = new byte[100];
+        String[] cmd = {"bash", "-c", "echo $PPID"};
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(cmd);
+        } catch (IOException e) {
+            //ignored. We might be invoking this on a Window platform. Therefore if an error occurs
+            //we simply ignore the error.
+            return;
+        }
+
+        try {
+            int bytes = p.getInputStream().read(bo);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+
+        String pid = new String(bo);
+        if (pid.length() != 0) {
             BufferedWriter out = null;
             try {
                 FileWriter writer = new FileWriter(carbonHome + File.separator + "wso2carbon.pid");

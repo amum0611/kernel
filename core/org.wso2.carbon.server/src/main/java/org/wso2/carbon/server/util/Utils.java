@@ -66,14 +66,10 @@ public class Utils {
         System.out.println("command:");
         System.out.println("\t--debug <port> \tStart the server in remote debugging mode." +
                 "\n\t\t\tport: The remote debugging port.");
-        System.out.println("\t--run\t\tRun the server");
         if (osName.toLowerCase().indexOf("win") == -1) {
-            System.out.println("\t--start\t\tStart Carbon as a Unix daemon in the background");
-            System.out.println("\t--console\tStart Carbon as a Unix daemon in the foreground");
-            System.out.println("\t--stop\t\tStop the Carbon Unix daemon");
-            System.out.println("\t--status\tGet the status of the Carbon Unix daemon");
-            System.out.println("\t--dump\t\tPrint a thread dump of the Carbon Unix daemon");
-            System.out.println("\t--restart\tRestart the Carbon Unix daemon");
+            System.out.println("\t--start\t\tStart Carbon using nohup in the background");
+            System.out.println("\t--stop\t\tStop the Carbon server process");
+            System.out.println("\t--restart\tRestart the Carbon server process");
 
         }
         System.out.println("\t--cleanRegistry\t\t\tClean registry space. [CAUTION] All Registry data will be lost.");
