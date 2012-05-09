@@ -279,6 +279,17 @@
 		<artifactId>org.eclipse.equinox.p2.transport.ecf</artifactId>
 		<version>1.0.100.v20110902-0807</version> 
 	</dependency>
+	<dependency>
+		<groupId>org.eclipse.ecf.provider.filetransfer</groupId>
+		<artifactId>httpclient</artifactId>
+		<version>1.0.0-v20070627-1030</version>
+		<exclusions>
+        		<exclusion>
+        		  <groupId>org.eclipse.equinox</groupId>
+        		  <artifactId>registry</artifactId>
+      	  		</exclusion>
+      		</exclusions> 
+	</dependency>
     </dependencies>
 
     <build>
@@ -357,6 +368,7 @@
                 <bundleDef>org.eclipse.equinox:org.eclipse.equinox.p2.publisher.eclipse</bundleDef>
                 <bundleDef>org.eclipse.equinox:org.eclipse.equinox.launcher.gtk.linux.x86</bundleDef>
 		<bundleDef>org.eclipse.osgi:org.eclipse.equinox.p2.transport.ecf</bundleDef>
+		<bundleDef>org.eclipse.ecf.provider.filetransfer:httpclient</bundleDef>
                             </bundles>
                         </configuration>
                     </execution>
