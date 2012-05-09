@@ -130,7 +130,7 @@ public class CarbonLauncher {
         Map<String, String> initialPropertyMap = new HashMap<String, String>();
         String carbonHome = System.getProperty(LauncherConstants.CARBON_HOME);
         Properties launchProperties = Utils.loadProperties(carbonHome + File.separator + "repository" +
-                File.separator + "conf" + File.separator + LauncherConstants.LAUNCH_INI);
+                File.separator + "conf" + File.separator + "etc" + File.separator + LauncherConstants.LAUNCH_INI);
         for (Object o : launchProperties.entrySet()) {
             Map.Entry entry = (Map.Entry) o;
             String key = (String) entry.getKey();
