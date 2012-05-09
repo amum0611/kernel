@@ -36,7 +36,8 @@
       with WSO2 Carbon</li>
   <li><a href="component-mgt/docs/userguide.html">Provisioning Guide</a> - A manual on how to user Feature Manager to provision
       WSO2 Carbon</li>
-  <li><a href="secure_vault.html">Carbon Secure Vault Guide</a> - A manual on how to configure secure vault for securing password in carbon configuration files</li>    
+  <li><a href="secure_vault.html">Carbon Secure Vault Guide</a> - A manual on how to configure secure vault for securing password in carbon configuration files</li>  
+<li><a href="carbon_datasources.html">Carbon Data Sources Guide</a> - A manual on how to configure and use carbon data sources</li>      
 </ul>
 
 <h3>Tools</h3>

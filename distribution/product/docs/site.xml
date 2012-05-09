@@ -50,6 +50,7 @@
              <item name="Admin Guide" href="admin_guide.html"/>
              <item name="Provisioning Carbon" href="feature-mgt/docs/userguide.html"/>
              <item name="Carbon Secure Vault" href="secure_vault.html"/>
+	     <item name="Carbon Data Sources" href="carbon_datasources.html"/>
         </menu>
 
         <menu name="Tools">
