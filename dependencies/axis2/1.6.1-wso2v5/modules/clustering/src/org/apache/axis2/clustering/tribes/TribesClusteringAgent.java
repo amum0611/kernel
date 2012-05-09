@@ -34,6 +34,7 @@ import org.apache.axis2.clustering.state.ClusteringContextListener;
 import org.apache.axis2.clustering.state.DefaultStateManager;
 import org.apache.axis2.clustering.state.StateManager;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.util.JavaUtils;
 import org.apache.axis2.description.HandlerDescription;
 import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.PhaseRule;
@@ -307,9 +308,15 @@ public class TribesClusteringAgent implements ClusteringAgent {
         AxisConfiguration axisConfig = configurationContext.getAxisConfiguration();
         TransportInDescription httpTransport = axisConfig.getTransportIn("http");
         int portOffset = 0;
-        if(System.getProperty("portOffset") != null){
-            portOffset = Integer.parseInt(System.getProperty("portOffset"));
+
+        Parameter param = getParameter(ClusteringConstants.Parameters.AVOID_INITIATION);
+        if(!JavaUtils.isTrueExplicitly(param.getValue())){
+            //AvoidInitialization = false, Hence we set the portOffset
+            if(System.getProperty("portOffset") != null){
+                portOffset = Integer.parseInt(System.getProperty("portOffset"));
+            }
         }
+
         if (httpTransport != null) {
             Parameter port = httpTransport.getParameter("port");
             if (port != null) {
