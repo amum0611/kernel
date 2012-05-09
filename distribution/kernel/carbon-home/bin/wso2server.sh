@@ -247,17 +247,12 @@ status=$START_EXIT_STATUS
 
 while [ "$status" = "$START_EXIT_STATUS" ]
 do
-    exec $JAVACMD \
+    $JAVACMD \
     -Xbootclasspath/a:"$CARBON_XBOOTCLASSPATH" \
     -Xms256m -Xmx512m -XX:MaxPermSize=256m \
-    -XX:OnOutOfMemoryError="kill -9 `echo $$`;nohup ./wso2server.sh &" \
-    -XX:HeapDumpPath=repository/logs/heap-dump.hprof \
-    -XX:ErrorFile=repository/logs/hs_err_pid.log \
-    -XX:OnError="nohup ./wso2server.sh &" \
     $JAVA_OPTS \
     -Dcom.sun.management.jmxremote \
     -classpath "$CARBON_CLASSPATH" \
-    -Dcarbon.pid=$$ \
     -Djava.endorsed.dirs="$JAVA_ENDORSED_DIRS" \
     -Djava.io.tmpdir="$CARBON_HOME/tmp" \
     -Dcatalina.base="$CARBON_HOME/lib/tomcat" \
