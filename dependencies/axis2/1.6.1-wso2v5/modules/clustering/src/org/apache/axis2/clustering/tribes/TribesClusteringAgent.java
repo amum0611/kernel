@@ -310,7 +310,7 @@ public class TribesClusteringAgent implements ClusteringAgent {
         int portOffset = 0;
 
         Parameter param = getParameter(ClusteringConstants.Parameters.AVOID_INITIATION);
-        if(!JavaUtils.isTrueExplicitly(param.getValue())){
+        if(param != null && !JavaUtils.isTrueExplicitly(param.getValue())){
             //AvoidInitialization = false, Hence we set the portOffset
             if(System.getProperty("portOffset") != null){
                 portOffset = Integer.parseInt(System.getProperty("portOffset"));
