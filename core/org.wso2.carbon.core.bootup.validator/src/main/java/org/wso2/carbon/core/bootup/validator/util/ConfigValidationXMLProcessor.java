@@ -87,7 +87,7 @@ public class ConfigValidationXMLProcessor {
 						validator = initConfigValidator(el);
 						validators.add(validator);
 					} catch (Exception e) {
-						log.error("Error occured while loading ConfigurationValidator class : element : " +
+						log.error("Error occured while loading ConfigurationValidator class : " +
 						                  el.getAttribute(CLASS_ATTRIBUTE), e);
 					}
 

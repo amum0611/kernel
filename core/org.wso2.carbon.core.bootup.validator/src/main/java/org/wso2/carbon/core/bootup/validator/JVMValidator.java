@@ -46,7 +46,8 @@ public class JVMValidator extends ConfigurationValidator {
 				ValidationResult result = validateConfiguration(paramName);
 				validationResults.put(paramName, result);
 			} catch (Exception e) {
-				log.error("Error occured while trying to validate configuration parameter : " +
+				log.warn("Could not validate the JVM for configuration parameter : " + paramName);
+				log.debug("Error occured while trying to validate configuration parameter : " +
 				          paramName, e);
 			}
 		}

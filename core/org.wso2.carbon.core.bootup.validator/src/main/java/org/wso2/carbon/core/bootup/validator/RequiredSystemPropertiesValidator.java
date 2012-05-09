@@ -38,7 +38,8 @@ public class RequiredSystemPropertiesValidator extends ConfigurationValidator {
 				ValidationResult result = validateSystemProperty(propKey);
 				validationResults.put(propKey, result);
 			} catch (Exception e) {
-				log.error("Error occured while trying to validate system property : " + propKey, e);
+				log.warn("Could not validate system property : " + propKey);
+				log.debug("Error occured while trying to validate system property : " + propKey, e);
 			}
 		}
 		return validationResults;
