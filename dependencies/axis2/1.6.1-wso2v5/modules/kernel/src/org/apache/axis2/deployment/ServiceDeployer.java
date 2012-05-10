@@ -89,7 +89,7 @@ public class ServiceDeployer extends AbstractDeployer {
             if (location != null) {
                 String serviceHierarchy = Utils.getServiceHierarchy(location.getPath(),
                         this.directory);
-                if (!"".equals(serviceHierarchy)) {
+                if (serviceHierarchy != null && !"".equals(serviceHierarchy)) {
                     serviceGroup.setServiceGroupName(serviceHierarchy
                             + serviceGroup.getServiceGroupName());
                     for (AxisService axisService : serviceList) {
