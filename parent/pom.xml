@@ -154,7 +154,7 @@
         <version.equinox.simpleconfigurator>1.0.100.v20090520-1905
         </version.equinox.simpleconfigurator>
 
-        <carbon.p2.plugin.version>1.4-SNAPSHOT</carbon.p2.plugin.version>
+        <carbon.p2.plugin.version>1.5-SNAPSHOT</carbon.p2.plugin.version>
 
         <axis2.osgi.version>1.6.1.wso2v5</axis2.osgi.version>
         <axis2.osgi.version.range>[1.6.1.wso2v1, 1.7.0)</axis2.osgi.version.range>
