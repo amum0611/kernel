@@ -36,8 +36,13 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
             URL repositoryURL = axisConfig.getRepository();
             if (repositoryURL != null) {
                 String repoPath = URLDecoder.decode(axisConfig.getRepository().getPath(), "UTF-8");
+                //we need to change meta-files location in rare cases (i.e for Jaggery dis), introducing that flexibility via a sys prop @NuwanB
+                String moduleMetaFileLocation = System.getProperty("module.metafiles.location");
+                if(moduleMetaFileLocation == null){
+                    moduleMetaFileLocation = Resources.MODULES_METAFILES_DIR;
+                }
                 metafilesDir = new File(repoPath +
-                        File.separator + Resources.MODULES_METAFILES_DIR);
+                        File.separator + moduleMetaFileLocation);
             }
         } catch (UnsupportedEncodingException e) {
             log.error("metafiles directory URL can not bde decoded.", e);
