@@ -1135,7 +1135,12 @@ public class RemoteRegistry implements Registry {
                         getStatusAndType(resp));
             }
             abderaClient.teardown();
-            return resp.getLocation().toString().substring(baseURI.length());
+            String location = resp.getLocation().toString();
+            if (location.startsWith(baseURI)) {
+                return location.substring(baseURI.length() +
+                        APPConstants.ATOM.length()).replace("+", " ");
+            }
+            return location.replace("+", " ");
         } else {
             String msg = "Adding comment for resourcePath + " + resourcePath + " failed." +
                    getStatusAndType(resp);
