@@ -127,7 +127,9 @@ public class TransportPersistenceManager extends AbstractPersistenceManager {
             ByteArrayInputStream in = new ByteArrayInputStream((byte[]) resource.getContent());
             resource.discard();
             StAXOMBuilder builder = new StAXOMBuilder(in);
-            return builder.getDocumentElement();
+            OMElement el = builder.getDocumentElement();
+            in.close();
+            return el;
         }
         return null;
     }

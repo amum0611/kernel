@@ -71,7 +71,6 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
     public synchronized void beginTransaction(String serviceGroupId) throws PersistenceException {
 
         File sgFile = new File(metafilesDir, getFilePathFromResourceId(serviceGroupId));
-
         try {
             if (resourceMap.get(serviceGroupId) != null &&
                     resourceMap.get(serviceGroupId).isTransactionStarted()) {
@@ -81,14 +80,7 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
 
             OMElement sgElement;
             if (sgFile.exists()) {
-                FileInputStream fis = FileUtils.openInputStream(sgFile);
-                XMLStreamReader reader = xif.createXMLStreamReader(fis);
-
-                StAXOMBuilder builder = new StAXOMBuilder(reader);
-                sgElement = builder.getDocumentElement();
-                sgElement.detach();
-                reader.close();
-                fis.close();
+                sgElement = PersistenceUtils.getResourceDocumentElement(sgFile);
             } else {                        //the file does not exist.
                 sgElement = omFactory.createOMElement(Resources.ServiceGroupProperties.SERVICE_GROUP_XML_TAG, null);
             }
@@ -104,7 +96,7 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
         } catch (IOException e) {
             log.error("Exception in closing service group file " + serviceGroupId, e);
             throw new PersistenceException("Exception in closing service group file", e);
-        }
+            }
     }
 
     /**
@@ -151,14 +143,14 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
                 OMElement sgElement = fileData.getOMElement();
                 AXIOMXPath xpathExpr = new AXIOMXPath(xpathStrOfElement);
                 OMElement el = (OMElement) xpathExpr.selectSingleNode(sgElement);
-                if (el != null && el.getParent() == null) { //this is the root element
-                    fileData.setOMElement(null);
-                } else if (el != null) {
-                    el.detach();
-                } else {
+                if (el == null) {
                     throw new PersistenceDataNotFoundException(
                             "The Element specified by path not found " + serviceGroupId + xpathStrOfElement);
-
+                }
+                if (el.getParent() == null) { //this is the root element
+                    fileData.setOMElement(null);
+                } else {
+                    el.detach();
                 }
             } else {
                 throw new PersistenceDataNotFoundException(

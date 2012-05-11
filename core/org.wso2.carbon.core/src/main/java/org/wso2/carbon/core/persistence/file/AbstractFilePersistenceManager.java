@@ -12,6 +12,7 @@ import org.jaxen.JaxenException;
 import org.wso2.carbon.core.Resources;
 import org.wso2.carbon.core.persistence.PersistenceDataNotFoundException;
 import org.wso2.carbon.core.persistence.PersistenceException;
+import org.wso2.carbon.core.persistence.PersistenceUtils;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -49,11 +50,10 @@ public abstract class AbstractFilePersistenceManager {
                 if (fileData != null && fileData.getOMElement() == null) {   //the resource has been deleted
                     String childFilePath = getFilePathFromResourceId(resourceId);
                     f = new File(metafilesDir, childFilePath);
-                    if (f.exists() && !f.delete()) {
-                        handleExceptionWithRollback(resourceId, "Couldn't delete " + f.getName(), new Throwable());
-                    } else {
-                        log.debug("Successfully deleted persisted resource contents " + resourceId);
+                    if (f.exists()) {
+                        FileUtils.forceDelete(f);
                     }
+                    log.debug("Successfully deleted persisted resource contents " + resourceId + " " + f.getName());
                     resourceMap.remove(resourceId);
                     return;
                 } else if (fileData != null) {
@@ -74,7 +74,7 @@ public abstract class AbstractFilePersistenceManager {
             handleExceptionWithRollback(resourceId, "Exception in persisting the transaction " + resourceId, e1);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            handleExceptionWithRollback(resourceId, "Exception in persisting the transaction " + resourceId, e);
+            handleExceptionWithRollback(resourceId, "IOException in persisting the transaction " + resourceId, e);
         }
 
         if (log.isDebugEnabled()) {
@@ -256,9 +256,7 @@ public abstract class AbstractFilePersistenceManager {
                     fileData == null) {
                 File f = new File(metafilesDir, getFilePathFromResourceId(resourceId));
                 if (f.exists()) {
-                    String filePath = f.getAbsolutePath();
-                    OMElement element = new StAXOMBuilder(filePath).getDocumentElement();
-                    element.detach();
+                    OMElement element = PersistenceUtils.getResourceDocumentElement(f);
                     return xpathExpr.selectSingleNode(element) != null;
                 }
             }
@@ -267,6 +265,8 @@ public abstract class AbstractFilePersistenceManager {
         } catch (XMLStreamException e) {
             log.error(e.getMessage() + resourceId, e);
         } catch (FileNotFoundException e) {
+            log.error(e.getMessage() + resourceId, e);
+        } catch (IOException e) {
             log.error(e.getMessage() + resourceId, e);
         }
         return false;
@@ -283,11 +283,7 @@ public abstract class AbstractFilePersistenceManager {
             } else {
                 File resourceFile = new File(metafilesDir, getFilePathFromResourceId(resourceId));
                 if (resourceFile.exists()) {
-                    FileInputStream fis = FileUtils.openInputStream(resourceFile);
-                    XMLStreamReader reader = xif.createXMLStreamReader(fis);
-
-                    StAXOMBuilder builder = new StAXOMBuilder(reader);
-                    OMElement resourceOMElement = builder.getDocumentElement();
+                    OMElement resourceOMElement = PersistenceUtils.getResourceDocumentElement(resourceFile);
 
                     /**
                      * xpath expression behaves differently when there is a OMDocument holding the OMElement.

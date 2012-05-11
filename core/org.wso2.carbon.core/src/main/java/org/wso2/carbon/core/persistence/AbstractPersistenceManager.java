@@ -213,12 +213,21 @@ public abstract class AbstractPersistenceManager {
     }
 
     protected static String convertStreamToString(InputStream is) {
+        BufferedReader reader = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            reader = new BufferedReader(new InputStreamReader(is));
             // we assume that there is only one line..
             return reader.readLine();
         } catch (IOException e) {
             log.error("Error while reading Input Stream");
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
         }
         return null;
     }

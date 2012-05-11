@@ -1327,7 +1327,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
             getServiceGroupFilePM().put(serviceGroupId,
                     omFactory.createOMElement(Resources.POLICIES, null), serviceGroupId);
         } else {
-            //you must manually delete the existing policy before adding new one. todo for throttling
+            //you must manually delete the existing policy before adding new one.
             String pathToPolicy = servicePath + "/" + Resources.POLICIES +
                     "/" + Resources.POLICY +
                     PersistenceUtils.getXPathTextPredicate(

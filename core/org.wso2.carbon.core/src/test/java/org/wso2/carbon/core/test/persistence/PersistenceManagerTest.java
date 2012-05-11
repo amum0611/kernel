@@ -166,14 +166,21 @@ public class PersistenceManagerTest extends BaseTestCase {
         OMElement el = (OMElement) node;
         String s = el.getFirstChildWithName(new QName(Resources.ServiceProperties.POLICY_UUID)).getText();
         assertTrue("SecureMessagePolicy".equals(s));
+
+        //deleting service(group) after the above process
+        deleteServiceAsserts(asv);
+        deleteServiceGroupAsserts(asvGroup);
     }
 
     /*
     //todo current tests does not cover service intialization with existing persitence data.
     public void testExistingServiceInit() throws Exception {
         AxisServiceGroup asvGroup = new AxisServiceGroup(ac);
-        asvGroup.setServiceGroupName("testServiceGroupEx");
-        AxisService asv = new AxisService("testServiceAddEx");
+        String serviceName = "testServiceAddEx";
+        String serviceGroupName = "testServiceGroupEx";
+        
+        asvGroup.setServiceGroupName(serviceGroupName);
+        AxisService asv = new AxisService(serviceName);
         asvGroup.addService(asv);
         asv.addParameter("param1", "value1");
         asv.addParameter("param2", "value2");
@@ -197,15 +204,18 @@ public class PersistenceManagerTest extends BaseTestCase {
         pf.getServiceGroupPM().handleNewServiceGroupAddition(asvGroup);
         pf.getServicePM().handleNewServiceAddition(asv);
 
+        ac.removeService(serviceName);
+        ac.removeServiceGroup(serviceGroupName);
+        
         String serviceElementPath = PersistenceUtils.getResourcePath(asv);
-        OMElement serviceElement = (OMElement) PersistenceFactory.getServiceGroupFilePM().get(
+        OMElement serviceElement = (OMElement) PersistenceFactory.getInstance(ac).getServiceGroupFilePM().get(
                 asvGroup.getServiceGroupName(), serviceElementPath);
 
-        ac.removeServiceGroup("testServiceGroupEx");
+//        ac.removeServiceGroup("testServiceGroupEx");
 
         AxisServiceGroup asvGroupExisting = new AxisServiceGroup(ac);
-        asvGroupExisting.setServiceGroupName("testServiceGroupEx");
-        AxisService asvExisting = new AxisService("testServiceAddEx");
+        asvGroupExisting.setServiceGroupName(serviceGroupName);
+        AxisService asvExisting = new AxisService(serviceName);
         asvGroupExisting.addService(asvExisting);
         pf.getServicePM().handleExistingServiceInit(asvExisting);
 
@@ -231,6 +241,10 @@ public class PersistenceManagerTest extends BaseTestCase {
         OMElement re = pf.getServicePM().getService(asv);
         String prop = re.getAttributeValue(new QName("key"));
         assertEquals("value", prop);
+
+        //deleting service(group) after the above process
+        deleteServiceAsserts(asv);
+        deleteServiceGroupAsserts(asvGroup);
     }
 
     public void testUpdateServiceGroupParameter() throws Exception {
@@ -280,6 +294,10 @@ public class PersistenceManagerTest extends BaseTestCase {
 
         assertTrue("testParam".equals(s1));
         assertTrue("5".equals(s2));
+
+        //deleting service(group) after the above process
+        deleteServiceAsserts(asv);
+        deleteServiceGroupAsserts(asvGroup);
     }
 
     public void testNewModuleAddition() throws Exception {
@@ -368,6 +386,9 @@ public class PersistenceManagerTest extends BaseTestCase {
         pf.getServicePM().deleteService(asv);
         OMElement el = pf.getServicePM().getService(asv);
         assertNull(el);
+
+        //deleting servicegroup after the above process
+        deleteServiceGroupAsserts(asvGroup);
     }
 
     public void testRemoveServiceParam() throws Exception {
@@ -391,6 +412,11 @@ public class PersistenceManagerTest extends BaseTestCase {
         pf.getServicePM().removeServiceParameter(asv, param);
         assertFalse(pf.getServiceGroupFilePM().
                 elementExists(asvGroup.getServiceGroupName(), serviceParamResourcePath));
+
+        //deleting service(group) after the above process
+        deleteServiceAsserts(asv);
+        deleteServiceGroupAsserts(asvGroup);
+
     }
 
     public void testDeleteServiceGroup() throws Exception {
@@ -447,6 +473,18 @@ public class PersistenceManagerTest extends BaseTestCase {
         }
         assertTrue(s1.equals("Module2"));
         assertTrue(s2.equals("1.0"));
+    }
+
+    private void deleteServiceAsserts (AxisService asv) throws Exception {
+        pf.getServicePM().deleteService(asv);
+        OMElement el = pf.getServicePM().getService(asv);
+        assertNull(el);
+    }
+
+    private void deleteServiceGroupAsserts (AxisServiceGroup asvGroup) throws Exception {
+        pf.getServiceGroupPM().deleteServiceGroup(asvGroup);
+        assertFalse("either file should not exist or content should be null",
+                pf.getServiceGroupFilePM().fileExists(asvGroup.getServiceGroupName()));
     }
 
     /**

@@ -146,7 +146,6 @@ public class ServiceGroupPersistenceManager extends AbstractPersistenceManager {
                 if (log.isDebugEnabled()) {
                     log.debug("Successfully deleted resource for " +
                             serviceGroup.getServiceGroupName() + " Service Group");
-//                    }
                 }
             }
         } catch (Throwable e) {

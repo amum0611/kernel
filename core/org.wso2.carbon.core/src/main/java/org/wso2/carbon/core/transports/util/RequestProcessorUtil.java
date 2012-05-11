@@ -53,10 +53,12 @@ public class RequestProcessorUtil {
                                      String annotatedXsl,
                                      String contextRoot, boolean annotation) {
         XMLStreamWriter writer;
+        ByteArrayInputStream bais = null;
+        XMLStreamReader reader = null;
         try {
-            ByteArrayInputStream bais =
+            bais =
                     new ByteArrayInputStream(byteArrayOutStream.toByteArray());
-            XMLStreamReader reader =
+            reader =
                     XMLInputFactory.newInstance().createXMLStreamReader(bais);
             StAXOMBuilder builder = new StAXOMBuilder(reader);
             OMElement docElem = builder.getDocumentElement();
@@ -73,6 +75,22 @@ public class RequestProcessorUtil {
         } catch (XMLStreamException e) {
             log.error("Error occurred while trying to write processing instruction for attaching " +
                       "annotated style sheet", e);
+        } finally {
+            try {
+                if (bais != null) {
+                    bais.close();
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (XMLStreamException e) {
+                log.error(e.getMessage(), e);
+            }
+
         }
     }
 

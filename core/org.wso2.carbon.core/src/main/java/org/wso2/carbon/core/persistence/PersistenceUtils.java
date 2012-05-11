@@ -21,10 +21,12 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMDocument;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.description.*;
 import org.apache.axis2.util.Utils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.neethi.Policy;
@@ -35,10 +37,11 @@ import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.*;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -52,6 +55,8 @@ public final class PersistenceUtils {
     private static final String PROXY_SERVICE = "proxy";
     private static final String GLOBALLY_ENGAGED_PARAM_NAME = "globallyEngaged";
     private static final String GLOBALLY_ENGAGED_CUSTOM = "globallyEngagedCustom";
+
+    private static XMLInputFactory xif = XMLInputFactory.newInstance();
 
     private PersistenceUtils() {
     }
@@ -385,5 +390,41 @@ public final class PersistenceUtils {
             version = axisModule.getVersion().toString();
         }
         return version;
+    }
+
+    public static OMElement getResourceDocumentElement(File resourceFile) throws XMLStreamException, IOException {
+        OMElement resourceElement;
+        FileInputStream fis = null;
+        XMLStreamReader reader = null;
+
+        try {
+            fis = FileUtils.openInputStream(resourceFile);
+            reader = xif.createXMLStreamReader(fis);
+
+            StAXOMBuilder builder = new StAXOMBuilder(reader);
+            resourceElement = builder.getDocumentElement();
+            resourceElement.detach();
+        } catch (XMLStreamException e) {
+            throw new XMLStreamException(e.getMessage(), e);
+        } catch (IOException e) {
+            throw new IOException(e.getMessage(), e);
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (XMLStreamException e) {
+                log.error(e.getMessage(), e);
+            }
+
+        }
+        return resourceElement;
     }
 }

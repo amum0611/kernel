@@ -12,6 +12,7 @@ import org.jaxen.JaxenException;
 import org.wso2.carbon.core.Resources;
 import org.wso2.carbon.core.persistence.PersistenceDataNotFoundException;
 import org.wso2.carbon.core.persistence.PersistenceException;
+import org.wso2.carbon.core.persistence.PersistenceUtils;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -68,31 +69,23 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
      * Note: Nested beginTransactions is NOT supported.
      * todo do locking mechanism
      *
-     * @param moduleName
-     * @throws java.io.IOException IOException
-     * @throws javax.xml.stream.XMLStreamException
-     *                             XMLStreamException
+     * @param moduleName module name ex. rampart
      * @throws org.wso2.carbon.core.persistence.PersistenceException
      *
      */
     public synchronized void beginTransaction(String moduleName) throws PersistenceException {
         File moduleFile = new File(metafilesDir, getFilePathFromResourceId(moduleName));
+        FileInputStream fis = null;
+        XMLStreamReader reader = null;
         try {
-            OMElement sgElement;
+            OMElement moduleElement;
             if (moduleFile.exists()) {
-                FileInputStream fis = FileUtils.openInputStream(moduleFile);
-                XMLStreamReader reader = xif.createXMLStreamReader(fis);
-
-                StAXOMBuilder builder = new StAXOMBuilder(reader);
-                sgElement = builder.getDocumentElement();
-                sgElement.detach();
-                reader.close();
-                fis.close();
+                moduleElement = PersistenceUtils.getResourceDocumentElement(moduleFile);
             } else {                        //the file does not exist.
-                sgElement = omFactory.createOMElement(Resources.ModuleProperties.MODULE_XML_TAG, null);
+                moduleElement = omFactory.createOMElement(Resources.ModuleProperties.MODULE_XML_TAG, null);
             }
 
-            ResourceFileData fileData = new ResourceFileData(sgElement, moduleFile, true);
+            ResourceFileData fileData = new ResourceFileData(moduleElement, moduleFile, true);
             resourceMap.put(moduleName, fileData);
         } catch (XMLStreamException e1) {
             log.error("Failed to use XMLStreamReader. Exception in beginning the transaction ", e1);
@@ -129,9 +122,9 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
                 OMElement sgElement = fileData.getOMElement();
                 AXIOMXPath xpathExpr = new AXIOMXPath(xpathStr);
                 OMElement el = (OMElement) xpathExpr.selectSingleNode(sgElement);
-                if (el.getParent() == null) { //this is the root element
+                if (el != null && el.getParent() == null) { //this is the root element
                     fileData.setOMElement(null);
-                } else {
+                } else if (el != null) {
                     el.detach();
                 }
             } else {
@@ -139,7 +132,6 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
             }
         } catch (JaxenException e) {
             log.error("Error parsing xpath string " + moduleId + xpathStr, e);
-            e.printStackTrace();
             throw new PersistenceDataNotFoundException("Error parsing xpath string " + e);
         }
     }
