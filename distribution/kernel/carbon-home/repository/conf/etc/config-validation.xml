@@ -28,6 +28,7 @@
 		<Parameter id="os6">Windows Vista</Parameter>
 		<Parameter id="os7">Windows 7</Parameter>
 		<Parameter id="os8">Mac OS X</Parameter>
+		<Parameter id="os9">Windows Server 2008</Parameter>
 	</Validator>
 </Configuration>
 
