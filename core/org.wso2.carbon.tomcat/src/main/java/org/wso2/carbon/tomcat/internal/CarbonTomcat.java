@@ -219,7 +219,8 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
             ctx.setPath(contextPath);
             ctx.setDocBase(webappFilePath);
             ctx.setRealm(this.getHost().getRealm());
-            ctx.addLifecycleListener(new Tomcat.DefaultWebXmlListener());
+            //We dont need to init the DefaultWebXML since we maintain a web.xml file for a carbon server.
+            // hence removing ctx.addLifecycleListener(new Tomcat.DefaultWebXmlListener()); code
             if (lifecycleListener != null) {
                 ctx.addLifecycleListener(lifecycleListener);
             }

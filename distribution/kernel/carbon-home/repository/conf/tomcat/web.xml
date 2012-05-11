@@ -93,10 +93,7 @@
     <!--                                                                      -->
     <!--
                                                                       -->
-    <!--We do not need this servlet. With embedded mode, this default servlet is -->
-    <!--automatically added to the webapp when deploying-->
-
-    <!--servlet>
+    <servlet>
         <servlet-name>default</servlet-name>
         <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
         <init-param>
@@ -104,11 +101,15 @@
             <param-value>0</param-value>
         </init-param>
         <init-param>
+            <param-name>sendfileSize</param-name>
+            <param-value>-1</param-value>
+        </init-param>
+        <init-param>
             <param-name>listings</param-name>
             <param-value>false</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
-    </servlet-->
+    </servlet>
 
 
     <!-- The JSP page compiler and execution servlet, which is the mechanism  -->
@@ -373,6 +374,11 @@
     <servlet-mapping>
         <servlet-name>jsp</servlet-name>
         <url-pattern>*.jspx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
     <!-- The mapping for the SSI servlet -->
@@ -666,7 +672,7 @@
     </mime-mapping>
     <mime-mapping>
         <extension>js</extension>
-        <mime-type>text/javascript</mime-type>
+        <mime-type>application/javascript</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>jsf</extension>
