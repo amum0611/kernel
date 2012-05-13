@@ -108,7 +108,7 @@ public class CacheBackedRegistry implements Registry {
 
     @SuppressWarnings("unchecked")
     public Resource get(String path) throws RegistryException {
-        if (isCommunityFeatureRequest(path)) {
+        if (registry.getRegistryContext().isNoCachePath(path) || isCommunityFeatureRequest(path)) {
             return registry.get(path);
         }
         Resource resource;
@@ -141,7 +141,7 @@ public class CacheBackedRegistry implements Registry {
 
     @SuppressWarnings("unchecked")
     public Collection get(String path, int start, int pageSize) throws RegistryException {
-        if (isCommunityFeatureRequest(path)) {
+        if (registry.getRegistryContext().isNoCachePath(path) || isCommunityFeatureRequest(path)) {
             return registry.get(path, start, pageSize);
         }
         Collection collection;
@@ -191,6 +191,9 @@ public class CacheBackedRegistry implements Registry {
     }
 
     public boolean resourceExists(String path) throws RegistryException {
+        if (registry.getRegistryContext().isNoCachePath(path)) {
+            return registry.resourceExists(path);
+        }
         RegistryCacheKey registryCacheKey = getRegistryCacheKey(registry, path);
         if (cache.containsKey(registryCacheKey)) {
             return true;
@@ -426,10 +429,8 @@ public class CacheBackedRegistry implements Registry {
         return registry.put(suggestedPath, resource);
     }
     
-    @Override
     public boolean removeVersionHistory(String path, long snapshotId)
     		throws RegistryException {
     	return registry.removeVersionHistory(path, snapshotId);
-    	//throw new UnsupportedOperationException("Operation not supported");
     }
 }

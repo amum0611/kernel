@@ -40,6 +40,7 @@ import org.wso2.carbon.user.core.service.RealmService;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * This class provides access to core registry configurations. Registry context is associated with
@@ -109,6 +110,7 @@ public class RegistryContext {
     private boolean enableCache = false;
 
     private List<String> systemResourcePaths = new ArrayList<String>();
+    private List<Pattern> noCachePaths = new ArrayList<Pattern>();
 
     /**
      * As long as this instance remains in memory, it will be used.
@@ -500,6 +502,7 @@ public class RegistryContext {
             this.servicePath = baseContext.servicePath;
             this.logWriter = baseContext.logWriter;
             this.systemResourcePaths = baseContext.systemResourcePaths;
+            this.noCachePaths = baseContext.noCachePaths;
         }
         // Make sure that the setup flag is always set.
         this.setup = true;
@@ -1070,6 +1073,34 @@ public class RegistryContext {
      */
     public void registerSystemResourcePath(String absolutePath) {
         systemResourcePaths.add(CurrentSession.getTenantId() + ":" + absolutePath);
+    }
+
+    /**
+     * Method to determine whether caching is disabled for the given path.
+     *
+     * @param path the path to test
+     *
+     * @return true if caching is disabled or false if not.
+     */
+    public boolean isNoCachePath(String path) {
+        for (Pattern noCachePath : noCachePaths) {
+            if (noCachePath.matcher(path).matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Method to register a no-cache path. If caching is disabled for a collection, all downstream
+     * resources and collections won't be cached.
+     *
+     * @param path the path of a resource (or collection) for which caching is disabled.
+     */
+    public void registerNoCachePath(String path) {
+        noCachePaths.add(Pattern.compile(Pattern.quote(path) + "($|" +
+                RegistryConstants.PATH_SEPARATOR + ".*|" +
+                RegistryConstants.URL_SEPARATOR + ".*)"));
     }
 
     /**
