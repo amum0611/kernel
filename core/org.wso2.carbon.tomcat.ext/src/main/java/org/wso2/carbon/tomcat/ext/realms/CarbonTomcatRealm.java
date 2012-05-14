@@ -109,7 +109,7 @@ public class CarbonTomcatRealm extends RealmBase {
             String[] roles = userRealmService.getTenantUserRealm(tenantId).getUserStoreManager().getRoleListOfUser(tenantLessUserName);
 
             // If SaaS is not enabled, do not allow users from other tenants to call this secured webapp
-            if (!isSaaSEnabled() && !checkSaasAccess(tenantDomain, tenantLessUserName, roles)) {
+            if (!checkSaasAccess(tenantDomain, tenantLessUserName, roles)) {
                 String requestTenantDomain =
                         CarbonContextHolder.getCurrentCarbonContextHolder().getTenantDomain();
                 if (tenantDomain != null &&
@@ -145,6 +145,9 @@ public class CarbonTomcatRealm extends RealmBase {
      * @return false if saas mode denied.
      */
     private boolean checkSaasAccess(String tenantDomain, String userName, String[] userRoles) {
+        if(!isSaaSEnabled()){
+            return false;
+        }
         HashMap<String, TenantSaaSRules> tenantSaaSRulesMap = CarbonTomcatRealm.tenantSaaSRulesMap.get();
         Set saaSTenants = tenantSaaSRulesMap.keySet();
         List<String> userRolesList = Arrays.asList(userRoles);
