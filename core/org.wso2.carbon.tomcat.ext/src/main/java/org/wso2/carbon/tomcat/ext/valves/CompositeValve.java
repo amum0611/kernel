@@ -130,6 +130,7 @@ public class CompositeValve extends ValveBase {
                         tenantSaaSRulesMap.put(tenant, tenantSaaSRules);
                     }
                     ((CarbonTomcatRealm) realm).setSaaSRules(tenantSaaSRulesMap);
+                    ((CarbonTomcatRealm) realm).setSaaSEnabled(true);
                 }
             }
 
