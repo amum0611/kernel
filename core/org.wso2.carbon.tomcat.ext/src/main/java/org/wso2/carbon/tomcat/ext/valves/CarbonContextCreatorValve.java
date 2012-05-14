@@ -29,11 +29,9 @@ import org.wso2.carbon.tomcat.ext.internal.CarbonRealmServiceHolder;
 import org.wso2.carbon.tomcat.ext.internal.Utils;
 import org.wso2.carbon.user.api.TenantManager;
 import org.wso2.carbon.user.api.UserRealmService;
-import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 
 import javax.servlet.ServletException;
-import java.io.File;
 import java.io.IOException;
 
 /**
