@@ -17,11 +17,14 @@
 */
 package org.wso2.carbon.caching.core.rolesofuser;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.caching.core.BaseCache;
 
 import java.util.Set;
 
 public class UserRolesCache extends BaseCache {
+    private static Log log = LogFactory.getLog(UserRolesCache.class);
 
     private static UserRolesCache userRolesCache = null;
 
@@ -37,9 +40,29 @@ public class UserRolesCache extends BaseCache {
         }
         return userRolesCache;
     }
+    
+    //avoiding NullPointerException when this.cache is null
+    private boolean isCacheNull() {
+    	if (this.cache == null) {
+    		if (log.isDebugEnabled()) {
+    			StackTraceElement[] elemets = Thread.currentThread().getStackTrace();
+    			String traceString = "";
+    			for (int i=1; i<elemets.length; ++i) {
+    				traceString += elemets[i] + System.getProperty("line.separator");
+    			}
+                log.debug("USER_ROLES_CAHCHE doesn't exist in CacheManager:\n" + traceString);                
+    		}
+    		return true;
+    	}    	
+    	return false;
+    }
 
     //add to cache
     public void addToCache(int tenantId, String userName, String[] userRoleList) {
+    	//check for null
+    	if (isCacheNull()) {
+    		return;
+    	}
         //create cache key
         UserRolesCacheKey userRolesCacheKey = new UserRolesCacheKey(tenantId, userName);
         //create cache entry
@@ -51,6 +74,10 @@ public class UserRolesCache extends BaseCache {
 
     //get roles list of user
     public String[] getRolesListOfUser(int tenantId, String userName) {
+    	//check for null
+       	if (isCacheNull()) {
+    		return new String[0];
+    	}
         //create cache key
         UserRolesCacheKey userRolesCacheKey = new UserRolesCacheKey(tenantId, userName);
         //search cache and get cache entry
@@ -63,6 +90,10 @@ public class UserRolesCache extends BaseCache {
 
     //clear userRolesCache by tenantId
     public void clearCacheByTenant(int tenantId) {
+    	//check for null
+       	if (isCacheNull()) {
+    		return;
+    	}
         Set objectSet = this.cache.keySet();
         for (Object object: objectSet) {
             UserRolesCacheKey userRolesCacheKey=(UserRolesCacheKey)object;
@@ -74,11 +105,14 @@ public class UserRolesCache extends BaseCache {
 
     //clear userRolesCache by tenant and user name
     public void clearCacheEntry(int tenantId, String userName) {
+    	//check for null
+       	if (isCacheNull()) {
+    		return;
+    	}
         UserRolesCacheKey userRolesCacheKey=new UserRolesCacheKey(tenantId,userName);
         if(this.cache.containsKey(userRolesCacheKey)){
             this.cache.remove(userRolesCacheKey);
         }
 
     }
-
 }

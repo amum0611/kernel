@@ -25,11 +25,15 @@ import java.util.Set;
  * Date: Oct 1, 2010 Time: 10:32:26 AM
  */
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * This class is used to cache some of authorization information.
  */
 @SuppressWarnings({"UnusedDeclaration"})
 public class AuthorizationCache {
+    private static Log log = LogFactory.getLog(AuthorizationCache.class);
 
     public static final String AUTHORIZATION_CACHE = "AUTHORIZATION_CACHE";
 
@@ -40,6 +44,23 @@ public class AuthorizationCache {
     private AuthorizationCache() {
         this.cache = CacheManager.getInstance().getCache(AUTHORIZATION_CACHE);
     }
+    
+    //avoiding NullPointerException when this.cache is null
+    private boolean isCacheNull() {
+    	if (this.cache == null) {
+    		if (log.isDebugEnabled()) {    			
+    			StackTraceElement[] elemets = Thread.currentThread().getStackTrace();
+    			String traceString = "";
+    			for (int i=1; i<elemets.length; ++i) {
+    				traceString += elemets[i] + System.getProperty("line.separator");
+    			}
+                log.debug("AUTHORIZATION_CACHE doesn't exist in CacheManager:\n" + traceString);
+    		}
+    		return true;
+    	}    	
+    	return false;
+    }
+
 
 	/**
 	 * Gets a new instance of AuthorizationCache.
@@ -59,7 +80,10 @@ public class AuthorizationCache {
      */
     public void addToCache(int tenantId, String userName, String resourceId, String action,
                            boolean isAuthorized) {
-
+    	//check for null
+    	if (isCacheNull()) {
+    		return;
+    	}
         AuthorizationKey key = new AuthorizationKey(tenantId, userName, resourceId, action);
 
         if (this.cache.containsKey(key)) {
@@ -82,6 +106,11 @@ public class AuthorizationCache {
      */
     public boolean isUserAuthorized(int tenantId, String userName, String resourceId, String action)
         throws AuthorizationCacheException {
+    	//check for null
+    	if (isCacheNull()) {
+            throw new AuthorizationCacheException("Authorization information not found in the cache.");
+    	}
+    	
         AuthorizationKey key = new AuthorizationKey(tenantId, userName, resourceId, action);
         if (!this.cache.containsKey(key)) {
             throw new AuthorizationCacheException("Authorization information not found in the cache.");
@@ -95,6 +124,11 @@ public class AuthorizationCache {
      * Clears the cache.
      */
     public void clearCache() {
+    	//check for null
+    	if (isCacheNull()) {
+    		return;
+    	}
+    	
         this.cache.clear();
     }
 
@@ -105,6 +139,10 @@ public class AuthorizationCache {
      * @param action Action to construct the cache key.
      */
     public void clearCacheEntry(int tenantId, String userName, String resourceId, String action) {
+    	//check for null
+    	if (isCacheNull()) {
+    		return;
+    	}
 
         AuthorizationKey key = new AuthorizationKey(tenantId, userName, resourceId, action);
         if (this.cache.containsKey(key)) {
@@ -117,6 +155,10 @@ public class AuthorizationCache {
      * @param userName Name of the user.
      */
     public void clearCacheByUser(int tenantId, String userName) {
+    	//check for null
+    	if (isCacheNull()) {
+    		return;
+    	}
 
         Set objectSect = this.cache.keySet();
         for (Object anObjectSect : objectSect) {
@@ -136,6 +178,11 @@ public class AuthorizationCache {
      * @return the cache hit rate.
      */
     public double hitRate() {
+    	//check for null
+    	if (isCacheNull()) {
+    		return 0.0;
+    	}
+
         CacheStatistics stats = this.cache.getCacheStatistics();
         return (double) stats.getCacheHits() /
                 ((double) (stats.getCacheHits() + stats.getCacheMisses()));
@@ -147,6 +194,11 @@ public class AuthorizationCache {
      * @param tenantId
      */
     public void clearCacheByTenant(int tenantId) {
+    	//check for null
+    	if (isCacheNull()) {
+    		return;
+    	}
+
         Set cacheKeySet = this.cache.keySet();
         for (Object cacheKey : cacheKeySet) {
             AuthorizationKey authzKey = (AuthorizationKey) cacheKey;
@@ -163,6 +215,11 @@ public class AuthorizationCache {
      * @param resourceID
      */
     public void clearCacheByResource(int tenantID, String resourceID){
+    	//check for null
+    	if (isCacheNull()) {
+    		return;
+    	}
+
         Set cacheKeySet = this.cache.keySet();
         for (Object cacheKey : cacheKeySet) {
             AuthorizationKey authzKey = (AuthorizationKey) cacheKey;
