@@ -53,7 +53,7 @@ public interface UserRealmService {
     
     /**
      * Get the boot strap realm configuration, this is always build from conf/user-mgt.xml
-     * @return tge realm configuration
+     * @return the realm configuration
      */
     RealmConfiguration getBootstrapRealmConfiguration();
 

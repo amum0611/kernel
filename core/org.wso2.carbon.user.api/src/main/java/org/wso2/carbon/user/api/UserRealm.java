@@ -21,7 +21,7 @@ package org.wso2.carbon.user.api;
  * 
  * The realm represents a user store. This is a collection of interfaces.
  * 
- * To enable WSO2 platform with a clustom realm, implement this interface and
+ * To enable WSO2 platform with a custom realm, implement this interface and
  * add the class to the class path. Provide the class name in the configuration
  * file and the framework will pick the new realm code.
  */

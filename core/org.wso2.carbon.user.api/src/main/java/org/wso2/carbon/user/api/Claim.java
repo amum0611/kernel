@@ -51,12 +51,12 @@ public class Claim {
     private boolean supportedByDefault;
 
     /**
-     * This are claims required at the time user registration.
+     * These are the claims required at the time user registration.
      */
     private boolean required;
 
     /**
-     * Regular expression to validate the claim value - if none is provide, no
+     * Regular expression to validate the claim value - if nothing is provided, no
      * validation will take place.
      */
     private String regEx;

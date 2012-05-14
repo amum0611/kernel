@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * <ul>
  * <li>InheritedClaim - If the value of the claim is null then, read the value of the claim Default profile.</li>
  * <li>Hidden - The claim is hidden in this profile.</li>
- * <li>Overriden - Always read the value of the claim fromcurrent profile.</li>
+ * <li>Overridden - Always read the value of the claim from current profile.</li>
  * </ul>
  *
  */
