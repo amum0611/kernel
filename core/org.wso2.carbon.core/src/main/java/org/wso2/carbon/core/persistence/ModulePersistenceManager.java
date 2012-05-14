@@ -427,6 +427,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
         if (getCurrentFPM().elementExists(module.getName(), PersistenceUtils.getResourcePath(module))) {
             OMElement moduleElement = getModuleFilePM().get(module.getName());
             moduleElement.addAttribute(Resources.ModuleProperties.GLOBALLY_ENGAGED, String.valueOf(engage), null);
+            getModuleFilePM().setMetaFileModification(module.getName());
         } else {
             handleException("Trying to engage or disengage unavailable module " + module.getName());
         }

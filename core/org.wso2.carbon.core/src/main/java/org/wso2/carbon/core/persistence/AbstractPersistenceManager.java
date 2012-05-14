@@ -293,6 +293,7 @@ public abstract class AbstractPersistenceManager {
                             PersistenceUtils.getXPathAttrPredicate(Resources.NAME, module.getName()) +
                             PersistenceUtils.getXPathAttrPredicate(Resources.VERSION, version));
             moduleElement.detach();
+            getServiceGroupFilePM().setMetaFileModification(serviceGroupId);
         }
         if (!isStarted) {
             getServiceGroupFilePM().commitTransaction(serviceGroupId);

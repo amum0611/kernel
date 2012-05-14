@@ -20,8 +20,10 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class AbstractFilePersistenceManager {
 
@@ -29,6 +31,17 @@ public abstract class AbstractFilePersistenceManager {
     File metafilesDir;
 
     Map<String, ResourceFileData> resourceMap = new HashMap<String, ResourceFileData>();
+
+    /**
+     *   Include meta files that gets modified sue to a user action done via the UI.
+     */
+    private Set<String> userModifiedItems = new HashSet<String>();
+
+    /**
+     *    Includes meta files that are being modified in memory.. This is to identify if the meta
+     *    file needs to be rewritten to the filesystem.
+     */
+    private Set<String> modifyingMetaFiles = new HashSet<String>();
 
     XMLInputFactory xif = XMLInputFactory.newInstance();
     protected OMFactory omFactory = OMAbstractFactory.getOMFactory();
@@ -43,6 +56,14 @@ public abstract class AbstractFilePersistenceManager {
             IOException, XMLStreamException, PersistenceException;
 
     public synchronized void commitTransaction(String resourceId) throws PersistenceException {
+
+        //if the meta file is not modified omit overriding the meta file
+       if(!isMetaFileModification(resourceId)){
+            log.debug("No metafile modification done for : " + resourceId);
+            resourceMap.remove(resourceId);
+            return;
+        }
+
         try {
             synchronized (resourceMap.get(resourceId)) {
                 ResourceFileData fileData = resourceMap.get(resourceId);
@@ -67,6 +88,7 @@ public abstract class AbstractFilePersistenceManager {
                 //todo does pretty printing really needed? consider removing after testing
                 XMLPrettyPrinter.prettify(fileData.getFile());
                 resourceMap.remove(resourceId);
+                setUserModification(resourceId);
                 outputStream.close();
             }
         } catch (XMLStreamException e1) {
@@ -102,6 +124,8 @@ public abstract class AbstractFilePersistenceManager {
      * @param resourceId service group name of module name
      */
     public void rollbackTransaction(String resourceId) {
+        log.debug("rollbackTransaction for : " + resourceId);
+        isMetaFileModification(resourceId);
         ResourceFileData fileData = resourceMap.get(resourceId);
         if (fileData != null) {
             fileData.setOMElement(null);
@@ -181,6 +205,7 @@ public abstract class AbstractFilePersistenceManager {
                 if (parent != null) {
                     if (!parent.equals(content.getParent())) {
                         parent.addChild(content);
+                        setMetaFileModification(resourceName);
                     } else {
                         if (log.isDebugEnabled()) {
                             log.debug("Trying add a child to the same parent. " + resourceName + content.toString());
@@ -222,6 +247,7 @@ public abstract class AbstractFilePersistenceManager {
                 AXIOMXPath xpathExpr = new AXIOMXPath(xpathOfElement);
                 OMElement parent = (OMElement) xpathExpr.selectSingleNode(sgElement);
                 parent.addAttribute(attr);
+                setMetaFileModification(resourceName);
             } else {
                 log.error("put attr = " + attr.getAttributeType() + attr.getAttributeValue());
                 throw new PersistenceDataNotFoundException("ResourceFileData not found. " +
@@ -362,4 +388,19 @@ public abstract class AbstractFilePersistenceManager {
 
     }
 
+    public boolean isUserModification(String name) {
+        return userModifiedItems.remove(name);
+    }
+
+    public boolean setUserModification(String name) {
+        return userModifiedItems.add(name);
+    }
+
+    protected boolean isMetaFileModification(String resourceId) {
+        return modifyingMetaFiles.remove(resourceId);
+    }
+
+    public void setMetaFileModification(String resourceId) {
+        modifyingMetaFiles.add(resourceId);
+    }
 }

@@ -135,6 +135,12 @@
                     <include>**/mime-mappings.xml</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/component.xml</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>
@@ -176,6 +182,7 @@
                         </Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <DynamicImport-Package>*</DynamicImport-Package>
+                        <Axis2Deployer>PersistenceMetaDataDeployer</Axis2Deployer>
                     </instructions>
                 </configuration>
             </plugin>

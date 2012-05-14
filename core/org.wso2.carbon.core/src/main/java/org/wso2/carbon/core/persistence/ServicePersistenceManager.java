@@ -318,6 +318,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 serviceElement = (OMElement) getServiceGroupFilePM().get(sgName, xpathToService);
                 if (serviceElement != null) {
                     serviceElement.addAttribute(Resources.SUCCESSFULLY_ADDED, "true", null);
+                    getServiceGroupFilePM().setMetaFileModification(sgName);
                 }
 
                 getServiceGroupFilePM().commitTransaction(sgName);
@@ -790,6 +791,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
             if (getServiceGroupFilePM().elementExists(sgName, serviceXPath)) {
                 OMElement serviceElement = (OMElement) getServiceGroupFilePM().get(sgName, serviceXPath);
                 serviceElement.addAttribute(propertyName, propertyValue, null);
+                getServiceGroupFilePM().setMetaFileModification(sgName);
             }
 
             if (!transactionStarted) {
@@ -825,6 +827,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
             if (getServiceGroupFilePM().elementExists(sgName, serviceResourcePath)) {
                 OMElement serviceElement = (OMElement) getServiceGroupFilePM().get(sgName, serviceResourcePath);
                 serviceElement.removeAttribute(serviceElement.getAttribute(new QName(propertyName)));
+                getServiceGroupFilePM().setMetaFileModification(sgName);
             }
 
             if (!transactionStarted) {

@@ -71,6 +71,7 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
     public synchronized void beginTransaction(String serviceGroupId) throws PersistenceException {
 
         File sgFile = new File(metafilesDir, getFilePathFromResourceId(serviceGroupId));
+
         try {
             if (resourceMap.get(serviceGroupId) != null &&
                     resourceMap.get(serviceGroupId).isTransactionStarted()) {
@@ -80,7 +81,14 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
 
             OMElement sgElement;
             if (sgFile.exists()) {
-                sgElement = PersistenceUtils.getResourceDocumentElement(sgFile);
+                FileInputStream fis = FileUtils.openInputStream(sgFile);
+                XMLStreamReader reader = xif.createXMLStreamReader(fis);
+
+                StAXOMBuilder builder = new StAXOMBuilder(reader);
+                sgElement = builder.getDocumentElement();
+                sgElement.detach();
+                reader.close();
+                fis.close();
             } else {                        //the file does not exist.
                 sgElement = omFactory.createOMElement(Resources.ServiceGroupProperties.SERVICE_GROUP_XML_TAG, null);
             }
@@ -96,7 +104,7 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
         } catch (IOException e) {
             log.error("Exception in closing service group file " + serviceGroupId, e);
             throw new PersistenceException("Exception in closing service group file", e);
-            }
+        }
     }
 
     /**
@@ -147,11 +155,7 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
                     throw new PersistenceDataNotFoundException(
                             "The Element specified by path not found " + serviceGroupId + xpathStrOfElement);
                 }
-                if (el.getParent() == null) { //this is the root element
-                    fileData.setOMElement(null);
-                } else {
-                    el.detach();
-                }
+                setMetaFileModification(serviceGroupId);
             } else {
                 throw new PersistenceDataNotFoundException(
                         "The Element specified by path not found or a transaction isn't started yet. " +

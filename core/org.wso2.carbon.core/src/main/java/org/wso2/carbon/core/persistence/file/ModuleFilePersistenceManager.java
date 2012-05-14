@@ -127,6 +127,7 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
                 } else if (el != null) {
                     el.detach();
                 }
+                setMetaFileModification(moduleId);
             } else {
                 throw new PersistenceDataNotFoundException("transaction isn't started");
             }
