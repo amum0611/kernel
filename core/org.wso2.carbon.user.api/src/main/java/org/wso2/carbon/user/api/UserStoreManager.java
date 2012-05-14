@@ -39,7 +39,7 @@ public interface UserStoreManager {
      *         name. False is returned for invalid credential, invalid user name
      *         and mismatching credential with user name.
      * @throws UserStoreException
-     *             An unexpected exception has occured
+     *             An unexpected exception has occurred
      */
     boolean authenticate(String userName, Object credential) throws UserStoreException;
 
@@ -51,9 +51,9 @@ public interface UserStoreManager {
      * @param maxItemLimit
      *            The max item limit. If -1 then system maximum limit will be
      *            used. If the given value is greater than the system configured
-     *            max limit it will be resetted to the system configured max
+     *            max limit it will be reseted to the system configured max
      *            limit.
-     * @return An arry of user names
+     * @return An array of user names
      * @throws UserStoreException
      */
     String[] listUsers(String filter, int maxItemLimit) throws UserStoreException;
