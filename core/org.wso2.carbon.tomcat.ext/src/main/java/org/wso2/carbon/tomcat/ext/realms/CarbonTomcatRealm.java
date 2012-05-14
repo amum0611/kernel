@@ -54,14 +54,14 @@ public class CarbonTomcatRealm extends RealmBase {
      */
     private static ThreadLocal<HashMap> tenantSaaSRulesMap = new ThreadLocal<HashMap>();
 
-    private boolean isSaaSEnabled = false;
+    private static ThreadLocal<Boolean> isSaaSEnabled = new ThreadLocal<Boolean>();
 
     public boolean isSaaSEnabled() {
-        return isSaaSEnabled;
+        return isSaaSEnabled.get();
     }
 
     public void setSaaSEnabled(boolean saaSEnabled) {
-        isSaaSEnabled = saaSEnabled;
+        isSaaSEnabled.set(saaSEnabled);
     }
 
     public CarbonTomcatRealm() throws Exception {
