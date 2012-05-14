@@ -92,9 +92,9 @@ public class CompositeValve extends ValveBase {
              */
             String enableSaaSParam =
                     request.getContext().findParameter(ENABLE_SAAS);
+            Realm realm = request.getContext().getRealm();
             if(enableSaaSParam != null) {
                 // Set the SaaS enabled ThreadLocal variable
-                Realm realm = request.getContext().getRealm();
                 if (realm instanceof CarbonTomcatRealm) {
                     // replaceAll("\\s","") is to remove all whitespaces
                     String[] enableSaaSParams = enableSaaSParam.replaceAll("\\s", "").split(";");
@@ -130,8 +130,10 @@ public class CompositeValve extends ValveBase {
                         tenantSaaSRulesMap.put(tenant, tenantSaaSRules);
                     }
                     ((CarbonTomcatRealm) realm).setSaaSRules(tenantSaaSRulesMap);
-                    ((CarbonTomcatRealm) realm).setSaaSEnabled(true);
+                    ((CarbonTomcatRealm) realm).setSaaSEnabled(Boolean.TRUE);
                 }
+            } else {
+                ((CarbonTomcatRealm) realm).setSaaSEnabled(Boolean.FALSE);
             }
 
             TomcatValveContainer.invokeValves(request, response);
