@@ -1663,21 +1663,18 @@ public class UserRegistry implements Registry {
     @Override
     public boolean removeVersionHistory(String path, long snapshotId)
     		throws RegistryException {
-    	log.error("-----------From User Registry------" + path + ":" + snapshotId);
-    	log.error(coreRegistry);
 
     	if (RegistryUtils.isRegistryReadOnly(coreRegistry.getRegistryContext())) {
             if (log.isTraceEnabled()) {
-                log.trace("Cannot continue the operation eventing service url, the coreRegistry " +
+                log.trace("Cannot continue the operation removing the version history, the coreRegistry " +
                         "is read-only");
             }
             return false;
         }
         try {
-            // setting session information + chrooted incoming paths
+            // setting session information
             setSessionInformation();
-            //path = chrootWrapper.getInPath(path);
-            log.error("--- FR ---");
+
             return coreRegistry.removeVersionHistory(path, snapshotId);
         } finally {
             clearSessionInformation();            
