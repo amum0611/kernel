@@ -302,7 +302,7 @@
             <dependency>
                 <groupId>org.apache.zookeeper.wso2</groupId>
                 <artifactId>apache-zookeeper</artifactId>
-                <version>3.3.4.wso2v1</version>
+                <version>3.3.5.wso2v1</version>
             </dependency>
         </dependencies>
 
