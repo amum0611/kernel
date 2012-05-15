@@ -18,7 +18,6 @@ package org.wso2.carbon.registry.core.config;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.store.jdbc.JdbcDirectory;
 import org.wso2.carbon.registry.core.Aspect;
 import org.wso2.carbon.registry.core.RegistryConstants;
 import org.wso2.carbon.registry.core.dataaccess.DataAccessManager;
@@ -142,7 +141,7 @@ public class RegistryContext {
      * Determines whether to setup the Registry on start up. Setup actions: Create Registry database
      * tables
      */
-    private JdbcDirectory jdbcDir;
+//    private JdbcDirectory jdbcDir;
 
     /**
      * Get a unique identifier for this registry node. This is used to establish uniqueness among
@@ -896,23 +895,23 @@ public class RegistryContext {
         this.customEditManager = customEditManager;
     }
 
-    /**
-     * Set the JDBC dir. Uses for indexing.
-     *
-     * @param jdbcDir JDBC dir to set.
-     */
-    public void setJdbcDir(JdbcDirectory jdbcDir) {
-        this.jdbcDir = jdbcDir;
-    }
+//    /**
+//     * Set the JDBC dir. Uses for indexing.
+//     *
+//     * @param jdbcDir JDBC dir to set.
+//     */
+//    public void setJdbcDir(JdbcDirectory jdbcDir) {
+//        this.jdbcDir = jdbcDir;
+//    }
 
-    /**
-     * Return the JDBC dir. Uses for indexing.
-     *
-     * @return the JDBC dir.
-     */
-    public JdbcDirectory getJdbcDir() {
-        return jdbcDir;
-    }
+//    /**
+//     * Return the JDBC dir. Uses for indexing.
+//     *
+//     * @return the JDBC dir.
+//     */
+//    public JdbcDirectory getJdbcDir() {
+//        return jdbcDir;
+//    }
 
     /**
      * Return a list of mounted remote instances.
