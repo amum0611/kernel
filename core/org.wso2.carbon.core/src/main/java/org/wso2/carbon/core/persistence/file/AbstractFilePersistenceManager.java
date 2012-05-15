@@ -1,7 +1,6 @@
 package org.wso2.carbon.core.persistence.file;
 
 import org.apache.axiom.om.*;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.util.XMLPrettyPrinter;
@@ -14,16 +13,12 @@ import org.wso2.carbon.core.persistence.PersistenceDataNotFoundException;
 import org.wso2.carbon.core.persistence.PersistenceException;
 import org.wso2.carbon.core.persistence.PersistenceUtils;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.*;
 
 public abstract class AbstractFilePersistenceManager {
 
@@ -43,7 +38,6 @@ public abstract class AbstractFilePersistenceManager {
      */
     private Set<String> modifyingMetaFiles = new HashSet<String>();
 
-    XMLInputFactory xif = XMLInputFactory.newInstance();
     protected OMFactory omFactory = OMAbstractFactory.getOMFactory();
 
     private static final Log log = LogFactory.getLog(AbstractFilePersistenceManager.class);
@@ -86,7 +80,7 @@ public abstract class AbstractFilePersistenceManager {
                 OutputStream outputStream = FileUtils.openOutputStream(f);
                 fileData.getOMElement().serializeAndConsume(outputStream);
                 //todo does pretty printing really needed? consider removing after testing
-                XMLPrettyPrinter.prettify(fileData.getFile());
+                XMLPrettyPrinter.prettify(f);
                 resourceMap.remove(resourceId);
                 setUserModification(resourceId);
                 outputStream.close();
@@ -386,6 +380,16 @@ public abstract class AbstractFilePersistenceManager {
         return resourceMap.get(resourceId) != null &&
                 resourceMap.get(resourceId).isTransactionStarted();
 
+    }
+
+    public void init() {
+        try {
+            if (!metafilesDir.exists()) {
+                FileUtils.forceMkdir(metafilesDir);
+            }
+        } catch (IOException e) {
+            log.error("Error creating the resource meta files directory for " + metafilesDir.getAbsolutePath(), e);
+        }
     }
 
     public boolean isUserModification(String name) {

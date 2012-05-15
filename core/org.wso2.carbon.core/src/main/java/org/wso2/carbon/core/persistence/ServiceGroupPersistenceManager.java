@@ -273,7 +273,6 @@ public class ServiceGroupPersistenceManager extends AbstractPersistenceManager {
                 getServiceGroupFilePM().put(sgName, nameAttr, Resources.ServiceGroupProperties.ROOT_XPATH);
                 String hashValue = CarbonUtils.computeServiceHash(serviceGroup);
                 if (hashValue != null) {
-                    //todo check the hash.value of org.wso2.carbon.sts in registry. this is null for the said SG here.
                     OMAttribute hashAttr = omFactory.createOMAttribute(
                             Resources.ServiceGroupProperties.HASH_VALUE, null, hashValue);
                     getServiceGroupFilePM().put(sgName, hashAttr, Resources.ServiceGroupProperties.ROOT_XPATH);

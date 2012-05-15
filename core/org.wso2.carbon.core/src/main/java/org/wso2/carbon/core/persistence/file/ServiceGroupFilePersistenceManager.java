@@ -1,9 +1,6 @@
 package org.wso2.carbon.core.persistence.file;
 
-import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.engine.AxisConfiguration;
@@ -16,10 +13,11 @@ import org.wso2.carbon.core.persistence.PersistenceDataNotFoundException;
 import org.wso2.carbon.core.persistence.PersistenceException;
 import org.wso2.carbon.core.persistence.PersistenceUtils;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
@@ -33,8 +31,6 @@ import java.util.List;
  */
 public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceManager {
 
-    XMLInputFactory xif = XMLInputFactory.newInstance();
-    protected OMFactory omFactory = OMAbstractFactory.getOMFactory();
     private static final Log log = LogFactory.getLog(ServiceGroupFilePersistenceManager.class);
 
     public ServiceGroupFilePersistenceManager(AxisConfiguration axisConfig) throws AxisFault {
@@ -81,14 +77,7 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
 
             OMElement sgElement;
             if (sgFile.exists()) {
-                FileInputStream fis = FileUtils.openInputStream(sgFile);
-                XMLStreamReader reader = xif.createXMLStreamReader(fis);
-
-                StAXOMBuilder builder = new StAXOMBuilder(reader);
-                sgElement = builder.getDocumentElement();
-                sgElement.detach();
-                reader.close();
-                fis.close();
+                sgElement = PersistenceUtils.getResourceDocumentElement(sgFile);
             } else {                        //the file does not exist.
                 sgElement = omFactory.createOMElement(Resources.ServiceGroupProperties.SERVICE_GROUP_XML_TAG, null);
             }
@@ -154,6 +143,11 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
                 if (el == null) {
                     throw new PersistenceDataNotFoundException(
                             "The Element specified by path not found " + serviceGroupId + xpathStrOfElement);
+                }
+                if (el.getParent() == null) { //this is the root element
+                    fileData.setOMElement(null);
+                } else {
+                    el.detach();
                 }
                 setMetaFileModification(serviceGroupId);
             } else {

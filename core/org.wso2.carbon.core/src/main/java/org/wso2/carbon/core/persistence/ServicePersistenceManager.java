@@ -230,7 +230,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 if (isProxyService && servicePolicies != null && !servicePolicies.isEmpty()) {
                     org.wso2.carbon.registry.core.Resource serviceResource = configRegistry.newCollection();
                     String serviceResourcePath = PersistenceUtils.getRegistryResourcePath(axisService);
-                    configRegistry.put(serviceResourcePath, serviceResource);    //todo does this replace the existing resource? it should be -kasung
+                    configRegistry.put(serviceResourcePath, serviceResource);
 
                     for (OMElement wrappedServicePolicyElement : servicePolicies) {
                         Policy servicePolicy = PolicyEngine.getPolicy(wrappedServicePolicyElement.getFirstChildWithName(
@@ -974,14 +974,14 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                 getServiceGroupFilePM().beginTransaction(serviceGroupId);
             }
 
-            OMElement serviceElement = getService(axisService);
-            String transportXPath = PersistenceUtils.getResourcePath(axisService) +
-                    "/" + Resources.Associations.ASSOCIATION_XML_TAG +
-                    PersistenceUtils.getXPathAttrPredicate(
-                            Resources.Associations.DESTINATION_PATH, transportResource.getPath()) +
-                    PersistenceUtils.getXPathAttrPredicate(
-                            Resources.ModuleProperties.TYPE, Resources.Associations.EXPOSED_TRANSPORTS);
+            //OMElement serviceElement = getService(axisService);
             if (transportResource != null) {
+                String transportXPath = PersistenceUtils.getResourcePath(axisService) +
+                        "/" + Resources.Associations.ASSOCIATION_XML_TAG +
+                        PersistenceUtils.getXPathAttrPredicate(
+                                Resources.Associations.DESTINATION_PATH, transportResource.getPath()) +
+                        PersistenceUtils.getXPathAttrPredicate(
+                                Resources.ModuleProperties.TYPE, Resources.Associations.EXPOSED_TRANSPORTS);
                 if (getServiceGroupFilePM().elementExists(serviceGroupId, transportXPath)) {
                     getServiceGroupFilePM().delete(serviceGroupId,
                             PersistenceUtils.getResourcePath(axisService) +
@@ -1066,7 +1066,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
             AxisOperation axisOperation = (AxisOperation) serviceOperations.next();
             String opXPath = PersistenceUtils.getResourcePath(axisOperation);
             if (!getServiceGroupFilePM().elementExists(
-                    axisService.getAxisServiceGroup().getServiceGroupName(), opXPath)) { //todo
+                    axisService.getAxisServiceGroup().getServiceGroupName(), opXPath)) {
                 continue;
             }
 

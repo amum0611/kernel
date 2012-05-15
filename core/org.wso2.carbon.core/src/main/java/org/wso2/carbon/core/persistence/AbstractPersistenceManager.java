@@ -234,9 +234,10 @@ public abstract class AbstractPersistenceManager {
 
     /**
      * Remove a parameter at the given path from the registry
-     * todo this method changed vastly but with same method params (ie 3 strings) so check the usages of this
      *
+     * @param resourceId sg name of module name
      * @param paramName - parameter name
+     * @param xpathStr the xpath expression string
      * @throws Exception - on error
      */
     protected void removeParameter(String resourceId, String paramName, String xpathStr) throws Exception {
@@ -266,8 +267,6 @@ public abstract class AbstractPersistenceManager {
 
     /**
      * Engage or disengage module at the given resource path.
-     * todo fix this method for xpath
-     * todo method signature is same for registry and fs
      *
      * @param serviceGroupId serviceGroupId
      * @param module         - AxisModule instance

@@ -1,11 +1,9 @@
 package org.wso2.carbon.core.persistence.file;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.engine.AxisConfiguration;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jaxen.JaxenException;
@@ -15,8 +13,10 @@ import org.wso2.carbon.core.persistence.PersistenceException;
 import org.wso2.carbon.core.persistence.PersistenceUtils;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
@@ -39,7 +39,7 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
                 String repoPath = URLDecoder.decode(axisConfig.getRepository().getPath(), "UTF-8");
                 //we need to change meta-files location in rare cases (i.e for Jaggery dis), introducing that flexibility via a sys prop @NuwanB
                 String moduleMetaFileLocation = System.getProperty("module.metafiles.location");
-                if(moduleMetaFileLocation == null){
+                if (moduleMetaFileLocation == null) {
                     moduleMetaFileLocation = Resources.MODULES_METAFILES_DIR;
                 }
                 metafilesDir = new File(repoPath +
@@ -56,12 +56,6 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
         }
     }
 
-    public void init() {
-        if (!metafilesDir.exists()) {
-            metafilesDir.mkdirs();
-        }
-    }
-
     /**
      * Reads the relevant service group file from FS and loads the OM to memory.
      * If the file does not exist, create a new OM.
@@ -75,8 +69,6 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
      */
     public synchronized void beginTransaction(String moduleName) throws PersistenceException {
         File moduleFile = new File(metafilesDir, getFilePathFromResourceId(moduleName));
-        FileInputStream fis = null;
-        XMLStreamReader reader = null;
         try {
             OMElement moduleElement;
             if (moduleFile.exists()) {

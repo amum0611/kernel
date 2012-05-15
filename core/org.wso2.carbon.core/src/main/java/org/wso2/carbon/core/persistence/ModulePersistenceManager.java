@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * todo sometimes module.getVersion() == null. Manipulate xpath accordingly
  * The idea -
  * <p/>
  * create a module files like
@@ -457,7 +456,7 @@ public class ModulePersistenceManager extends AbstractPersistenceManager {
             getModuleFilePM().put(moduleName,
                     omFactory.createOMElement(Resources.POLICIES, null), modulePath);
         } else {
-            //you must manually delete the existing policy before adding new one. todo for throttling
+            //you must manually delete the existing policy before adding new one.
             String pathToPolicy = modulePath + "/" + Resources.POLICIES +
                     "/" + Resources.POLICY +
                     PersistenceUtils.getXPathTextPredicate(

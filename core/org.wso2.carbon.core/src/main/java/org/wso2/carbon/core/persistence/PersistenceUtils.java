@@ -148,7 +148,6 @@ public final class PersistenceUtils {
      */
     public static String getBindingOperationPath(String serviceXPath, AxisBindingOperation abo) {
 //        Service.ROOT_XPATH/bindings/binding[@name="xxx"]/operation[@name="yyy"]
-        AxisBinding binding = abo.getAxisBinding();
         return getBindingPath(serviceXPath, abo.getAxisBinding()) + "/" +
                 Resources.OPERATION + getXPathAttrPredicate(Resources.NAME, abo.getName().getLocalPart());
     }
