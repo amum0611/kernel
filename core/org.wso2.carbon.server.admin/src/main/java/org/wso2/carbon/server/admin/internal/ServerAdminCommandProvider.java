@@ -21,11 +21,15 @@ import org.eclipse.osgi.framework.console.CommandProvider;
 import org.wso2.carbon.core.util.SystemFilter;
 import org.wso2.carbon.server.admin.service.ServerAdmin;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 
 /**
  *Equinox console commands for Server Administration
  */
+@SuppressWarnings("unused")
 public class ServerAdminCommandProvider implements CommandProvider {
 
     private ServerAdmin serverAdmin;
@@ -123,6 +127,33 @@ public class ServerAdminCommandProvider implements CommandProvider {
                 i = printServiceInfo(i, axisService);
             }
         }
+    }
+
+    public void _dumpAdminServices(CommandInterpreter ci) throws Exception {
+        HashMap<String,AxisService> services =
+                ServerAdminDataHolder.getInstance().getConfigContext().
+                        getAxisConfiguration().getServices();
+        int i = 1;
+        String adminServicesDir = System.getProperty("java.io.tmpdir") + File.separator + "adminServices";
+        File file = new File(adminServicesDir);
+        if(!file.exists() && !file.mkdirs()){
+            throw new Exception("Cannot create admin service dump");
+        }
+        for (AxisService axisService : services.values()) {
+            if (SystemFilter.isAdminService(axisService)) {
+                OutputStream op = null;
+                try {
+                    File wsdl = new File(adminServicesDir + File.separator + axisService.getName() + ".wsdl");
+                    op = new FileOutputStream(wsdl);
+                    axisService.printWSDL(op);
+                } finally {
+                    if(op != null){
+                        op.close();
+                    }
+                }
+            }
+        }
+        System.out.println("Admin service info dump created at " + file.getAbsolutePath());
     }
 
     /**
