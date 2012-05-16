@@ -22,6 +22,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;
 import java.util.jar.Attributes;
+import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -33,7 +34,8 @@ public class Utils {
             System.getProperty("java.io.tmpdir").endsWith(File.separator) ?
                     System.getProperty("java.io.tmpdir") + "jarsToBundles" :
                     System.getProperty("java.io.tmpdir") + File.separator + "jarsToBundles";
-
+    private static File bundleBackupDir;
+    
     static {
         File jarsToBundlesDir = new File(JAR_TO_BUNDLE_DIR);
         if (jarsToBundlesDir.exists()) {
@@ -266,9 +268,9 @@ public class Utils {
      * @throws IOException
      */
     public static void applyPatches(File patchesDir, File pluginsDir) throws IOException {
-        File bundleBackupDir = new File(patchesDir, LauncherConstants.BUNDLE_BACKUP_DIR);
+        bundleBackupDir = new File(patchesDir, LauncherConstants.BUNDLE_BACKUP_DIR);
         if (!bundleBackupDir.exists()) {
-            //We need backup the plugins in the components/repository/plugins folder.
+            //We need to backup the plugins in the components/repository/plugins folder.
             FileUtils.copyDirectory(pluginsDir, bundleBackupDir);
         }
         //Now lets apply patches.
@@ -282,16 +284,29 @@ public class Utils {
      * @param target target
      * @throws java.io.IOException
      */
-    private static void copyPatches(File source, File target) throws IOException {
-            //Sorting patch folders.
-            File[] files = source.listFiles();
-            Arrays.sort(files);
-            for (File file : files) {
-                if(file.isDirectory()){
-                FileUtils.copyDirectory(file, target);
-                }
-            }
-    }
+	private static void copyPatches(File source, File target) throws IOException {
+		// Sorting patch folders.
+		File[] files = source.listFiles();
+		Arrays.sort(files);
+		for (File file : files) {
+			if (file.isDirectory()) {
+				// if it's the patch0000 directory, copy all the files in
+				// patch0000 directory to plugins.
+				// bundlefileName verification is not required for patch0000
+				if (file.equals(bundleBackupDir)) {
+					FileUtils.copyDirectory(file, target);
+				} else {
+					// verify bundleFileName before copying the files to plugins
+					File[] patchFiles = file.listFiles();
+					for (File patch : patchFiles) {
+						String patchFileName = verifyBundleFileName(patch);
+						File copiedFile = new File(target, patchFileName);
+						FileUtils.copyFile(patch, copiedFile, true);
+					}
+				}
+			}
+		}
+	}
 
     /**
      * Create & return the bundle directory
@@ -744,4 +759,30 @@ public class Utils {
         return properties;
     }
 
+	/**
+	 * Verifies bundle file name against the naming convention:
+	 * bundleName_bundleVersion.jar
+	 * 
+	 * @param bundle file
+	 * @return verified bundle-fileName
+	 * @throws IOException
+	 */
+	public static String verifyBundleFileName(File file) throws IOException {
+		String newFileName = file.getName();
+		if (file.getName().endsWith(".jar")) {
+			JarFile jar = new JarFile(file);
+			Attributes attributes = jar.getManifest().getMainAttributes();
+			String name = attributes.getValue(LauncherConstants.BUNDLE_SYMBOLIC_NAME);
+			String version = attributes.getValue(LauncherConstants.BUNDLE_VERSION);
+			if (name != null && version != null) {
+				String bundleFileName = name + "_" + version + ".jar";
+				// verify and correct the bundle filename
+				if (!(file.getName().equals(bundleFileName))) {
+					newFileName = bundleFileName;
+				}
+			}
+		}
+		return newFileName;
+	}
+    	
 }
