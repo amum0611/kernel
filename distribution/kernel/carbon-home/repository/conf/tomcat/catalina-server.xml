@@ -20,6 +20,11 @@
 
   <Service className="org.wso2.carbon.tomcat.ext.service.ExtendedStandardService" name="Catalina">
 
+    <!--
+	optional attributes:
+
+	proxyPort="80"
+    -->
     <Connector  protocol="org.apache.coyote.http11.Http11NioProtocol"
                 port="9763"
                 bindOnInit="false"
@@ -37,6 +42,11 @@
                 noCompressionUserAgents="gozilla, traviata"
                 compressableMimeType="text/html,text/javascript,application/x-javascript,application/javascript,application/xml,text/css,application/xslt+xml,text/xsl,image/gif,image/jpg,image/jpeg" />
    
+    <!--
+	optional attributes:
+
+	proxyPort="443"
+    -->
     <Connector  protocol="org.apache.coyote.http11.Http11NioProtocol"
                 port="9443"
                 bindOnInit="false"
