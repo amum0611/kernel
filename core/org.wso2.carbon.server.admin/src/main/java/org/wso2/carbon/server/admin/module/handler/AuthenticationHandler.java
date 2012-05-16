@@ -73,7 +73,7 @@ public class AuthenticationHandler extends AbstractHandler {
                 SuperTenantCarbonContext.getCurrentContext().setTenantDomain(domain);
             }
             String username = (String) session.getAttribute(ServerConstants.USER_LOGGED_IN);
-            SuperTenantCarbonContext.getCurrentContext().setUsername(username);
+//            SuperTenantCarbonContext.getCurrentContext().setUsername(username);
         }
 
         return InvocationResponse.CONTINUE;
@@ -162,12 +162,10 @@ public class AuthenticationHandler extends AbstractHandler {
                     SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSS']'");
                     invalidateSession(msgContext);
                     String serviceName = getServiceName(msgContext);
-                    String msg = "Exception occurred at " + date.format(new Date()) + " from IP address "
+                    String msg = "Illegal access attempt at " + date.format(new Date()) + " from IP address "
                                  + remoteIP + " while trying to authenticate access to service " + serviceName;
-                    if (log.isDebugEnabled()) {
-                        log.debug(msg, e);
-                    }
-                    audit.error(msg, e);
+                    log.warn(msg);
+                    audit.error(msg);
                     throw e;
                 }
             }
