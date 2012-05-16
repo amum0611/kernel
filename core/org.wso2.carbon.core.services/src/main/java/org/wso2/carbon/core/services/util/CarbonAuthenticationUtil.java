@@ -19,6 +19,7 @@ package org.wso2.carbon.core.services.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 import org.wso2.carbon.core.services.authentication.stats.LoginAttempt;
@@ -40,6 +41,7 @@ import java.util.Date;
 public class CarbonAuthenticationUtil {
 
     private static final Log log = LogFactory.getLog(CarbonAuthenticationUtil.class);
+    private static Log audit = CarbonConstants.AUDIT_LOG;
 
     public static void onFailedAdminLogin(HttpSession httpSess, String username, int tenantId,
             String remoteAddress, String reason) throws Exception {
@@ -59,14 +61,16 @@ public class CarbonAuthenticationUtil {
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
 
-        log.warn("Failed Administrator login attempt \'" + username + "[" + tenantId + "]\' at "
-                + date.format(currentTime) + " from IP address " + remoteAddress);
+        String msg = "Failed Administrator login attempt \'" + username + "[" + tenantId + "]\' at "
+                   + date.format(currentTime) + " from IP address " + remoteAddress;
+        log.warn(msg);
+        audit.warn(msg);
 
         if (httpSess != null) {
             httpSess.invalidate();
         }
-        LoginAttempt loginAttempt = new LoginAttempt(username, tenantId, remoteAddress, new Date(),
-                false, reason);
+        LoginAttempt loginAttempt =
+                new LoginAttempt(username, tenantId, remoteAddress, new Date(), false, reason);
         LoginStatDatabase.recordLoginAttempt(loginAttempt);
     }
 
@@ -101,11 +105,15 @@ public class CarbonAuthenticationUtil {
         SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
 
         if(tenantDomain == null){
-            log.info("\'" + username + "\' logged in at " +
-                    date.format(currentTime) + " from IP address " + remoteAddress);
+            String msg = "\'" + username + "\' logged in at " +
+                       date.format(currentTime) + " from IP address " + remoteAddress;
+            log.info(msg);
+            audit.info(msg);
         } else {
-            log.info("\'" + username + "@" + tenantDomain +" [" + tenantId + "]\' logged in at " +
-                    date.format(currentTime) + " from IP address " + remoteAddress);
+            String msg = "\'" + username + "@" + tenantDomain + " [" + tenantId + "]\' logged in at " +
+                       date.format(currentTime) + " from IP address " + remoteAddress;
+            log.info(msg);
+            audit.info(msg);
         }
 
         // trigger the callbacks subscribe to the login event
@@ -118,8 +126,8 @@ public class CarbonAuthenticationUtil {
         if (log.isDebugEnabled()) {
             log.debug("User Registry instance is set in the session for user " + username);
         }
-        LoginAttempt loginAttempt = new LoginAttempt(username, tenantId, remoteAddress, new Date(),
-                true, null);
+        LoginAttempt loginAttempt =
+                new LoginAttempt(username, tenantId, remoteAddress, new Date(), true, null);
         LoginStatDatabase.recordLoginAttempt(loginAttempt);
     }
 
@@ -187,11 +195,15 @@ public class CarbonAuthenticationUtil {
         SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
 
         if(tenantDomain == null){
-            log.info("\'" + username + "\' logged in at " +
-                    date.format(currentTime) + " from IP address " + remoteAddress);
+            String msg = "\'" + username + "\' logged in at " +
+                       date.format(currentTime) + " from IP address " + remoteAddress;
+            log.info(msg);
+            audit.info(msg);
         } else {
-            log.info("\'" + username + "@" + tenantDomain +" [" + tenantId + "]\' logged in at " +
-                    date.format(currentTime) + " from IP address " + remoteAddress);
+            String msg = "\'" + username + "@" + tenantDomain + " [" + tenantId + "]\' logged in at " +
+                       date.format(currentTime) + " from IP address " + remoteAddress;
+            log.info(msg);
+            audit.info(msg);
         }
 
         // trigger the callbacks subscribe to the login event
@@ -204,9 +216,8 @@ public class CarbonAuthenticationUtil {
         if (log.isDebugEnabled()) {
             log.debug("User Registry instance is set in the session for user " + username);
         }
-        LoginAttempt loginAttempt = new LoginAttempt(username, tenantId, remoteAddress, new Date(),
-                true, null);
+        LoginAttempt loginAttempt =
+                new LoginAttempt(username, tenantId, remoteAddress, new Date(), true, null);
         LoginStatDatabase.recordLoginAttempt(loginAttempt);
     }
-
 }
