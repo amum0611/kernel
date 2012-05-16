@@ -315,13 +315,14 @@ public class DefaultSchemaGenerator implements Java2WSDLConstants, SchemaGenerat
                 continue;
             }
 
+            if (!Modifier.isPublic(jMethod.getModifiers())) {
+                // no need to generate Schema for non public methods
+                continue;
+            }
+
             if (uniqueMethods.get(methodName) != null) {
                 log.warn("We don't support method overloading. Ignoring [" +
                         methodName + "]");
-                continue;
-            }
-            if (!Modifier.isPublic(jMethod.getModifiers())) {
-                // no need to generate Schema for non public methods
                 continue;
             }
             boolean addToService = false;
