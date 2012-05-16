@@ -15,6 +15,8 @@
  */
 package org.wso2.carbon;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.File;
@@ -27,7 +29,9 @@ public final class CarbonConstants {
 	private CarbonConstants() {
 	    //disable external instantiation
 	}
-	
+
+    public static final Log AUDIT_LOG = LogFactory.getLog("AUDIT_LOG");
+
     /**
      * This is used to get root context within CarbonJNDIContext when we need to operate
      * with LDAP.

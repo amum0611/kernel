@@ -26,6 +26,8 @@ import org.apache.axis2.handlers.AbstractHandler;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 import org.wso2.carbon.user.core.AuthorizationManager;
 import org.wso2.carbon.user.core.UserRealm;
@@ -42,6 +44,7 @@ import javax.servlet.http.HttpSession;
 public class AuthorizationHandler extends AbstractHandler {
 
     private static Log log = LogFactory.getLog(AuthorizationHandler.class.getClass());
+    private static Log audit = CarbonConstants.AUDIT_LOG;
 
     public InvocationResponse invoke(MessageContext msgContext) throws AxisFault {
 
@@ -49,15 +52,18 @@ public class AuthorizationHandler extends AbstractHandler {
             return InvocationResponse.CONTINUE;
         }
 
-        // authz not required for local transport
-        if (Constants.TRANSPORT_LOCAL.equals(msgContext.getIncomingTransportName())) {
-            return InvocationResponse.CONTINUE;
-        }
-
+        CarbonContext carbonCtx = CarbonContext.getCurrentContext();
         AxisService service = msgContext.getAxisService();
         AxisOperation operation = msgContext.getAxisOperation();
-
         String opName = operation.getName().getLocalPart();
+
+        // authz not required for local transport
+        if (Constants.TRANSPORT_LOCAL.equals(msgContext.getIncomingTransportName())) {
+            audit.info("Local transport call by tenant " + carbonCtx.getTenantDomain() +
+                       " user " + carbonCtx.getUsername() + " to service:" + service.getName() +
+                       ",operation:" + opName);
+            return InvocationResponse.CONTINUE;
+        }
 
         Parameter actionParam = operation.getParameter("AuthorizationAction");
         Parameter authorizationParameter = operation.getParameter("DoAuthorization");
