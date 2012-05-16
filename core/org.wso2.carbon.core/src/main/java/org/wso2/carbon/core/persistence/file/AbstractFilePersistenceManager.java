@@ -53,9 +53,11 @@ public abstract class AbstractFilePersistenceManager {
 
         //if the meta file is not modified omit overriding the meta file
        if(!isMetaFileModification(resourceId)){
-            log.debug("No metafile modification done for : " + resourceId);
-            resourceMap.remove(resourceId);
-            return;
+           if (log.isDebugEnabled()){
+                log.debug("No metafile modification done for : " + resourceId);
+           }
+           resourceMap.remove(resourceId);
+           return;
         }
 
         try {
@@ -68,7 +70,10 @@ public abstract class AbstractFilePersistenceManager {
                     if (f.exists()) {
                         FileUtils.forceDelete(f);
                     }
-                    log.debug("Successfully deleted persisted resource contents " + resourceId + " " + f.getName());
+
+                    if(log.isDebugEnabled()){
+                        log.debug("Successfully deleted persisted resource contents " + resourceId + " " + f.getName());
+                    }
                     resourceMap.remove(resourceId);
                     return;
                 } else if (fileData != null) {
@@ -118,7 +123,9 @@ public abstract class AbstractFilePersistenceManager {
      * @param resourceId service group name of module name
      */
     public void rollbackTransaction(String resourceId) {
-        log.debug("rollbackTransaction for : " + resourceId);
+        if(log.isDebugEnabled()){
+            log.debug("rollbackTransaction for : " + resourceId);
+        }
         isMetaFileModification(resourceId);
         ResourceFileData fileData = resourceMap.get(resourceId);
         if (fileData != null) {

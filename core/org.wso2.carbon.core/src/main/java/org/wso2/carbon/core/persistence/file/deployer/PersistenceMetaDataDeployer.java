@@ -62,15 +62,21 @@ public class PersistenceMetaDataDeployer extends AbstractDeployer {
 
         if (Resources.SERVICES_METAFILES_DIR.equals(metaDataDir)) {
 
-            log.debug("Detected Service Meta File change.." + name);
+            if(log.isDebugEnabled()){
+                log.debug("Detected Service Meta File change.." + name);
+            }
             AxisServiceGroup serviceGroup = axisConfig.getServiceGroup(name);
 
             if (serviceGroup == null) {
-                log.debug("Error getting service from axisConfig.");
+                if(log.isDebugEnabled()){
+                    log.debug("Error getting service from axisConfig.");
+                }
                 return;
             }
             if(pf.getServiceGroupFilePM().isUserModification(serviceGroup.getServiceGroupName())){
-                log.debug("User modified service : " + serviceGroup.getServiceGroupName());
+                if(log.isDebugEnabled()){
+                    log.debug("User modified service : " + serviceGroup.getServiceGroupName());
+                }
                 return;
             }
 
@@ -96,7 +102,9 @@ public class PersistenceMetaDataDeployer extends AbstractDeployer {
             }
 
         } else if (Resources.MODULES_METAFILES_DIR.equals(metaDataDir)) {
-            log.debug("Detected Module Meta File change.." + name);
+            if(log.isDebugEnabled()){
+                log.debug("Detected Module Meta File change.." + name);
+            }
 
             AxisModule module = axisConfig.getModule(name);
             try {
@@ -108,7 +116,9 @@ public class PersistenceMetaDataDeployer extends AbstractDeployer {
                 ModulePersistenceManager mpm = pf.getModulePM();
 
                 if(pf.getModuleFilePM().isUserModification(module.getName())){
-                    log.debug("user modified module : " + module.getName());
+                    if(log.isDebugEnabled()){
+                        log.debug("user modified module : " + module.getName());
+                    }
                     return;
                 }
                 mpm.handleExistingModuleInit(moduleEle, module);
