@@ -26,6 +26,8 @@ import org.apache.axis2.handlers.AbstractHandler;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 import org.wso2.carbon.core.services.authentication.*;
 import org.wso2.carbon.server.admin.auth.AuthenticatorServerRegistry;
 import org.wso2.carbon.utils.ServerConstants;
@@ -41,6 +43,7 @@ import java.util.Date;
  */
 public class AuthenticationHandler extends AbstractHandler {
     private static final Log log = LogFactory.getLog(AuthenticationHandler.class);
+    private static final Log audit = CarbonConstants.AUDIT_LOG;
 
     public InvocationResponse invoke(MessageContext msgContext) throws AxisFault {
 
@@ -67,7 +70,10 @@ public class AuthenticationHandler extends AbstractHandler {
             String domain = (String) session.getAttribute(MultitenantConstants.TENANT_DOMAIN);
             if (domain != null) {
                 msgContext.setProperty(MultitenantConstants.TENANT_DOMAIN, domain);
+                SuperTenantCarbonContext.getCurrentContext().setTenantDomain(domain);
             }
+            String username = (String) session.getAttribute(ServerConstants.USER_LOGGED_IN);
+            SuperTenantCarbonContext.getCurrentContext().setUsername(username);
         }
 
         return InvocationResponse.CONTINUE;
@@ -128,8 +134,8 @@ public class AuthenticationHandler extends AbstractHandler {
             return true;
         }
 
-        BackendAuthenticator authenticator = AuthenticatorServerRegistry
-                .getCarbonAuthenticator(msgContext);
+        BackendAuthenticator authenticator =
+                AuthenticatorServerRegistry.getCarbonAuthenticator(msgContext);
 
         //We must always get an authenticator.
         // If none matching found the default authenticator will be used
@@ -153,18 +159,15 @@ public class AuthenticationHandler extends AbstractHandler {
                     serverAuthenticator.authenticate(msgContext);
                     return true;
                 } catch (AuthenticationFailureException e) {
-
                     SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSS']'");
-
                     invalidateSession(msgContext);
-
+                    String serviceName = getServiceName(msgContext);
+                    String msg = "Exception occurred at " + date.format(new Date()) + " from IP address "
+                                 + remoteIP + " while trying to authenticate access to service " + serviceName;
                     if (log.isDebugEnabled()) {
-
-                        String serviceName = getServiceName(msgContext);
-                        log.debug(e.getMessage() + " At - " + date.format(new Date()) + " from IP address "
-                                + remoteIP + " : Service is " + serviceName);
+                        log.debug(msg, e);
                     }
-
+                    audit.error(msg, e);
                     throw e;
                 }
             }
@@ -180,11 +183,11 @@ public class AuthenticationHandler extends AbstractHandler {
                 invalidateSession(msgContext);
 
                 if (AbstractAuthenticator.continueProcessing(msgContext)) {
-
                     String serviceName = getServiceName(msgContext);
-
-                    log.warn("Illegal access attempt at " + date.format(new Date()) + " from IP address "
-                            + remoteIP + " : Service is " + serviceName);
+                    String msg = "Illegal access attempt at " + date.format(new Date()) + " from IP address "
+                               + remoteIP + " : Service is " + serviceName;
+                    log.warn(msg);
+                    audit.warn(msg);
                 }
             }
         }
@@ -200,9 +203,7 @@ public class AuthenticationHandler extends AbstractHandler {
 
         if (request == null) {
             HttpSession session = request.getSession();
-
             if (session != null) {
-
                 try {
                     session.invalidate();
                 } catch (IllegalStateException e) {
