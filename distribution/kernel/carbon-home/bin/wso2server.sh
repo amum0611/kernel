@@ -226,7 +226,6 @@ done
 for t in "$CARBON_HOME"/lib/commons-lang*.jar
 do
     CARBON_CLASSPATH="$CARBON_CLASSPATH":$t
-    echo $CARBON_CLASSPATH
 done
 # For Cygwin, switch paths to Windows format before running java
 if $cygwin; then
