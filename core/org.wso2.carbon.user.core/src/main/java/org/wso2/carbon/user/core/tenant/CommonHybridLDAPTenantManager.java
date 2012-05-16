@@ -108,7 +108,7 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
      * @param initialDirContext The directory connection.
      * @throws UserStoreException If an error occurred while creating.
      */
-    private void createOrganizationalUnit(String orgName, Tenant tenant, DirContext initialDirContext)
+     protected void createOrganizationalUnit(String orgName, Tenant tenant, DirContext initialDirContext)
             throws UserStoreException {
         //e.g: ou=wso2.com
         String partitionDN = tenantMgtConfig.getTenantStoreProperties().get(
@@ -155,7 +155,7 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
      * @param initialDirContext The directory connection.
      * @throws UserStoreException If an error occurred while creating context.
      */
-    private void createOrganizationalContext(String rootDN, String orgName, DirContext initialDirContext)
+     protected void createOrganizationalContext(String rootDN, String orgName, DirContext initialDirContext)
             throws UserStoreException {
 
         DirContext subContext = null;
@@ -203,7 +203,7 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
         }
     }
 
-    private void closeContext(DirContext ldapContext) {
+    protected void closeContext(DirContext ldapContext) {
         if (ldapContext != null) {
             try {
                 ldapContext.close();
@@ -221,7 +221,7 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
      * @param initialDirContext The directory connection.
      * @throws UserStoreException if an error occurs while creating context.
      */
-    private void createOrganizationalSubContext(String dnOfParentContext,
+     protected void createOrganizationalSubContext(String dnOfParentContext,
                                                 String nameOfCurrentContext, DirContext initialDirContext)
             throws UserStoreException {
 
@@ -271,7 +271,7 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
         }
     }
 
-    private String createAdminEntry(String dnOfUserContext, Tenant tenant, DirContext initialDirContext)
+    protected String createAdminEntry(String dnOfUserContext, Tenant tenant, DirContext initialDirContext)
             throws UserStoreException {
         String userDN = null;
         DirContext organizationalUsersContext = null;
@@ -326,7 +326,7 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
         return userDN;
     }
 
-    private void createAdminGroup(String dnOfGroupContext, String adminUserDN, DirContext initialDirContext)
+    protected void createAdminGroup(String dnOfGroupContext, String adminUserDN, DirContext initialDirContext)
             throws UserStoreException {
         //create set of attributes required to create admin group
         Attributes adminGroupAttributes = new BasicAttributes(true);
