@@ -501,9 +501,9 @@ public class JDBCAuthorizationManager implements AuthorizationManager {
                     permissionId, roleName, allow, tenantId);
 
             if (allow == UserCoreConstants.ALLOW) {
-                permissionTree.authorizeRoleInTree(roleName, resourceId, action);
+                permissionTree.authorizeRoleInTree(roleName, resourceId, action, true);
             } else {
-                permissionTree.denyRoleInTree(roleName, resourceId, action);
+                permissionTree.denyRoleInTree(roleName, resourceId, action, true);
             }
             dbConnection.commit();
         } catch (SQLException e) {
@@ -534,9 +534,9 @@ public class JDBCAuthorizationManager implements AuthorizationManager {
             DatabaseUtil.updateDatabase(dbConnection, DBConstants.ADD_USER_PERMISSION_SQL,
                     permissionId, userName, allow, tenantId);
             if (allow == UserCoreConstants.ALLOW) {
-                permissionTree.authorizeUserInTree(userName, resourceId, action);
+                permissionTree.authorizeUserInTree(userName, resourceId, action, true);
             } else {
-                permissionTree.denyUserInTree(userName, resourceId, action);
+                permissionTree.denyUserInTree(userName, resourceId, action, true);
                 authorizationCache.clearCacheEntry(tenantId, userName, resourceId, action);
             }
             dbConnection.commit();
@@ -622,10 +622,10 @@ public class JDBCAuthorizationManager implements AuthorizationManager {
                 short allow = rs.getShort(3);
                 if (allow == UserCoreConstants.ALLOW) {
                     permissionTree.authorizeRoleInTree(rs.getString(1), rs.getString(2), rs
-                            .getString(4));
+                            .getString(4), false);
                 } else {
                     permissionTree
-                            .denyRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4));
+                            .denyRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4), false);
                 }
             }
 
@@ -639,14 +639,14 @@ public class JDBCAuthorizationManager implements AuthorizationManager {
                 short allow = rs.getShort(3);
                 if (allow == UserCoreConstants.ALLOW) {
                     permissionTree.authorizeUserInTree(rs.getString(1), rs.getString(2), rs
-                            .getString(4));
+                            .getString(4), false);
                 } else {
                     permissionTree
-                            .denyUserInTree(rs.getString(1), rs.getString(2), rs.getString(4));
+                            .denyUserInTree(rs.getString(1), rs.getString(2), rs.getString(4), false);
                 }
 
             }
-
+            permissionTree.updatePermissionTree();
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
             throw new UserStoreException(

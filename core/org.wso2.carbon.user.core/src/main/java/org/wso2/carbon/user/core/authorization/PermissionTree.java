@@ -75,7 +75,7 @@ public class PermissionTree {
         root = new TreeNode("/");
     }
 
-    void authorizeUserInTree(String userName, String resourceId, String action) {
+    void authorizeUserInTree(String userName, String resourceId, String action, boolean updateCache) {
         write.lock();
         try {
             SearchResult sr = getNode(root, PermissionTreeUtil.toComponenets(resourceId));
@@ -88,13 +88,15 @@ public class PermissionTree {
                 sr.getLastNode().authorizeUser(userName,
                         PermissionTreeUtil.actionToPermission(action));
             }
-            updatePermissionTreeCache(root);
+            if (updateCache) {
+                updatePermissionTreeCache(root);
+            }
         } finally {
             write.unlock();
         }
     }
 
-    void denyUserInTree(String userName, String resourceId, String action) {
+    void denyUserInTree(String userName, String resourceId, String action, boolean updateCache) {
         write.lock();
         try {
             SearchResult sr = getNode(root, PermissionTreeUtil.toComponenets(resourceId));
@@ -105,13 +107,15 @@ public class PermissionTree {
             } else {
                 sr.getLastNode().denyUser(userName, PermissionTreeUtil.actionToPermission(action));
             }
-            updatePermissionTreeCache(root);
+            if (updateCache) {
+                updatePermissionTreeCache(root);
+            }
         } finally {
             write.unlock();
         }
     }
 
-    void authorizeRoleInTree(String roleName, String resourceId, String action) {
+    void authorizeRoleInTree(String roleName, String resourceId, String action, boolean updateCache ) {
         write.lock();
         try {
             SearchResult sr = getNode(root, PermissionTreeUtil.toComponenets(resourceId));
@@ -124,13 +128,15 @@ public class PermissionTree {
                 sr.getLastNode().authorizeRole(roleName,
                         PermissionTreeUtil.actionToPermission(action));
             }
-            updatePermissionTreeCache(root);
+            if (updateCache) {
+                updatePermissionTreeCache(root);
+            }
         } finally {
             write.unlock();
         }
     }
 
-    void denyRoleInTree(String roleName, String resourceId, String action) {
+    void denyRoleInTree(String roleName, String resourceId, String action, boolean updateCache) {
         write.lock();
         try {
             SearchResult sr = getNode(root, PermissionTreeUtil.toComponenets(resourceId));
@@ -142,7 +148,9 @@ public class PermissionTree {
             } else {
                 sr.getLastNode().denyRole(roleName, PermissionTreeUtil.actionToPermission(action));
             }
-            updatePermissionTreeCache(root);
+            if (updateCache) {
+                updatePermissionTreeCache(root);
+            }
         } finally {
             write.unlock();
         }
@@ -935,9 +943,9 @@ public class PermissionTree {
             while (rs.next()) {
                 short allow = rs.getShort(3);
                 if (allow == UserCoreConstants.ALLOW) {
-                    tree.authorizeRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4));
+                    tree.authorizeRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4), true);
                 } else {
-                    tree.denyRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4));
+                    tree.denyRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4), true);
                 }
             }
 
@@ -950,9 +958,9 @@ public class PermissionTree {
             while (rs.next()) {
                 short allow = rs.getShort(3);
                 if (allow == UserCoreConstants.ALLOW) {
-                    tree.authorizeUserInTree(rs.getString(1), rs.getString(2), rs.getString(4));
+                    tree.authorizeUserInTree(rs.getString(1), rs.getString(2), rs.getString(4), true);
                 } else {
-                    tree.denyUserInTree(rs.getString(1), rs.getString(2), rs.getString(4));
+                    tree.denyUserInTree(rs.getString(1), rs.getString(2), rs.getString(4), true);
                 }
 
             }
