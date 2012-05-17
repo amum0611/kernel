@@ -22,6 +22,7 @@ import org.wso2.carbon.integration.framework.utils.FrameworkSettings;
 import org.wso2.carbon.integration.framework.utils.ServerUtils;
 import org.wso2.carbon.integration.framework.utils.TestUtil;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -80,6 +81,35 @@ public abstract class TestServerManager {
         FrameworkSettings.init();
         return carbonHome;
     }
+    
+    /**
+     * This method is called for starting a Carbon server in preparation for execution of a
+     * TestSuite
+     * <p/>
+     * Add the @BeforeSuite TestNG annotation in the method overriding this method
+     * @param carbonManagementContext context of the application
+     * @return The CARBON_HOME
+     * @throws IOException If an error occurs while copying the deployment artifacts into the
+     *                     Carbon server
+     */
+    protected String startServerInCarbonFolder(String carbonManagementContext) throws IOException {
+        if (carbonZip == null) {
+            carbonZip = System.getProperty("carbon.zip");
+        }
+        if (carbonZip == null) {
+            throw new IllegalArgumentException("carbon zip file is null");
+        }
+        String carbonHome = serverUtils.setUpCarbonHome(carbonZip);
+        String carbonFolder = "";
+    	if(carbonHome != null) {
+    		carbonFolder = carbonHome + File.separator + "carbon";
+    	}
+        TestUtil.copySecurityVerificationService(carbonFolder);
+        copyArtifacts(carbonHome);
+        serverUtils.startServerUsingCarbonHome(carbonFolder, portOffset, carbonManagementContext);
+        FrameworkSettings.init();
+        return carbonHome;
+    }
 
     /**
      * This method is called for stopping a Carbon server
@@ -90,6 +120,18 @@ public abstract class TestServerManager {
      */
     protected void stopServer() throws Exception {
         serverUtils.shutdown(portOffset);
+        CodeCoverageUtils.generateReports();
+    }
+    
+    /**
+     * This method is called for stopping a Carbon server
+     * <p/>
+     * Add the @AfterSuite annotation in the method overriding this method
+     * @param carbonManagementContext context of the application
+     * @throws Exception If an error occurs while shutting down the server
+     */
+    protected void stopServer(String carbonManagementContext) throws Exception {
+        serverUtils.shutdown(portOffset, carbonManagementContext);
         CodeCoverageUtils.generateReports();
     }
 

@@ -20,25 +20,17 @@ package org.wso2.carbon.integration.framework;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ServiceContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.authenticator.stub.AuthenticationAdminStub;
-import org.wso2.carbon.core.commons.stub.loggeduserinfo.ExceptionException;
-import org.wso2.carbon.core.commons.stub.loggeduserinfo.LoggedUserInfo;
 import org.wso2.carbon.core.commons.stub.loggeduserinfo.LoggedUserInfoAdminStub;
 import org.wso2.carbon.integration.framework.utils.FrameworkSettings;
 import org.wso2.carbon.server.admin.ui.ServerAdminClient;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.NetworkUtils;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-import java.rmi.RemoteException;
 
 /**
  * A utility for logging into & logging out of Carbon servers
@@ -84,29 +76,50 @@ public final class LoginLogoutUtil {
      */
     @Deprecated
     public String login(String hostName) throws Exception  {
-
-        ClientConnectionUtil.waitForPort(Integer.parseInt(FrameworkSettings.HTTPS_PORT) + portOffset);
-        AuthenticationAdminStub authAdminStub = getAuthAdminStub();
-
-        if (log.isDebugEnabled()) {
-            log.debug("UserName : " + FrameworkSettings.USER_NAME + " Password : " +
-                      FrameworkSettings.PASSWORD + " HostName : " + hostName);
-        }
-        boolean isLoggedIn = authAdminStub.login(FrameworkSettings.USER_NAME,
-                                                 FrameworkSettings.PASSWORD, hostName);
-        assert isLoggedIn : "Login failed!";
-        log.debug("getting sessionCookie");
-        ServiceContext serviceContext = authAdminStub.
-                _getServiceClient().getLastOperationContext().getServiceContext();
-        sessionCookie = (String) serviceContext.getProperty(HTTPConstants.COOKIE_STRING);
-        assert sessionCookie != null : "Logged in session cookie is null";
-        if (log.isDebugEnabled()) {
-            log.debug("sessionCookie : " + sessionCookie);
-        }
-        log.info("Successfully logged in : " + sessionCookie);
-        return sessionCookie;
-
+    	return login(hostName, null);
     }
+    
+    /**
+    * @param hostName The client host name.
+    * @param carbonManagementContext context of the application
+    * @deprecated Now we do not need to call AuthenticationAdmin.login method before calling an admin service.
+    * We can directly call an admin service after setting basic auth security headers. To set basic auth
+    * security headers please use CarbonUtils.setBasicAccessSecurityHeaders method.
+    * @see CarbonUtils.setBasicAccessSecurityHeaders(String, String, ServiceClient);
+    * Log in to a Carbon server
+    *
+    * @return The session cookie on successful login
+    * @throws Exception If an error occurs while logging in
+    */
+   @Deprecated
+   public String login(String hostName, String carbonManagementContext) throws Exception  {
+
+       ClientConnectionUtil.waitForPort(Integer.parseInt(FrameworkSettings.HTTPS_PORT) + portOffset);
+       AuthenticationAdminStub authAdminStub;
+       if(carbonManagementContext == null || carbonManagementContext.trim().equals("")) {
+    	   authAdminStub = getAuthAdminStub();
+       }else {
+    	   authAdminStub = getAuthAdminStub(carbonManagementContext);
+       }
+       if (log.isDebugEnabled()) {
+           log.debug("UserName : " + FrameworkSettings.USER_NAME + " Password : " +
+                     FrameworkSettings.PASSWORD + " HostName : " + hostName);
+       }
+       boolean isLoggedIn = authAdminStub.login(FrameworkSettings.USER_NAME,
+                                                FrameworkSettings.PASSWORD, hostName);
+       assert isLoggedIn : "Login failed!";
+       log.debug("getting sessionCookie");
+       ServiceContext serviceContext = authAdminStub.
+               _getServiceClient().getLastOperationContext().getServiceContext();
+       sessionCookie = (String) serviceContext.getProperty(HTTPConstants.COOKIE_STRING);
+       assert sessionCookie != null : "Logged in session cookie is null";
+       if (log.isDebugEnabled()) {
+           log.debug("sessionCookie : " + sessionCookie);
+       }
+       log.info("Successfully logged in : " + sessionCookie);
+       return sessionCookie;
+
+   }
 
     public boolean loginWithBasicAuth() {
 
@@ -140,14 +153,26 @@ public final class LoginLogoutUtil {
         return false;
     }
 
-
     /**
      * Log out from a Carbon server you logged in to by calling the {@link #login} method
-     *
      * @throws Exception If an error occurs while logging out
      */
     public void logout() throws Exception {
-        AuthenticationAdminStub authenticationAdminStub = getAuthAdminStub();
+    	logout(null);
+    }
+    
+    /**
+     * Log out from a Carbon server you logged in to by calling the {@link #login} method
+     * @param carbonManagementContext context of the application
+     * @throws Exception If an error occurs while logging out
+     */
+    public void logout(String carbonManagementContext) throws Exception {
+        AuthenticationAdminStub authenticationAdminStub;
+        if(carbonManagementContext == null || carbonManagementContext.trim().equals("")) {
+        	authenticationAdminStub = getAuthAdminStub();
+        }else {
+        	authenticationAdminStub = getAuthAdminStub(carbonManagementContext);
+        }
         try {
             Options options = authenticationAdminStub._getServiceClient().getOptions();
             options.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING,
@@ -160,10 +185,18 @@ public final class LoginLogoutUtil {
         }
     }
 
-    private AuthenticationAdminStub getAuthAdminStub() throws AxisFault {
-        String authenticationServiceURL =
-                "https://localhost:" + (Integer.parseInt(FrameworkSettings.HTTPS_PORT) + portOffset) +
-                "/services/AuthenticationAdmin";
+    private AuthenticationAdminStub getAuthAdminStub(String carbonManagementContext) throws AxisFault {
+        String authenticationServiceURL;
+        if(carbonManagementContext == null || carbonManagementContext.trim().equals("")) {
+            authenticationServiceURL =
+                    "https://localhost:" + (Integer.parseInt(FrameworkSettings.HTTPS_PORT) + portOffset) +
+                    "/services/AuthenticationAdmin";
+        }else {
+            authenticationServiceURL =
+                    "https://localhost:" + (Integer.parseInt(FrameworkSettings.HTTPS_PORT) + portOffset) +
+                    "/" + carbonManagementContext + "/services/AuthenticationAdmin";
+        }
+        
         if (log.isDebugEnabled()) {
             log.debug("AuthenticationAdminService URL = " + authenticationServiceURL);
         }
@@ -175,6 +208,9 @@ public final class LoginLogoutUtil {
         return authenticationAdminStub;
     }
 
+    private AuthenticationAdminStub getAuthAdminStub() throws AxisFault {
+    	return getAuthAdminStub(null);
+    }
 
     private LoggedUserInfoAdminStub getLoggedUserInfoAdminStub(String backendServerURL)
             throws AxisFault {

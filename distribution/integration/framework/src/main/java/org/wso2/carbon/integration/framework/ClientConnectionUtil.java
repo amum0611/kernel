@@ -20,6 +20,7 @@ package org.wso2.carbon.integration.framework;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.integration.framework.utils.FrameworkSettings;
+import org.wso2.carbon.utils.NetworkUtils;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -46,13 +47,27 @@ public final class ClientConnectionUtil {
      * @param portOffset portOffset of the Carbon server
      */
     public static void waitForLogin(int portOffset) {
+        waitForLogin(portOffset, null);
+    }
+    
+    /**
+     * Wait for sometime until it is possible to login to the Carbon server
+     *
+     * @param portOffset portOffset of the Carbon server
+     * @param carbonManagementContext context of the application
+     */
+    public static void waitForLogin(int portOffset, String carbonManagementContext) {
         long startTime = System.currentTimeMillis();
         boolean loginFailed = true;
         while (loginFailed && (System.currentTimeMillis() - startTime) < TIMEOUT) {
             log.info("Waiting to login to Carbon server...");
             try {
                 FrameworkSettings.init();
-                new LoginLogoutUtil(portOffset).login();
+                if(carbonManagementContext == null || carbonManagementContext.trim().equals("")) {
+                	new LoginLogoutUtil(portOffset).login();
+                }else {
+                	new LoginLogoutUtil(portOffset).login(NetworkUtils.getLocalHostname(), carbonManagementContext);
+                }
                 loginFailed = false;
                 return;
             } catch (Exception e) {

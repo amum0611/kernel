@@ -23,6 +23,7 @@ import org.wso2.carbon.integration.framework.LoginLogoutUtil;
 import org.wso2.carbon.server.admin.ui.ServerAdminClient;
 import org.wso2.carbon.utils.ArchiveManipulator;
 import org.wso2.carbon.utils.FileManipulator;
+import org.wso2.carbon.utils.NetworkUtils;
 import org.wso2.carbon.utils.ServerConstants;
 
 import java.io.File;
@@ -44,6 +45,10 @@ public class ServerUtils {
     private int defaultHttpsPort = 9443;
 
     public synchronized void startServerUsingCarbonHome(String carbonHome, final int portOffset) {
+    	startServerUsingCarbonHome(carbonHome, portOffset, null);
+    }
+    
+    public synchronized void startServerUsingCarbonHome(String carbonHome, final int portOffset, final String carbonManagementContext) {
         if (process != null) { // An instance of the server is running
             return;
         }
@@ -84,7 +89,11 @@ public class ServerUtils {
                 public void run() {
                     try {
                         log.info("Shutting down server...");
-                        shutdown(portOffset);
+                        if(carbonManagementContext == null || carbonManagementContext.trim().equals("")) {
+                        	shutdown(portOffset);
+                        }else {
+                        	shutdown(portOffset, carbonManagementContext);
+                        }                        
                     } catch (Exception e) {
                         log.error("Cannot shutdown server", e);
                     }
@@ -94,7 +103,11 @@ public class ServerUtils {
                                              DEFAULT_START_STOP_WAIT_MS, false);
             ClientConnectionUtil.waitForPort(defaultHttpPort + portOffset,
                                              DEFAULT_START_STOP_WAIT_MS, false);
-            ClientConnectionUtil.waitForLogin(portOffset);
+            if(carbonManagementContext == null || carbonManagementContext.trim().equals("")) {
+            	ClientConnectionUtil.waitForLogin(portOffset);
+            }else {
+            	ClientConnectionUtil.waitForLogin(portOffset, carbonManagementContext);
+            }
             log.info("Server started successfully.");
         } catch (IOException e) {
             throw new RuntimeException("Unable to start server", e);
@@ -128,6 +141,28 @@ public class ServerUtils {
                 extractedCarbonDir;
     }
 
+    public synchronized void shutdown(int portOffset, String carbonManagementContext) throws Exception {
+        if (process != null) {
+            if (ClientConnectionUtil.isPortOpen(defaultHttpsPort + portOffset)) {
+                if(carbonManagementContext == null || carbonManagementContext.trim().equals("")) {
+                	shutdownServer(portOffset);
+                }else {
+                	shutdownServer(portOffset, carbonManagementContext);
+                }
+                long time = System.currentTimeMillis() + DEFAULT_START_STOP_WAIT_MS;
+                while (!inputStreamHandler.getOutput().contains(SERVER_SHUTDOWN_MESSAGE) &&
+                       System.currentTimeMillis() < time) {
+                    // wait until server shutdown is completed
+                }
+                log.info("Server stopped successfully...");
+            }
+            process.destroy();
+            process = null;
+            System.clearProperty(ServerConstants.CARBON_HOME);
+            System.setProperty("user.dir", originalUserDir);
+        }
+    }
+    
     public synchronized void shutdown(int portOffset) throws Exception {
         if (process != null) {
             if (ClientConnectionUtil.isPortOpen(defaultHttpsPort + portOffset)) {
@@ -147,10 +182,21 @@ public class ServerUtils {
     }
 
     private void shutdownServer(int portOffset) throws Exception {
+    	shutdownServer(portOffset, null);
+    }
+    
+    private void shutdownServer(int portOffset, String carbonManagementContext) throws Exception {
         int httpsPort = defaultHttpsPort + portOffset;
         try {
-            String serviceBaseURL = "https://localhost:" + httpsPort + "/services/";
-            String sessionCookie = new LoginLogoutUtil(portOffset).login();
+            String serviceBaseURL;
+            String sessionCookie;
+            if(carbonManagementContext == null || carbonManagementContext.trim().equals("")) {
+            	serviceBaseURL = "https://localhost:" + httpsPort + "/services/";
+                sessionCookie = new LoginLogoutUtil(portOffset).login();
+            }else {
+            	serviceBaseURL = "https://localhost:" + httpsPort + "/" + carbonManagementContext + "/services/";
+            	sessionCookie = new LoginLogoutUtil(portOffset).login(NetworkUtils.getLocalHostname(), carbonManagementContext);
+            }
             //shutdown the server through ServerAdmin
             ServerAdminClient serverAdminClient =
                     new ServerAdminClient(null, serviceBaseURL, sessionCookie, null);
