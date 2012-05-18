@@ -88,11 +88,12 @@ public abstract class TestServerManager {
      * <p/>
      * Add the @BeforeSuite TestNG annotation in the method overriding this method
      * @param carbonManagementContext context of the application
+     * @param scriptName script name to be executed
      * @return The CARBON_HOME
      * @throws IOException If an error occurs while copying the deployment artifacts into the
      *                     Carbon server
      */
-    protected String startServerInCarbonFolder(String carbonManagementContext) throws IOException {
+    protected String startServerInCarbonFolder(String carbonManagementContext, String scriptName) throws IOException {
         if (carbonZip == null) {
             carbonZip = System.getProperty("carbon.zip");
         }
@@ -106,7 +107,7 @@ public abstract class TestServerManager {
     	}
         TestUtil.copySecurityVerificationService(carbonFolder);
         copyArtifacts(carbonHome);
-        serverUtils.startServerUsingCarbonHome(carbonFolder, portOffset, carbonManagementContext);
+        serverUtils.startServerUsingCarbonHome(carbonHome, carbonFolder, scriptName, portOffset, carbonManagementContext);
         FrameworkSettings.init();
         return carbonHome;
     }

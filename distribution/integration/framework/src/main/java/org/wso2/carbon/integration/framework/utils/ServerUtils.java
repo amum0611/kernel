@@ -39,40 +39,41 @@ public class ServerUtils {
     private String carbonHome;
     private String originalUserDir = null;
     private InputStreamHandler inputStreamHandler;
+    private static final String DEFAULT_SCRIPT_NAME = "wso2server";
 
     private static final String SERVER_SHUTDOWN_MESSAGE = "Halting JVM";
     private static final long DEFAULT_START_STOP_WAIT_MS = 1000 * 60 * 5;
     private int defaultHttpsPort = 9443;
 
     public synchronized void startServerUsingCarbonHome(String carbonHome, final int portOffset) {
-    	startServerUsingCarbonHome(carbonHome, portOffset, null);
+    	startServerUsingCarbonHome(carbonHome, carbonHome, DEFAULT_SCRIPT_NAME, portOffset, null);
     }
     
-    public synchronized void startServerUsingCarbonHome(String carbonHome, final int portOffset, final String carbonManagementContext) {
+    public synchronized void startServerUsingCarbonHome(String carbonHome, String carbonFolder, String scriptName, final int portOffset, final String carbonManagementContext) {
         if (process != null) { // An instance of the server is running
             return;
         }
         Process tempProcess;
         try {
-            CodeCoverageUtils.instrument(carbonHome);
+            CodeCoverageUtils.instrument(carbonFolder);
             FrameworkSettings.init();
             defaultHttpsPort = Integer.parseInt(FrameworkSettings.HTTPS_PORT);
             int defaultHttpPort = Integer.parseInt(FrameworkSettings.HTTP_PORT);
-            System.setProperty(ServerConstants.CARBON_HOME, carbonHome);
+            System.setProperty(ServerConstants.CARBON_HOME, carbonFolder);
             originalUserDir = System.getProperty("user.dir");
-            System.setProperty("user.dir", carbonHome);
+            System.setProperty("user.dir", carbonFolder);
             File commandDir = new File(carbonHome);
             if (System.getProperty("os.name").toLowerCase().contains("windows")) {
                 commandDir = new File(carbonHome + File.separator + "bin");
                 tempProcess =
-                        Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", "wso2server.bat",
+                        Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", scriptName + ".bat",
                                                                "-DportOffset=" + String.valueOf(portOffset),
                                                                "-Demma.properties=" + System.getProperty("emma.properties"),
                                                                "-Demma.rt.control.port=" + (47653 + portOffset)},
                                                   null, commandDir);
             } else {
                 tempProcess =
-                        Runtime.getRuntime().exec(new String[]{"sh", "bin/wso2server.sh",
+                        Runtime.getRuntime().exec(new String[]{"sh", "bin/" + scriptName + ".sh",
                                                                "-DportOffset=" + String.valueOf(portOffset),
                                                                "-Demma.properties=" + System.getProperty("emma.properties"),
                                                                "-Demma.rt.control.port=" + (47653 + portOffset)},
