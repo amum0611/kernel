@@ -18,6 +18,7 @@ package org.wso2.carbon.feature.mgt.ui;
 
 import org.wso2.carbon.feature.mgt.stub.prov.data.Feature;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -25,7 +26,7 @@ import java.util.Arrays;
  * as defifning a similarity policy
  */
 
-public class FeatureWrapper {
+public class FeatureWrapper implements Serializable {
     private int height;
     private boolean hasChildren;
     private Feature wrappedFeature;
