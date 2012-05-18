@@ -89,7 +89,7 @@ public class PermissionTree {
                         PermissionTreeUtil.actionToPermission(action));
             }
             if (updateCache) {
-                updatePermissionTreeCache(root);
+                calculateTreeHash(root);
             }
         } finally {
             write.unlock();
@@ -108,7 +108,7 @@ public class PermissionTree {
                 sr.getLastNode().denyUser(userName, PermissionTreeUtil.actionToPermission(action));
             }
             if (updateCache) {
-                updatePermissionTreeCache(root);
+                calculateTreeHash(root);
             }
         } finally {
             write.unlock();
@@ -129,7 +129,7 @@ public class PermissionTree {
                         PermissionTreeUtil.actionToPermission(action));
             }
             if (updateCache) {
-                updatePermissionTreeCache(root);
+                calculateTreeHash(root);
             }
         } finally {
             write.unlock();
@@ -149,7 +149,7 @@ public class PermissionTree {
                 sr.getLastNode().denyRole(roleName, PermissionTreeUtil.actionToPermission(action));
             }
             if (updateCache) {
-                updatePermissionTreeCache(root);
+                calculateTreeHash(root);
             }
         } finally {
             write.unlock();
@@ -592,7 +592,7 @@ public class PermissionTree {
                     clearRoleAuthorization(roleName, treeNode, permission);
                 }
             }
-            updatePermissionTreeCache(root);
+            calculateTreeHash(root);
         } finally {
             write.unlock();
         }
@@ -629,7 +629,7 @@ public class PermissionTree {
                     clearRoleAuthorization(roleName, treeNode);
                 }
             }
-            updatePermissionTreeCache(root);
+            calculateTreeHash(root);
         } finally {
             write.unlock();
         }
@@ -658,7 +658,7 @@ public class PermissionTree {
                     updateRoleNameInCache(roleName, newRoleName, treeNode);
                 }
             }
-            updatePermissionTreeCache(root);
+            calculateTreeHash(root);
         } finally {
             write.unlock();
         }
@@ -683,7 +683,7 @@ public class PermissionTree {
                     bs.clear(permission.ordinal());
                 }
             }
-            updatePermissionTreeCache(root);
+            calculateTreeHash(root);
         } finally {
             write.unlock();
         }
@@ -724,7 +724,7 @@ public class PermissionTree {
                     clearUserAuthorization(userName, treeNode);
                 }
             }
-            updatePermissionTreeCache(root);
+            calculateTreeHash(root);
         } finally {
             write.unlock();
         }
@@ -753,7 +753,7 @@ public class PermissionTree {
                     bs.clear(permission.ordinal());
                 }
             }
-            updatePermissionTreeCache(root);
+            calculateTreeHash(root);
         } finally {
             write.unlock();
         }
@@ -769,7 +769,7 @@ public class PermissionTree {
                 sr.getLastNode().getRoleAllowPermissions().clear();
                 sr.getLastNode().getRoleDenyPermissions().clear();
             }
-            updatePermissionTreeCache(root);
+            calculateTreeHash(root);
         } finally {
             write.unlock();
         }
@@ -883,14 +883,6 @@ public class PermissionTree {
                     cacheEntry = (PermissionTreeCacheEntry) permissionCache.getValueFromCache(cacheKey);
                     if (cacheEntry.getPermissionTreeCacheEntry() != hashValueOfRootNode) {
                         updatePermissionTreeFromDB();
-                        
-                        read.lock();
-                        try {
-                            updatePermissionTreeCache(root);
-                        } finally {
-                            read.unlock();
-                        }
-                        
                         log.info("Updated permission tree from database for tenant " + tenantId);
                     }
                 }
@@ -902,14 +894,6 @@ public class PermissionTree {
                 cacheEntry = (PermissionTreeCacheEntry) permissionCache.getValueFromCache(cacheKey);
                 if (cacheEntry == null) {
                     updatePermissionTreeFromDB();
-                    
-                    read.lock();
-                    try {
-                        updatePermissionTreeCache(root);
-                    } finally {
-                        read.unlock();
-                    }
-                    
                     if (log.isDebugEnabled()) {
                         log.debug("Newly loaded permission tree from database for tenant " + 
                                    tenantId);
@@ -926,7 +910,7 @@ public class PermissionTree {
      * @throws org.wso2.carbon.user.core.UserStoreException
      *             throws if fail to update permission tree from DB
      */
-    private void updatePermissionTreeFromDB() throws UserStoreException {
+    void updatePermissionTreeFromDB() throws UserStoreException {
         PermissionTree tree = new PermissionTree();
         ResultSet rs = null;
         PreparedStatement prepStmt1 = null;
@@ -943,9 +927,9 @@ public class PermissionTree {
             while (rs.next()) {
                 short allow = rs.getShort(3);
                 if (allow == UserCoreConstants.ALLOW) {
-                    tree.authorizeRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4), true);
+                    tree.authorizeRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4), false);
                 } else {
-                    tree.denyRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4), true);
+                    tree.denyRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4), false);
                 }
             }
 
@@ -958,9 +942,9 @@ public class PermissionTree {
             while (rs.next()) {
                 short allow = rs.getShort(3);
                 if (allow == UserCoreConstants.ALLOW) {
-                    tree.authorizeUserInTree(rs.getString(1), rs.getString(2), rs.getString(4), true);
+                    tree.authorizeUserInTree(rs.getString(1), rs.getString(2), rs.getString(4), false);
                 } else {
-                    tree.denyUserInTree(rs.getString(1), rs.getString(2), rs.getString(4), true);
+                    tree.denyUserInTree(rs.getString(1), rs.getString(2), rs.getString(4), false);
                 }
 
             }
@@ -971,7 +955,14 @@ public class PermissionTree {
             } finally {
                 write.unlock();
             }
-
+            
+            read.lock();
+            try {
+                calculateTreeHash(root);
+            } finally {
+                read.unlock();
+            }
+            
         } catch (SQLException e) {
             throw new UserStoreException(
                     "Error loading authorizations. Please check the database. Error message is "
@@ -985,11 +976,17 @@ public class PermissionTree {
     /**
      * update permission key cache with hash code of in-memory permission tree
      */
-    private void updatePermissionTreeCache(TreeNode root) {
+    void calculateTreeHash(TreeNode root) {
+        if (log.isDebugEnabled()) {
+            log.debug("Start : Update permission tree cache for root");
+        }
         hashValueOfRootNode = root.hashCode();
         PermissionTreeCacheEntry cacheEntry = new PermissionTreeCacheEntry(hashValueOfRootNode);
         PermissionTreeCacheKey keyEntry = new PermissionTreeCacheKey(tenantId);
         permissionCache.addToCache(keyEntry, cacheEntry);
+        if (log.isDebugEnabled()) {
+            log.debug("End : Update permission tree cache for root");
+        }
     }
 
     /**

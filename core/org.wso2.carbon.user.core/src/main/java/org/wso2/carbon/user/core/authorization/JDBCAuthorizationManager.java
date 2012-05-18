@@ -600,61 +600,7 @@ public class JDBCAuthorizationManager implements AuthorizationManager {
     }
 
     public  void populatePermissionTreeFromDB() throws UserStoreException {
-
-        ResultSet rs = null;
-        PreparedStatement prepStmt1 = null;
-        PreparedStatement prepStmt2 = null;
-        Connection dbConnection = null;
-        
-        if (null == permissionTree){
-           permissionTree = new PermissionTree(tenantId, dataSource);
-        }
-
-        try {
-            dbConnection = getDBConnection();
-            // Populating role permissions
-            prepStmt1 = dbConnection.prepareStatement(DBConstants.GET_EXISTING_ROLE_PERMISSIONS);
-            prepStmt1.setInt(1, tenantId);
-            prepStmt1.setInt(2, tenantId);
-            rs = prepStmt1.executeQuery();
-
-            while (rs.next()) {
-                short allow = rs.getShort(3);
-                if (allow == UserCoreConstants.ALLOW) {
-                    permissionTree.authorizeRoleInTree(rs.getString(1), rs.getString(2), rs
-                            .getString(4), false);
-                } else {
-                    permissionTree
-                            .denyRoleInTree(rs.getString(1), rs.getString(2), rs.getString(4), false);
-                }
-            }
-
-            // Populating user permissions
-            prepStmt2 = dbConnection.prepareStatement(DBConstants.GET_EXISTING_USER_PERMISSIONS);
-            prepStmt2.setInt(1, tenantId);
-            prepStmt2.setInt(2, tenantId);
-            rs = prepStmt2.executeQuery();
-
-            while (rs.next()) {
-                short allow = rs.getShort(3);
-                if (allow == UserCoreConstants.ALLOW) {
-                    permissionTree.authorizeUserInTree(rs.getString(1), rs.getString(2), rs
-                            .getString(4), false);
-                } else {
-                    permissionTree
-                            .denyUserInTree(rs.getString(1), rs.getString(2), rs.getString(4), false);
-                }
-
-            }
-            permissionTree.updatePermissionTree();
-        } catch (SQLException e) {
-            log.error(e.getMessage(), e);
-            throw new UserStoreException(
-                    "Error loading authorizations. Please check the database. Error message is "
-                            + e.getMessage(), e);
-        } finally {
-            DatabaseUtil.closeAllConnections(dbConnection, rs, prepStmt1, prepStmt2);
-        }
+        permissionTree.updatePermissionTreeFromDB();
     }
 
     /**
