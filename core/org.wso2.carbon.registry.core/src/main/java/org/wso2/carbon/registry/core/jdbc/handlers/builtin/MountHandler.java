@@ -191,7 +191,21 @@ public class MountHandler extends Handler {
 
             RegistryUtils.setTrustStoreSystemProperties();
             try {
+                if (baseContext != null) {
+                    Registry registry = new RemoteRegistry(this.conURL, this.userName, this.password) {
+
+                        public RegistryContext getRegistryContext() {
+                            RegistryContext context = RegistryContext.getCloneContext();
+                            context.setReadOnly(readOnly);
+                            context.setCacheEnabled(cacheEnabled);
+                            return context;
+                        }
+                    };
+                    return new UserRegistry(this.userName, CurrentSession.getTenantId(), registry,
+                            baseContext.getRealmService(), baseContext.getRegistryRoot());
+                }
                 return new RemoteRegistry(this.conURL, this.userName, this.password);
+
             } catch (MalformedURLException e) {
                 String msg = "Unable to connect to the remote registry";
                 log.error(msg, e);

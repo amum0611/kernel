@@ -184,7 +184,7 @@ public class Repository {
         }
 
         if (!AuthorizationUtils.authorize(purePath, ActionConstants.GET)) {
-            String msg = "User " + CurrentSession.getUser() + " is not authorized to " +
+            String msg = getUserNotAuthorizedMsg() +
                     "read the resource " + purePath + ".";
             log.warn(msg);
             throw new AuthorizationFailedException(msg);
@@ -217,7 +217,7 @@ public class Repository {
         }
 
         if (!AuthorizationUtils.authorize(purePath, ActionConstants.GET)) {
-            String msg = "User " + CurrentSession.getUser() + " is not authorized to " +
+            String msg = getUserNotAuthorizedMsg() +
                     "read the resource " + purePath + ".";
             log.warn(msg);
             throw new AuthorizationFailedException(msg);
@@ -250,7 +250,7 @@ public class Repository {
         }
 
         if (!AuthorizationUtils.authorize(purePath, ActionConstants.GET)) {
-            String msg = "User " + CurrentSession.getUser() + " is not authorized to " +
+            String msg = getUserNotAuthorizedMsg() +
                     "read the resource " + purePath + ".";
             log.warn(msg);
             throw new AuthorizationFailedException(msg);
@@ -262,6 +262,11 @@ public class Repository {
         resource.setUserRealm(CurrentSession.getUserRealm());
 
         return resource;
+    }
+
+    private String getUserNotAuthorizedMsg() {
+        return getUserNotAuthorizedMsg();
+
     }
 
     /**
@@ -419,8 +424,9 @@ public class Repository {
      *
      * @throws RegistryException if the operation failed.
      */
-    public void delete(String path) throws RegistryException {
+    public void delete(String _path) throws RegistryException {
 
+        String path = _path;
         path = RegistryUtils.getPureResourcePath(path);
 
         ResourceIDImpl resourceID = resourceDAO.getResourceID(path);
@@ -443,7 +449,7 @@ public class Repository {
         }
 
         if (!AuthorizationUtils.authorize(path, ActionConstants.DELETE)) {
-            String msg = "User " + CurrentSession.getUser() + " is not authorized to " +
+            String msg = getUserNotAuthorizedMsg() +
                     "delete the resource " + path + ".";
             log.warn(msg);
             throw new AuthorizationFailedException(msg);
@@ -459,8 +465,8 @@ public class Repository {
      *
      * @throws RegistryException if the operation failed.
      */
-    public void prepareVersionRestore(String path) throws RegistryException {
-
+    public void prepareVersionRestore(String _path) throws RegistryException {
+        String path=_path;
         path = RegistryUtils.getPureResourcePath(path);
 
         ResourceIDImpl resourceID = resourceDAO.getResourceID(path);
@@ -489,7 +495,8 @@ public class Repository {
      *
      * @throws RegistryException if the operation failed.
      */
-    public void prepareDumpRestore(String path) throws RegistryException {
+    public void prepareDumpRestore(String _path) throws RegistryException {
+        String path=_path;
         path = RegistryUtils.getPureResourcePath(path);
 
         ResourceIDImpl resourceID = resourceDAO.getResourceID(path);
@@ -652,7 +659,7 @@ public class Repository {
         }
 
         if (!AuthorizationUtils.authorize(oldPath, ActionConstants.PUT)) {
-            String msg = "User " + CurrentSession.getUser() + " is not authorized to " +
+            String msg = getUserNotAuthorizedMsg() +
                     "rename the resource " + oldResourcePath + ".";
             log.warn(msg);
             throw new AuthorizationFailedException(msg);
@@ -992,8 +999,8 @@ public class Repository {
     }
 
     // Method to add a resource
-    private void add(String path, ResourceImpl resource) throws RegistryException {
-
+    private void add(String _path, ResourceImpl resource) throws RegistryException {
+        String path=_path;
         // first add all non-existing parent collections. note that whether the user has
         // permission to add this resource depends on the permissions of the nearest ascendant.
 
@@ -1120,7 +1127,8 @@ public class Repository {
      *
      * @throws RegistryException If any ancestor of the given path is a resource.
      */
-    private void addEmptyCollection(String path) throws RegistryException {
+    private void addEmptyCollection(String _path) throws RegistryException {
+        String path=_path;
         // first need to check whether there is a resource (non-collection)
         // where it is asking to create a collection
         ResourceIDImpl assumedResourceID = resourceDAO.getResourceID(path, false);
@@ -1190,8 +1198,9 @@ public class Repository {
      *
      * @throws RegistryException if the operation failed.
      */
-    public void restore(String path, Reader reader)
+    public void restore(String _path, Reader reader)
             throws RegistryException {
+        String path=_path;
         boolean rootResourceExists = resourceExists(path);
         long currentVersion = -1;
         if (rootResourceExists) {
@@ -1208,7 +1217,7 @@ public class Repository {
         }
         if (path.equals(RegistryConstants.ROOT_PATH)) {
             if (!AuthorizationUtils.authorize(path, ActionConstants.PUT)) {
-                String msg = "User " + CurrentSession.getUser() + " is not authorized to " +
+                String msg = getUserNotAuthorizedMsg() +
                         "check in to the path " + path + ".";
                 log.warn(msg);
                 throw new AuthorizationFailedException(msg);
@@ -1228,7 +1237,7 @@ public class Repository {
                     // we are adding an element to the parent so we need to check the parents
                     // permission
                     if (!AuthorizationUtils.authorize(parentPath, ActionConstants.PUT)) {
-                        String msg = "User " + CurrentSession.getUser() + " is not authorized to " +
+                        String msg = getUserNotAuthorizedMsg() +
                                 "check in to the parent path " + parentPath + ".";
                         log.warn(msg);
                         throw new AuthorizationFailedException(msg);
@@ -1262,7 +1271,8 @@ public class Repository {
      *
      * @throws RegistryException if the operation failed.
      */
-    public void dump(String path, Writer writer) throws RegistryException {
+    public void dump(String _path, Writer writer) throws RegistryException {
+        String path=_path;
         if (!path.equals("/") && path.endsWith("/")) {
             // remove the / suffix
             path = path.substring(0, path.length() - 1);
@@ -1970,7 +1980,7 @@ public class Repository {
         }
 
         if (!AuthorizationUtils.authorize(path, ActionConstants.GET)) {
-            String msg = "User " + CurrentSession.getUser() + " is not authorized to " +
+            String msg = getUserNotAuthorizedMsg() +
                     "check out the path " + path + ".";
             log.warn(msg);
             throw new AuthorizationFailedException(msg);
