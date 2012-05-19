@@ -171,7 +171,7 @@ public class SQLQueryProcessor implements QueryProcessor {
             }
 
             if (parameters != null) {
-                List<String> exclusions = Arrays.asList("content", "query",
+                List<String> exclusions = Arrays.asList("content", "query", "mediaType",
                         RegistryConstants.RESULT_TYPE_PROPERTY_NAME);
                 for (Object parameterNumberObject : parameters.keySet()) {
                     String parameterNumber = (String) parameterNumberObject;

@@ -96,6 +96,17 @@ public class QueryProcessorManager {
     }
 
     /**
+     * Registers the provided query processor with the given type.
+     *
+     * @param queryType the query type
+     * @param processor the query processor
+     */
+    @SuppressWarnings("unused")
+    public void setQueryProcessor(String queryType, QueryProcessor processor) {
+        queryProcessors.put(queryType, processor);
+    }
+
+    /**
      * Execute a query using the query processor associated with the media type of the query.
      *
      * @param registry      the registry

@@ -2258,7 +2258,9 @@ public class EmbeddedRegistry implements Registry {
                 if (!context.isProcessingComplete()) {
                     if (query == null) {
                         query = newResource();
-                        query.setMediaType(RegistryConstants.SQL_QUERY_MEDIA_TYPE);
+                        String mediaType = (String) parameters.get("mediaType");
+                        query.setMediaType(mediaType != null ? mediaType :
+                                RegistryConstants.SQL_QUERY_MEDIA_TYPE);
                     }
                     //Resource query = repository.get(purePath);
 
@@ -3067,7 +3069,6 @@ public class EmbeddedRegistry implements Registry {
         }
     }
     
-    @Override
     public boolean removeVersionHistory(String path, long snapshotId)
     		throws RegistryException {    	
     	
