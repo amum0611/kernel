@@ -52,15 +52,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * /**
+ *
  * @deprecated As of Carbon 4.0.0, replaced by BasicAccessAuthenticator.
  * @see BasicAccessAuthenticator
  *
- * TODO Need to add @Deprecated parameter - Once axis issue related to annotations are fixed
  *
- * Admin service to manage operations on the <code>AxisConfiguration</code>
+ * This is not an AdminService, but we are retainig the name for historical reasons.
+ * This service will have to be eventually removed
  */
-public class AuthenticationAdmin extends AbstractAdmin implements CarbonServerAuthenticator {
+public class AuthenticationAdmin implements CarbonServerAuthenticator {
 
     private static final Log log = LogFactory.getLog(AuthenticationAdmin.class);
     protected static final String AUTHENTICATION_ADMIN_SERVICE = "AuthenticationAdminService";
@@ -306,5 +306,16 @@ public class AuthenticationAdmin extends AbstractAdmin implements CarbonServerAu
             log.error(msg, e);
             return false;
         }
+    }
+
+    private HttpSession getHttpSession() {
+        MessageContext msgCtx = MessageContext.getCurrentMessageContext();
+        HttpSession httpSession = null;
+        if (msgCtx != null) {
+            HttpServletRequest request =
+                    (HttpServletRequest) msgCtx.getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
+            httpSession = request.getSession();
+        }
+        return httpSession;
     }
 }

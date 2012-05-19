@@ -60,32 +60,32 @@ public class AuthorizationHandler extends AbstractHandler {
         // authz not required for local transport
         if (Constants.TRANSPORT_LOCAL.equals(msgContext.getIncomingTransportName())) {
             audit.info("Local transport call by tenant " + carbonCtx.getTenantDomain() +
-                       " user " + carbonCtx.getUsername() + " to service:" + service.getName() +
+                       ",user " + carbonCtx.getUsername() + " to service:" + service.getName() +
                        ",operation:" + opName);
             return InvocationResponse.CONTINUE;
         }
 
         Parameter actionParam = operation.getParameter("AuthorizationAction");
-        Parameter authorizationParameter = operation.getParameter("DoAuthorization");
-        
-
-        String serviceName = service.getName();
-        if (authorizationParameter != null && "false".equals(authorizationParameter.getValue())) {
-            return InvocationResponse.CONTINUE;
+        if (actionParam == null) {
+            audit.warn("Unauthorized call by tenant " + carbonCtx.getTenantDomain() +
+                       ",user " + carbonCtx.getUsername() + " to service:" + service.getName() +
+                       ",operation:" + opName);
+            throw new AxisFault("Unauthorized call!. AuthorizationAction has not been specified for service:" +
+                                service.getName() + ", operation:" + opName);
         }
 
-        try {
-            if (actionParam != null) {
-                String action = ((String) actionParam.getValue()).trim();
-                String authzResourceId = null;
-                String authzAction = null;
+        String serviceName = service.getName();
 
-                if (action.startsWith("/")) {
-                    authzResourceId = action;
-                    authzAction = "ui.execute";
-                } 
-                this.doAuthorization(msgContext, authzResourceId, authzAction, serviceName, opName);
+        try {
+            String action = ((String) actionParam.getValue()).trim();
+            String authzResourceId = null;
+            String authzAction = null;
+
+            if (action.startsWith("/")) {
+                authzResourceId = action;
+                authzAction = "ui.execute";
             }
+            doAuthorization(msgContext, authzResourceId, authzAction, serviceName, opName);
         } catch (AxisFault e) {
             throw e; // to preserve the previous context
         } catch (Throwable e) {
@@ -98,7 +98,7 @@ public class AuthorizationHandler extends AbstractHandler {
     }
 
     private void doAuthorization(MessageContext msgContext, String resourceId, String action,
-            String serviceName, String opName) throws AxisFault {
+                                 String serviceName, String opName) throws AxisFault {
         HttpServletRequest request = (HttpServletRequest) msgContext
                 .getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
         String username = null;
@@ -106,17 +106,6 @@ public class AuthorizationHandler extends AbstractHandler {
         try {
             if (httpSession != null) {
                 username = (String) httpSession.getAttribute(ServerConstants.USER_LOGGED_IN);
-                /*UserRealm realm;
-                try {
-                    UserRegistry userRegistry = (UserRegistry) httpSession.getAttribute(
-                            WSO2Constants.CONFIG_USER_REGISTRY_INSTANCE);
-                    realm = userRegistry.getUserRealm();
-                } catch (Exception e) {
-                    log.error("Error in retrieving the realm for the user" + ", username: "
-                            + username + ". " + e.getMessage());
-                    throw new AxisFault("System failed to authorize.",
-                            ServerConstants.AUTHORIZATION_FAULT_CODE);
-                }*/
                 UserRealm realm =
                         (UserRealm) SuperTenantCarbonContext.
                                 getCurrentContext(httpSession).getUserRealm();
@@ -124,14 +113,14 @@ public class AuthorizationHandler extends AbstractHandler {
                 if (realm == null) {
                     log.error("The realm is null for username: " + username + ".");
                     throw new AxisFault("System failed to authorize.",
-                            ServerConstants.AUTHORIZATION_FAULT_CODE);
+                                        ServerConstants.AUTHORIZATION_FAULT_CODE);
                 }
 
                 resourceId = resourceId.trim();
                 AuthorizationManager authMan = realm.getAuthorizationManager();
                 if (!isAuthorized(authMan, username, resourceId, action)) {
                     log.error("Access Denied. Failed authorization attempt to access service '"
-                            + serviceName + "' operation '" + opName + "' by '" + username + "'");
+                              + serviceName + "' operation '" + opName + "' by '" + username + "'");
                     AxisFault afault = new AxisFault("Access Denied.");
                     afault.setFaultCode(ServerConstants.AUTHORIZATION_FAULT_CODE);
                     throw afault;
@@ -142,12 +131,12 @@ public class AuthorizationHandler extends AbstractHandler {
         } catch (Exception e) {
             log.error("System failed to authorize." + e.getMessage(), e);
             throw new AxisFault("System failed to authorize.",
-                    ServerConstants.AUTHORIZATION_FAULT_CODE);
+                                ServerConstants.AUTHORIZATION_FAULT_CODE);
         }
     }
-    
+
     private boolean isAuthorized(AuthorizationManager authManager, String username,
-            String authString, String action) throws UserStoreException {
+                                 String authString, String action) throws UserStoreException {
         boolean isAuthzed = false;
         String[] resourceIds = authString.trim().split(",");
         for (String resourceId : resourceIds) {

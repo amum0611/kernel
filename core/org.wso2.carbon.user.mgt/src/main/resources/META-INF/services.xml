@@ -43,7 +43,7 @@
 	    </operation>   
     </service>
     
-    <parameter name="adminService" locked="ture">true</parameter>
-    <parameter name="hiddenService" locked="ture">true</parameter>
+    <parameter name="adminService" locked="true">true</parameter>
+    <parameter name="hiddenService" locked="true">true</parameter>
     
 </serviceGroup>

@@ -25,8 +25,13 @@
         <parameter name="ServiceClass" locked="true">
             org.wso2.carbon.core.services.fileupload.FileUploadService
         </parameter>
+
+        <parameter name="adminService" locked="true">true</parameter>
+        <parameter name="hiddenService" locked="true">true</parameter>
     </service>
 
+    <!-- AuthenticationAdmin is not an admin service, and is deprecated.
+    We are retaining it for historical reasons-->
     <service name="AuthenticationAdmin" scope="transportsession">
         <transports>
             <transport>https</transport>
@@ -40,6 +45,7 @@
             <operation>isAuthenticated</operation>
             <operation>isHandle</operation>
         </excludeOperations>
+        <parameter name="hiddenService" locked="true">true</parameter>
     </service>
 
     <service name="LoggedUserInfoAdmin" scope="transportsession">
@@ -50,6 +56,9 @@
             org.wso2.carbon.core.services.loggeduserinfo.LoggedUserInfoAdmin
         </parameter>
         <parameter name="AuthorizationAction" locked="true">/permission/admin/login</parameter>
+
+        <parameter name="adminService" locked="true">true</parameter>
+        <parameter name="hiddenService" locked="true">true</parameter>
     </service>
 
     <service name="FileDownloadService" scope="transportsession">
@@ -60,6 +69,9 @@
             org.wso2.carbon.core.services.filedownload.FileDownloadService
         </parameter>
         <parameter name="DoAuthentication" locked="true">false</parameter>
+
+        <parameter name="adminService" locked="true">true</parameter>
+        <parameter name="hiddenService" locked="true">true</parameter>
     </service>
 
     <service name="LoginStatisticsAdmin" scope="transportsession">
@@ -70,7 +82,8 @@
             org.wso2.carbon.core.services.authentication.stats.LoginStatisticsAdmin
         </parameter>
         <!--  parameter name="AuthorizationAction" locked="true">manage-security</parameter -->
+
+        <parameter name="adminService" locked="true">true</parameter>
+        <parameter name="hiddenService" locked="true">true</parameter>
     </service>
-    <parameter name="adminService" locked="ture">true</parameter>
-    <parameter name="hiddenService" locked="ture">true</parameter>
 </serviceGroup>
