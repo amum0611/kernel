@@ -493,7 +493,9 @@ public final class CarbonServerManager implements Controllable {
             }
 
              //Registering the configuration contexts as an OSGi service.
-            log.info("Registering ConfigurationContextService");
+            if (log.isDebugEnabled()) {
+                log.debug("Registering ConfigurationContextService...");
+            }
             bundleContext.registerService(ConfigurationContextService.class.getName(),
                     new ConfigurationContextService(serverConfigContext,
                             clientConfigContext),

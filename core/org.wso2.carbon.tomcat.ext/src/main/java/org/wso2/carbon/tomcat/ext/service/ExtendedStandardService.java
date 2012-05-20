@@ -39,8 +39,8 @@ public class ExtendedStandardService extends StandardService {
      */
     @Override
     protected void startInternal() throws LifecycleException {
-        if (log.isInfoEnabled()) {
-            log.info("starting extended standard service  :   " + this);
+        if (log.isDebugEnabled()) {
+            log.debug("starting extended standard service  :   " + this);
         }
         setState(LifecycleState.STARTING);
         // Start our defined Container first

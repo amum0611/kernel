@@ -32,9 +32,9 @@ import java.util.Hashtable;
 /**
  * The OSGi BundleActivator for the {@link org.wso2.carbon.tomcat} bundle
  */
-public class Activator implements BundleActivator {
+public class TomcatBundleActivator implements BundleActivator {
 
-    private static Log log = LogFactory.getLog(Activator.class);
+    private static Log log = LogFactory.getLog(TomcatBundleActivator.class);
     private ServerManager serverManager;
     private ServiceRegistration serviceRegistration;
 
@@ -45,7 +45,9 @@ public class Activator implements BundleActivator {
             serverManager.init();
             serverManager.start();
             serviceRegistration = bundleContext.registerService(CarbonTomcatService.class.getName(), serverManager.getTomcatInstance(), null);
-            log.info("registering the JNDI stream handler");
+            if (log.isDebugEnabled()) {
+                log.debug("Registering the JNDI stream handler...");
+            }
             //registering JNDI stream handler
             Hashtable<String, String[]> properties = new Hashtable<String, String[]>();
             properties.put(URLConstants.URL_HANDLER_PROTOCOL, new String[]{"jndi"});

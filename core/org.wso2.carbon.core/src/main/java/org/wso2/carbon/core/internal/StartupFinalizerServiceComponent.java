@@ -195,7 +195,9 @@ public class StartupFinalizerServiceComponent implements ServiceListener {
         } catch (ServerException e) {
             log.error("Cannot start JMX service", e);
         }
-        log.info("Started Transport Listener Manager");
+        if (log.isDebugEnabled()) {
+            log.debug("Started Transport Listener Manager");
+        }
         setServerStartTimeParam();
         printInfo();
       }
