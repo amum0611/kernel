@@ -86,4 +86,7 @@
         <parameter name="adminService" locked="true">true</parameter>
         <parameter name="hiddenService" locked="true">true</parameter>
     </service>
+
+    <parameter name="adminService" locked="true">true</parameter>
+    <parameter name="hiddenService" locked="true">true</parameter>
 </serviceGroup>
