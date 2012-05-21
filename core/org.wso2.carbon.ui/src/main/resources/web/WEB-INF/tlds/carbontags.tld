@@ -325,48 +325,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>     
     </tag>
-    <tag>
-        <name>reportNew</name>
-        <tagclass>org.wso2.carbon.ui.taglibs.ReportNew</tagclass>
-        <bodycontent>JSP</bodycontent>
-        <info>A tag for displaying new reporting ui</info>
 
-        <attribute>
-            <name>component</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>template</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>pdfReport</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>htmlReport</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>excelReport</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>reportDataSession</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>jsFunction</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
 
     <tag>
         <name>tooltips</name>
