@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.base.api.ServerConfigurationService;
+import org.wso2.carbon.tomcat.CarbonTomcatException;
 import org.wso2.carbon.tomcat.api.CarbonTomcatService;
 import org.wso2.carbon.tomcat.ext.servlet.DelegationServlet;
 import org.wso2.carbon.tomcat.ext.transport.ServletTransportManager;
@@ -28,7 +29,7 @@ import java.io.File;
 public class CarbonTomcatServiceComponent {
     private static Log log = LogFactory.getLog(CarbonTomcatServiceComponent.class);
     private String webContextRoot;
-    private Context servletContext;
+    private Context carbonContext;
 
     /**
      * Exposing the {@link org.osgi.service.http.HttpService} by registering the proxy servlet with tomcat.
@@ -47,26 +48,23 @@ public class CarbonTomcatServiceComponent {
         if (log.isDebugEnabled()) {
             log.debug("webContextRoot : " + webContextRoot);
         }
-        servletContext = tomcat.addContext(webContextRoot, new File(".").getAbsolutePath());
-        // MIME mappings: TODO : support this through web.xml
-        for (int i = 0; i < DEFAULT_MIME_MAPPINGS.length;) {
-            servletContext.addMimeMapping(DEFAULT_MIME_MAPPINGS[i++],
-                    DEFAULT_MIME_MAPPINGS[i++]);
+        String carbonHome = System.getProperty("carbon.home");
+        String carbonWebAppDir = carbonHome + File.separator + "repository" + File.separator +"conf"
+                +File.separator+"tomcat"+File.separator+"carbon";
+        try {
+            this.carbonContext = carbonTomcatService.addWebApp(webContextRoot,carbonWebAppDir);
+        } catch (CarbonTomcatException exception) {
+            log.error("Error while adding the carbon web-app", exception);
         }
-        Wrapper wrapper = tomcat.addServlet(servletContext, "delegationServlet", new DelegationServlet());
-        servletContext.addServletMapping("/*", "delegationServlet");
-        wrapper.setLoadOnStartup(1);
     }
 
     @SuppressWarnings("unused")
     protected void deactivate(ComponentContext componentContext) {
         try {
-            servletContext.setRealm(null);
-            servletContext.stop();
-            servletContext.destroy();
-            log.info("Unregistered the carbon delegation servlet from the context : " + webContextRoot);
+            carbonContext.stop();
+            log.info("Stopping the carbon web-app registered under : " + webContextRoot);
         } catch (Exception exception) {
-            log.error("Error while un-registering delegation servlet", exception);
+            log.error("Error while stopping carbon web-app", exception);
         }
     }
 
