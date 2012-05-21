@@ -18,6 +18,7 @@ package org.wso2.carbon.coordination.core.services;
 import org.wso2.carbon.coordination.common.CoordinationException;
 import org.wso2.carbon.coordination.core.sync.Barrier;
 import org.wso2.carbon.coordination.core.sync.Group;
+import org.wso2.carbon.coordination.core.sync.IntegerCounter;
 import org.wso2.carbon.coordination.core.sync.Lock;
 import org.wso2.carbon.coordination.core.sync.Queue;
 
@@ -69,6 +70,14 @@ public interface CoordinationService {
 	 * @throws CoordinationException
 	 */
 	public Lock createLock(String id, int waitTimeout) throws CoordinationException;
+	
+	/**
+	 * Creates an integer counter.
+	 * @param id The counter id
+	 * @return The created IntegerCounter object
+	 * @throws CoordinationException
+	 */
+	public IntegerCounter createIntegerCounter(String id) throws CoordinationException;
 	
 	/**
 	 * Close the service connection.

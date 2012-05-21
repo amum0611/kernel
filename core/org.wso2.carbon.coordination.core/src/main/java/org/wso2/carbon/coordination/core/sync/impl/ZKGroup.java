@@ -881,8 +881,8 @@ public class ZKGroup extends ZKSyncPrimitive implements Group {
 
 	@Override
 	public void waitForMemberCount(int count) throws CoordinationException {
-		while (this.getMemberIds().size() < count) {
-			synchronized (this.memberArrivalCountLock) {
+		synchronized (this.memberArrivalCountLock) {
+			while (this.getMemberIds().size() < count) {
 				try {
 					this.memberArrivalCountLock.wait();
 				} catch (InterruptedException ignore) {

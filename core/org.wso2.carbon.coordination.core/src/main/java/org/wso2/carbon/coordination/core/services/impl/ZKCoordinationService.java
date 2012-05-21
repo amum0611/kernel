@@ -34,10 +34,12 @@ import org.wso2.carbon.coordination.core.CoordinationConfiguration;
 import org.wso2.carbon.coordination.core.services.CoordinationService;
 import org.wso2.carbon.coordination.core.sync.Barrier;
 import org.wso2.carbon.coordination.core.sync.Group;
+import org.wso2.carbon.coordination.core.sync.IntegerCounter;
 import org.wso2.carbon.coordination.core.sync.Lock;
 import org.wso2.carbon.coordination.core.sync.Queue;
 import org.wso2.carbon.coordination.core.sync.impl.ZKBarrier;
 import org.wso2.carbon.coordination.core.sync.impl.ZKGroup;
+import org.wso2.carbon.coordination.core.sync.impl.ZKIntegerCounter;
 import org.wso2.carbon.coordination.core.sync.impl.ZKLock;
 import org.wso2.carbon.coordination.core.sync.impl.ZKQueue;
 import org.wso2.carbon.coordination.core.utils.CoordinationUtils;
@@ -234,6 +236,13 @@ public class ZKCoordinationService implements CoordinationService, Watcher {
 		if (log.isDebugEnabled()) {
 			log.debug("At ZKCoordinationService#process: " + event.toString());
 		}
+	}
+
+	@Override
+	public IntegerCounter createIntegerCounter(String id)
+			throws CoordinationException {
+		this.checkService();
+		return new ZKIntegerCounter(this.getZooKeeper(), id);
 	}
 
 }
