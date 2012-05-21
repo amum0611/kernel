@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.ui.taglibs;
 
+import org.wso2.carbon.ui.CarbonUIUtil;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -87,6 +90,12 @@ public class Report extends BodyTagSupport {
 
 
     public int doStartTag() throws JspException {
+        //check permission.
+        HttpServletRequest req = (HttpServletRequest)
+                pageContext.getRequest();
+        if(!CarbonUIUtil.isUserAuthorized(req, "/permission/admin/manage/report")){
+          return EVAL_PAGE;
+        }
         JspWriter writer = pageContext.getOut();
 
         String context = "<div style='float:right;padding-bottom:5px;padding-right:15px;'>";
