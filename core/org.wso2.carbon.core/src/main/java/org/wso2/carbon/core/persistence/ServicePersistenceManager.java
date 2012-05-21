@@ -1342,12 +1342,17 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
         getServiceGroupFilePM().put(serviceGroupId, policyWrapperElement, servicePath +
                 "/" + Resources.POLICIES);
 
-        getServiceGroupFilePM().put(serviceGroupId, idElement.cloneOMElement(), engagementPath);
+        if (!getServiceGroupFilePM().elementExists(serviceGroupId, engagementPath +
+                PersistenceUtils.getXPathTextPredicate(
+                        Resources.ServiceProperties.POLICY_UUID, policy.getId()))) {
+            getServiceGroupFilePM().put(serviceGroupId, idElement.cloneOMElement(), engagementPath);
+        }
+
         if (!transactionStarted) {
             getServiceGroupFilePM().commitTransaction(serviceGroupId);
         }
         if (log.isDebugEnabled()) {
-            log.debug("Policy is saved in the file system for " + servicePath);
+            log.debug("Policy is saved in the file system for " + servicePath + policyUuid);
         }
     }
 }
