@@ -1,6 +1,11 @@
 package org.wso2.carbon.core.persistence.file;
 
-import org.apache.axiom.om.*;
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMAttribute;
+import org.apache.axiom.om.OMDocument;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.util.XMLPrettyPrinter;
@@ -18,7 +23,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class AbstractFilePersistenceManager {
 
@@ -110,13 +120,17 @@ public abstract class AbstractFilePersistenceManager {
      * @return system dependent file path with correct separator
      */
     protected String getFilePathFromResourceId(String resourceId) {
-        String[] names = resourceId.split("/");
-        StringBuilder sb = new StringBuilder(names[0]);
-        char fs = File.separatorChar;
-        for (int i = 1; i < names.length; i++) {
-            sb.append(fs).append(names[i]);
+        if (resourceId != null) {
+            String[] names = resourceId.split("/");
+            StringBuilder sb = new StringBuilder(names[0]);
+            char fs = File.separatorChar;
+            for (int i = 1; i < names.length; i++) {
+                sb.append(fs).append(names[i]);
+            }
+            return sb.append(Resources.METAFILE_EXTENSION).toString();
+        } else {
+            return null;
         }
-        return sb.append(Resources.METAFILE_EXTENSION).toString();
     }
 
     /**

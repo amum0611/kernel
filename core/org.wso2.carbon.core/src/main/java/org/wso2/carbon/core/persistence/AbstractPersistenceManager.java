@@ -485,7 +485,7 @@ public abstract class AbstractPersistenceManager {
                     ad.getPolicySubject().attachPolicy(policy);
                 } else {
                     log.error("Failed to load Policy with ID " + currentPolicyUUID
-                            + ". The Policy does not exist.");
+                            + ". The Policy does not exist. " + serviceGroupId);
                 }
             }
         }
