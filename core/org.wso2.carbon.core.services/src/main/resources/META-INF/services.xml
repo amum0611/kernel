@@ -47,6 +47,9 @@
         </excludeOperations>
         <parameter name="hiddenService" locked="true">true</parameter>
         <parameter name="adminService" locked="false">false</parameter>
+        <operation name="login">
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/login</parameter>
+        </operation>
     </service>
 
     <service name="LoggedUserInfoAdmin" scope="transportsession">
