@@ -243,7 +243,7 @@ public class DataSourceRepository implements GroupEventListener {
 		    }
 		    InitialContext context;
 		    try {
-		        context = new InitialContext(jndiConfig.getHashtableEnv());
+		        context = new InitialContext(jndiConfig.extractHashtableEnv());
 		    } catch (NamingException e) {
 			    throw new DataSourceException("Error creating JNDI initial context: " +
 		                e.getMessage(), e);
@@ -269,7 +269,7 @@ public class DataSourceRepository implements GroupEventListener {
 			    return;
 		    }
 			try {
-				InitialContext context = new InitialContext(jndiConfig.getHashtableEnv());
+				InitialContext context = new InitialContext(jndiConfig.extractHashtableEnv());
 				context.unbind(jndiConfig.getName());
 		    } catch (NamingException e) {
 			    log.error("Error in unregistering JNDI name: " + 

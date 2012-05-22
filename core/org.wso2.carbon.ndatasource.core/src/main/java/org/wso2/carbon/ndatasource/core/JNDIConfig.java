@@ -36,13 +36,13 @@ public class JNDIConfig {
 	
 	private String name;
 	
-	private List<EnvEntry> environment;
+	private EnvEntry[] environment;
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public void setEnvironment(List<EnvEntry> environment) {
+	public void setEnvironment(EnvEntry[] environment) {
 		this.environment = environment;
 	}
 
@@ -53,12 +53,11 @@ public class JNDIConfig {
 
 	@XmlElementWrapper (name = "environment", nillable = false)
 	@XmlElement (name = "property")
-	public List<EnvEntry> getEnvironment() {
+	public EnvEntry[] getEnvironment() {
 		return environment;
 	}
 	
-	@XmlTransient
-	public Hashtable<String, String> getHashtableEnv() {
+	public Hashtable<String, String> extractHashtableEnv() {
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		if (this.getEnvironment() != null) {
 		    for (EnvEntry entry : this.getEnvironment()) {
@@ -93,7 +92,7 @@ public class JNDIConfig {
 		if (!DataSourceUtils.nullAllowEquals(jc.getName(), this.getName())) {
 			return false;
 		}
-		if (!DataSourceUtils.nullAllowEquals(jc.getHashtableEnv(), this.getHashtableEnv())) {
+		if (!DataSourceUtils.nullAllowEquals(jc.extractHashtableEnv(), this.extractHashtableEnv())) {
 			return false;
 		}
 		return true;
