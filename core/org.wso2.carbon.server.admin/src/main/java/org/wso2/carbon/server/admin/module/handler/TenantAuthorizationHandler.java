@@ -21,11 +21,13 @@ package org.wso2.carbon.server.admin.module.handler;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
 import org.apache.axis2.handlers.AbstractHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 
 
@@ -37,6 +39,8 @@ public class TenantAuthorizationHandler extends AbstractHandler {
 
     private static Log log = LogFactory.getLog(TenantAuthorizationHandler.class.getClass());
     public static final String TENANT_AUTHZ_FAULT_CODE = "WSO2CarbonTenantAuthorizationFailure";
+
+    private static Log audit = CarbonConstants.AUDIT_LOG;
 
     public InvocationResponse invoke(MessageContext msgContext) throws AxisFault {
         if (this.callToGeneralService(msgContext)) {
@@ -51,6 +55,18 @@ public class TenantAuthorizationHandler extends AbstractHandler {
         int tenantId = SuperTenantCarbonContext.getCurrentContext(msgContext).getTenantId();
 
         if (tenantId != 0) {
+
+            AxisService axisService = msgContext.getAxisService();
+            AxisOperation axisOperation = msgContext.getAxisOperation();
+
+            StringBuilder message = new StringBuilder("Un-authorized access to super tenant service - ");
+            message.append(axisService.getName()).append(" operation - ").append(axisOperation.getName())
+                    .append(". Tenant domain - ")
+                    .append(SuperTenantCarbonContext.getCurrentContext(msgContext).getTenantDomain(false))
+                    .append(", tenant id - ").append(tenantId);
+
+            audit.warn(message.toString());
+
             // for non tenantId = 0 access throw an exception
             String errorMsg = "Denied accessing super tenant service.";
             log.error(errorMsg + " Accessed tenant id: " + tenantId + ".");
@@ -63,11 +79,16 @@ public class TenantAuthorizationHandler extends AbstractHandler {
 
     private boolean callToGeneralService(MessageContext msgContext) {
         boolean isGeneral = true;
-        AxisService service = msgContext.getAxisService();
-        Parameter param = service.getParameter("superTenantService");
-        if (param != null && "true".equals(param.getValue())) {
-            isGeneral = false;
+        AxisOperation axisOperation = msgContext.getAxisOperation();
+        Parameter param = axisOperation.getParameter("superTenantService");
+
+        if (param != null) {
+            String parameterValue = (String) param.getValue();
+            if ("true".equals(parameterValue.trim())) {
+                isGeneral = false;
+            }
         }
+
         return isGeneral;
     }
 }
