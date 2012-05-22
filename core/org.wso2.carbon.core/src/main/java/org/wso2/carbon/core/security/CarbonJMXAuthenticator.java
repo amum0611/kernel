@@ -17,9 +17,11 @@ package org.wso2.carbon.core.security;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.user.core.AuthorizationManager;
 import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.UserStoreManager;
+import org.wso2.carbon.CarbonConstants;
 
 import javax.management.remote.JMXAuthenticator;
 import javax.management.remote.JMXPrincipal;
@@ -33,6 +35,10 @@ public class CarbonJMXAuthenticator implements JMXAuthenticator {
 
     private static Log log = LogFactory.getLog(CarbonJMXAuthenticator.class);
     private static UserRealm userRealm;
+
+    private static final String JMX_USER_PERMISSION = "/permission/protected/server-admin";
+
+    private static Log audit = CarbonConstants.AUDIT_LOG;
 
     public static void setUserRealm(UserRealm userRealm) {
         CarbonJMXAuthenticator.userRealm = userRealm;
@@ -58,7 +64,7 @@ public class CarbonJMXAuthenticator implements JMXAuthenticator {
 
         // Perform authentication
         //
-        String username = aCredentials[0];
+        String userName = aCredentials[0];
         String password = aCredentials[1];
 
         UserStoreManager authenticator;
@@ -71,18 +77,47 @@ public class CarbonJMXAuthenticator implements JMXAuthenticator {
         }
 
         try {
-            if(authenticator.authenticate(username, password)){
-                return new Subject(true,
-                                   Collections.singleton(new JMXPrincipal(username)),
+            if(authenticator.authenticate(userName, password)){
+
+                audit.info("User " + userName + " successfully authenticated to perform JMX operations.");
+
+                if (authorize(userName)) {
+
+                    audit.info("User : " + userName + " successfully authorized to perform JMX operations.");
+
+                    return new Subject(true,
+                                   Collections.singleton(new JMXPrincipal(userName)),
                                    Collections.EMPTY_SET,
                                    Collections.EMPTY_SET);
+                } else {
+                    throw new SecurityException("User : " + userName + " not authorized to perform JMX operations.");
+                }
+
             } else {
-                throw new SecurityException("Login failed. Invalid username or password.");
+                throw new SecurityException("Login failed for user : " + userName + ". Invalid username or password.");
             }
+        } catch (SecurityException se) {
+
+            String msg = "Unauthorized access attempt to JMX operation. ";
+            audit.warn(msg, se);
+            throw new SecurityException(msg, se);
+
         } catch (Exception e) {
-            String msg = "Cannot authenticate";
+
+            String msg = "JMX operation failed.";
             log.error(msg, e);
             throw new SecurityException(msg, e);
         }
+    }
+
+    private boolean authorize(String userName) throws UserStoreException {
+
+        AuthorizationManager authorizationManager = userRealm.getAuthorizationManager();
+
+        if (authorizationManager != null) {
+            return authorizationManager.isUserAuthorized(userName, JMX_USER_PERMISSION, "ui.execute");
+        }
+
+        throw new UserStoreException("Unable to retrieve Authorization manager to perform authorization");
     }
 }
