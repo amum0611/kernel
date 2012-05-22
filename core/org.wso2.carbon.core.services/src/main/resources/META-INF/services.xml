@@ -46,6 +46,7 @@
             <operation>isHandle</operation>
         </excludeOperations>
         <parameter name="hiddenService" locked="true">true</parameter>
+        <parameter name="adminService" locked="false">false</parameter>
     </service>
 
     <service name="LoggedUserInfoAdmin" scope="transportsession">
