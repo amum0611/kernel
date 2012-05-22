@@ -19,7 +19,7 @@
    by setting the value of the StartRMIServer to false.
 -->
 <JMX xmlns="http://wso2.org/projects/carbon/jmx.xml">
-    <StartRMIServer>true</StartRMIServer>
+    <StartRMIServer>false</StartRMIServer>
 
     <!-- HostName, or Network interface to which this RMI server should be bound -->
     <HostName>localhost</HostName>
