@@ -21,6 +21,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.deployment.DeploymentConstants;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.AxisServiceGroup;
@@ -889,6 +890,37 @@ public class CarbonUtils {
         }
 
         serviceClient.getOptions().setProperty(HTTPConstants.HTTP_HEADERS, headers);
+    }
+
+    /**
+     * This is a utility method which can be used to set security headers in the message context. This method
+     * will create authorization header according to basic security protocol. i.e. encodeBase64(username:password)
+     * and put it in a HTTP header with name "Authorization".
+     * @param userName User calling the service.
+     * @param password Password of the user.
+     * @param rememberMe <code>true</code> if UI asks to persist remember me cookie.
+     * @param msgContext The service client used in the communication.
+     */
+
+    public static void setBasicAccessSecurityHeaders(String userName, String password, boolean rememberMe,
+                                                     MessageContext msgContext) throws AxisFault {
+
+        String userNamePassword = userName + ":" + password;
+        String encodedString = Base64Utils.encode(userNamePassword.getBytes());
+
+        String authorizationHeader = "Basic " + encodedString;
+
+        List<Header> headers = new ArrayList<Header>();
+
+        Header authHeader = new Header("Authorization", authorizationHeader);
+        headers.add(authHeader);
+
+        if (rememberMe) {
+            Header rememberMeHeader = new Header("RememberMe", TRUE);
+            headers.add(rememberMeHeader);
+        }
+
+        msgContext.getOptions().setProperty(HTTPConstants.HTTP_HEADERS, headers);
     }
 
      /**
