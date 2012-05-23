@@ -67,6 +67,9 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
             SuperTenantCarbonContext.getCurrentContext().setTenantId(tenantId);
             SuperTenantCarbonContext.getCurrentContext().setTenantDomain(tenantDomain);
 
+            //invoke CarbonDeploymentSchedulerExtenders
+            invokeCarbonDeploymentSchedulerExtenders();
+
             deploymentSyncUpdate();
             synchronized (this) {
                 super.run();  // artifact meta files which need to be committed may be generated during this super.run() call
@@ -80,6 +83,32 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
             SuperTenantCarbonContext.endTenantFlow();
         }
     }
+
+    private void invokeCarbonDeploymentSchedulerExtenders() {
+        if(log.isDebugEnabled()){
+            log.debug("Start invoking CarbonDeploymentSchedulerExtenders..");
+        }
+        BundleContext bundleContext = CarbonCoreDataHolder.getInstance().getBundleContext();
+        ServiceReference reference = bundleContext.getServiceReference(CarbonDeploymentSchedulerExtender.class.getName());
+        if(reference != null){
+            ServiceTracker serviceTracker =
+                    new ServiceTracker(bundleContext, CarbonDeploymentSchedulerExtender.class.getName(), null);
+            try{
+                serviceTracker.open();
+                Object[] services = serviceTracker.getServices();
+                if (services != null) {
+                    for (Object service : services) {
+                        ((CarbonDeploymentSchedulerExtender) service).invoke(axisConfig);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                serviceTracker.close();
+            }
+            serviceTracker.close();
+        }
+    }                                                        
 
     private void deploymentSyncUpdate() {
         if (log.isDebugEnabled()) {
