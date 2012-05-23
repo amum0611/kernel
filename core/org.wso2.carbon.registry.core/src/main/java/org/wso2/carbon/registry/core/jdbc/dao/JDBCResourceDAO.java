@@ -1111,7 +1111,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                 // collection
                 sql = "SELECT REG_MEDIA_TYPE, REG_CREATOR, REG_CREATED_TIME, " +
                         "REG_LAST_UPDATOR, REG_LAST_UPDATED_TIME, REG_VERSION, REG_DESCRIPTION, " +
-                        "REG_CONTENT_ID FROM REG_RESOURCE WHERE REG_PATH_ID=? AND REG_NAME " +
+                        "REG_CONTENT_ID, REG_UUID FROM REG_RESOURCE WHERE REG_PATH_ID=? AND REG_NAME " +
                         "IS NULL AND REG_TENANT_ID=?";
                 ps = conn.prepareStatement(sql);
                 ps.setInt(1, pathID);
@@ -1120,7 +1120,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                 // non collection
                 sql = "SELECT REG_MEDIA_TYPE, REG_CREATOR, REG_CREATED_TIME, " +
                         "REG_LAST_UPDATOR, REG_LAST_UPDATED_TIME, REG_VERSION, REG_DESCRIPTION, " +
-                        "REG_CONTENT_ID FROM REG_RESOURCE WHERE REG_PATH_ID=? AND REG_NAME = ? " +
+                        "REG_CONTENT_ID, REG_UUID FROM REG_RESOURCE WHERE REG_PATH_ID=? AND REG_NAME = ? " +
                         "AND REG_TENANT_ID=?";
                 ps = conn.prepareStatement(sql);
                 ps.setInt(1, pathID);
@@ -1153,6 +1153,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                 resourceImpl.setVersionNumber(result.getInt(DatabaseConstants.VERSION_FIELD));
                 resourceImpl.setDescription(result.getString(DatabaseConstants.DESCRIPTION_FIELD));
                 resourceImpl.setDbBasedContentID(result.getInt(DatabaseConstants.CONTENT_ID_FIELD));
+                resourceImpl.setUUID(result.getString(DatabaseConstants.UUID_FILED));
             }
         } catch (SQLException e) {
             String msg = "Failed to get the resource at path " + resourceID.getPath() + ". " +
@@ -1328,8 +1329,8 @@ public class JDBCResourceDAO implements ResourceDAO {
                     "INSERT INTO REG_RESOURCE (REG_PATH_ID, REG_NAME, REG_MEDIA_TYPE, " +
                             "REG_CREATOR, REG_CREATED_TIME, REG_LAST_UPDATOR, " +
                             "REG_LAST_UPDATED_TIME, REG_DESCRIPTION, " +
-                            "REG_TENANT_ID) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            "REG_TENANT_ID, REG_UUID) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             String sql1 = "SELECT MAX(REG_VERSION) FROM REG_RESOURCE";
 
             long now = System.currentTimeMillis();
@@ -1370,6 +1371,7 @@ public class JDBCResourceDAO implements ResourceDAO {
             ps.setTimestamp(7, new Timestamp(now));
             ps.setString(8, resourceImpl.getDescription());
             ps.setInt(9, CurrentSession.getTenantId());
+            ps.setString(10,resourceImpl.getUUID());
 
             if (returnsGeneratedKeys) {
                 ps.executeUpdate();
@@ -1430,8 +1432,8 @@ public class JDBCResourceDAO implements ResourceDAO {
                     "INSERT INTO REG_RESOURCE (REG_PATH_ID, REG_NAME, REG_MEDIA_TYPE, " +
                             "REG_CREATOR, REG_CREATED_TIME, REG_LAST_UPDATOR, " +
                             "REG_LAST_UPDATED_TIME, REG_DESCRIPTION, " +
-                            "REG_CONTENT_ID, REG_TENANT_ID) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            "REG_CONTENT_ID, REG_TENANT_ID, REG_UUID) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             String sql1 = "SELECT MAX(REG_VERSION) FROM REG_RESOURCE";
 
             long now = System.currentTimeMillis();
@@ -1477,6 +1479,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                 ps.setNull(9, Types.INTEGER);
             }
             ps.setInt(10, CurrentSession.getTenantId());
+            ps.setString(11,resourceImpl.getUUID());
 
             if (returnsGeneratedKeys) {
                 ps.executeUpdate();
@@ -1537,8 +1540,8 @@ public class JDBCResourceDAO implements ResourceDAO {
                     "INSERT INTO REG_RESOURCE (REG_PATH_ID, REG_NAME, REG_MEDIA_TYPE, " +
                             "REG_CREATOR, REG_CREATED_TIME, REG_LAST_UPDATOR, " +
                             "REG_LAST_UPDATED_TIME, REG_DESCRIPTION, " +
-                            "REG_CONTENT_ID, REG_TENANT_ID) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            "REG_CONTENT_ID, REG_TENANT_ID, REG_UUID) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             String sql1 = "SELECT MAX(REG_VERSION) FROM REG_RESOURCE";
 
             String dbProductName = conn.getMetaData().getDatabaseProductName();
@@ -1569,6 +1572,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                 ps.setNull(9, Types.INTEGER);
             }
             ps.setInt(10, CurrentSession.getTenantId());
+            ps.setString(11,resourceImpl.getUUID());
 
             if (returnsGeneratedKeys) {
                 ps.executeUpdate();
@@ -1628,8 +1632,8 @@ public class JDBCResourceDAO implements ResourceDAO {
                     "INSERT INTO REG_RESOURCE (REG_PATH_ID, REG_NAME, REG_MEDIA_TYPE, " +
                             "REG_CREATOR, REG_CREATED_TIME, REG_LAST_UPDATOR, " +
                             "REG_LAST_UPDATED_TIME, REG_DESCRIPTION, " +
-                            "REG_CONTENT_ID, REG_TENANT_ID) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            "REG_CONTENT_ID, REG_TENANT_ID, REG_UUID) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             String sql1 = "SELECT MAX(REG_VERSION) FROM REG_RESOURCE";
 
             String dbProductName = conn.getMetaData().getDatabaseProductName();
@@ -1654,6 +1658,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                 ps.setNull(9, Types.INTEGER);
             }
             ps.setInt(10, CurrentSession.getTenantId());
+            ps.setString(11,resourceDO.getUUID());
 
             if (returnsGeneratedKeys) {
                 ps.executeUpdate();
@@ -2114,7 +2119,7 @@ public class JDBCResourceDAO implements ResourceDAO {
             String sql =
                     "SELECT REG_PATH_ID, REG_NAME, REG_MEDIA_TYPE, REG_CREATOR, " +
                             "REG_CREATED_TIME, REG_LAST_UPDATOR, REG_LAST_UPDATED_TIME, " +
-                            "REG_DESCRIPTION, REG_CONTENT_ID " +
+                            "REG_DESCRIPTION, REG_CONTENT_ID, REG_UUID " +
                             "FROM REG_RESOURCE WHERE REG_VERSION = ? AND REG_TENANT_ID=?";
 
             ps = conn.prepareStatement(sql);
@@ -2138,6 +2143,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                         result.getTimestamp(DatabaseConstants.LAST_UPDATED_TIME_FIELD).getTime());
                 resourceDO.setDescription(result.getString(DatabaseConstants.DESCRIPTION_FIELD));
                 resourceDO.setContentID(result.getInt(DatabaseConstants.CONTENT_ID_FIELD));
+                resourceDO.setUUID(result.getString(DatabaseConstants.UUID_FILED));
             }
 
             return resourceDO;
@@ -2177,7 +2183,7 @@ public class JDBCResourceDAO implements ResourceDAO {
             if (resourceID.isCollection()) {
                 sql = "SELECT  R.REG_PATH_ID, R.REG_NAME, R.REG_VERSION, R.REG_MEDIA_TYPE, " +
                         "R.REG_CREATOR, R.REG_CREATED_TIME, R.REG_LAST_UPDATOR, " +
-                        "R.REG_LAST_UPDATED_TIME, R.REG_DESCRIPTION, R.REG_CONTENT_ID " +
+                        "R.REG_LAST_UPDATED_TIME, R.REG_DESCRIPTION, R.REG_CONTENT_ID, R.REG_UUID " +
                         "FROM REG_RESOURCE R WHERE R.REG_PATH_ID=? AND R.REG_NAME IS NULL " +
                         "AND R.REG_TENANT_ID=?";
                 ps = conn.prepareStatement(sql);
@@ -2187,7 +2193,7 @@ public class JDBCResourceDAO implements ResourceDAO {
             } else {
                 sql = "SELECT  R.REG_PATH_ID, R.REG_NAME, R.REG_VERSION, R.REG_MEDIA_TYPE, " +
                         "R.REG_CREATOR, R.REG_CREATED_TIME, R.REG_LAST_UPDATOR, " +
-                        "R.REG_LAST_UPDATED_TIME, R.REG_DESCRIPTION, R.REG_CONTENT_ID " +
+                        "R.REG_LAST_UPDATED_TIME, R.REG_DESCRIPTION, R.REG_CONTENT_ID, R.REG_UUID " +
                         "FROM REG_RESOURCE R WHERE R.REG_PATH_ID=? AND R.REG_NAME=? " +
                         "AND R.REG_TENANT_ID=?";
                 ps = conn.prepareStatement(sql);
@@ -2213,6 +2219,7 @@ public class JDBCResourceDAO implements ResourceDAO {
                         result.getTimestamp(DatabaseConstants.LAST_UPDATED_TIME_FIELD).getTime());
                 resourceDO.setDescription(result.getString(DatabaseConstants.DESCRIPTION_FIELD));
                 resourceDO.setContentID(result.getInt(DatabaseConstants.CONTENT_ID_FIELD));
+                resourceDO.setUUID(result.getString(DatabaseConstants.UUID_FILED));
             }
 
             return resourceDO;

@@ -1019,7 +1019,7 @@ public class JDBCResourceVersionDAO implements ResourceVersionDAO {
             String sql =
                     "SELECT REG_PATH_ID, REG_NAME, REG_VERSION, REG_MEDIA_TYPE, REG_CREATOR, " +
                             "REG_CREATED_TIME, REG_LAST_UPDATOR, REG_LAST_UPDATED_TIME, " +
-                            "REG_DESCRIPTION, REG_CONTENT_ID " +
+                            "REG_DESCRIPTION, REG_CONTENT_ID, REG_UUID " +
                             "FROM REG_RESOURCE_HISTORY WHERE REG_VERSION =? AND REG_TENANT_ID=?";
             ps = conn.prepareStatement(sql);
             ps.setLong(1, version);
@@ -1043,6 +1043,7 @@ public class JDBCResourceVersionDAO implements ResourceVersionDAO {
                         result.getTimestamp(DatabaseConstants.LAST_UPDATED_TIME_FIELD).getTime());
                 resourceDO.setDescription(result.getString(DatabaseConstants.DESCRIPTION_FIELD));
                 resourceDO.setContentID(result.getInt(DatabaseConstants.CONTENT_ID_FIELD));
+                resourceDO.setUUID(result.getString(DatabaseConstants.UUID_FILED));
 
                 return resourceDO;
             }
@@ -1162,8 +1163,8 @@ public class JDBCResourceVersionDAO implements ResourceVersionDAO {
                     "INSERT INTO REG_RESOURCE_HISTORY (REG_PATH_ID, REG_NAME, REG_VERSION, " +
                             "REG_MEDIA_TYPE, REG_CREATOR, REG_CREATED_TIME, REG_LAST_UPDATOR, " +
                             "REG_LAST_UPDATED_TIME, REG_DESCRIPTION, " +
-                            "REG_CONTENT_ID, REG_TENANT_ID) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            "REG_CONTENT_ID, REG_TENANT_ID, REG_UUID) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(sql);
 
             ps.setInt(1, resourceDO.getPathID());
@@ -1181,6 +1182,7 @@ public class JDBCResourceVersionDAO implements ResourceVersionDAO {
                 ps.setNull(10, Types.INTEGER);
             }
             ps.setInt(11, CurrentSession.getTenantId());
+            ps.setString(12,resourceDO.getUUID());
             ps.executeUpdate();
 
         }

@@ -40,6 +40,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Maintains information required for particular user. When registry functionality is invoked
@@ -352,6 +353,7 @@ public class UserRegistry implements Registry {
                         log.trace("Creating the root collection of the Registry.");
                     }
                     CollectionImpl root = new CollectionImpl();
+                    root.setUUID(UUID.randomUUID().toString());
                     resourceDAO.addRoot(root);
                 }
                 if (addAuthorizations && userRealm != null) {
@@ -1660,7 +1662,6 @@ public class UserRegistry implements Registry {
         }
     }
     
-    @Override
     public boolean removeVersionHistory(String path, long snapshotId)
     		throws RegistryException {
 

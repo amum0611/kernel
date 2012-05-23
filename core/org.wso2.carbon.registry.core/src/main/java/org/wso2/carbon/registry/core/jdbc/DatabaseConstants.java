@@ -220,4 +220,5 @@ public class DatabaseConstants {
 	 */
 	public static final int DEFAULT_MIN_IDLE = 5;
 
+    public static final String UUID_FILED = "REG_UUID";
 }

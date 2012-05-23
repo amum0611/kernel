@@ -66,6 +66,7 @@ public class Utils {
     private static final String ELEM_LAST_UPDATER = "lastUpdater";
     private static final String ELEM_LAST_MODIFIED = "lastModified";
     private static final String ELEM_DESCRIPTION = "description";
+    private static final String ELEM_UUID = "uuid";
     private static final String ELEM_PROPERTIES = "properties";
     private static final String ELEM_COMMENTS = "comments";
     private static final String ELEM_TAGGINGS = "taggings";
@@ -305,6 +306,23 @@ public class Utils {
                 else if (localName.equals(ELEM_DESCRIPTION)) {
                     String text = xmlReader.getElementText();
                     OMElement description = factory.createOMElement(new QName(ELEM_DESCRIPTION));
+                    if (text != null) {
+                        description.setText(text);
+                    }
+                    root.addChild(description);
+                    // now go to the next element
+                    do {
+                        xmlReader.next();
+                    } while (!xmlReader.isStartElement() && xmlReader.hasNext() &&
+                            !(xmlReader.isEndElement() &&
+                                    xmlReader.getLocalName().equals(Utils.ELEM_RESOURCE)));
+                    // now go to the next element while
+                    // (!xmlReader.isStartElement() && xmlReader.hasNext());
+                }
+                // get uuid
+                else if (localName.equals(ELEM_UUID)) {
+                    String text = xmlReader.getElementText();
+                    OMElement description = factory.createOMElement(new QName(ELEM_UUID));
                     if (text != null) {
                         description.setText(text);
                     }
@@ -875,6 +893,11 @@ public class Utils {
 
         // set Description
         child = factory.createOMElement(new QName(ELEM_DESCRIPTION));
+        root.addChild(child);
+
+
+         // set UUID
+        child = factory.createOMElement(new QName(ELEM_UUID));
         root.addChild(child);
 
         // create a 0 version tag

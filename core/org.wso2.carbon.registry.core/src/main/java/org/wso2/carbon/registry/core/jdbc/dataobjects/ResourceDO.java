@@ -31,6 +31,7 @@ public class ResourceDO {
     private long lastUpdatedOn;
     private String description;
     private int contentID = -1;
+    private String uuid;
 
     /**
      * Method to get the path id of the resource. If it is a collection it gives the id of the path
@@ -212,4 +213,13 @@ public class ResourceDO {
     public void setContentID(int contentID) {
         this.contentID = contentID;
     }
+
+    public void setUUID(String uuid){
+        this.uuid = uuid;
+    }
+
+    public String getUUID(){
+        return uuid;
+    }
 }
+

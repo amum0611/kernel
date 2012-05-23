@@ -71,12 +71,7 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -345,6 +340,7 @@ public class Repository {
         // get the original details
         ((ResourceImpl) resource).setCreatedTime(new Date(oldResourceDO.getCreatedOn()));
         ((ResourceImpl) resource).setAuthorUserName(oldResourceDO.getAuthor());
+        ((ResourceImpl) resource).setUUID(oldResourceDO.getUUID());
 
 
         // we are always creating versions for resources (files), if the resource has changed.
@@ -1053,6 +1049,10 @@ public class Repository {
                 }
             }
         }
+        if(resource.getUUID() == null){
+            setUUIDForResource(resource);
+        }
+
         resourceDAO.add(path, parentResourceID, resource);
 
         // Update the parent collection when adding a new resource.
@@ -1104,6 +1104,9 @@ public class Repository {
                 }
             }
         }
+        if(resource.getUUID() == null){
+            setUUIDForResource(resource);
+        }
         resourceDAO.update(resource);
 
         ResourceImpl oldResourceImpl;
@@ -1117,6 +1120,10 @@ public class Repository {
         commentsDAO.copyComments(oldResourceImpl, resource);
         tagsDAO.copyTags(oldResourceImpl, resource);
         ratingsDAO.copyRatings(oldResourceImpl, resource);
+    }
+
+    private void setUUIDForResource(ResourceImpl resource) {
+        resource.setUUID(UUID.randomUUID().toString());
     }
 
     /**
@@ -1182,6 +1189,9 @@ public class Repository {
         if (!Boolean.FALSE.equals(CurrentSession.getAttribute(IS_LOGGING_ACTIVITY))) {
             registryContext.getLogWriter().addLog(
                     path, CurrentSession.getUser(), LogEntry.ADD, null);
+        }
+        if(collection.getUUID() == null){
+            setUUIDForResource(collection);
         }
         resourceDAO.add(path, parentResourceID, collection);
     }
@@ -1406,6 +1416,17 @@ public class Repository {
                 String text = xmlReader.getElementText();
                 if (text != null) {
                     dumpingResourceVersion = Long.parseLong(text);
+                }
+                // now go to the next element
+                do {
+                    xmlReader.next();
+                } while (!xmlReader.isStartElement() && xmlReader.hasNext());
+            }
+            // uuid: just to keep track of the server changes
+            else if (localName.equals(DumpConstants.UUID)) {
+                String text = xmlReader.getElementText();
+                if (text != null) {
+                    resourceImpl.setUUID(text);
                 }
                 // now go to the next element
                 do {
@@ -1745,6 +1766,11 @@ public class Repository {
             long now = System.currentTimeMillis();
             resourceImpl.setLastModified(new Date(now));
         }
+
+        if(resourceImpl.getUUID() == null){
+            setUUIDForResource(resourceImpl);
+        }
+
         // create sym links
         String linkRestoration = resourceImpl.getProperty(
                 RegistryConstants.REGISTRY_LINK_RESTORATION);
@@ -2032,6 +2058,12 @@ public class Repository {
         Date lastModified = resource.getLastModified();
         child = factory.createOMElement(new QName(DumpConstants.LAST_MODIFIED));
         child.setText(Long.toString(lastModified.getTime()));
+        child.serialize(xmlWriter);
+
+        // set UUID
+        String uuid = resource.getUUID();
+        child = factory.createOMElement(new QName(DumpConstants.UUID));
+        child.setText(uuid);
         child.serialize(xmlWriter);
 
         // set Description

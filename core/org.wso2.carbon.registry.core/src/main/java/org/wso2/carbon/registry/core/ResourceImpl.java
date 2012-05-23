@@ -256,6 +256,9 @@ public class ResourceImpl implements Resource {
     /**
      * Default constructor for the resource. Creates an empty resource.
      */
+
+    protected String uuid;
+
     public ResourceImpl() {
         if (RegistryContext.getBaseInstance() != null) {
             this.dataAccessManager = RegistryContext.getBaseInstance().getDataAccessManager();
@@ -307,6 +310,7 @@ public class ResourceImpl implements Resource {
         this.userRealm = null;
         this.pathID = resourceDO.getPathID();
         this.name = resourceDO.getName();
+        this.uuid = resourceDO.getUUID();
     }
 
     /**
@@ -347,6 +351,25 @@ public class ResourceImpl implements Resource {
         this.dataAccessManager = resource.dataAccessManager;
         this.userRealm = resource.userRealm;
         this.resourceDAO = resource.resourceDAO;
+        this.uuid = resource.getUUID();
+    }
+
+    /**
+     * Method to get the UUID
+     *
+     * @return the UUID of the resource
+     */
+    public String getUUID() {
+        return uuid;
+    }
+
+    /**
+     * Method to set the UUID of the resource
+     *
+     * @param uuid the UUID of the resource
+     */
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
     }
 
     /**
@@ -1198,7 +1221,7 @@ public class ResourceImpl implements Resource {
         resourceDO.setLastUpdatedOn(this.lastModified);
         resourceDO.setDescription(this.description);
         resourceDO.setContentID(this.dbBasedContentID);
-
+        resourceDO.setUUID(this.uuid);
         return resourceDO;
     }
 
@@ -1251,6 +1274,7 @@ public class ResourceImpl implements Resource {
         resource.setUserRealm(this.userRealm);
         resource.setPathID(this.pathID);
         resource.setName(this.name);
+        resource.setUUID(this.uuid);
 
         // having these two fields at the end is a must, as above field have an affect of them
         resource.setLastUpdaterUserName(this.lastUpdaterUserName);

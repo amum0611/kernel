@@ -216,6 +216,11 @@ public class DumpConstants {
     public static final String CHILDREN = "children";
 
     /**
+     * Element name for uuid
+     */
+    public static final String UUID = "uuid";
+
+    /**
      * Element name for childs, keep to support backward compatibility in restoring
      */
     @Deprecated

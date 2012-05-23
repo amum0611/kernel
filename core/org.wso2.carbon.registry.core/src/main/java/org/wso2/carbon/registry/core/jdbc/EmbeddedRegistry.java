@@ -2699,6 +2699,7 @@ public class EmbeddedRegistry implements Registry {
             resource.addProperty(RegistryConstants.REGISTRY_LINK_RESTORATION,
                     path + RegistryConstants.URL_SEPARATOR + target +
                             RegistryConstants.URL_SEPARATOR + CurrentSession.getUser());
+            resource.setMediaType(RegistryConstants.LINK_MEDIA_TYPE);
             try {
                 CurrentSession.setAttribute(Repository.IS_LOGGING_ACTIVITY, false);
                 repository.put(path, resource);
@@ -2769,6 +2770,7 @@ public class EmbeddedRegistry implements Registry {
                     path + RegistryConstants.URL_SEPARATOR + target +
                             RegistryConstants.URL_SEPARATOR + targetSubPath +
                             RegistryConstants.URL_SEPARATOR + CurrentSession.getUser());
+            resource.setMediaType(RegistryConstants.LINK_MEDIA_TYPE);
             try {
                 CurrentSession.setAttribute(Repository.IS_LOGGING_ACTIVITY, false);
                 repository.put(path, resource);

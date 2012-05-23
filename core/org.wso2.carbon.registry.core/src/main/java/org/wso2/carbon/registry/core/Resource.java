@@ -285,4 +285,18 @@ public interface Resource extends org.wso2.carbon.registry.api.Resource {
      * @param versionableChange whether version-able change is made or not.
      */
     void setVersionableChange(boolean versionableChange);
+
+    /**
+     * Method to set the UUID for a resource
+     *
+     * @param uuid the UUID to be set to the resource
+     */
+    void setUUID(String uuid);
+
+    /**
+     * Method to get the UUID of a resource
+     *
+     * @return UUID of the resource
+     */
+    String getUUID();
 }

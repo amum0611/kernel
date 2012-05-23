@@ -264,6 +264,7 @@ public class RegistryCoreServiceComponent {
                 path + RegistryConstants.URL_SEPARATOR + target +
                         RegistryConstants.URL_SEPARATOR + targetSubPath +
                         RegistryConstants.URL_SEPARATOR + CurrentSession.getUser());
+        resource.setMediaType(RegistryConstants.LINK_MEDIA_TYPE);
         registry.put(path, resource);
         resource.discard();
     }
