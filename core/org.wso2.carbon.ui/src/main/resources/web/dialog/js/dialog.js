@@ -262,6 +262,13 @@ CARBON.showPopupDialog = function(message, title, windowHight, okButton, callbac
             modal:true
         });
     }
+	
+	jQuery('.ui-dialog-titlebar-close').click(function(){
+				jQuery('#dialog').dialog("destroy").remove();
+                jQuery("#dcontainer").empty();
+				jQuery("#dcontainer").html('');
+		});
+	
     };
     if (!pageLoaded) {
         jQuery(document).ready(func);
