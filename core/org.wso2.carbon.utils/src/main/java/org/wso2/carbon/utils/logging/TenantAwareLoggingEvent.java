@@ -28,6 +28,7 @@ public class TenantAwareLoggingEvent extends LoggingEvent {
 
 	private String tenantId;
 	private String serviceName;
+	
 	private static final long serialVersionUID = 1L;
 
 	public TenantAwareLoggingEvent(String fqnOfCategoryClass, Category logger, long timeStamp,

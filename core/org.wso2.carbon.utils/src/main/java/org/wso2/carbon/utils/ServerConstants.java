@@ -26,6 +26,7 @@ public final class ServerConstants {
     public static final String AUTHENTICATION_FAILURE_CODE = "50976";
 
     public static final String CARBON_HOME = "carbon.home";
+    public static final String STRATOS_INSTANCE = "STRATOS_INSTANCE";
     public static final String CARBON_CATALINA_HOME = "carbon.catalina.home";
     public static final String LOCAL_IP_ADDRESS = "carbon.local.ip";
     public static final String TRANSPORTS_XML_PATH = "wso2.transports.xml";

@@ -27,6 +27,7 @@ import org.apache.log4j.helpers.PatternConverter;
 import org.apache.log4j.helpers.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
 import org.wso2.carbon.base.ServerConfiguration;
+import org.wso2.carbon.utils.ServerConstants;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
@@ -136,6 +137,9 @@ public class TenantAwarePatternLayout extends PatternLayout {
 				break;
 			case 'H':
 				pc = new HostNamePatternConverter(formattingInfo, extractPrecisionOption());
+				break;
+			case 'I':
+				pc = new InstanceIdPatternConverter(formattingInfo, extractPrecisionOption());
 				break;
 			default:
 				super.finalizeConverter(c);
@@ -254,6 +258,22 @@ public class TenantAwarePatternLayout extends PatternLayout {
 				}
 			}
 		}
+		
+		private static class InstanceIdPatternConverter extends TenantAwareNamedPatternConverter {
+
+			public InstanceIdPatternConverter(FormattingInfo formattingInfo, int precision) {
+				super(formattingInfo, precision);
+			}
+
+			public String getFullyQualifiedName(LoggingEvent event) {
+				  String stratosInstance = System.getProperty(ServerConstants.STRATOS_INSTANCE);
+				  if (stratosInstance != null) {
+					  return stratosInstance;
+				  }
+				  return "";
+			}
+		}
+
 
 		private static class AppNamePatternConverter extends TenantAwareNamedPatternConverter {
 
