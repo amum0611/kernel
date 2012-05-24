@@ -68,6 +68,28 @@ public class RegistryResourceDeployer implements AppDeploymentHandler {
     }
 
     /**
+     * Undeploys Registry resources of the given cApp
+     *
+     * @param carbonApp - all information about the existing artifacts are in this instance
+     * @param axisConfig - AxisConfiguration of the current tenant
+     */
+    public void undeployArtifacts(CarbonApplication carbonApp, AxisConfiguration axisConfig) {
+        ApplicationConfiguration appConfig = carbonApp.getAppConfig();
+        List<Artifact.Dependency> deps = appConfig.getApplicationArtifact().getDependencies();
+
+        List<Artifact> artifacts = new ArrayList<Artifact>();
+        for (Artifact.Dependency dep : deps) {
+            if (dep.getArtifact() != null) {
+                artifacts.add(dep.getArtifact());
+            }
+        }
+        CarbonAppPersistenceManager capm = ApplicationManager.getInstance()
+                .getPersistenceManager(axisConfig);
+        // undeploying registry resources in all dependent artifacts
+        undeployRegistryArtifacts(capm, artifacts, carbonApp.getAppName());
+    }
+
+    /**
      * Deploys registry artifacts recursively. A Registry artifact can exist as a sub artifact in
      * any type of artifact. Therefore, have to search recursively
      *
@@ -155,6 +177,44 @@ public class RegistryResourceDeployer implements AppDeploymentHandler {
                     "registry configs. But " + files.size() + " files found.");
         }
         return regConfig;
+    }
+
+    /**
+     * Uneploys registry artifacts recursively. A Registry artifact can exist as a sub artifact in
+     * any type of artifact. Therefore, have to search recursively
+     *
+     * @param capm - CarbonAppPersistenceManager instance for current tenant
+     * @param artifacts - list of artifacts to be undeployed
+     * @param parentAppName - name of the parent app name
+     */
+    private void undeployRegistryArtifacts(CarbonAppPersistenceManager capm,
+                                           List<Artifact> artifacts, String parentAppName) {
+        for (Artifact artifact : artifacts) {
+            if (RegistryResourceDeployer.REGISTRY_RESOURCE_TYPE.equals(artifact.getType())) {
+                try {
+                    RegistryConfig regConfig = artifact.getRegConfig();
+                    if (regConfig == null) {
+                        regConfig = capm.loadRegistryConfig(AppDeployerConstants.APPLICATIONS +
+                                parentAppName + AppDeployerConstants.APP_DEPENDENCIES +
+                                artifact.getName());
+                    }
+                    if (regConfig != null) {
+                        capm.removeArtifactResources(regConfig);
+                    }
+                } catch (Exception e) {
+                    log.error("Error while loading registry config for artifact " +
+                            artifact.getName(), e);
+                }
+            }
+            // set the parent name for all sub artifacts..
+            List<Artifact> subArtifacts = artifact.getSubArtifacts();
+            if (subArtifacts.size() != 0) {
+                for (Artifact sub : subArtifacts) {
+                    sub.setName(artifact.getName());
+                }
+            }
+            undeployRegistryArtifacts(capm, subArtifacts, parentAppName);
+        }
     }
 
 }

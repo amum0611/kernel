@@ -18,7 +18,6 @@
 package org.wso2.carbon.application.deployer.service;
 
 import org.wso2.carbon.application.deployer.handler.AppDeploymentHandler;
-import org.wso2.carbon.application.deployer.handler.AppUndeploymentHandler;
 import org.wso2.carbon.application.deployer.CarbonApplication;
 import org.apache.axis2.engine.AxisConfiguration;
 
@@ -37,25 +36,11 @@ public interface ApplicationManagerService {
     void registerDeploymentHandler(AppDeploymentHandler handler);
 
     /**
-     * All app undeployers register their instances throgh this method
-     *
-     * @param handler - app undeployer which implements the AppUndeploymentHandler interface
-     */
-    void registerUndeploymentHandler(AppUndeploymentHandler handler);
-
-    /**
      * Unregister the specified handler if it is already regitered
      *
      * @param handler - input deployer handler
      */
     void unregisterDeploymentHandler(AppDeploymentHandler handler);
-
-    /**
-     * Unregister the specified handler if it is already regitered
-     *
-     * @param handler - input undeployer handler
-     */
-    void unregisterUndeploymentHandler(AppUndeploymentHandler handler);
 
     /**
      * Deploy the provided carbon App..

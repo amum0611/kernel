@@ -111,7 +111,7 @@ public class CarbonAppPersistenceManager {
                     carbonApp.setAppVersion(appVersion);
                 }
 
-                //read the artifacts.xml and construct the ApplicationConfiguration 
+                //read the artifacts.xml and construct the ApplicationConfiguration
                 String artifactsXmlPath = currentAppPath + AppDeployerConstants.APP_ARTIFACTS_XML;
                 if (configRegistry.resourceExists(artifactsXmlPath)) {
                     Resource artifactXmlResource = configRegistry.get(artifactsXmlPath);

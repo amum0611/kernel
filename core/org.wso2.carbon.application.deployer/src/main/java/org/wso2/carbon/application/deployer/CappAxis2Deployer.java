@@ -39,15 +39,7 @@ public class CappAxis2Deployer extends AbstractDeployer {
         }
         this.axisConfig = configurationContext.getAxisConfiguration();
         // load the existing Carbon apps from tenant registry space
-        try {
-            // create a persistence manager for particular tenant
-            CarbonAppPersistenceManager capm = ApplicationManager.getInstance()
-                    .getPersistenceManager(axisConfig);
-            // load persisted cApps for this tenant
-            capm.loadApps();
-        } catch (Exception e) {
-            log.error("Error while trying to load persisted cApps from registry", e);
-        }
+        loadPersistedApps();
     }
 
     /**
@@ -59,6 +51,11 @@ public class CappAxis2Deployer extends AbstractDeployer {
      * @throws DeploymentException - error while deploying cApp
      */
     public void deploy(DeploymentFileData deploymentFileData) throws DeploymentException {
+        /**
+         * Before each cApp deployment, we load the existing apps from registry. This is to fix
+         * an issue which occurs in a cluster with deployment synchronizer.
+         */
+//        loadPersistedApps();
         String artifactPath = deploymentFileData.getAbsolutePath();
         try {
             ApplicationManager.getInstance().deployCarbonApp(artifactPath, axisConfig);
@@ -102,6 +99,18 @@ public class CappAxis2Deployer extends AbstractDeployer {
 
     public void cleanup() throws DeploymentException {
         // do nothing        
+    }
+
+    private void loadPersistedApps() {
+        try {
+            // create a persistence manager for particular tenant
+            CarbonAppPersistenceManager capm = ApplicationManager.getInstance()
+                    .getPersistenceManager(axisConfig);
+            // load persisted cApps for this tenant
+            capm.loadApps();
+        } catch (Exception e) {
+            log.error("Error while trying to load persisted cApps from registry", e);
+        }
     }
 
 }

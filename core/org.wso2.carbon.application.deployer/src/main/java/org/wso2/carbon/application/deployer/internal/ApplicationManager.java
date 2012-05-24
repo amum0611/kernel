@@ -60,7 +60,6 @@ public final class ApplicationManager implements ApplicationManagerService {
     private static ApplicationManager instance = new ApplicationManager();
 
     private List<AppDeploymentHandler> appDeploymentHandlers;
-    private List<AppUndeploymentHandler> appUndeploymentHandlers;
     private List<PendingApplication> pendingCarbonApps;
 
     private Map<String, ArrayList<CarbonApplication>> tenantcAppMap;
@@ -81,7 +80,6 @@ public final class ApplicationManager implements ApplicationManagerService {
         tenantPMMap = new HashMap<String, CarbonAppPersistenceManager>();
 
         appDeploymentHandlers = new ArrayList<AppDeploymentHandler>();
-        appUndeploymentHandlers = new ArrayList<AppUndeploymentHandler>();
         pendingCarbonApps = new ArrayList<PendingApplication>();
 
         // set the initial handler counter. default handler and registry handler are always there
@@ -118,30 +116,12 @@ public final class ApplicationManager implements ApplicationManagerService {
     }
 
     /**
-     * All app undeployers register their instances throgh this method
-     * @param handler - app undeployer which implements the AppUndeploymentHandler interface
-     */
-    public synchronized void registerUndeploymentHandler(AppUndeploymentHandler handler) {
-        appUndeploymentHandlers.add(handler);
-    }
-
-    /**
      * Unregister the specified handler if it is already regitered
      * @param handler - input deployer handler
      */
     public synchronized void unregisterDeploymentHandler(AppDeploymentHandler handler) {
         if (appDeploymentHandlers.contains(handler)) {
             appDeploymentHandlers.remove(handler);
-        }
-    }
-
-    /**
-     * Unregister the specified handler if it is already regitered
-     * @param handler - input undeployer handler
-     */
-    public synchronized void unregisterUndeploymentHandler(AppUndeploymentHandler handler) {
-        if (appUndeploymentHandlers.contains(handler)) {
-            appUndeploymentHandlers.remove(handler);
         }
     }
 
@@ -371,7 +351,7 @@ public final class ApplicationManager implements ApplicationManagerService {
                                                AxisConfiguration axisConfig) {
         log.info("Undeploying Carbon Application : " + carbonApp.getAppName() + "...");
         // Call the undeployer handler chain
-        for (AppUndeploymentHandler handler : appUndeploymentHandlers) {
+        for (AppDeploymentHandler handler : appDeploymentHandlers) {
             handler.undeployArtifacts(carbonApp, axisConfig);
         }
         // Remove the app from tenant cApp list
@@ -430,6 +410,15 @@ public final class ApplicationManager implements ApplicationManagerService {
         if (cApps == null) {
             cApps = new ArrayList<CarbonApplication>();
             tenantcAppMap.put(tenantId, cApps);
+        }
+        // don't add the cApp if it already exists
+        for (CarbonApplication cApp : cApps) {
+            String appName = cApp.getAppName();
+            String appVersion = cApp.getAppVersion();
+            if (appName != null && appName.equals(carbonApp.getAppName()) &&
+                    appVersion != null && appVersion.equals(carbonApp.getAppVersion())) {
+                return;
+            }
         }
         cApps.add(carbonApp);
     }

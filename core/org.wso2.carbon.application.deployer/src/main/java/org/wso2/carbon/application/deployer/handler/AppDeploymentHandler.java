@@ -34,4 +34,11 @@ public interface AppDeploymentHandler {
      */
     void deployArtifacts(CarbonApplication carbonApp, AxisConfiguration axisConfig);
 
+    /**
+     * Delete the artifacts which can be deleted through this deployer.
+     * @param carbonApp - all information about the existing artifacts are in this instance
+     * @param axisConfig - AxisConfiguration of the current tenant
+     */
+    void undeployArtifacts(CarbonApplication carbonApp, AxisConfiguration axisConfig);
+
 }

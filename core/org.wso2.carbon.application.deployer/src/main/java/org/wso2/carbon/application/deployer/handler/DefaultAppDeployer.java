@@ -55,13 +55,25 @@ public class DefaultAppDeployer implements AppDeploymentHandler {
      * Deploy the artifacts which can be deployed through this deployer (Axis2 services,
      * JAXWS services ..).
      *
-     * @param carbonApp - find artifacts from this CarbonApplication instance
+     * @param carbonApp  - find artifacts from this CarbonApplication instance
      * @param axisConfig - AxisConfiguration of the current tenant
      */
     public void deployArtifacts(CarbonApplication carbonApp, AxisConfiguration axisConfig) {
         List<Artifact.Dependency> dependencies = carbonApp.getAppConfig().getApplicationArtifact()
                 .getDependencies();
         deployRecursively(dependencies, axisConfig);
+    }
+
+    /**
+     * Undeploys AAR, Data services, libs etc.
+     *
+     * @param carbonApp  - all information about the existing artifacts are in this instance
+     * @param axisConfig - AxisConfiguration of the current tenant
+     */
+    public void undeployArtifacts(CarbonApplication carbonApp, AxisConfiguration axisConfig) {
+        List<Artifact.Dependency> dependencies = carbonApp.getAppConfig().getApplicationArtifact()
+                .getDependencies();
+        undeployRecursively(dependencies, axisConfig);
     }
 
     /**
@@ -75,12 +87,12 @@ public class DefaultAppDeployer implements AppDeploymentHandler {
         // prepare the URL
         if (bundlePathFormatted.startsWith("/")) {
             // on linux
-        	bundlePathFormatted = "file://" + bundlePathFormatted;
+            bundlePathFormatted = "file://" + bundlePathFormatted;
         } else {
             // on windows
-        	bundlePathFormatted = "file:///" + bundlePathFormatted;
+            bundlePathFormatted = "file:///" + bundlePathFormatted;
         }
-        
+
         try {
             Bundle bundle = AppDeployerServiceComponent
                     .getBundleContext().installBundle(bundlePathFormatted);
@@ -94,13 +106,13 @@ public class DefaultAppDeployer implements AppDeploymentHandler {
      * Each artifact can have it's dependencies which are also artifacts. This method searches
      * the entire tree of artifacts to deploy default types..
      *
-     * @param deps - list of dependencies to be searched..
+     * @param deps       - list of dependencies to be searched..
      * @param axisConfig - Axis config of the current tenant
      */
     private void deployRecursively(List<Artifact.Dependency> deps, AxisConfiguration axisConfig) {
         String artifactPath, destPath;
         String repo = axisConfig.getRepository().getPath();
-        
+
         for (Artifact.Dependency dependency : deps) {
             Artifact artifact = dependency.getArtifact();
             if (artifact == null) {
@@ -151,7 +163,58 @@ public class DefaultAppDeployer implements AppDeploymentHandler {
                 installBundle(destFilePath);
                 artifact.setRuntimeObjectName(fileName);
             }
+            // deploy the dependencies of the current artifact
             deployRecursively(artifact.getDependencies(), axisConfig);
+        }
+    }
+
+    /**
+     * Each artifact can have it's dependencies which are also artifacts. This method searches
+     * the entire tree of artifacts to undeploy default types..
+     *
+     * @param deps - list of deps to be searched..
+     * @param axisConfig - AxisConfiguration of the current tenant
+     */
+    private void undeployRecursively(List<Artifact.Dependency> deps,
+                                     AxisConfiguration axisConfig) {
+        String artifactPath, destPath;
+        String repo = axisConfig.getRepository().getPath();
+
+        for (Artifact.Dependency dependency : deps) {
+            Artifact artifact = dependency.getArtifact();
+            if (artifact == null) {
+                continue;
+            }
+            if (DefaultAppDeployer.AAR_TYPE.equals(artifact.getType())) {
+                destPath = repo + File.separator + CarbonUtils.getAxis2ServicesDir(axisConfig);
+            } else if (DefaultAppDeployer.DS_TYPE.equals(artifact.getType())) {
+                destPath = repo + File.separator + DefaultAppDeployer.DS_DIR;
+            } else if (AppDeployerConstants.CARBON_APP_TYPE.equals(artifact.getType())) {
+                destPath = repo + File.separator + AppDeployerConstants.CARBON_APPS;
+            } else if (artifact.getType() != null && (artifact.getType().startsWith("lib/") ||
+                    DefaultAppDeployer.BUNDLE_TYPE.equals(artifact.getType())) &&
+                    AppDeployerUtils.getTenantId(axisConfig) == MultitenantConstants
+                            .SUPER_TENANT_ID) {
+                // library un-installation is only allowed for teh super tenant
+                destPath = CarbonUtils.getCarbonOSGiDropinsDir();
+            } else {
+                continue;
+            }
+
+            List<CappFile> files = artifact.getFiles();
+            if (files.size() != 1) {
+                log.error(artifact.getType() + " type must have a single file. But " +
+                        files.size() + " files found.");
+                continue;
+            }
+            String fileName = artifact.getFiles().get(0).getName();
+            artifactPath = destPath + File.separator + fileName;
+            File artifactFile = new File(artifactPath);
+            if (artifactFile.exists() && !artifactFile.delete()) {
+                log.warn("Couldn't delete App artifact file : " + artifactPath);
+            }
+
+            undeployRecursively(artifact.getDependencies(), axisConfig);
         }
     }
 

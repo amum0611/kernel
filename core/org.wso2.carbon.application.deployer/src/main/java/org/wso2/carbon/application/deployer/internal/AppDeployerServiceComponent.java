@@ -23,17 +23,15 @@ import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.wso2.carbon.application.deployer.handler.*;
 import org.wso2.carbon.application.deployer.service.ApplicationManagerService;
-import org.wso2.carbon.application.deployer.handler.RegistryResourceUndeployer;
-import org.wso2.carbon.application.deployer.handler.DefaultAppUndeployer;
-import org.wso2.carbon.application.deployer.handler.RegistryResourceDeployer;
-import org.wso2.carbon.application.deployer.handler.DefaultAppDeployer;
 import org.wso2.carbon.application.deployer.AppDeployerConstants;
 import org.wso2.carbon.application.deployer.Feature;
 import org.wso2.carbon.application.deployer.AppDeployerUtils;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -43,6 +41,8 @@ import java.net.URL;
  * @scr.component name="application.deployer.dscomponent" immediate="true"
  * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
  * cardinality="1..1" policy="dynamic" bind="setRegistryService" unbind="unsetRegistryService"
+ * @scr.reference name="app.handler" interface="org.wso2.carbon.application.deployer.handler.AppDeploymentHandler"
+ * cardinality="0..n" policy="dynamic" bind="setAppHandler" unbind="unsetAppHandler"
  */
 
 public class AppDeployerServiceComponent {
@@ -52,6 +52,7 @@ public class AppDeployerServiceComponent {
     private static BundleContext bundleContext;
     private static ServiceRegistration appManagerRegistration;
     private static Map<String, List<Feature>> requiredFeatures;
+    private List<AppDeploymentHandler> appHandlers = new ArrayList<AppDeploymentHandler>();
 
     private static final Log log = LogFactory.getLog(AppDeployerServiceComponent.class);
 
@@ -60,13 +61,14 @@ public class AppDeployerServiceComponent {
             bundleContext = ctxt.getBundleContext();
             ApplicationManager applicationManager = ApplicationManager.getInstance();
 
-            // register default undeployment handlers before registering deployment handlers
-            applicationManager.registerUndeploymentHandler(new RegistryResourceUndeployer());
-            applicationManager.registerUndeploymentHandler(new DefaultAppUndeployer());
-
             // now register deployment handlers
             applicationManager.registerDeploymentHandler(new RegistryResourceDeployer());
             applicationManager.registerDeploymentHandler(new DefaultAppDeployer());
+
+            // register app handlers coming from other bundles
+            for (AppDeploymentHandler handler : appHandlers) {
+                applicationManager.registerDeploymentHandler(handler);
+            }
 
             // register ApplicationManager as a service
             appManagerRegistration = ctxt.getBundleContext().registerService(
@@ -102,6 +104,14 @@ public class AppDeployerServiceComponent {
 
     protected void unsetRegistryService(RegistryService regService) {
         registryService = null;
+    }
+
+    protected void setAppHandler(AppDeploymentHandler handler) {
+        appHandlers.add(handler);
+    }
+
+    protected void unsetAppHandler(AppDeploymentHandler handler) {
+        appHandlers.remove(handler);
     }
 
     public static RegistryService getRegistryService() throws Exception {
