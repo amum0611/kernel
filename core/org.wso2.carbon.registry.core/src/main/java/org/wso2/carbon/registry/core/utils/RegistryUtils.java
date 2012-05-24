@@ -55,6 +55,9 @@ import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -1646,6 +1649,46 @@ public final class RegistryUtils {
             absolutePath.append(pathParts[i]).append("/");
         }
         return absolutePath.append(pathParts[pathParts.length - 1]).toString();
+    }
+
+    /**
+     * Load the class with the given name
+     *
+     * @param name name of the class
+     *
+     * @return java class
+     * @throws ClassNotFoundException if the class does not exists in the classpath
+     */
+    public static Class loadClass(String name) throws ClassNotFoundException {
+        try {
+            return Class.forName(name);
+        } catch(ClassNotFoundException e) {
+            File extensionLibDirectory = new File(RegistryUtils.getExtensionLibDirectoryPath());
+            if (extensionLibDirectory.exists() && extensionLibDirectory.isDirectory()) {
+                File[] files = extensionLibDirectory.listFiles(new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        return name != null && name.endsWith(".jar");
+                    }
+                });
+                if (files != null && files.length > 0) {
+                    List<URL> urls = new ArrayList<URL>(files.length);
+                    for(File file : files) {
+                        try {
+                            urls.add(file.toURI().toURL());
+                        } catch (MalformedURLException ignore) { }
+                    }
+                    ClassLoader origTCCL = Thread.currentThread().getContextClassLoader();
+                    try {
+                        ClassLoader cl = new URLClassLoader(urls.toArray(new URL[urls.size()]),
+                                RegistryUtils.class.getClassLoader());
+                        return cl.loadClass(name);
+                    } finally {
+                        Thread.currentThread().setContextClassLoader(origTCCL);
+                    }
+                }
+            }
+            throw e;
+        }
     }
 
     /**

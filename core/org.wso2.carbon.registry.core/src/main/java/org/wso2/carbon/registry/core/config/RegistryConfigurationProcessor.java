@@ -463,7 +463,7 @@ public class RegistryConfigurationProcessor {
                 throw new RegistryException("Invalid aspect element , required " +
                         "values are missing " + aspect.toString());
             }
-            Class handlerClass = loadClass(clazz);
+            Class handlerClass = RegistryUtils.loadClass(clazz);
             if (aspect.getChildElements().hasNext()) {
                 try {
                     Constructor constructor =
@@ -898,7 +898,7 @@ public class RegistryConfigurationProcessor {
 
             Class handlerClass;
             try {
-                handlerClass = loadClass(handlerClassName);
+                handlerClass = RegistryUtils.loadClass(handlerClassName);
             } catch (ClassNotFoundException e) {
                 String msg = "Could not find the handler class " + handlerClassName +
                         ". This handler will not be registered. All handler and " +
@@ -940,7 +940,7 @@ public class RegistryConfigurationProcessor {
 
             Class filterClass;
             try {
-                filterClass = loadClass(filterClassName);
+                filterClass = RegistryUtils.loadClass(filterClassName);
             } catch (ClassNotFoundException e) {
                 String msg = "Could not find the filter class " +
                         filterClassName + ". " + handlerClassName +
@@ -975,7 +975,7 @@ public class RegistryConfigurationProcessor {
 
                     Class editProcessorClass;
                     try {
-                        editProcessorClass = loadClass(processorClassName);
+                        editProcessorClass = RegistryUtils.loadClass(processorClassName);
                     } catch (ClassNotFoundException e) {
                         String msg = "Could not find the edit processor class " +
                                 processorClassName + ". " + handlerClassName +
@@ -991,38 +991,6 @@ public class RegistryConfigurationProcessor {
                 }
             }
             return this;
-        }
-    }
-
-    private static Class loadClass(String name) throws ClassNotFoundException {
-        try {
-            return Class.forName(name);
-        } catch(ClassNotFoundException e) {
-            File extensionLibDirectory = new File(RegistryUtils.getExtensionLibDirectoryPath());
-            if (extensionLibDirectory.exists() && extensionLibDirectory.isDirectory()) {
-                File[] files = extensionLibDirectory.listFiles(new FilenameFilter() {
-                    public boolean accept(File dir, String name) {
-                        return name != null && name.endsWith(".jar");
-                    }
-                });
-                if (files != null && files.length > 0) {
-                    List<URL> urls = new ArrayList<URL>(files.length);
-                    for(File file : files) {
-                        try {
-                            urls.add(file.toURI().toURL());
-                        } catch (MalformedURLException ignore) { }
-                    }
-                    ClassLoader origTCCL = Thread.currentThread().getContextClassLoader();
-                    try {
-                        ClassLoader cl = new URLClassLoader(urls.toArray(new URL[urls.size()]),
-                                RegistryConfigurationProcessor.class.getClassLoader());
-                        return cl.loadClass(name);
-                    } finally {
-                        Thread.currentThread().setContextClassLoader(origTCCL);
-                    }
-                }
-            }
-            throw e;
         }
     }
 }
