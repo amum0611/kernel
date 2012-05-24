@@ -899,7 +899,7 @@ public class CarbonUtils {
      * @param userName User calling the service.
      * @param password Password of the user.
      * @param rememberMe <code>true</code> if UI asks to persist remember me cookie.
-     * @param msgContext The service client used in the communication.
+     * @param msgContext The MessageContext of the message.
      */
 
     public static void setBasicAccessSecurityHeaders(String userName, String password, boolean rememberMe,
