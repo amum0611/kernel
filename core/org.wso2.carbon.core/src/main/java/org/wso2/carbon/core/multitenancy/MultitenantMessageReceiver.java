@@ -407,6 +407,12 @@ public class MultitenantMessageReceiver implements MessageReceiver {
                 to.substring(to.indexOf(servicePath) + servicePath.length() + 1));
         tenantInMsgCtx.setProperty("REST_URL_POSTFIX", restSuffic);
 
+        // handling requests with an empty service part
+        if("".equals(servicePart)){
+        	// we assume that the request should go to the default service
+        	tenantInMsgCtx.setAxisService(tenantConfigCtx.getAxisConfiguration().getService("__SynapseService"));
+        }
+
         InputStream in = (InputStream) mainInMsgContext.getProperty("nhttp.input.stream");
         OutputStream os = (OutputStream) mainInMsgContext.getProperty("nhttp.output.stream");
         String contentType = (String) mainInMsgContext.getProperty("ContentType");
