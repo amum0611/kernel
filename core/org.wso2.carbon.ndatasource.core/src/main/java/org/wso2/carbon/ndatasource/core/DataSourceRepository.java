@@ -225,7 +225,8 @@ public class DataSourceRepository implements GroupEventListener {
 				    tmpCtx = context.createSubcontext(token);
 				} catch (NamingException e) {
 					throw new DataSourceException(
-							"Error in creating JNDI subcontext '" + context + "/" + token);
+							"Error in creating JNDI subcontext '" + context +
+							"/" + token + ": " + e.getMessage(), e);
 				}
 			}
 			context = tmpCtx;
