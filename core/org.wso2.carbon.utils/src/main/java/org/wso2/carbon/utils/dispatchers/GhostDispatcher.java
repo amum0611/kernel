@@ -19,13 +19,15 @@ package org.wso2.carbon.utils.dispatchers;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.AxisOperation;
+import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.HandlerDescription;
+import org.apache.axis2.description.Parameter;
 import org.apache.axis2.engine.AbstractDispatcher;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.utils.deployment.GhostDeployerUtils;
 
 /**
@@ -43,11 +45,26 @@ public class GhostDispatcher extends AbstractDispatcher {
     public InvocationResponse invoke(MessageContext msgctx) throws AxisFault {
         // if the service is not already dispatched, try to find the service within ghost list
         if (msgctx.getAxisService() == null) {
-            String serviceName = GhostDeployerUtils.dispatchServiceFromTransitGhosts(msgctx);
-            if (serviceName != null) {
+            AxisService transitService = GhostDeployerUtils.dispatchServiceFromTransitGhosts(msgctx);
+            if (transitService != null) {
                 // if the service is found in the temp ghost list, we have to wait until the
-                // particular actual service is deployed..
-                GhostDeployerUtils.waitForActualServiceToDeploy(serviceName, msgctx);
+                // particular actual service is deployed or unloaded..
+                Parameter isUnloadingParam = transitService.
+                        getParameter(CarbonConstants.IS_SERVICE_BEING_UNLOADED);
+                if (isUnloadingParam != null && "true".equals(isUnloadingParam.getValue())) {
+                    // wait until service is unloaded by the unload task
+                    GhostDeployerUtils.waitForServiceToLeaveTransit(transitService.getName(),
+                                                             msgctx.getConfigurationContext().
+                                                                     getAxisConfiguration());
+                    // now the service is unloaded and in ghost form so we can safely
+                    // continue with invocation
+                    findServiceAndOperation(transitService.getName(), msgctx);
+                } else {
+                    // wait until service is deployed
+                    GhostDeployerUtils.waitForServiceToLeaveTransit(transitService.getName(),
+                                                             msgctx.getConfigurationContext().
+                                                                     getAxisConfiguration());
+                }
             }
             return InvocationResponse.CONTINUE;
         }
@@ -81,18 +98,18 @@ public class GhostDispatcher extends AbstractDispatcher {
     public AxisService findService(MessageContext messageContext) throws AxisFault {
         AxisService dispatchedService = messageContext.getAxisService();
         AxisService newService = null;
-        
+
         // check whether this is a ghost service
         if (GhostDeployerUtils.isGhostService(dispatchedService)) {
             AxisConfiguration axisConfig = messageContext.getConfigurationContext()
                     .getAxisConfiguration();
-            
+
             try {
-            	newService = GhostDeployerUtils.deployActualService(axisConfig,
-                    dispatchedService);
+                newService = GhostDeployerUtils.deployActualService(axisConfig,
+                                                                    dispatchedService);
             } catch (AxisFault e) {
-            	log.error("Error deploying service. ", e);
-            	throw e;
+                log.error("Error deploying service. ", e);
+                throw e;
             }
             if (newService != null) {
                 messageContext.setAxisService(newService);
@@ -107,6 +124,32 @@ public class GhostDispatcher extends AbstractDispatcher {
     @Override
     public void initDispatcher() {
         init(new HandlerDescription(NAME));
+    }
+
+    private void findServiceAndOperation(String serviceName, MessageContext msgctx)
+            throws AxisFault {
+        AxisService newService = null;
+        AxisConfiguration axisConfig = msgctx.getConfigurationContext().getAxisConfiguration();
+        AxisService ghostService = axisConfig.getService(serviceName);
+        // find the service and operation
+        Parameter dispatchedGhostParam = ghostService
+                .getParameter(CarbonConstants.GHOST_SERVICE_PARAM);
+        if (dispatchedGhostParam != null && "true".equals(dispatchedGhostParam.getValue())) {
+            newService = GhostDeployerUtils.deployActualService(axisConfig, ghostService);
+            if (newService != null) {
+                msgctx.setAxisService(newService);
+                // we have to remove the old binding message as well. Message context will
+                // generate the new binding message when needed..
+                msgctx.removeProperty(Constants.AXIS_BINDING_MESSAGE);
+            }
+        }
+        if (newService != null) {
+            findOperation(newService, msgctx);
+        }
+        // set the last usage timestamp in the dispatched service
+        if (msgctx.getAxisService() != null) {
+            GhostDeployerUtils.updateLastUsedTime(msgctx.getAxisService());
+        }
     }
 }
 

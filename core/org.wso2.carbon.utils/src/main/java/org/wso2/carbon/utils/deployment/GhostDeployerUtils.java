@@ -224,11 +224,11 @@ public class GhostDeployerUtils {
      * JMS, this won't work.
      *
      * @param msgCtx - MessageContext for the current request
-     * @return - Service name if found, else null
+     * @return - Service  if found, else null
      * @throws AxisFault - on errors while calling Axis2 APIs
      */
-    public static String dispatchServiceFromTransitGhosts(MessageContext msgCtx) throws AxisFault {
-        String actualServiceName = null;
+    public static AxisService dispatchServiceFromTransitGhosts(MessageContext msgCtx) throws AxisFault {
+        AxisService actualService = null;
         // get the map of ghost services which are being redeployed..
         Map<String, AxisService> transitGhostMap = getTransitGhostServicesMap(msgCtx
                 .getConfigurationContext().getAxisConfiguration());
@@ -260,18 +260,18 @@ public class GhostDeployerUtils {
                  * To avoid performance issues if an incorrect URL comes in with a long service name
                  * including lots of '/' separated strings, we limit the hierarchical depth to 10
                  */
-                while (actualServiceName == null && count < parts.length &&
+                while (actualService == null && count < parts.length &&
                         count < Constants.MAX_HIERARCHICAL_DEPTH) {
                     tmpServiceName = count == 0 ? tmpServiceName + parts[count] :
                             tmpServiceName + "/" + parts[count];
                     if (transitGhostMap.containsKey(tmpServiceName)) {
-                        actualServiceName = tmpServiceName;
+                        actualService = transitGhostMap.get(tmpServiceName);
                     }
                     count++;
                 }
             }
         }
-        return actualServiceName;
+        return actualService;
     }
 
     /**
@@ -281,13 +281,12 @@ public class GhostDeployerUtils {
      * service is deployed, it is safe to forward the request further..
      *
      * @param serviceName - name of the service
-     * @param msgCtx - current MessageContext instance
+     * @param axisConfig - current axisConfig instance
      * @throws AxisFault - on errors while reading ghost map
      */
-    public static void waitForActualServiceToDeploy(String serviceName, MessageContext msgCtx)
+    public static void waitForServiceToLeaveTransit(String serviceName, AxisConfiguration axisConfig)
             throws AxisFault {
-        Map<String, AxisService> transitGhostMap = getTransitGhostServicesMap(msgCtx
-                .getConfigurationContext().getAxisConfiguration());
+        Map<String, AxisService> transitGhostMap = getTransitGhostServicesMap(axisConfig);
         while (transitGhostMap.containsKey(serviceName)) {
             // wait until the service is removed from ghost map
             try {
@@ -543,6 +542,44 @@ public class GhostDeployerUtils {
                     ghostFileName);
         }
         return null;
+    }
+
+    /**
+     * Adds the given service group to the transit map
+     *
+     * @param serviceGroup - to be added to transit map
+     * @param axisConfig - current axis configuration
+     * @throws AxisFault - on error
+     */
+    public static void addServiceGroupToTransitMap(AxisServiceGroup serviceGroup,
+                                            AxisConfiguration axisConfig)
+            throws AxisFault {
+        Map<String, AxisService> transitGhostList =
+                getTransitGhostServicesMap(axisConfig);
+        for (Iterator<AxisService> servicesItr = serviceGroup.getServices();
+             servicesItr.hasNext(); ) {
+            AxisService service = servicesItr.next();
+            transitGhostList.put(service.getName(), service);
+        }
+    }
+
+    /**
+     * Removes given service group from transit map
+     *
+     * @param serviceGroup - to be removed from transit map
+     * @param axisConfig - current axis configuration
+     * @throws AxisFault - on error
+     */
+    public static void removeServiceGroupFromTransitMap(AxisServiceGroup serviceGroup,
+                                                 AxisConfiguration axisConfig)
+            throws AxisFault {
+        Map<String, AxisService> transitGhostList =
+                getTransitGhostServicesMap(axisConfig);
+        for (Iterator<AxisService> servicesItr = serviceGroup.getServices();
+             servicesItr.hasNext(); ) {
+            AxisService service = servicesItr.next();
+            transitGhostList.remove(service.getName());
+        }
     }
 
 }
