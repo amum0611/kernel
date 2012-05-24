@@ -32,7 +32,8 @@ public class RDBMSDataSourceReader implements DataSourceReader {
 		return RDBMSDataSourceConstants.RDBMS_DATASOURCE_TYPE;
 	}
 
-	private RDBMSConfiguration loadConfig(String xmlConfiguration) throws DataSourceException {
+	public static RDBMSConfiguration loadConfig(String xmlConfiguration) 
+			throws DataSourceException {
 		try {
 		    JAXBContext ctx = JAXBContext.newInstance(RDBMSConfiguration.class);
 		    return (RDBMSConfiguration) ctx.createUnmarshaller().unmarshal(
@@ -46,7 +47,7 @@ public class RDBMSDataSourceReader implements DataSourceReader {
 	@Override
 	public Object createDataSource(String xmlConfiguration)
 			throws DataSourceException {
-		return (new RDBMSDataSource(this.loadConfig(xmlConfiguration)).getDataSource());
+		return (new RDBMSDataSource(loadConfig(xmlConfiguration)).getDataSource());
 	}
 
 }
