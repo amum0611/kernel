@@ -27,16 +27,15 @@ public class PersistenceMetaDataDeployer extends AbstractDeployer {
 
     private AxisConfiguration axisConfig;
     String metaDataDir;
-    private PersistenceFactory pf;
+    private PersistenceFactory persistenceFactory;
 
     @Override
     public void init(ConfigurationContext configurationContext) {
         axisConfig = configurationContext.getAxisConfiguration();
         try {
-            pf = PersistenceFactory.getInstance(axisConfig);
-        } catch (AxisFault axisFault) {
-            log.error("Error obtaining persistence factory.");
-            axisFault.printStackTrace();
+            persistenceFactory = PersistenceFactory.getInstance(axisConfig);
+        } catch (AxisFault e) {
+            log.error("Error obtaining persistence factory.", e);
         }
     }
 
@@ -73,31 +72,30 @@ public class PersistenceMetaDataDeployer extends AbstractDeployer {
                 }
                 return;
             }
-            if(pf.getServiceGroupFilePM().isUserModification(serviceGroup.getServiceGroupName())){
+            if(persistenceFactory.getServiceGroupFilePM().isUserModification(serviceGroup.getServiceGroupName())){
                 if(log.isDebugEnabled()){
                     log.debug("User modified service : " + serviceGroup.getServiceGroupName());
                 }
                 return;
             }
 
-            ServiceGroupPersistenceManager sgpm = pf.getServiceGroupPM();
-            ServicePersistenceManager spm = pf.getServicePM();
+            ServiceGroupPersistenceManager serviceGroupPM = persistenceFactory.getServiceGroupPM();
+            ServicePersistenceManager servicePM = persistenceFactory.getServicePM();
 
             try {
-                sgpm.handleExistingServiceGroupInit(serviceGroup);
+                serviceGroupPM.handleExistingServiceGroupInit(serviceGroup);
                 for (Iterator itr = serviceGroup.getServices(); itr.hasNext(); ) {
                     AxisService axisService = (AxisService) itr.next();
-                    OMElement serviceEle = pf.getServicePM().getService(axisService);
+                    OMElement serviceEle = persistenceFactory.getServicePM().getService(axisService);
                     if (serviceEle != null) {
-                        spm.handleExistingServiceInit(axisService);
+                        servicePM.handleExistingServiceInit(axisService);
                     }
                 }
 
-            } catch (AxisFault axisFault) {
-                log.error(axisFault.getMessage());
-                axisFault.printStackTrace();
+            } catch (AxisFault e) {
+                log.error(e.getMessage(), e);
             } catch (Exception e) {
-                log.error(e.getMessage());
+                log.error(e.getMessage(), e);
                 throw new DeploymentException(e);
             }
 
@@ -107,15 +105,16 @@ public class PersistenceMetaDataDeployer extends AbstractDeployer {
             }
 
             AxisModule module = axisConfig.getModule(name);
+            String version = PersistenceUtils.getModuleVersion(module);
             try {
-                OMElement moduleEle = (OMElement) pf.getModuleFilePM().get(name,
+                OMElement moduleEle = (OMElement) persistenceFactory.getModuleFilePM().get(name,
                                                    Resources.ModuleProperties.VERSION_XPATH +
                                                    PersistenceUtils.getXPathAttrPredicate(
                                                            Resources.ModuleProperties.VERSION_ID,
-                                                           module.getVersion().toString()));
-                ModulePersistenceManager mpm = pf.getModulePM();
+                                                           version));
+                ModulePersistenceManager mpm = persistenceFactory.getModulePM();
 
-                if(pf.getModuleFilePM().isUserModification(module.getName())){
+                if(persistenceFactory.getModuleFilePM().isUserModification(module.getName())){
                     if(log.isDebugEnabled()){
                         log.debug("user modified module : " + module.getName());
                     }
@@ -123,11 +122,9 @@ public class PersistenceMetaDataDeployer extends AbstractDeployer {
                 }
                 mpm.handleExistingModuleInit(moduleEle, module);
             } catch (PersistenceDataNotFoundException e) {
-                log.error(e.getMessage());
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             } catch (Exception e) {
-                log.error(e.getMessage());
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
 
         }
