@@ -56,6 +56,10 @@ public class ResourcePaginator extends Paginator {
     }
 
     public int doEndTag() throws JspException {
+        if (getNumberOfPages() < 2) {
+            // Pagination is not required.
+            return 0;
+        }
         String next = "Next";
         String prev = "Prev";
         String pageName = "Page {0}";
