@@ -519,8 +519,12 @@ public class RegistryUserStoreManager implements UserStoreManager {
     public boolean isBulkImportSupported() throws UserStoreException {
         return coreRealm.getUserStoreManager().isBulkImportSupported();
     }
-    
-    
-    
-    
+
+    @Override
+    public String[] getUserList(String claim, String claimValue, String profileName)
+                                                throws UserStoreException {
+        return coreRealm.getUserStoreManager().getUserList(claim, claimValue, profileName);
+    }
+
+
 }
