@@ -76,6 +76,7 @@
                 <include name="abdera*.jar"/>
                 <include name="org.wso2.carbon.registry.core*.jar"/>
                 <include name="org.wso2.carbon.registry.ws*.jar"/><!-- used by the g-reg ws client sample-->
+                <include name="org.wso2.carbon.registry.admin.api*.jar"/><!-- used for g-reg JMX API-->
 		        <include name="org.wso2.carbon.authenticator.proxy*.jar"/> <!-- used by the g-reg ws client sample-->
 		        <include name="org.wso2.carbon.authenticator.stub*.jar"/> <!-- used by the g-reg ws client sample-->
                 <include name="org.wso2.carbon.user.core*.jar"/>
