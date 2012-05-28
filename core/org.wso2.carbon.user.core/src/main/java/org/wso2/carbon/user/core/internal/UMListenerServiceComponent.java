@@ -19,6 +19,7 @@
 package org.wso2.carbon.user.core.internal;
 
 import org.wso2.carbon.user.core.listener.AuthorizationManagerListener;
+import org.wso2.carbon.user.core.listener.UserOperationEventListener;
 import org.wso2.carbon.user.core.listener.UserStoreManagerListener;
 import org.wso2.carbon.user.core.tenant.LDAPTenantManager;
 
@@ -36,6 +37,11 @@ import java.util.*;
  *                cardinality="0..n" policy="dynamic"
  *                bind="setUserStoreManagerListenerService"
  *                unbind="unsetUserStoreManagerListenerService"
+ * @scr.reference name="user.operation.event.listener.service"
+ *                interface="org.wso2.carbon.user.core.listener.UserOperationEventListener"
+ *                cardinality="0..n" policy="dynamic"
+ *                bind="setUserOperationEventListenerService"
+ *                unbind="unsetUserOperationEventListenerService" *
  * @scr.reference name="ldap.tenant.manager.listener.service"
  *                interface="org.wso2.carbon.user.core.tenant.LDAPTenantManager"
  *                cardinality="0..n" policy="dynamic"
@@ -47,8 +53,10 @@ public class UMListenerServiceComponent {
 
     private static Map<Integer, AuthorizationManagerListener> authorizationManagerListeners;
     private static Map<Integer, UserStoreManagerListener> userStoreManagerListeners;
+    private static Map<Integer, UserOperationEventListener> userOperationEventListeners;
     private static Collection<AuthorizationManagerListener> authorizationManagerListenerCollection;
     private static Collection<UserStoreManagerListener> userStoreManagerListenerCollection;
+    private static Collection<UserOperationEventListener> userOperationEventListenerCollection;
     private static Map<Integer, LDAPTenantManager> tenantManagers;
     
     protected static synchronized void setAuthorizationManagerListenerService(
@@ -92,6 +100,26 @@ public class UMListenerServiceComponent {
         }
     }
 
+    protected static synchronized void setUserOperationEventListenerService(
+            UserOperationEventListener userOperationEventListenerService) {
+        userOperationEventListenerCollection = null;
+        if (userOperationEventListeners == null) {
+            userOperationEventListeners = new TreeMap<Integer, UserOperationEventListener>();
+        }
+        userOperationEventListeners.put(userOperationEventListenerService.getExecutionOrderId(),
+                userOperationEventListenerService);
+    }
+
+    protected static synchronized void unsetUserOperationEventListenerService(
+            UserOperationEventListener userOperationEventListenerService) {
+        if (userOperationEventListenerService != null &&
+                userOperationEventListeners != null) {
+            userOperationEventListeners.remove(userOperationEventListenerService.getExecutionOrderId());
+            userOperationEventListenerCollection = null;
+        }
+    }
+
+
     public static synchronized Collection<AuthorizationManagerListener> getAuthorizationManagerListeners() {
         if (authorizationManagerListeners == null) {
             authorizationManagerListeners = new TreeMap<Integer, AuthorizationManagerListener>();
@@ -113,6 +141,17 @@ public class UMListenerServiceComponent {
         }
         return userStoreManagerListenerCollection;
     }
+
+    public static synchronized Collection<UserOperationEventListener> getUserOperationEventListeners() {
+        if (userOperationEventListeners == null) {
+            userOperationEventListeners = new TreeMap<Integer, UserOperationEventListener>();
+        }
+        if (userOperationEventListenerCollection == null) {
+            userOperationEventListenerCollection =
+                    userOperationEventListeners.values();
+        }
+        return userOperationEventListenerCollection;
+    }    
 
     /**
      * Main purpose of this method is to make a dependency to LDAP server component.

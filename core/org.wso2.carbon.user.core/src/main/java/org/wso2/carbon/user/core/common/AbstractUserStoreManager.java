@@ -31,6 +31,9 @@ import org.wso2.carbon.user.core.claim.Claim;
 import org.wso2.carbon.user.core.claim.ClaimManager;
 import org.wso2.carbon.user.core.claim.ClaimMapping;
 import org.wso2.carbon.user.core.hybrid.HybridRoleManager;
+import org.wso2.carbon.user.core.internal.UMListenerServiceComponent;
+import org.wso2.carbon.user.core.listener.UserOperationEventListener;
+import org.wso2.carbon.user.core.listener.UserStoreManagerListener;
 import org.wso2.carbon.user.core.profile.ProfileConfiguration;
 import org.wso2.carbon.user.core.profile.ProfileConfigurationManager;
 
@@ -107,7 +110,7 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
             profileName = UserCoreConstants.DEFAULT_PROFILE;
         }
 
-        String[] claims = new String[0];
+        String[] claims;
         try {
             claims = claimManager.getAllClaimUris();
         } catch (org.wso2.carbon.user.api.UserStoreException e) {
@@ -440,4 +443,432 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
         }
         return userName;
     }
+
+    @Override
+    public String[] getUserList(String claim, String claimValue, String profileName)
+                                                                    throws UserStoreException {
+        String property;
+        try {
+            property = claimManager.getAttributeName(claim);
+        } catch (org.wso2.carbon.user.api.UserStoreException e) {
+            throw new UserStoreException(e);
+        }
+
+        return getUserListFromProperties(property, claimValue, profileName);
+    }
+
+    @Override
+    public void updateCredential(String userName, Object newCredential, Object oldCredential)
+                                                                        throws UserStoreException {
+
+        for (UserStoreManagerListener listener : UMListenerServiceComponent
+                .getUserStoreManagerListeners()) {
+            if (!listener.updateCredential(userName, newCredential, oldCredential, this)) {
+                return;
+            }
+        }
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPreUpdateCredential(userName, newCredential, oldCredential, this)) {
+                return;
+            }
+        }
+
+        doUpdateCredential(userName, newCredential, oldCredential);
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPostUpdateCredential(userName, this)) {
+                return;
+            }
+        }
+
+    }
+
+    @Override
+    public void updateCredentialByAdmin(String userName, Object newCredential)
+                                                                        throws UserStoreException {
+        
+        for (UserStoreManagerListener listener : UMListenerServiceComponent
+                .getUserStoreManagerListeners()) {
+            if (!listener.updateCredentialByAdmin(userName, newCredential, this)) {
+                return;
+            }
+        }
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPreUpdateCredentialByAdmin(userName, newCredential, this)) {
+                return;
+            }
+        }
+
+        doUpdateCredentialByAdmin(userName, newCredential);
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPostUpdateCredentialByAdmin(userName, this)) {
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void deleteUser(String userName) throws UserStoreException {
+
+        for (UserStoreManagerListener listener : UMListenerServiceComponent
+                .getUserStoreManagerListeners()) {
+            if (!listener.deleteUser(userName, this)) {
+                return;
+            }
+        }
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPreDeleteUser(userName, this)) {
+                return;
+            }
+        }
+
+        doDeleteUser(userName);
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPostDeleteUser(userName, this)) {
+                return;
+            }
+        }
+    }
+
+
+    @Override
+    public void setUserClaimValue(String userName, String claimURI, String claimValue,
+                                                    String profileName) throws UserStoreException {
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPreSetUserClaimValue(userName, claimURI, claimValue, profileName, this)) {
+                return;
+            }
+        }
+
+        doSetUserClaimValue(userName, claimURI, claimValue, profileName);
+        
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPostSetUserClaimValue(userName, this)) {
+                return;
+            }
+        }
+
+    }
+
+    @Override
+    public void setUserClaimValues(String userName, Map<String, String> claims, String profileName)
+                                                                        throws UserStoreException {
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPreSetUserClaimValues(userName, claims, profileName, this)) {
+                return;
+            }
+        }
+
+        doSetUserClaimValues(userName, claims, profileName);
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPostSetUserClaimValues(userName, this)) {
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void deleteUserClaimValue(String userName, String claimURI, String profileName)
+                                                                        throws UserStoreException {
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPreDeleteUserClaimValue(userName, claimURI, profileName, this)) {
+                return;
+            }
+        }
+
+        doDeleteUserClaimValue(userName, claimURI, profileName);
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPostDeleteUserClaimValue(userName, this)) {
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void deleteUserClaimValues(String userName, String[] claims, String profileName)
+                                                                        throws UserStoreException {
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPreDeleteUserClaimValues(userName, claims, profileName, this)) {
+                return;
+            }
+        }
+
+        doDeleteUserClaimValues(userName, claims, profileName);
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPostDeleteUserClaimValues(userName, this)) {
+                return;
+            }
+        }
+    }
+
+    @Override
+    public boolean authenticate(String userName, Object credential) throws UserStoreException {
+
+        for (UserStoreManagerListener listener : UMListenerServiceComponent
+                .getUserStoreManagerListeners()) {
+            if (!listener.authenticate(userName, credential, this)) {
+                return true;
+            }
+        }
+        
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPreAuthenticate(userName, credential, this)) {
+                return false;
+            }
+        }
+
+        boolean authenticated = doAuthenticate(userName, credential);
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPostAuthenticate(userName, authenticated, this)) {
+                return false;
+            }
+        }
+
+        return authenticated;
+    }
+
+    @Override
+    public void addUser(String userName, Object credential, String[] roleList, Map<String, String> claims,
+                    String profileName, boolean requirePasswordChange) throws UserStoreException {
+
+        for (UserStoreManagerListener listener : UMListenerServiceComponent
+                .getUserStoreManagerListeners()) {
+            if (!listener.addUser(userName, credential, roleList, claims, profileName, this)) {
+                return;
+            }
+        }        
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPreAddUser(userName, credential, claims, this)) {
+                return;
+            }
+        }
+
+        doAddUser(userName, credential, roleList, claims, profileName, requirePasswordChange);
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPostAddUser(userName, this)) {
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void addUser(String userName, Object credential, String[] roleList, Map<String, String> claims,
+                                                    String profileName) throws UserStoreException {
+
+        for (UserStoreManagerListener listener : UMListenerServiceComponent
+                .getUserStoreManagerListeners()) {
+            if (!listener.addUser(userName, credential, roleList, claims, profileName, this)) {
+                return;
+            }
+        }
+        
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPreAddUser(userName, credential, claims, this)) {
+                return;
+            }
+        }
+
+        doAddUser(userName, credential, roleList, claims, profileName);
+
+        for (UserOperationEventListener listener : UMListenerServiceComponent
+                .getUserOperationEventListeners()) {
+            if (!listener.doPostAddUser(userName, this)) {
+                return;
+            }
+        }
+    }
+
+    /**
+     * Retrieves a list of user names for given user's property in user profile
+     *
+     * @param property
+     *              user property in user profile
+     * @param value
+ *                  value of property
+     * @param profileName
+     *              profile name, can be null. If null the default profile is considered.
+     * @return      An array of user names
+     * @throws UserStoreException
+     *              if the operation failed
+     */
+    public abstract String[] getUserListFromProperties(String property, String value, String profileName)
+                    throws UserStoreException ;
+
+    /**
+     * Given the user name and a credential object, the implementation code must
+     * validate whether the user is authenticated.
+     *
+     * @param userName
+     *            The user name
+     * @param credential
+     *            The credential of a user
+     * @return If the value is true the provided credential match with the user
+     *         name. False is returned for invalid credential, invalid user name
+     *         and mismatching credential with user name.
+     * @throws UserStoreException
+     *             An unexpected exception has occurred
+     */
+    public abstract boolean doAuthenticate(String userName, Object credential) throws UserStoreException;
+
+    /**
+     * Add a user to the user store.
+     *
+     * @param userName
+     *            User name of the user
+     * @param credential
+     *            The credential/password of the user
+     * @param roleList
+     *            The roles that user belongs
+     * @param claims
+     *            Properties of the user
+     * @param profileName
+     *            profile name, can be null. If null the default profile is considered.
+     * @throws UserStoreException
+ *              An unexpected exception has occurred
+     */
+    public abstract void doAddUser(String userName, Object credential, String[] roleList,
+                       Map<String, String> claims, String profileName) throws UserStoreException;
+
+
+    public abstract void doAddUser(String userName, Object credential, String[] roleList,
+                                    Map<String, String> claims, String profileName,
+                                    boolean requirePasswordChange) throws UserStoreException;
+
+    /**
+     * Update the credential/password of the user
+     *
+     * @param userName
+     *            The user name
+     * @param newCredential
+     *            The new credential/password
+     * @param oldCredential
+     *            The old credential/password
+     * @throws UserStoreException
+     *              An unexpected exception has occurred
+     */
+    public abstract void doUpdateCredential(String userName, Object newCredential, Object oldCredential)
+                                                                        throws UserStoreException;
+    /**
+     * Update credential/password by the admin of another user
+     *
+     * @param userName
+     *            The user name
+     * @param newCredential
+     *            The new credential
+     * @throws UserStoreException
+     *          An unexpected exception has occurred
+     */
+    public abstract void doUpdateCredentialByAdmin(String userName, Object newCredential)
+                                                                        throws UserStoreException;
+    /**
+     * Delete the user with the given user name
+     *
+     * @param userName
+     *            The user name
+     * @throws UserStoreException
+     *              An unexpected exception has occurred
+     */
+    public abstract void doDeleteUser(String userName) throws UserStoreException;
+
+    /**
+     * Set a single user claim value
+     *
+     * @param userName
+     *            The user name
+     * @param claimURI
+     *            The claim URI
+     * @param claimValue
+     *            The value
+     * @param profileName
+     *            The profile name, can be null. If null the default profile is
+     *            considered.
+     * @throws UserStoreException
+     *              An unexpected exception has occurred
+     */
+    public abstract void doSetUserClaimValue(String userName, String claimURI, String claimValue,
+                                                    String profileName) throws UserStoreException;
+
+    /**
+     * Set many user claim values
+     *
+     * @param userName
+     *            The user name
+     * @param claims
+     *            Map of claim URIs against values
+     * @param profileName
+     *            The profile name, can be null. If null the default profile is
+     *            considered.
+     * @throws UserStoreException
+     *              An unexpected exception has occurred
+     */
+    public abstract void doSetUserClaimValues(String userName, Map<String, String> claims,
+                                              String profileName) throws UserStoreException;
+
+    /**
+     * Delete a single user claim value
+     *
+     * @param userName
+     *            The user name
+     * @param claimURI
+     *            Name of the claim
+     * @param profileName
+     *            The profile name, can be null. If null the default profile is
+     *            considered.
+     * @throws UserStoreException
+     *              An unexpected exception has occurred
+     */
+    public abstract void doDeleteUserClaimValue(String userName, String claimURI, String profileName)
+                                                                        throws UserStoreException;
+
+    /**
+     * Delete many user claim values.
+     *
+     * @param userName
+     *            The user name
+     * @param claims
+     *            URIs of the claims to be deleted.
+     * @param profileName
+     *            The profile name, can be null. If null the default profile is
+     *            considered.
+     * @throws UserStoreException
+     *              An unexpected exception has occurred
+     */
+    public abstract void doDeleteUserClaimValues(String userName, String[] claims, String profileName)
+                                                                        throws UserStoreException;
+
+
 }

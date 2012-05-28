@@ -356,5 +356,15 @@ public interface UserStoreManager extends org.wso2.carbon.user.api.UserStoreMana
      * @return <code>true</code> if bulk import supported, else <code>false<code>.
      */
     boolean isBulkImportSupported() throws UserStoreException;
-    
+
+    /**
+     * Retrieves a list of user names for given user claim value
+     *
+     * @param claim  claim uri
+     * @param claimValue  claim value
+     * @param profileName  profile name, can be null. If null the default profile is considered.
+     * @return An array of user names
+     * @throws UserStoreException  if the operation failed
+     */
+    String[] getUserList(String claim, String claimValue, String profileName) throws UserStoreException;    
 }

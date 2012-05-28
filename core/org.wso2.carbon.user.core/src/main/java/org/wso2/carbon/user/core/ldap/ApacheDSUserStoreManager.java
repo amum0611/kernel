@@ -222,12 +222,12 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
         return builder.toString().toUpperCase(Locale.ENGLISH);
     }
 
-    public void addUser(String userName, Object credential, String[] roleList,
+    public void doAddUser(String userName, Object credential, String[] roleList,
                         Map<String, String> claims, String profileName) throws UserStoreException {
         this.addUser(userName, credential, roleList, claims, profileName, false);
     }
 
-    public void addUser(String userName, Object credential, String[] roleList,
+    public void doAddUser(String userName, Object credential, String[] roleList,
                         Map<String, String> claims, String profileName,
                         boolean requirePasswordChange) throws UserStoreException {
 
@@ -420,7 +420,7 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
         return passwordToStore;
     }
 
-    public void deleteUser(String userName) throws UserStoreException {
+    public void doDeleteUser(String userName) throws UserStoreException {
 
         if (realmConfig.getAdminUserName().equals(userName)) {
             throw new UserStoreException("Cannot delete admin user");
@@ -524,7 +524,7 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
         }
     }
 
-    public void updateCredential(String userName, Object newCredential, Object oldCredential)
+    public void doUpdateCredential(String userName, Object newCredential, Object oldCredential)
             throws UserStoreException {
         DirContext dirContext = this.connectionSource.getContext();
         DirContext subDirContext = null;
@@ -637,7 +637,7 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
      * @param profileName
      * @throws UserStoreException
      */
-    public void setUserClaimValues(String userName, Map<String, String> claims, String profileName)
+    public void doSetUserClaimValues(String userName, Map<String, String> claims, String profileName)
             throws UserStoreException {
 
         //get the LDAP Directory context
@@ -704,7 +704,16 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
                 if (EMPTY_ATTRIBUTE_STRING.equals(claimEntry.getValue())) {
                     currentUpdatedAttribute.clear();
                 } else {
-                    currentUpdatedAttribute.add(claimEntry.getValue());
+                    if(claimEntry.getValue() != null && claimEntry.getValue().contains(",")){
+                        String[] values = claimEntry.getValue().split(",");
+                        for(String newValue : values){
+                            if(newValue != null  && newValue.trim().length() > 0){
+                                currentUpdatedAttribute.add(newValue.trim());
+                            }
+                        }
+                    } else {
+                        currentUpdatedAttribute.add(claimEntry.getValue());
+                    }
                 }
                 updatedAttributes.put(currentUpdatedAttribute);
             }
@@ -747,6 +756,109 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
 
     }
 
+    public void doSetUserClaimValue(String userName, String claimURI, String value, String profileName)
+            throws UserStoreException {
+
+        //get the LDAP Directory context
+        DirContext dirContext = this.connectionSource.getContext();
+        DirContext subDirContext = null;
+        //search the relevant user entry by user name
+        String userSearchBase = realmConfig.getUserStoreProperty(LDAPConstants.USER_SEARCH_BASE);
+        String userSearchFilter = realmConfig.getUserStoreProperty(LDAPConstants.USER_NAME_FILTER);
+        userSearchFilter = userSearchFilter.replace("?", userName);
+
+        SearchControls searchControls = new SearchControls();
+        searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        searchControls.setReturningAttributes(null);
+
+        NamingEnumeration<SearchResult> returnedResultList = null;
+        String returnedUserEntry = null;
+
+        try {
+
+            returnedResultList = dirContext.search(userSearchBase, userSearchFilter,
+                                                   searchControls);
+            //assume only one user is returned from the search
+            //TODO:what if more than one user is returned
+            returnedUserEntry = returnedResultList.next().getName();
+
+        } catch (NamingException e) {
+
+            throw new UserStoreException("Results could not be retrieved from the directory " +
+                                         "context", e);
+        } finally {
+            JNDIUtil.closeNamingEnumeration(returnedResultList);
+        }
+
+        try {
+            Attributes updatedAttributes = new BasicAttributes(true);
+            //if there is no attribute for profile configuration in LDAP, skip updating it.
+            //get the claimMapping related to this claimURI
+            ClaimMapping claimMapping = (ClaimMapping) claimManager.getClaimMapping(claimURI);
+            String attributeName = null;
+
+            if (claimMapping != null) {
+                attributeName = claimMapping.getMappedAttribute();
+            } else {
+                attributeName = claimURI;
+            }
+            Attribute currentUpdatedAttribute = new BasicAttribute(attributeName);
+            /*if updated attribute value is null, remove its values.*/
+            if (EMPTY_ATTRIBUTE_STRING.equals(value)) {
+                currentUpdatedAttribute.clear();
+            } else {
+                if(value.contains(",")){
+                    String[] values = value.split(",");
+                    for(String newValue : values){
+                        if(newValue != null  && newValue.trim().length() > 0){
+                            currentUpdatedAttribute.add(newValue.trim());
+                        }
+                    }
+                } else {
+                    currentUpdatedAttribute.add(value);
+                }
+            }
+            updatedAttributes.put(currentUpdatedAttribute);
+
+            //update the attributes in the relevant entry of the directory store
+
+            subDirContext = (DirContext) dirContext.lookup(userSearchBase);
+            subDirContext.modifyAttributes(returnedUserEntry, DirContext.REPLACE_ATTRIBUTE, updatedAttributes);
+
+        } catch (InvalidAttributeValueException e) {
+            String errorMessage = "One or more attribute values provided are incompatible. " +
+                                  "Please check and try again.";
+            logger.error(errorMessage, e);
+            throw new UserStoreException(errorMessage, e);
+        } catch (InvalidAttributeIdentifierException e) {
+            String errorMessage = "One or more attributes you are trying to add/update are not " +
+                                  "supported by underlying LDAP.";
+            logger.error(errorMessage, e);
+            throw new UserStoreException(errorMessage, e);
+
+        } catch (NoSuchAttributeException e) {
+            String errorMessage = "One or more attributes you are trying to add/update are not " +
+                                  "supported by underlying LDAP.";
+            logger.error(errorMessage, e);
+            throw new UserStoreException(errorMessage, e);
+
+        } catch (NamingException e) {
+            String errorMessage = "Profile information could not be updated in ApacheDS " +
+                                  "LDAP user store";
+            logger.error(errorMessage, e);
+            throw new UserStoreException(errorMessage, e);
+
+        } catch (org.wso2.carbon.user.api.UserStoreException e) {
+            String errorMessage = "Error in obtaining claim mapping.";
+            logger.error(errorMessage, e);
+            throw new UserStoreException(errorMessage, e);
+        } finally {
+            JNDIUtil.closeContext(subDirContext);
+            JNDIUtil.closeContext(dirContext);
+        }
+
+    }
+       
     /**
      * Add roles by writing groups to LDAP.
      *

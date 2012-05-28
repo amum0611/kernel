@@ -572,7 +572,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         return isExisting;
     }
 
-    public boolean authenticate(String userName, Object credential) throws UserStoreException {
+    public boolean doAuthenticate(String userName, Object credential) throws UserStoreException {
 
         for (UserStoreManagerListener listener : UMListenerServiceComponent
                 .getUserStoreManagerListeners()) {
@@ -666,12 +666,12 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         return false;
     }
 
-    public void addUser(String userName, Object credential, String[] roleList,
+    public void doAddUser(String userName, Object credential, String[] roleList,
             Map<String, String> claims, String profileName) throws UserStoreException {
         this.addUser(userName, credential, roleList, claims, profileName, false);
     }
 
-    public void addUser(String userName, Object credential, String[] roleList,
+    public void doAddUser(String userName, Object credential, String[] roleList,
             Map<String, String> claims, String profileName, boolean requirePasswordChange)
             throws UserStoreException {
 
@@ -1008,7 +1008,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         clearUserRolesCacheByTenant(this.tenantId);
     }
 
-    public void deleteUser(String userName) throws UserStoreException {
+    public void doDeleteUser(String userName) throws UserStoreException {
 
         for (UserStoreManagerListener listener : UMListenerServiceComponent
                 .getUserStoreManagerListeners()) {
@@ -1245,7 +1245,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         clearUserRolesCacheByTenant(this.tenantId);
     }
 
-    public void setUserClaimValue(String userName, String claimURI, String claimValue,
+    public void doSetUserClaimValue(String userName, String claimURI, String claimValue,
             String profileName) throws UserStoreException {
         if (profileName == null) {
             profileName = UserCoreConstants.DEFAULT_PROFILE;
@@ -1280,7 +1280,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         }
     }
 
-    public void setUserClaimValues(String userName, Map<String, String> claims, String profileName)
+    public void doSetUserClaimValues(String userName, Map<String, String> claims, String profileName)
             throws UserStoreException {
         Connection dbConnection = null;
         if (profileName == null) {
@@ -1324,7 +1324,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         }
     }
 
-    public void deleteUserClaimValue(String userName, String claimURI, String profileName)
+    public void doDeleteUserClaimValue(String userName, String claimURI, String profileName)
             throws UserStoreException {
         Connection dbConnection = null;
         if (profileName == null) {
@@ -1351,7 +1351,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         }
     }
 
-    public void deleteUserClaimValues(String userName, String[] claims, String profileName)
+    public void doDeleteUserClaimValues(String userName, String[] claims, String profileName)
             throws UserStoreException {
         Connection dbConnection = null;
         if (profileName == null) {
@@ -1374,15 +1374,8 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         }
     }
 
-    public void updateCredential(String userName, Object newCredential, Object oldCredential)
+    public void doUpdateCredential(String userName, Object newCredential, Object oldCredential)
             throws UserStoreException {
-
-        for (UserStoreManagerListener listener : UMListenerServiceComponent
-                .getUserStoreManagerListeners()) {
-            if (!listener.updateCredential(userName, newCredential, oldCredential, this)) {
-                return;
-            }
-        }
 
         if (this.authenticate(userName, oldCredential)) {
             this.updateCredentialByAdmin(userName, newCredential);
@@ -1392,7 +1385,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         }
     }
 
-    public void updateCredentialByAdmin(String userName, Object newCredential)
+    public void doUpdateCredentialByAdmin(String userName, Object newCredential)
             throws UserStoreException {
 
         for (UserStoreManagerListener listener : UMListenerServiceComponent
@@ -1689,8 +1682,8 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         if (!isExistingUser(CarbonConstants.REGISTRY_ANONNYMOUS_USERNAME) && !this.isReadOnly()) {
             byte[] password = new byte[12];
             random.nextBytes(password);
-            this.addUser(CarbonConstants.REGISTRY_ANONNYMOUS_USERNAME, Base64.encode(password),
-                    null, null, null);
+            this.persistUser(CarbonConstants.REGISTRY_ANONNYMOUS_USERNAME, Base64.encode(password),
+                    null, null, null, false);
 
         }
         // if the realm is read only the role will be hybrid
@@ -1828,5 +1821,51 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
 
         return false;
     }
-    
+
+    @Override
+    public String[] getUserListFromProperties(String property, String value, String profileName)
+                                                                throws UserStoreException {
+
+        if (profileName == null) {
+            profileName = UserCoreConstants.DEFAULT_PROFILE;
+        }
+
+        String[] users = new String[0];
+        Connection dbConnection = null;
+        String sqlStmt = null;
+        PreparedStatement prepStmt = null;
+        ResultSet rs = null;
+
+        List<String> list = new ArrayList<String>();
+        try {
+            dbConnection = getDBConnection();
+            sqlStmt = realmConfig
+                    .getUserStoreProperty(JDBCRealmConstants.GET_USERS_FOR_PROP);
+            prepStmt = dbConnection.prepareStatement(sqlStmt);
+            prepStmt.setString(1, property);
+            prepStmt.setString(2, value);
+            prepStmt.setString(3, profileName);
+            if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                prepStmt.setInt(4, tenantId);
+                prepStmt.setInt(5, tenantId);
+            }
+            rs = prepStmt.executeQuery();
+            while (rs.next()) {
+                String name = rs.getString(1);
+                list.add(name);
+            }
+
+            if(list.size() > 0){
+                users =  list.toArray(new String[list.size()]);
+            }
+
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new UserStoreException(e.getMessage(), e);
+        } finally {
+            DatabaseUtil.closeAllConnections(dbConnection, rs, prepStmt);
+        }
+
+        return users;
+    }
 }

@@ -166,7 +166,7 @@ public class LDAPUserStoreManager extends AbstractUserStoreManager {
         this.connectionSource = new LDAPConnectionContext(realmConfig);
     }
 
-    public boolean authenticate(String userName, Object credential) throws UserStoreException {
+    public boolean doAuthenticate(String userName, Object credential) throws UserStoreException {
 
         for (UserStoreManagerListener listener : UMListenerServiceComponent
                 .getUserStoreManagerListeners()) {
@@ -609,6 +609,7 @@ public class LDAPUserStoreManager extends AbstractUserStoreManager {
         /*do not search REGISTRY_ANONNYMOUS_USERNAME or REGISTRY_SYSTEM_USERNAME in LDAP because
         it causes warn logs printed from embedded-ldap.*/
         if (("true".equals(realmConfig.getUserStoreProperty(LDAPConstants.READ_EXTERNAL_ROLES)))
+            && (!userName.equals(CarbonConstants.REGISTRY_ANONNYMOUS_USERNAME))
             && (!userName.equals(CarbonConstants.REGISTRY_SYSTEM_USERNAME))) {
 
             SearchControls searchCtls = new SearchControls();
@@ -835,6 +836,59 @@ public class LDAPUserStoreManager extends AbstractUserStoreManager {
         return this.tenantID;
     }
 
+    public String[] getUserListFromProperties(String property, String value, String profileName)
+                                                                        throws UserStoreException {
+
+        List<String> values = new ArrayList<String>();
+        String searchFilter = realmConfig.getUserStoreProperty(LDAPConstants.USER_FILTER);
+        String userPropertyName = realmConfig.getUserStoreProperty(LDAPConstants.USER_NAME_ATTRIBUTE_NAME);
+
+        searchFilter = "(&" + searchFilter + "(" + property + "=" + value + "))";
+
+        DirContext dirContext = this.connectionSource.getContext();
+        NamingEnumeration<?> answer = null;
+        NamingEnumeration<?> attrs = null;
+        try {
+            answer = this.searchForUser(searchFilter, new String[]{userPropertyName}, dirContext);
+            while (answer.hasMoreElements()) {
+                SearchResult sr = (SearchResult) answer.next();
+                Attributes attributes = sr.getAttributes();
+                if (attributes != null) {
+                    Attribute attribute = attributes.get(userPropertyName);
+                    if (attribute != null) {
+                        StringBuffer attrBuffer = new StringBuffer();
+                        for (attrs = attribute.getAll(); attrs.hasMore();) {
+                            String attr = (String) attrs.next();
+                            if (attr != null && attr.trim().length() > 0) {
+                                attrBuffer.append(attr + ",");
+                            }
+                        }
+                        String propertyValue = attrBuffer.toString();
+                        // Length needs to be more than one for a valid
+                        // attribute, since we
+                        // attach ",".
+                        if (propertyValue != null && propertyValue.trim().length() > 1) {
+                            propertyValue = propertyValue.substring(0, propertyValue.length() - 1);
+                            values.add(propertyValue);
+                        }
+                    }
+                }
+            }
+
+        } catch (NamingException e) {
+            log.error(e.getMessage(), e);
+            throw new UserStoreException(e.getMessage(), e);
+        } finally {
+            //close the naming enumeration and free up resources
+            JNDIUtil.closeNamingEnumeration(attrs);
+            JNDIUtil.closeNamingEnumeration(answer);
+            //close directory context
+            JNDIUtil.closeContext(dirContext);
+        }
+
+        return values.toArray(new String[values.size()]);
+    }
+    
     // ************** NOT GOING TO IMPLEMENT ***************
 
     public Date getPasswordExpirationTime(String username) throws UserStoreException {
@@ -849,58 +903,58 @@ public class LDAPUserStoreManager extends AbstractUserStoreManager {
         throw new UserStoreException("Invalid operation");
     }
 
-    public void deleteUserClaimValue(String userName, String claimURI, String profileName)
+    public void doDeleteUserClaimValue(String userName, String claimURI, String profileName)
             throws UserStoreException {
         throw new UserStoreException(
                 "User store is operating in read only mode. Cannot write into the user store.");
 
     }
 
-    public void deleteUserClaimValues(String userName, String[] claims, String profileName)
+    public void doDeleteUserClaimValues(String userName, String[] claims, String profileName)
             throws UserStoreException {
         throw new UserStoreException(
                 "User store is operating in read only mode. Cannot write into the user store.");
 
     }
 
-    public void addUser(String userName, Object credential, String[] roleList,
+    public void doAddUser(String userName, Object credential, String[] roleList,
             Map<String, String> claims, String profileName) throws UserStoreException {
         throw new UserStoreException(
                 "User store is operating in read only mode. Cannot write into the user store.");
     }
 
-    public void addUser(String userName, Object credential, String[] roleList,
+    public void doAddUser(String userName, Object credential, String[] roleList,
             Map<String, String> claims, String profileName, boolean requirePasswordChange)
             throws UserStoreException {
         throw new UserStoreException(
                 "User store is operating in read only mode. Cannot write into the user store.");
     }
 
-    public void deleteUser(String userName) throws UserStoreException {
+    public void doDeleteUser(String userName) throws UserStoreException {
         throw new UserStoreException(
                 "User store is operating in read only mode. Cannot write into the user store.");
     }
 
-    public void setUserClaimValue(String userName, String claimURI, String claimValue,
+    public void doSetUserClaimValue(String userName, String claimURI, String claimValue,
             String profileName) throws UserStoreException {
         throw new UserStoreException(
                 "User store is operating in read only mode. Cannot write into the user store.");
     }
 
-    public void setUserClaimValues(String userName, Map<String, String> claims, String profileName)
+    public void doSetUserClaimValues(String userName, Map<String, String> claims, String profileName)
             throws UserStoreException {
         throw new UserStoreException(
                 "User store is operating in read only mode. Cannot write into the user store.");
 
     }
 
-    public void updateCredential(String userName, Object newCredential, Object oldCredential)
+    public void doUpdateCredential(String userName, Object newCredential, Object oldCredential)
             throws UserStoreException {
         throw new UserStoreException(
                 "User store is operating in read only mode. Cannot write into the user store.");
     }
 
-    public void updateCredentialByAdmin(String userName, Object newCredential)
+    public void doUpdateCredentialByAdmin(String userName, Object newCredential)
             throws UserStoreException {
         updateCredential(userName, newCredential, null);
 

@@ -133,6 +133,10 @@ public class UserCoreConstants {
 
     public static final String LOCAL_NAME_PROPERTY = "Property";
 
+    public static final String USER_LOCKED = "locked";
+
+    public static final String USER_UNLOCKED = "unlocked";
+
     public static final class ClaimTypeURIs {
         public static final String GIVEN_NAME = DEFAULT_CARBON_DIALECT + "/givenname";
         public static final String EMAIL_ADDRESS = DEFAULT_CARBON_DIALECT + "/emailaddress";
@@ -152,6 +156,10 @@ public class UserCoreConstants {
         public static final String NICKNAME = DEFAULT_CARBON_DIALECT + "/nickname";
         public static final String DATE_OF_BIRTH = DEFAULT_CARBON_DIALECT + "/dob";
         public static final String GENDER = DEFAULT_CARBON_DIALECT + "/gender";
+        public static final String ACCOUNT_STATUS = DEFAULT_CARBON_DIALECT + "/accountStatus";
+        public static final String CHALLENGES_URI = DEFAULT_CARBON_DIALECT + "/challengeQuestionUris";
+        public static final String PRIMARY_CHALLENGES = DEFAULT_CARBON_DIALECT + "/primaryChallengeQuestion";
+        public static final String TEMPORARY_EMAIL_ADDRESS = DEFAULT_CARBON_DIALECT + "/temporaryemailaddress";
     }
 
     public static final class TenantMgtConfig {
