@@ -19,28 +19,36 @@
 package org.wso2.carbon.registry.core.ghostregistry;
 
 
-import org.wso2.carbon.context.RegistryType;
-import org.wso2.carbon.registry.api.Activity;
-import org.wso2.carbon.registry.api.Association;
-import org.wso2.carbon.registry.api.Collection;
-import org.wso2.carbon.registry.api.Comment;
-import org.wso2.carbon.registry.api.Registry;
-import org.wso2.carbon.registry.api.RegistryException;
-import org.wso2.carbon.registry.api.RegistryService;
-import org.wso2.carbon.registry.api.Resource;
-import org.wso2.carbon.registry.api.Tag;
-import org.wso2.carbon.registry.api.TaggedResourcePath;
-
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Date;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.RegistryType;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.registry.core.Aspect;
+import org.wso2.carbon.registry.core.Association;
+import org.wso2.carbon.registry.core.Collection;
+import org.wso2.carbon.registry.core.Comment;
+import org.wso2.carbon.registry.core.LogEntry;
+import org.wso2.carbon.registry.core.LogEntryCollection;
+import org.wso2.carbon.registry.core.Registry;
+import org.wso2.carbon.registry.core.Resource;
+import org.wso2.carbon.registry.core.Tag;
+import org.wso2.carbon.registry.core.TaggedResourcePath;
+import org.wso2.carbon.registry.core.config.RegistryContext;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
 /**
  * This implements the Ghost lazy loading pattern for the Registry. An actual registry instance will
  * not be created until first access.
  */
 public class GhostRegistry implements Registry {
+
+    private static Log log = LogFactory.getLog(GhostRegistry.class);
+    
     private RegistryService registryService;
     private int             tenantId;
     private RegistryType    registryType;
@@ -58,15 +66,19 @@ public class GhostRegistry implements Registry {
         if (registry != null) {
             return registry;
         }
-        switch (registryType) {
-            case SYSTEM_GOVERNANCE:
-                registry = registryService.getGovernanceSystemRegistry(tenantId);
-                break;
-            case SYSTEM_CONFIGURATION:
-                registry = registryService.getConfigSystemRegistry(tenantId);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid registry type " + registryType);
+        try {
+            switch (registryType) {
+                case SYSTEM_GOVERNANCE:
+                    registry = (Registry) registryService.getGovernanceSystemRegistry(tenantId);
+                    break;
+                case SYSTEM_CONFIGURATION:
+                    registry = (Registry) registryService.getConfigSystemRegistry(tenantId);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid registry type " + registryType);
+            }
+        } catch (org.wso2.carbon.registry.api.RegistryException e) {
+            throw new RegistryException(e.getMessage(), e);
         }
         return registry;
     }
@@ -166,14 +178,10 @@ public class GhostRegistry implements Registry {
     public int getRating(String path, String userName) throws RegistryException {
         return getRegistry().getRating(path, userName);
     }
+    
 
     public Collection executeQuery(String path, Map parameters) throws RegistryException {
         return getRegistry().executeQuery(path, parameters);
-    }
-
-    public Activity[] getLogs(String resourcePath, int action, String userName,
-                              Date from, Date to, boolean recentFirst) throws RegistryException {
-        return getRegistry().getLogs(resourcePath, action, userName, from, to, recentFirst);
     }
 
     public String[] getAvailableAspects() {
@@ -252,11 +260,91 @@ public class GhostRegistry implements Registry {
         return getRegistry().resourceExists(path);
     }
 
+    public void delete(String path) throws RegistryException {
+        getRegistry().delete(path);
+    }
+
+    @Override
     public String put(String suggestedPath, Resource resource) throws RegistryException {
         return getRegistry().put(suggestedPath, resource);
     }
 
-    public void delete(String path) throws RegistryException {
-        getRegistry().delete(path);
+    @Override
+    public String put(String suggestedPath, org.wso2.carbon.registry.api.Resource resource) 
+            throws org.wso2.carbon.registry.api.RegistryException {
+        return getRegistry().put(suggestedPath, resource);
     }
+
+    @Override
+    public void beginTransaction() throws RegistryException {
+        getRegistry().beginTransaction();
+    }
+
+    @Override
+    public void commitTransaction() throws RegistryException {
+        getRegistry().commitTransaction();
+    }
+
+    @Override
+    public void rollbackTransaction() throws RegistryException {
+        getRegistry().rollbackTransaction();    
+    }
+
+    @Override
+    public String addComment(String resourcePath, org.wso2.carbon.registry.api.Comment comment)
+            throws org.wso2.carbon.registry.api.RegistryException {
+        return getRegistry().addComment(resourcePath, comment);
+    }
+
+    @Override
+    public String importResource(String suggestedPath, String sourceURL, 
+                                 org.wso2.carbon.registry.api.Resource resource)
+                                 throws org.wso2.carbon.registry.api.RegistryException {
+        return getRegistry().importResource(suggestedPath, sourceURL, resource);
+    }
+
+    @Override
+    public LogEntry[] getLogs(String resourcePath, int action, String userName,
+                              Date from, Date to, boolean recentFirst) throws RegistryException {
+        return getRegistry().getLogs(resourcePath, action, userName, from, to, recentFirst);
+    }
+
+    @Deprecated
+    public LogEntryCollection getLogCollection(String resourcePath, int action,
+                                               String userName, Date from, Date to, boolean recentFirst)
+                                               throws RegistryException {
+        return getRegistry().getLogCollection(resourcePath, action, userName, from, to, recentFirst);
+    }
+
+    @Override
+    public void invokeAspect(String resourcePath, String aspectName,
+                             String action, Map<String, String> parameters) throws RegistryException {
+        getRegistry().invokeAspect(resourcePath, aspectName, action, parameters);
+    }
+
+    @Override
+    public boolean removeAspect(String aspect) throws RegistryException {
+        return getRegistry().removeAspect(aspect);
+    }
+
+    @Override
+    public boolean addAspect(String name, Aspect aspect) throws RegistryException {
+        return getRegistry().addAspect(name, aspect);
+    }
+
+    @Override
+    public boolean removeVersionHistory(String path, long snapshotId) throws RegistryException {
+        return getRegistry().removeVersionHistory(path, snapshotId);
+    }
+
+    @Override
+    public RegistryContext getRegistryContext() {
+        try {
+            return registry.getRegistryContext();
+        } catch (Exception e) {
+            log.error("Error getting Registry", e);
+        }
+        return null;
+    }
+
 }
