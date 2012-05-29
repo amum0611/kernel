@@ -92,6 +92,17 @@ public class CommonLDAPRealmConfigBuilder implements MultiTenantRealmConfigBuild
                 userStoreProperties.put(LDAPConstants.GROUP_SEARCH_BASE, groupSearchBase);
             }
 
+            //if UserDNPattern is mentioned, replace it to align with tenant's user store.
+            if (userStoreProperties.containsKey(LDAPConstants.USER_DN_PATTERN)) {
+                //get userDN pattern from super tenant realm config
+                String userDNPattern = userStoreProperties.get(LDAPConstants.USER_DN_PATTERN);
+                //obtain the identifier - eg: uid={0}
+                String userIdentifier = userDNPattern.split(",")[0];
+                //build tenant specific one - eg:uid={0},ou=Users,ou=cse.org,dc=wso2,dc=org
+                String tenantUserDNPattern = userIdentifier + "," + userSearchBase;
+                userStoreProperties.put(LDAPConstants.USER_DN_PATTERN, tenantUserDNPattern);
+            }
+
             return ldapRealmConfig;
 
         } catch (Exception e) {
