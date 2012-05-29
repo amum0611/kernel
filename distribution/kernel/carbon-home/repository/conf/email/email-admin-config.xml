@@ -29,7 +29,7 @@ Hi {first-name},
 
 A password reset request has recently been sent by you (or someone else).
 
-User Name: {admin-name}
+User Name: {user-name}
 
 Please click the following link to reset your password.
     </body>
