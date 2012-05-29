@@ -36,6 +36,7 @@ public class MultitenantConstants {
     public static final String TENANT_DOMAIN_HEADER_NAME = "TenantDomain";
     public static final String SUPER_TENANT_DOMAIN = "UserName.SuperTenantDomain";
     public static final String SUPER_TENANT_DOMAIN_NAME = "carbon.super";
+    public static final int INVALID_TENANT_ID = -1;
 
     public static final String REQUIRE_SUPER_TENANT = "require-super-tenant";
     public static final String REQUIRE_NOT_SUPER_TENANT = "require-not-super-tenant";
