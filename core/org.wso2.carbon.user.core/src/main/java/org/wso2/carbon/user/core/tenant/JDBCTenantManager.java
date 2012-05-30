@@ -30,12 +30,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.commons.collections.BidiMap;
-import org.apache.commons.collections.bidimap.TreeBidiMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
@@ -62,12 +61,12 @@ public class JDBCTenantManager implements TenantManager {
      *
      * Key - tenant domain, value - tenantId
      */
-    private BidiMap tenantDomainIdMap = new TreeBidiMap();
+    private Map tenantDomainIdMap = new ConcurrentHashMap<String, Integer>();
 
     /**
      * This is the reverse of the tenantDomainIdMap. Key - tenantId, value - tenant domain
      */
-    private BidiMap tenantIdDomainMap = tenantDomainIdMap.inverseBidiMap();
+    private Map tenantIdDomainMap = new ConcurrentHashMap<Integer, String>();
 
 	protected BaseCache tenantCacheManager = TenantCache.getInstance();
 
