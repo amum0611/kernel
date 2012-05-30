@@ -17,6 +17,7 @@
  -->
 <TenantManager class="org.wso2.carbon.user.core.tenant.JDBCTenantManager">
 </TenantManager>
+<!--If the product is using LDAP user store in MT mode, use following tenant manager.-->
 <!--TenantManager class="org.wso2.carbon.user.core.tenant.CommonHybridLDAPTenantManager">
     <Property name="RootPartition">dc=wso2,dc=com</Property>
     <Property name="OrganizationalObjectClass">organizationalUnit</Property>
@@ -24,3 +25,13 @@
     <Property name="OrganizationalSubContextObjectClass">organizationalUnit</Property>
     <Property name="OrganizationalSubContextAttribute">ou</Property>
 </TenantManager-->
+<!--Following tenant manager is used by Identity Server (IS) as its default tenant manager.
+    IS will do token replacement when building the product. Therefore do not change the syntax.-->        
+<!--ISTenantManager class="org.wso2.carbon.user.core.tenant.CommonHybridLDAPTenantManager">
+    <Property name="RootPartition">dc=wso2,dc=org</Property>
+    <Property name="OrganizationalObjectClass">organizationalUnit</Property>
+    <Property name="OrganizationalAttribute">ou</Property>
+    <Property name="OrganizationalSubContextObjectClass">organizationalUnit</Property>
+    <Property name="OrganizationalSubContextAttribute">ou</Property>
+</ISTenantManager-->
+
