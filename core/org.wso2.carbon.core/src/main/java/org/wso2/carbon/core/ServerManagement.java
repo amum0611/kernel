@@ -22,8 +22,10 @@ import org.apache.axis2.transport.TransportListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
+import org.wso2.carbon.core.util.DeploymentUtils;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.ManagementFactory;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -99,10 +101,24 @@ public class ServerManagement {
         log.info("Waiting for deployment completion...");
 
         // Stop all deployment tasks by calling cleanup on the super-tenant & tenant configurators
+        //invoking  CarbonDeploymentSchedulerExtenders for all tenants before shutdown.
+        //(this is done for the purpose of persisting all remaining stat data.)
         Map<String, ConfigurationContext> tenantConfigContexts =
                 TenantAxisUtils.getTenantConfigurationContexts(serverConfigContext);
+
         serverConfigContext.getAxisConfiguration().getConfigurator().cleanup();
+        DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(
+                serverConfigContext.getAxisConfiguration(),
+                MultitenantUtils.getTenantId(serverConfigContext));
+
         for (ConfigurationContext tenantConfigCtx : tenantConfigContexts.values()) {
+            int tenantId = MultitenantUtils.getTenantId(tenantConfigCtx);
+            if(log.isDebugEnabled()){
+                log.debug("invoking  CarbonDeploymentSchedulerExtenders before shutdown..");
+            }
+            DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(
+                    tenantConfigCtx.getAxisConfiguration(), tenantId);
+
             tenantConfigCtx.getAxisConfiguration().getConfigurator().cleanup();
         }
 

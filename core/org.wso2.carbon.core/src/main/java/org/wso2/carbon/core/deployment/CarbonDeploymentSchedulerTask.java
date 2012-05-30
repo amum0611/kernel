@@ -29,6 +29,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
+import org.wso2.carbon.core.util.DeploymentUtils;
 
 /**
  * This task takes care of deployment in WSO2 Carbon servers.
@@ -68,7 +69,7 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
             SuperTenantCarbonContext.getCurrentContext().setTenantDomain(tenantDomain);
 
             //invoke CarbonDeploymentSchedulerExtenders
-            invokeCarbonDeploymentSchedulerExtenders();
+            DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(axisConfig, tenantId);
 
             deploymentSyncUpdate();
             synchronized (this) {
@@ -83,32 +84,6 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
             SuperTenantCarbonContext.endTenantFlow();
         }
     }
-
-    private void invokeCarbonDeploymentSchedulerExtenders() {
-        if(log.isDebugEnabled()){
-            log.debug("Start invoking CarbonDeploymentSchedulerExtenders..");
-        }
-        BundleContext bundleContext = CarbonCoreDataHolder.getInstance().getBundleContext();
-        ServiceReference reference = bundleContext.getServiceReference(CarbonDeploymentSchedulerExtender.class.getName());
-        if(reference != null){
-            ServiceTracker serviceTracker =
-                    new ServiceTracker(bundleContext, CarbonDeploymentSchedulerExtender.class.getName(), null);
-            try{
-                serviceTracker.open();
-                Object[] services = serviceTracker.getServices();
-                if (services != null) {
-                    for (Object service : services) {
-                        ((CarbonDeploymentSchedulerExtender) service).invoke(axisConfig);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                serviceTracker.close();
-            }
-            serviceTracker.close();
-        }
-    }                                                        
 
     private void deploymentSyncUpdate() {
         if (log.isDebugEnabled()) {

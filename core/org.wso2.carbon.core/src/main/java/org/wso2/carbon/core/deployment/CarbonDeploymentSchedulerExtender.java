@@ -10,8 +10,9 @@ public interface CarbonDeploymentSchedulerExtender {
 
     /**
      * invoke the extender methods. Put your logic inside this method.
+     *
      * @param axisConfig axisConfiguration
-     * @throws Exception
+     * @param tenantId      tenantId
      */
-    public void invoke(AxisConfiguration axisConfig) throws Exception;
+    public void invoke(AxisConfiguration axisConfig, int tenantId);
 }
