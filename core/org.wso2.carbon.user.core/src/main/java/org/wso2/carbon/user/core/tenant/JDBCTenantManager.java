@@ -57,7 +57,7 @@ public class JDBCTenantManager implements TenantManager {
 	protected BundleContext bundleContext;
 
     /**
-     * The Bidirectional Map which maps tenant domains to tenant IDs
+     * Map which maps tenant domains to tenant IDs
      *
      * Key - tenant domain, value - tenantId
      */
