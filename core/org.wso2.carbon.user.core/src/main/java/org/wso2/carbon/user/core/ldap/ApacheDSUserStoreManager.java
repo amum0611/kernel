@@ -224,7 +224,7 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
 
     public void doAddUser(String userName, Object credential, String[] roleList,
                         Map<String, String> claims, String profileName) throws UserStoreException {
-        this.addUser(userName, credential, roleList, claims, profileName, false);
+        this.doAddUser(userName, credential, roleList, claims, profileName, false);
     }
 
     public void doAddUser(String userName, Object credential, String[] roleList,
@@ -1698,7 +1698,7 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
                     log.debug("Admin user is not existing in the LDAP. Hence creating the user " +
                               "entry in LDAP.");
                 }
-                this.addUser(realmConfig.getAdminUserName(),
+                this.doAddUser(realmConfig.getAdminUserName(),
                              realmConfig.getAdminPassword(), null, null, null);
             }
 
@@ -1716,7 +1716,7 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
             if (!isExistingUser(CarbonConstants.REGISTRY_ANONNYMOUS_USERNAME)) {
                 byte[] password = new byte[12];
                 random.nextBytes(password);
-                this.addUser(CarbonConstants.REGISTRY_ANONNYMOUS_USERNAME, Base64.encode(password),
+                this.doAddUser(CarbonConstants.REGISTRY_ANONNYMOUS_USERNAME, Base64.encode(password),
                              null, null, null);
 
             }

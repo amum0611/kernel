@@ -669,7 +669,7 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
 
         for (UserOperationEventListener listener : UMListenerServiceComponent
                 .getUserOperationEventListeners()) {
-            if (!listener.doPreAddUser(userName, credential, claims, this)) {
+            if (!listener.doPreAddUser(userName, credential, roleList, claims, profileName, this)) {
                 return;
             }
         }
@@ -697,7 +697,7 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
         
         for (UserOperationEventListener listener : UMListenerServiceComponent
                 .getUserOperationEventListeners()) {
-            if (!listener.doPreAddUser(userName, credential, claims, this)) {
+            if (!listener.doPreAddUser(userName, credential, roleList, claims, profileName, this)) {
                 return;
             }
         }

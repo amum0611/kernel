@@ -48,8 +48,9 @@ public class AbstractUserOperationEventListener implements UserOperationEventLis
     }
 
     @Override
-    public boolean doPreAddUser(String userName, Object credential, Map<String, String> claims,
-                                UserStoreManager userStoreManager) throws UserStoreException {
+    public boolean doPreAddUser(String userName, Object credential, String[] roleList,
+                Map<String, String> claims, String profile, UserStoreManager userStoreManager)
+                                                                        throws UserStoreException {
         return true;
     }
 

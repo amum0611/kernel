@@ -32,8 +32,6 @@ import org.wso2.carbon.user.core.claim.ClaimMapping;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 import org.wso2.carbon.user.core.hybrid.HybridJDBCConstants;
 import org.wso2.carbon.user.core.hybrid.HybridRoleManager;
-import org.wso2.carbon.user.core.internal.UMListenerServiceComponent;
-import org.wso2.carbon.user.core.listener.UserStoreManagerListener;
 import org.wso2.carbon.user.core.profile.ProfileConfigurationManager;
 import org.wso2.carbon.user.core.tenant.Tenant;
 import org.wso2.carbon.user.core.util.DatabaseUtil;
@@ -574,13 +572,6 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
 
     public boolean doAuthenticate(String userName, Object credential) throws UserStoreException {
 
-        for (UserStoreManagerListener listener : UMListenerServiceComponent
-                .getUserStoreManagerListeners()) {
-            if (!listener.authenticate(userName, credential, this)) {
-                return true;
-            }
-        }
-
         if (!checkUserNameValid(userName)) {
             return false;
         }
@@ -668,19 +659,13 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
 
     public void doAddUser(String userName, Object credential, String[] roleList,
             Map<String, String> claims, String profileName) throws UserStoreException {
-        this.addUser(userName, credential, roleList, claims, profileName, false);
+        this.doAddUser(userName, credential, roleList, claims, profileName, false);
     }
 
     public void doAddUser(String userName, Object credential, String[] roleList,
             Map<String, String> claims, String profileName, boolean requirePasswordChange)
             throws UserStoreException {
-
-        for (UserStoreManagerListener listener : UMListenerServiceComponent
-                .getUserStoreManagerListeners()) {
-            if (!listener.addUser(userName, credential, roleList, claims, profileName, this)) {
-                return;
-            }
-        }
+        
         // persist the user info. in the database.
         persistUser(userName, credential, roleList, claims, profileName, requirePasswordChange);
 
@@ -1009,13 +994,6 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
     }
 
     public void doDeleteUser(String userName) throws UserStoreException {
-
-        for (UserStoreManagerListener listener : UMListenerServiceComponent
-                .getUserStoreManagerListeners()) {
-            if (!listener.deleteUser(userName, this)) {
-                return;
-            }
-        }
 
         if (realmConfig.getAdminUserName().equals(userName)) {
             throw new UserStoreException("Cannot delete admin user");
@@ -1387,13 +1365,6 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
 
     public void doUpdateCredentialByAdmin(String userName, Object newCredential)
             throws UserStoreException {
-
-        for (UserStoreManagerListener listener : UMListenerServiceComponent
-                .getUserStoreManagerListeners()) {
-            if (!listener.updateCredentialByAdmin(userName, newCredential, this)) {
-                return;
-            }
-        }
 
         if (!checkUserPasswordValid(newCredential)) {
             throw new UserStoreException(

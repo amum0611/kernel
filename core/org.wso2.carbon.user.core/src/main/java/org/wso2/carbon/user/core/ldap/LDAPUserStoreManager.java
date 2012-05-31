@@ -30,7 +30,6 @@ import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 import org.wso2.carbon.user.core.hybrid.HybridRoleManager;
 import org.wso2.carbon.user.core.internal.UMListenerServiceComponent;
 import org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager;
-import org.wso2.carbon.user.core.listener.UserStoreManagerListener;
 import org.wso2.carbon.user.core.profile.ProfileConfigurationManager;
 import org.wso2.carbon.user.core.tenant.Tenant;
 import org.wso2.carbon.user.core.util.DatabaseUtil;
@@ -167,13 +166,6 @@ public class LDAPUserStoreManager extends AbstractUserStoreManager {
     }
 
     public boolean doAuthenticate(String userName, Object credential) throws UserStoreException {
-
-        for (UserStoreManagerListener listener : UMListenerServiceComponent
-                .getUserStoreManagerListeners()) {
-            if (!listener.authenticate(userName, credential, this)) {
-                return true;
-            }
-        }
 
         if (userName == null || credential == null) {
             return false;

@@ -65,13 +65,16 @@ public interface UserOperationEventListener {
      *
      * @param userName  User name of User
      * @param credential Credential/password of the user
+     * @param roleList role list of user
      * @param claims Properties of the user
+     * @param profile profile name of user
      * @param userStoreManager The underlying UserStoreManager
      * @return Whether execution of this method of the underlying UserStoreManager must happen.
      * @throws UserStoreException  Thrown by the underlying UserStoreManager
      */
-    public boolean doPreAddUser(String userName, Object credential, Map<String, String> claims,
-                                    UserStoreManager userStoreManager) throws UserStoreException;
+    public boolean doPreAddUser(String userName, Object credential, String[] roleList,
+            Map<String, String> claims, String profile, UserStoreManager userStoreManager)
+                                                                        throws UserStoreException;
 
     /**
      * Define any additional actions after user is added.
