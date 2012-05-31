@@ -239,11 +239,17 @@ if(issuetrackerURL == null){
 			            <a target="_blank" href="../docs/signin_userguide.html" tabindex="4">
                             <fmt:message key="sign.in.help"/>
                         </a>
+
                         <%
-                            if(CarbonUIUtil.isContextRegistered(config, "/admin-mgt/")){
+                            if(CarbonUIUtil.isContextRegistered(config, "/identity-mgt/")){
                         %>
-                        &nbsp;|&nbsp;<a tabindex="5" href="../admin-mgt/forgot_password.jsp"
-                         target="_blank" class="password"><fmt:message key="forgot.password"/></a>
+                            &nbsp;|&nbsp;<a href="../identity-mgt/forgot_root_ajaxprocessor.jsp"
+                            target="_blank" tabindex="5" ><fmt:message key="lost.account"/></a>
+                        <%
+                            } else if(CarbonUIUtil.isContextRegistered(config, "/admin-mgt/")){
+                        %>
+                            &nbsp;|&nbsp;<a tabindex="5" href="../admin-mgt/forgot_password.jsp"
+                             target="_blank" class="password"><fmt:message key="forgot.password"/></a>
                         <%
                             }
                         %>
