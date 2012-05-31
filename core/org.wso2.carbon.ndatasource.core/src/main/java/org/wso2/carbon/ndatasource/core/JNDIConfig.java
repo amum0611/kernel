@@ -70,16 +70,17 @@ public class JNDIConfig {
 	public JNDIConfig copy() {
 		JNDIConfig result = new JNDIConfig();
 		result.setName(this.getName());
-		List<EnvEntry> envEntries = new ArrayList<JNDIConfig.EnvEntry>();
-		if (this.getEnvironment() != null) {
-			EnvEntry tmpEnv;
-		    for (EnvEntry entry : this.getEnvironment()) {
-		    	tmpEnv = new EnvEntry();
-		    	tmpEnv.setName(entry.getName());
-		    	tmpEnv.setValue(entry.getValue());
-		    	envEntries.add(tmpEnv);
+		EnvEntry[] envEntries = null;
+		EnvEntry[] origEntries = this.getEnvironment();
+		if (origEntries != null) {
+			envEntries = new EnvEntry[origEntries.length];
+		    for (int i = 0; i < origEntries.length; i++) {
+		    	envEntries[i] = new EnvEntry();
+		    	envEntries[i].setName(origEntries[i].getName());
+		    	envEntries[i].setValue(origEntries[i].getValue());
 		    }
 		}
+		result.setEnvironment(envEntries);
 		return result;
 	}
 	
