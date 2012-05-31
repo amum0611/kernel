@@ -28,6 +28,7 @@ import org.apache.log4j.helpers.PatternParser;
 import org.apache.log4j.spi.LoggingEvent;
 import org.wso2.carbon.base.ServerConfiguration;
 import org.wso2.carbon.utils.ServerConstants;
+import org.wso2.carbon.utils.multitenancy.CarbonApplicationContextHolder;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
@@ -282,13 +283,14 @@ public class TenantAwarePatternLayout extends PatternLayout {
 			}
 
 			public String getFullyQualifiedName(LoggingEvent event) {
+				return CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder().getApplicationName();
 //				if (MessageContext.getCurrentMessageContext() != null) {
 //					if (MessageContext.getCurrentMessageContext().getAxisService() != null) {
 //						return MessageContext.getCurrentMessageContext().getAxisService().getName();
 //					} // TODO if its a web app then web app name
 //				}
 
-				return "#";
+				//return "#";
 			}
 		}
 
