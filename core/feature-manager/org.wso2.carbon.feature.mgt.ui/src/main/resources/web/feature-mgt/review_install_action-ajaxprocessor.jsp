@@ -113,6 +113,11 @@
                                         <tr>
                                             <td colspan="0"><fmt:message key="no.features.to.be.installed"/>.</td>
                                         </tr>
+                                	</tbody>
+                                </table>
+                            </td>
+                        </tr>
+                                        
                                 <%
                                     } else {
                                         for(FeatureInfo feature: reviewedFeatures){
@@ -127,9 +132,8 @@
                                         </tr>
                                 <%
                                         }
-                                    }
                                 %>
-                                    </tbody>
+									</tbody>
                                 </table>
                             </td>
                         </tr>
@@ -137,7 +141,11 @@
                             <td>
                                 <fmt:message key="size.of.the.installation"/>: <%=installActionResult.getSize()%>
                             </td>
-                        </tr>
+                        </tr>                                
+                                <%       
+                                    }
+                                %>
+                                   
 
                     <%
                         String description = installActionResult.getDetailedDescription();
