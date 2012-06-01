@@ -30,6 +30,7 @@ public class MultitenantConstants {
     public static final String TENANT_DOMAIN = "tenantDomain";
     public static final String TENANT_ID = "tenantId";
     public static final String SUPER_TENANT_NAME = "super";
+    public static final String SUPER_TENANT_DOMAIN_NAME = "carbon.super";
     public static final String TENANT_AWARE_URL_PREFIX = "t";
     public static final int SUPER_TENANT_ID = 0;
     public static final String TENANT_DOMAIN_HEADER_NAMESPACE = "http://cloud.wso2.com/";
