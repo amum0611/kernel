@@ -47,6 +47,7 @@ import org.wso2.carbon.utils.CarbonUtils;
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.zip.ZipInputStream;
 
 
 public class CarbonAppPersistenceManager {
@@ -295,6 +296,14 @@ public class CarbonAppPersistenceManager {
                     reg.delete(col.getPath());
                 }
             }
+            // remove dumps
+            List<RegistryConfig.Dump> dumps = registryConfig.getDumps();
+            for (RegistryConfig.Dump dump : dumps) {
+                Registry reg = getRegistryInstance(dump.getRegistryType());
+                if (reg != null && reg.resourceExists(dump.getPath())) {
+                    reg.delete(dump.getPath());
+                }
+            }
             // remove resources
             List<RegistryConfig.Resourse> resources = registryConfig.getResources();
             for (RegistryConfig.Resourse res : resources) {
@@ -367,6 +376,29 @@ public class CarbonAppPersistenceManager {
             }
         }
 
+        // write dumps
+        List<RegistryConfig.Dump> dumps = regConfig.getDumps();
+        for (RegistryConfig.Dump dump : dumps) {
+            Registry reg = getRegistryInstance(dump.getRegistryType());
+            String filePath = regConfig.getExtractedPath() + File.separator +
+                    AppDeployerConstants.RESOURCES_DIR + File.separator + dump.getDumpFileName();
+
+            // check whether the file exists
+            File file = new File(filePath);
+            if (!file.exists()) {
+                log.error("Specified file to be written as a dump is " +
+                        "not found at : " + filePath);
+                continue;
+            }
+            // .dump file is a zip, so create a ZipInputStream
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
+            zis.getNextEntry();
+            Reader reader = new InputStreamReader(zis);
+            if (reg != null) {
+                reg.restore(dump.getPath(), reader);
+            }
+        }
+
         // write associations
         List<RegistryConfig.Association> associations = regConfig.getAssociations();
         for (RegistryConfig.Association association : associations) {
@@ -413,7 +445,7 @@ public class CarbonAppPersistenceManager {
             try {
                 reg.rollbackTransaction();
             } catch (RegistryException e1) {
-                log.error("Error while transaction rollback");
+                log.error("Error while transaction rollback", e1);
             }
             log.error("Error while checking in resource to path: " + registryPath +
                     " from file: " + file.getAbsolutePath(), e);
@@ -447,6 +479,17 @@ public class CarbonAppPersistenceManager {
             resource.setContentStream(new FileInputStream(artifactXml));
             configRegistry.put(artifactPath + artifact.getName() +
                     AppDeployerConstants.ARTIFACT_XML, resource);
+
+            // persist registry-info.xml if exists
+            File regInfoXml = new File(artifact.getExtractedPath() +
+                    File.separator + Artifact.REG_INFO_XML);
+            if (regInfoXml.exists()) {
+                Resource regInfoResource = configRegistry.newResource();
+                regInfoResource.setContentStream(new FileInputStream(regInfoXml));
+                configRegistry.put(artifactPath + artifact.getName() +
+                        AppDeployerConstants.REG_CONFIG_XML, regInfoResource);
+            }
+
         }
     }
 

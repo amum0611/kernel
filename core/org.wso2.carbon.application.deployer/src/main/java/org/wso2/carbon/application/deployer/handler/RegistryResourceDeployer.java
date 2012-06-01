@@ -105,9 +105,6 @@ public class RegistryResourceDeployer implements AppDeploymentHandler {
                     RegistryConfig regConfig = buildRegistryConfig(artifact);
                     if (regConfig != null) {
                         capm.writeArtifactResources(regConfig);
-                        capm.persistRegConfig(AppDeployerConstants.APPLICATIONS +
-                                parentAppName + AppDeployerConstants.APP_DEPENDENCIES +
-                                artifact.getName(), regConfig);
                     }
                     artifact.setRegConfig(regConfig);
                 } catch (Exception e) {

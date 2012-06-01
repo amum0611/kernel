@@ -29,6 +29,7 @@ public class Artifact {
     public static final String TYPE = "type";
     public static final String VERSION = "version";
     public static final String ARTIFACT_XML = "artifact.xml";
+    public static final String REG_INFO_XML = "registry-info.xml";
 
     public static final String ARTIFACT = "artifact";
     public static final String DEPENDENCY = "dependency";

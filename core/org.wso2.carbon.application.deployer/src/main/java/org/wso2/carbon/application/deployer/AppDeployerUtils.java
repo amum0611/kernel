@@ -271,6 +271,15 @@ public final class AppDeployerUtils {
                     readChildText(itemElement, RegistryConfig.REGISTRY_TYPE));
         }
 
+        // read Item elements under Resources
+        Iterator dumpItr = resourcesElement.getChildrenWithLocalName(RegistryConfig.DUMP);
+        while (dumpItr.hasNext()) {
+            OMElement itemElement = (OMElement) dumpItr.next();
+            regConfig.addDump(readChildText(itemElement, RegistryConfig.PATH),
+                    readChildText(itemElement, RegistryConfig.FILE),
+                    readChildText(itemElement, RegistryConfig.REGISTRY_TYPE));
+        }
+
         // read Collection elements under Resources
         Iterator collectionItr = resourcesElement.getChildrenWithLocalName(RegistryConfig.COLLECTION);
         while (collectionItr.hasNext()) {

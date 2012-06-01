@@ -31,6 +31,7 @@ public class RegistryConfig {
 
     public static final String FILE = "file";
     public static final String ITEM = "item";
+    public static final String DUMP = "dump";
     public static final String COLLECTION = "collection";
     public static final String ASSOCIATION = "association";
     public static final String PATH = "path";
@@ -48,6 +49,7 @@ public class RegistryConfig {
     private Log log = LogFactory.getLog(RegistryConfig.class);
 
     private List<Resourse> resources;
+    private List<Dump> dumps;
     private List<Collection> collections;
     private List<Association> associations;
 
@@ -57,6 +59,7 @@ public class RegistryConfig {
 
     public RegistryConfig() {
         resources = new ArrayList<Resourse>();
+        dumps = new ArrayList<Dump>();
         collections = new ArrayList<Collection>();
         associations = new ArrayList<Association>();
     }
@@ -82,6 +85,25 @@ public class RegistryConfig {
 
     public List<Collection> getCollections() {
         return collections;
+    }
+
+    /**
+     * Add a dump which belongs to the artifact represented by this component.
+     *
+     * @param path    - path at which the dump should be stored
+     * @param content - name of the dump file
+     * @param regType - type of registry to store the resource (local, config or governance)
+     */
+    public void addDump(String path, String content, String regType) {
+        if (path == null || path.length() == 0) {
+            log.error("Dump path not found");
+            return;
+        }
+        if (content == null || content.length() == 0) {
+            log.error("Content name of the dump not found");
+            return;
+        }
+        dumps.add(new Dump(path, content, regType));
     }
 
     /**
@@ -137,6 +159,10 @@ public class RegistryConfig {
         return resources;
     }
 
+    public List<Dump> getDumps() {
+        return dumps;
+    }
+
     public String getExtractedPath() {
         return extractedPath;
     }
@@ -181,6 +207,33 @@ public class RegistryConfig {
 
         public String getFileName() {
             return fileName;
+        }
+
+        public String getRegistryType() {
+            return registryType;
+        }
+    }
+
+    /**
+     * This class represents a dump in a the reg-config.xml
+     */
+    public class Dump {
+        private String path;
+        private String dumpFileName;
+        private String registryType;
+
+        public Dump(String path, String fileName, String regType) {
+            this.path = path;
+            this.dumpFileName = fileName;
+            this.registryType = regType;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public String getDumpFileName() {
+            return dumpFileName;
         }
 
         public String getRegistryType() {
