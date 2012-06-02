@@ -43,7 +43,38 @@ public class CommonLDAPRealmConfigBuilder implements MultiTenantRealmConfigBuild
     public RealmConfiguration getRealmConfigForTenantToCreateRealm(
             RealmConfiguration bootStrapConfig, RealmConfiguration persistedConfig, int tenantId)
             throws UserStoreException {
-        return persistedConfig;
+        RealmConfiguration realmConfig;
+        //clone the bootstrap realm and insert tenant specific properties taken from tenant's user-mgt.xml
+        try {
+            realmConfig = bootStrapConfig.cloneRealmConfiguration();
+            realmConfig.setAdminPassword(persistedConfig.getAdminPassword());
+            realmConfig.setAdminUserName(persistedConfig.getAdminUserName());
+            realmConfig.setAdminRoleName(persistedConfig.getAdminRoleName());
+            realmConfig.setEveryOneRoleName(persistedConfig.getEveryOneRoleName());
+            realmConfig.setTenantId(persistedConfig.getTenantId());
+
+            Map<String, String> authz = realmConfig.getAuthzProperties();
+            authz.put(UserCoreConstants.RealmConfig.PROPERTY_ADMINROLE_AUTHORIZATION,
+                      CarbonConstants.UI_ADMIN_PERMISSION_COLLECTION);
+
+            if (persistedConfig.getUserStoreProperties().get(LDAPConstants.USER_SEARCH_BASE) != null) {
+                realmConfig.getUserStoreProperties().put(
+                        LDAPConstants.USER_SEARCH_BASE,
+                        persistedConfig.getUserStoreProperties().get(LDAPConstants.USER_SEARCH_BASE));
+            }
+            if (persistedConfig.getUserStoreProperties().get(LDAPConstants.GROUP_SEARCH_BASE) != null) {
+                realmConfig.getUserStoreProperties().put(
+                        LDAPConstants.GROUP_SEARCH_BASE,
+                        persistedConfig.getUserStoreProperties().get(LDAPConstants.GROUP_SEARCH_BASE));
+            }
+            
+        } catch (Exception e) {
+            String errorMessage = "Error while building tenant specific realm configuration" +
+                                  "when creating tenant's realm.";
+            logger.error(errorMessage, e);
+            throw new UserStoreException(errorMessage, e);
+        }
+        return realmConfig;
     }
 
     public RealmConfiguration getRealmConfigForTenantToPersist(RealmConfiguration bootStrapConfig,
@@ -53,13 +84,12 @@ public class CommonLDAPRealmConfigBuilder implements MultiTenantRealmConfigBuild
 
         try {
             RealmConfiguration ldapRealmConfig = bootStrapConfig.cloneRealmConfiguration();
-            ldapRealmConfig.setAdminPassword(UIDGenerator.generateUID());
+            ldapRealmConfig.setAdminPassword("dummy");
             ldapRealmConfig.setAdminUserName(tenantInfo.getAdminName());
             ldapRealmConfig.setTenantId(tenantId);
 
-            Map<String, String> authz = ldapRealmConfig.getAuthzProperties();
-            authz.put(UserCoreConstants.RealmConfig.PROPERTY_ADMINROLE_AUTHORIZATION,
-                      CarbonConstants.UI_ADMIN_PERMISSION_COLLECTION);
+            //remove non-tenant specific info from tenant-specific user-mgt.xml before persisting.
+            removePropertiesFromTenantRealmConfig(ldapRealmConfig);
 
             Map<String, String> userStoreProperties = ldapRealmConfig.getUserStoreProperties();
 
@@ -106,7 +136,8 @@ public class CommonLDAPRealmConfigBuilder implements MultiTenantRealmConfigBuild
             return ldapRealmConfig;
 
         } catch (Exception e) {
-            String errorMessage = "Error while building tenant specific Realm Configuration.";
+            String errorMessage = "Error while building tenant specific realm configuration " +
+                                  "to be persisted.";
             logger.error(errorMessage, e);
             throw new UserStoreException(errorMessage, e);
         }
@@ -115,6 +146,17 @@ public class CommonLDAPRealmConfigBuilder implements MultiTenantRealmConfigBuild
     public RealmConfiguration getRealmConfigForTenantToCreateRealmOnTenantCreation(
             RealmConfiguration bootStrapConfig, RealmConfiguration persistedConfig, int tenantId)
             throws UserStoreException {
+
         return persistedConfig;
+    }
+
+    private void removePropertiesFromTenantRealmConfig(RealmConfiguration tenantRealmConfiguration) {
+        //remove sensitive information from realm properties before persisting
+        // tenant specific user-mgt.xml
+        tenantRealmConfiguration.getRealmProperties().clear();
+
+        //remove sensitive information from user store properties before persisting
+        //tenant specific user-mgt.xml
+        tenantRealmConfiguration.getUserStoreProperties().clear();
     }
 }
