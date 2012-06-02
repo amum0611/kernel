@@ -180,6 +180,11 @@ public class DefaultRealmService implements RealmService {
         	if (tenantManager.getTenant(tenantId) != null) {
         		  RealmConfiguration tenantRealmConfig = (RealmConfiguration) tenantManager.getTenant(
                           tenantId).getRealmConfig();
+                  MultiTenantRealmConfigBuilder realmConfigBuilder = getMultiTenantRealmConfigBuilder();
+                  if (realmConfigBuilder != null) {
+                        tenantRealmConfig = realmConfigBuilder.getRealmConfigForTenantToCreateRealm(
+                        bootstrapRealmConfig, tenantRealmConfig, tenantId);
+                  }
                   userRealm = initializeRealm(tenantRealmConfig, tenantId);
                   synchronized (this) {
                       realmCache.addToCache(tenantId, PRIMARY_TENANT_REALM, userRealm);
