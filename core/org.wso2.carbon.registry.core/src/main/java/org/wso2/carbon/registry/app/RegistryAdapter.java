@@ -1443,7 +1443,7 @@ public class RegistryAdapter
         entry.addSimpleExtension(APPConstants.QN_LAST_UPDATER, entryObj.getLastUpdaterUserName());
         if (entryObj.getCreatedTime() != null) {
             entry.addSimpleExtension(new QName(APPConstants.NAMESPACE, "createdTime"),
-                    String.valueOf(entryObj.getCreatedTime().getTime()));
+                    new AtomDate(entryObj.getCreatedTime().getTime()).getValue());
         }
         final String mediaType = entryObj.getMediaType();
         if (mediaType != null && mediaType.length() > 0) {
@@ -1513,7 +1513,7 @@ public class RegistryAdapter
         }
         if (resource.getCreatedTime() != null) {
             feed.addSimpleExtension(new QName(APPConstants.NAMESPACE, "createdTime"),
-                    String.valueOf(resource.getCreatedTime().getTime()));
+                    new AtomDate(resource.getCreatedTime().getTime()).getValue());
         }
         feed.addLink(URLEncoder.encode(resource.getPath()), APPConstants.PARAMETER_PATH);
         feed.setSubtitle(resource.getDescription());

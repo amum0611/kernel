@@ -279,7 +279,7 @@ public class RemoteRegistry implements Registry {
         String createdDate = feed.getSimpleExtension(
                 new QName(APPConstants.NAMESPACE, "createdTime"));
         if (createdDate != null) {
-            resource.setCreatedTime(new Date(Long.parseLong(createdDate)));
+            resource.setCreatedTime(new AtomDate(createdDate).getDate());
         }
 
         String lastUpdatedUser = feed.getSimpleExtension(APPConstants.QN_LAST_UPDATER);
@@ -367,7 +367,7 @@ public class RemoteRegistry implements Registry {
         String createdDate = entry.getSimpleExtension(
                 new QName(APPConstants.NAMESPACE, "createdTime"));
         if (createdDate != null) {
-            resource.setCreatedTime(new Date(Long.valueOf(createdDate)));
+            resource.setCreatedTime(new AtomDate(createdDate).getDate());
         }
 
         String lastUpdatedUser = entry.getSimpleExtension(APPConstants.QN_LAST_UPDATER);
