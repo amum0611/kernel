@@ -17,6 +17,7 @@
 */
 package org.wso2.carbon.user.core.util;
 
+import org.apache.axiom.om.util.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.user.api.RealmConfiguration;
@@ -26,6 +27,8 @@ import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.internal.Activator;
 import org.wso2.carbon.user.core.service.RealmService;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -49,7 +52,8 @@ public final class UserCoreUtil {
     private UserCoreUtil() {
     }
 
-    private static class SynchronizingClass{}
+    private static class SynchronizingClass {
+    }
 
     public static String[] combineArrays(String[] arr1, String[] arr2) throws UserStoreException {
         if (arr1 == null || arr1.length == 0) {
@@ -99,7 +103,7 @@ public final class UserCoreUtil {
         }
         String tenantDomain = null;
         try {
-            if(domainCalculation == null) { //default behavior until realm service comes up
+            if (domainCalculation == null) { //default behavior until realm service comes up
                 if (username.contains("@")) {
                     tenantDomain = username.substring(username.lastIndexOf('@') + 1);
                 }
@@ -149,20 +153,20 @@ public final class UserCoreUtil {
         if (isEmailUserName == null) {
             loadData();
         }
-        
+
         if ((isEmailUserName == null || isEmailUserName == false) && username.contains("@")) {
             username = username.substring(0, username.lastIndexOf('@'));
         }
         return username;
     }
 
-    
+
     private static void loadData() {
         synchronized (loadlock) {
             if (isEmailUserName == null) {
                 try {
                     if (realmService != null) {
-                        UserRealm realm = (UserRealm)realmService.getBootstrapRealm();
+                        UserRealm realm = (UserRealm) realmService.getBootstrapRealm();
                         RealmConfiguration realmConfig = realm.getRealmConfiguration();
 
                         if (isCrossTenantUniqueUserName == null) {
@@ -214,11 +218,11 @@ public final class UserCoreUtil {
             Pattern p = Pattern.compile("(.*)/.*$");
             while (index < rawResourcePath.length) {
                 Matcher m = p.matcher(rawResourcePath[index]);
-                if(m.find()){
+                if (m.find()) {
                     String s = m.group(1);
-                    if(s.equals(shortestString)){
+                    if (s.equals(shortestString)) {
                         index++;
-                    }else{
+                    } else {
                         break;
                     }
                 }
@@ -226,12 +230,12 @@ public final class UserCoreUtil {
         }
         return lst.toArray(new String[lst.size()]);
     }
-    
+
     public static Boolean getIsEmailUserName() {
         return isEmailUserName;
     }
 
-    
+
     public static RealmService getRealmService() {
         return realmService;
     }
@@ -242,5 +246,47 @@ public final class UserCoreUtil {
 
     public static Boolean getIsCrossTenantUniqueUserName() {
         return isCrossTenantUniqueUserName;
+    }
+
+    public static String getPasswordToStore(String password, String passwordHashMethod,
+                                             boolean isKdcEnabled) throws UserStoreException {
+
+        if (isKdcEnabled) {
+            // If KDC is enabled we will always use plain text passwords.
+            // Cause - KDC cannot operate with hashed passwords.
+
+            return password;
+        }
+
+        String passwordToStore = password;
+
+        if (passwordHashMethod != null) {
+
+            if (passwordHashMethod.
+                    equals(UserCoreConstants.RealmConfig.PASSWORD_HASH_METHOD_PLAIN_TEXT)) {
+                return passwordToStore;
+            }
+
+            try {
+                MessageDigest messageDigest = MessageDigest.getInstance(passwordHashMethod);
+                byte[] digestValue = messageDigest.digest(password.getBytes());
+                passwordToStore = "{" + passwordHashMethod + "}" + Base64.encode(digestValue);
+            } catch (NoSuchAlgorithmException e) {
+                throw new UserStoreException("Invalid hashMethod", e);
+            }
+        }
+        return passwordToStore;
+    }
+
+    public static boolean isKdcEnabled(RealmConfiguration realmConfig) {
+
+        String stringKdcEnabled = realmConfig.getUserStoreProperty(
+                UserCoreConstants.RealmConfig.PROPERTY_KDC_ENABLED);
+
+        if (stringKdcEnabled != null) {
+            return Boolean.parseBoolean(stringKdcEnabled);
+        } else {
+            return false;
+        }
     }
 }

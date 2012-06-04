@@ -54,4 +54,7 @@ public class LDAPConstants {
     //used in tenant management
     public static final String USER_CONTEXT_NAME = "users";
     public static final String GROUP_CONTEXT_NAME = "groups";
+
+    //password
+    public static final String PASSWORD_HASH_METHOD = "passwordHashMethod";
 }

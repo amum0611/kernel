@@ -171,6 +171,7 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
         //checkRequiredUserStoreConfiguration();
     }
 
+    //TODO:isKdcEnabled method was added to UserCoreUtil. Remove below and use that.
     protected void setKdcEnabled(RealmConfiguration realmConfig) {
 
         String stringKdcEnabled = realmConfig.getUserStoreProperty(
@@ -390,6 +391,7 @@ public class ApacheDSUserStoreManager extends LDAPUserStoreManager {
         }
     }
 
+    //TODO:getPasswordToStore method is added to UserCoreUtil. Remove below and use that.
     private String getPasswordToStore(String password, String passwordHashMethod)
             throws UserStoreException {
 

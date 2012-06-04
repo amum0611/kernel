@@ -26,6 +26,7 @@ import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.api.RealmConfiguration;
 import org.wso2.carbon.user.core.ldap.LDAPConnectionContext;
 import org.wso2.carbon.user.core.ldap.LDAPConstants;
+import org.wso2.carbon.user.core.util.UserCoreUtil;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -62,13 +63,16 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
 
         if (ldapConnectionSource == null) {
             throw new UserStoreException("LDAP connection context is not set in properties with key - "
-                    + UserCoreConstants.LDAP_CONNECTION_SOURCE);
+                                         + UserCoreConstants.LDAP_CONNECTION_SOURCE);
         }
 
         tenantMgtConfig = (TenantMgtConfiguration) properties.get(
                 UserCoreConstants.TENANT_MGT_CONFIGURATION);
 
         realmConfig = (RealmConfiguration) properties.get(UserCoreConstants.REALM_CONFIGURATION);
+        if (realmConfig == null) {
+            throw new UserStoreException("Tenant Manager can not function without a bootstrap realm config");
+        }
     }
 
     public CommonHybridLDAPTenantManager(DataSource dataSource, String superTenantDomain) {
@@ -103,12 +107,13 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
     /**
      * Create a space for tenant in LDAP.
      *
-     * @param orgName  Organization name.
-     * @param tenant The tenant
+     * @param orgName           Organization name.
+     * @param tenant            The tenant
      * @param initialDirContext The directory connection.
      * @throws UserStoreException If an error occurred while creating.
      */
-     protected void createOrganizationalUnit(String orgName, Tenant tenant, DirContext initialDirContext)
+    protected void createOrganizationalUnit(String orgName, Tenant tenant,
+                                            DirContext initialDirContext)
             throws UserStoreException {
         //e.g: ou=wso2.com
         String partitionDN = tenantMgtConfig.getTenantStoreProperties().get(
@@ -120,20 +125,20 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
                 UserCoreConstants.TenantMgtConfig.PROPERTY_ORG_SUB_CONTEXT_ATTRIBUTE);
         //eg:o=cse.org,dc=wso2,dc=com
         String dnOfOrganizationalContext = organizationNameAttribute + "=" + orgName + "," +
-                partitionDN;
+                                           partitionDN;
         createOrganizationalSubContext(dnOfOrganizationalContext,
-                LDAPConstants.USER_CONTEXT_NAME, initialDirContext);
+                                       LDAPConstants.USER_CONTEXT_NAME, initialDirContext);
 
         //create group store
         createOrganizationalSubContext(dnOfOrganizationalContext,
-                LDAPConstants.GROUP_CONTEXT_NAME, initialDirContext);
+                                       LDAPConstants.GROUP_CONTEXT_NAME, initialDirContext);
 
         //create admin entry
         String orgSubContextAttribute = tenantMgtConfig.getTenantStoreProperties().get(
                 UserCoreConstants.TenantMgtConfig.PROPERTY_ORG_SUB_CONTEXT_ATTRIBUTE);
         //eg: ou=users,o=cse.org,dc=wso2,dc=com
         String dnOfUserContext = orgSubContextAttribute + "=" + LDAPConstants.USER_CONTEXT_NAME
-                + "," + dnOfOrganizationalContext;
+                                 + "," + dnOfOrganizationalContext;
         String dnOfUserEntry = createAdminEntry(dnOfUserContext, tenant, initialDirContext);
 
         //create admin group if write ldap group is enabled
@@ -141,8 +146,8 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
                 LDAPConstants.WRITE_EXTERNAL_ROLES))) {
             //construct dn of group context: eg:ou=groups,o=cse.org,dc=wso2,dc=com
             String dnOfGroupContext = orgSubContextAttribute + "=" +
-                    LDAPConstants.GROUP_CONTEXT_NAME + "," +
-                    dnOfOrganizationalContext;
+                                      LDAPConstants.GROUP_CONTEXT_NAME + "," +
+                                      dnOfOrganizationalContext;
             createAdminGroup(dnOfGroupContext, dnOfUserEntry, initialDirContext);
         }
     }
@@ -150,12 +155,13 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
     /**
      * Create main context corresponding to tenant.
      *
-     * @param rootDN   Root domain name.
-     * @param orgName Organization name
+     * @param rootDN            Root domain name.
+     * @param orgName           Organization name
      * @param initialDirContext The directory connection.
      * @throws UserStoreException If an error occurred while creating context.
      */
-     protected void createOrganizationalContext(String rootDN, String orgName, DirContext initialDirContext)
+    protected void createOrganizationalContext(String rootDN, String orgName,
+                                               DirContext initialDirContext)
             throws UserStoreException {
 
         DirContext subContext = null;
@@ -183,18 +189,18 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
             String rdnOfOrganizationalContext = organizationalNameAttribute + "=" + orgName;
             if (logger.isDebugEnabled()) {
                 logger.debug("Adding sub context: " + rdnOfOrganizationalContext + " under " +
-                        rootDN + " ...");
+                             rootDN + " ...");
             }
             //create organization sub context
             organizationalContext = subContext.createSubcontext(rdnOfOrganizationalContext, contextAttributes);
             if (logger.isDebugEnabled()) {
                 logger.debug("Sub context: " + rdnOfOrganizationalContext + " was added under "
-                        + rootDN + " successfully.");
+                             + rootDN + " successfully.");
             }
 
         } catch (NamingException e) {
             String errorMsg = "Error occurred while adding the organizational unit " +
-                    "sub context.";
+                              "sub context.";
             logger.error(errorMsg, e);
             throw new UserStoreException(errorMsg, e);
         } finally {
@@ -216,13 +222,14 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
     /**
      * Create sub contexts under the tenant's main context.
      *
-     * @param dnOfParentContext domain name of the parent context.
+     * @param dnOfParentContext    domain name of the parent context.
      * @param nameOfCurrentContext name of the current context.
-     * @param initialDirContext The directory connection.
+     * @param initialDirContext    The directory connection.
      * @throws UserStoreException if an error occurs while creating context.
      */
-     protected void createOrganizationalSubContext(String dnOfParentContext,
-                                                String nameOfCurrentContext, DirContext initialDirContext)
+    protected void createOrganizationalSubContext(String dnOfParentContext,
+                                                  String nameOfCurrentContext,
+                                                  DirContext initialDirContext)
             throws UserStoreException {
 
         DirContext subContext = null;
@@ -248,21 +255,21 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
 
             //construct the rdn of org sub context
             String rdnOfOrganizationalContext = orgSubUnitAttributeName + "=" +
-                    nameOfCurrentContext;
+                                                nameOfCurrentContext;
             if (logger.isDebugEnabled()) {
                 logger.debug("Adding sub context: " + rdnOfOrganizationalContext + " under " +
-                        dnOfParentContext + " ...");
+                             dnOfParentContext + " ...");
             }
             //create sub context
             organizationalContext = subContext.createSubcontext(rdnOfOrganizationalContext, contextAttributes);
             if (logger.isDebugEnabled()) {
                 logger.debug("Sub context: " + rdnOfOrganizationalContext + " was added under "
-                        + dnOfParentContext + " successfully.");
+                             + dnOfParentContext + " successfully.");
             }
 
         } catch (NamingException e) {
             String errorMsg = "Error occurred while adding the organizational unit " +
-                    "sub context.";
+                              "sub context.";
             logger.error(errorMsg, e);
             throw new UserStoreException(errorMsg, e);
         } finally {
@@ -271,7 +278,8 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
         }
     }
 
-    protected String createAdminEntry(String dnOfUserContext, Tenant tenant, DirContext initialDirContext)
+    protected String createAdminEntry(String dnOfUserContext, Tenant tenant,
+                                      DirContext initialDirContext)
             throws UserStoreException {
         String userDN = null;
         DirContext organizationalUsersContext = null;
@@ -288,7 +296,11 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
 
             //create user password attribute
             Attribute password = new BasicAttribute(USER_PASSWORD_ATTRIBUTE_NAME);
-            password.add(tenant.getAdminPassword());
+            String passwordToStore = UserCoreUtil.getPasswordToStore(
+                    tenant.getAdminPassword(),
+                    realmConfig.getUserStoreProperties().get(LDAPConstants.PASSWORD_HASH_METHOD),
+                    isKDCEnabled());
+            password.add(passwordToStore);
             userAttributes.put(password);
 
             //create mail attribute
@@ -326,7 +338,8 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
         return userDN;
     }
 
-    protected void createAdminGroup(String dnOfGroupContext, String adminUserDN, DirContext initialDirContext)
+    protected void createAdminGroup(String dnOfGroupContext, String adminUserDN,
+                                    DirContext initialDirContext)
             throws UserStoreException {
         //create set of attributes required to create admin group
         Attributes adminGroupAttributes = new BasicAttributes(true);
@@ -365,4 +378,7 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
         }
     }
 
+    private boolean isKDCEnabled() {
+        return UserCoreUtil.isKdcEnabled(realmConfig);
+    }
 }
