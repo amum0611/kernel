@@ -36,7 +36,7 @@ public class CarbonApplicationContextHolder {
 	// instance of the base of this Carbon Context Holder
 	private CarbonApplicationContextHolderBase carbonAppContextHolderBase;
 
-	private static final String CARBON_APPLICATION_CONTEXT_HOLDER = "carbonContextHolder";
+	private static final String CARBON_APPLICATION_CONTEXT_HOLDER = "carbonApplicationContextHolder";
 
 	private static final Log log = LogFactory.getLog(CarbonApplicationContextHolder.class);
 
