@@ -17,6 +17,7 @@
 */
 package org.wso2.carbon.caching.core.rolesofuser;
 
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.caching.core.CacheKey;
 
 import java.io.Serializable;
@@ -52,7 +53,8 @@ public class UserRolesCacheKey extends CacheKey implements Serializable {
     }
 
     public int getAttributeHashCode() {
-        return (this.tenantId + this.userName.hashCode() * 7);
+        return ((this.tenantId == MultitenantConstants.SUPER_TENANT_ID ? 0 : tenantId)
+        		+ this.userName.hashCode() * 7);
     }
 
     public int getTenantId() {

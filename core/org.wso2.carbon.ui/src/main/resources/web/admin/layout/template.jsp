@@ -40,7 +40,7 @@
 		tenantDomain = (String) request
 				.getAttribute(MultitenantConstants.TENANT_DOMAIN);
 	}
-	if (tenantDomain != null) {
+	if (tenantDomain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
         String themeRoot = "../../../../t/" + tenantDomain
 				+ "/registry/resource"
 				+ RegistryConstants.GOVERNANCE_REGISTRY_BASE_PATH

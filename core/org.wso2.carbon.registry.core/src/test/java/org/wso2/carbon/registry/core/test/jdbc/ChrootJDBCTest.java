@@ -15,6 +15,7 @@
  */
 package org.wso2.carbon.registry.core.test.jdbc;
 
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
@@ -32,10 +33,12 @@ public class ChrootJDBCTest extends JDBCRegistryTest {
             RealmConfiguration realmConfig = ctx.getRealmService().getBootstrapRealmConfiguration();
             originalRegistry =
                     embeddedRegistryService.getUserRegistry(realmConfig.getAdminUserName());
-            registry = embeddedRegistryService.getUserRegistry(realmConfig.getAdminUserName(), 0,
-                    "/basePrefix");
-            systemRegistry = embeddedRegistryService.getSystemRegistry(0, "/basePrefix");
+            registry = embeddedRegistryService.getUserRegistry(realmConfig.getAdminUserName(), 
+            		MultitenantConstants.SUPER_TENANT_ID, "/basePrefix");
+            systemRegistry = embeddedRegistryService.getSystemRegistry(
+            		MultitenantConstants.SUPER_TENANT_ID, "/basePrefix");
         } catch (RegistryException e) {
+                e.printStackTrace();
                 fail("Failed to initialize the registry. Caused by: " + e.getMessage());
         }
     }

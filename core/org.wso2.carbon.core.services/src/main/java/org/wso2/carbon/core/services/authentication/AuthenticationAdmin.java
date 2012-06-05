@@ -38,6 +38,7 @@ import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.AuthenticationObserver;
 import org.wso2.carbon.utils.ServerConstants;
 import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -90,11 +91,11 @@ public class AuthenticationAdmin implements CarbonServerAuthenticator {
             RegistryService registryService = CarbonServicesServiceComponent.getRegistryService();
             RealmService realmService = CarbonServicesServiceComponent.getRealmService();
 
-            String tenantDomain = UserCoreUtil.getTenantDomain(realmService, username);
+            String tenantDomain = MultitenantUtils.getTenantDomain(username);
             int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
             handleAuthenticationStarted(tenantId);
             String userNameWithDomain = username;
-            username = UserCoreUtil.getTenantLessUsername(username);
+            username = MultitenantUtils.getTenantAwareUsername(username);
             UserRealm realm = AnonymousSessionUtil.getRealmByTenantDomain(registryService,
                     realmService, tenantDomain);
             if (realm == null) {
@@ -139,7 +140,7 @@ public class AuthenticationAdmin implements CarbonServerAuthenticator {
                 data.setMaxAge(CarbonConstants.REMEMBER_ME_COOKIE_TTL);
                 data.setValue(username + "-" + uuid);
                 RealmService realmService = CarbonServicesServiceComponent.getRealmService();
-                String tenantDomain = UserCoreUtil.getTenantDomain(realmService, username);
+                String tenantDomain = MultitenantUtils.getTenantDomain(username);
                 int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
                 UserRealm realm = realmService.getTenantUserRealm(tenantId);
                 realm.getUserStoreManager().addRememberMe(username, uuid);
@@ -272,11 +273,11 @@ public class AuthenticationAdmin implements CarbonServerAuthenticator {
 
             int index = cookie.indexOf('-');
             String userNameWithTenant = cookie.substring(0, index);
-            String tenantDomain = UserCoreUtil.getTenantDomain(realmService, userNameWithTenant);
+            String tenantDomain = MultitenantUtils.getTenantDomain(userNameWithTenant);
             int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
             handleAuthenticationStarted(tenantId);
 
-            String userName = UserCoreUtil.getTenantLessUsername(userNameWithTenant);
+            String userName = MultitenantUtils.getTenantAwareUsername(userNameWithTenant);
             String uuid = cookie.substring(index + 1);
             UserRealm realm = realmService.getTenantUserRealm(tenantId);
             boolean isAuthenticated = realm.getUserStoreManager().isValidRememberMeToken(userName,

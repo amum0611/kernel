@@ -124,8 +124,11 @@ public class RegistryAdmin extends AbstractAdmin {
         if (host != null && port != -1 && path != null) {
             String tenantDomain =
                     SuperTenantCarbonContext.getCurrentContext().getTenantDomain(true);
-            return scheme + "://" + host + ":" + port + webContext + ((tenantDomain != null) ?
-                    "/" + MultitenantConstants.TENANT_AWARE_URL_PREFIX + "/" + tenantDomain : "") +
+            return scheme + "://" + host + ":" + port + webContext + 
+            		( (tenantDomain != null &&
+            		!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) ?
+            			"/" + MultitenantConstants.TENANT_AWARE_URL_PREFIX + "/" + tenantDomain : 
+            			"") +
                     "/registry/resource" +
                     org.wso2.carbon.registry.app.Utils.encodeRegistryPath(path) + version;
         }

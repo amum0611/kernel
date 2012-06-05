@@ -38,6 +38,7 @@ import org.wso2.carbon.user.core.util.DatabaseUtil;
 import org.wso2.carbon.user.core.util.JDBCRealmUtil;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.sql.DataSource;
 import java.security.MessageDigest;
@@ -425,7 +426,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
     }
 
     public int getTenantId(String username) throws UserStoreException {
-        if (this.tenantId != 0) {
+        if (this.tenantId != MultitenantConstants.SUPER_TENANT_ID) {
             throw new UserStoreException("Not allowed to perform this operation");
         }
         String sqlStmt = realmConfig

@@ -258,7 +258,8 @@ public class RegistryResolver implements Resolver<Target> {
                                         getAttribute(MultitenantConstants.TENANT_DOMAIN);
                         int tenantId;
                         String userNameAlong;
-                        if (tenantDomain == null) {
+                        if (tenantDomain == null || 
+                        		MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
                             tenantId = getTenantId(userName);
                             userNameAlong = getUserName(userName);
                         } else {
@@ -282,8 +283,9 @@ public class RegistryResolver implements Resolver<Target> {
             } else {
                 String tenantDomain = (String) requestContext.getRequest().
                         getAttribute(MultitenantConstants.TENANT_DOMAIN);
-                int calledTenantId = 0;
-                if (tenantDomain != null) {
+                int calledTenantId = MultitenantConstants.SUPER_TENANT_ID;
+                if (tenantDomain != null &&
+                		!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
                     if (RegistryContext.getBaseInstance().getRealmService() == null) {
                         String msg = "Error in getting the tenant manager. " +
                                 "The realm service is not available.";

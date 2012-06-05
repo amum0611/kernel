@@ -685,7 +685,8 @@ public final class CarbonContextHolder {
 
     // Checks whether the given tenant is a sub-tenant or not.
     private static boolean isSubTenant(int tenantId) {
-        return (tenantId > MultitenantConstants.SUPER_TENANT_ID);
+        return (tenantId != MultitenantConstants.SUPER_TENANT_ID &&
+        		tenantId != MultitenantConstants.INVALID_TENANT_ID);
     }
 
     // A tenant-aware queue manager implementation. This will internally hold an instance of the

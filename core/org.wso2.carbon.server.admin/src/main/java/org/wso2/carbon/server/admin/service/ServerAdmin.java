@@ -39,6 +39,7 @@ import org.wso2.carbon.server.admin.internal.ServerAdminDataHolder;
 import org.wso2.carbon.utils.Controllable;
 import org.wso2.carbon.utils.NetworkUtils;
 import org.wso2.carbon.utils.ServerConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -88,7 +89,8 @@ public class ServerAdmin extends AbstractAdmin implements ServerAdminMBean, ISer
         }
         ServerData data =
                 new ServerData(ServerConstants.SERVER_NAME, location,
-                               getTenantDomain() != null, isRestricted);
+                               (getTenantDomain() != null && getTenantDomain() != MultitenantConstants.SUPER_TENANT_DOMAIN_NAME),
+                               isRestricted);
 
         if (!isRestricted) {
             Parameter systemStartTime =

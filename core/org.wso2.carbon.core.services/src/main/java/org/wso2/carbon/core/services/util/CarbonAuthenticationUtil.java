@@ -31,6 +31,7 @@ import org.wso2.carbon.registry.core.RegistryConstants;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.session.UserRegistry;
 import org.wso2.carbon.utils.ServerConstants;
+import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpSession;
@@ -75,8 +76,7 @@ public class CarbonAuthenticationUtil {
     }
 
     public static void onSuccessAdminLogin(HttpSession httpSess, String username, int tenantId,
-            String tenantDomain, String remoteAddress) throws Exception {
-
+            String tenantDomain, String remoteAddress) throws Exception {    
         RegistryService registryService = CarbonServicesServiceComponent.getRegistryService();
         UserRegistry userRegistry = registryService.getConfigUserRegistry(username, tenantId);
         UserRegistry governanceUserRegistry =
@@ -87,6 +87,9 @@ public class CarbonAuthenticationUtil {
             httpSess.setAttribute(ServerConstants.USER_LOGGED_IN, username);
             if (tenantDomain != null) {
                 httpSess.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
+            } else {
+            	audit.info("User with null domain tried to login.");
+            	return;
             }
 
             setRootRegistry(httpSess, username, tenantId);
@@ -101,20 +104,16 @@ public class CarbonAuthenticationUtil {
             carbonContext.setRegistry(RegistryType.USER_GOVERNANCE, governanceUserRegistry);
             carbonContext.setUserRealm(governanceUserRegistry.getUserRealm());
         }
+        
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
 
-        if(tenantDomain == null){
-            String msg = "\'" + username + "\' logged in at " +
-                       date.format(currentTime) + " from IP address " + remoteAddress;
-            log.info(msg);
-            audit.info(msg);
-        } else {
-            String msg = "\'" + username + "@" + tenantDomain + " [" + tenantId + "]\' logged in at " +
-                       date.format(currentTime) + " from IP address " + remoteAddress;
-            log.info(msg);
-            audit.info(msg);
-        }
+
+        String msg = "\'" + username + "@" + tenantDomain + " [" + tenantId + "]\' logged in at " +
+                   date.format(currentTime) + " from IP address " + remoteAddress;
+        log.info(msg);
+        audit.info(msg);
+        
 
         // trigger the callbacks subscribe to the login event
         LoginSubscriptionManagerServiceImpl loginSubscriptionManagerServiceImpl = CarbonServicesServiceComponent
@@ -165,7 +164,6 @@ public class CarbonAuthenticationUtil {
      */
     public static void onSuccessAdminLogin(ThriftSession thriftSession, String username, int tenantId,
             String tenantDomain, String remoteAddress) throws Exception {
-
         RegistryService registryService = CarbonServicesServiceComponent.getRegistryService();
         UserRegistry userRegistry = registryService.getConfigUserRegistry(username, tenantId);
         UserRegistry governanceUserRegistry =
@@ -176,6 +174,9 @@ public class CarbonAuthenticationUtil {
             thriftSession.setAttribute(ServerConstants.USER_LOGGED_IN, username);
             if (tenantDomain != null) {
                 thriftSession.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
+            } else {
+            	audit.info("User with null domain tried to login.");
+            	return;
             }
             thriftSession.setAttribute(RegistryConstants.ROOT_REGISTRY_INSTANCE, registryService
                     .getRegistry(username, tenantId));
@@ -194,17 +195,12 @@ public class CarbonAuthenticationUtil {
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
 
-        if(tenantDomain == null){
-            String msg = "\'" + username + "\' logged in at " +
-                       date.format(currentTime) + " from IP address " + remoteAddress;
-            log.info(msg);
-            audit.info(msg);
-        } else {
-            String msg = "\'" + username + "@" + tenantDomain + " [" + tenantId + "]\' logged in at " +
-                       date.format(currentTime) + " from IP address " + remoteAddress;
-            log.info(msg);
-            audit.info(msg);
-        }
+
+        String msg = "\'" + username + "@" + tenantDomain + " [" + tenantId + "]\' logged in at " +
+                   date.format(currentTime) + " from IP address " + remoteAddress;
+        log.info(msg);
+        audit.info(msg);
+       
 
         // trigger the callbacks subscribe to the login event
         LoginSubscriptionManagerServiceImpl loginSubscriptionManagerServiceImpl = CarbonServicesServiceComponent

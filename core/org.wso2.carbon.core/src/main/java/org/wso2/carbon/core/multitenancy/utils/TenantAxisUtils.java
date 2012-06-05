@@ -263,7 +263,8 @@ public final class TenantAxisUtils {
     createTenantConfigurationContext(ConfigurationContext mainConfigCtx,
                                      String tenantDomain) throws Exception {
         int tenantId = getTenantId(tenantDomain);
-        if (tenantId == 0 || tenantId == -1) {
+        if (tenantId == MultitenantConstants.SUPER_TENANT_ID || 
+        		tenantId == MultitenantConstants.INVALID_TENANT_ID) {
             throw new Exception("Tenant " + tenantDomain + " does not exist");
         }
         Map<String, ConfigurationContext> tenantConfigContexts = getTenantConfigurationContexts(mainConfigCtx);

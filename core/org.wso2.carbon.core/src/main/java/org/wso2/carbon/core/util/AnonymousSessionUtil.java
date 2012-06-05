@@ -27,6 +27,8 @@ import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 /**
  * When there is no authenticated session please use this calss to get the
@@ -44,10 +46,10 @@ public class AnonymousSessionUtil {
     public static UserRegistry getSystemRegistryByUserName(RegistryService registryService,
             RealmService realmService, String userName) throws CarbonException {
         try {
-            String tenantDomain = UserCoreUtil.getTenantDomain(realmService, userName);
+            String tenantDomain = MultitenantUtils.getTenantDomain(userName);
             return AnonymousSessionUtil.getSystemRegistryByDomainName(registryService, realmService,
                     tenantDomain);
-        } catch (UserStoreException e) {
+        } catch (Exception e) {
             throw new CarbonException(e.getMessage(), e);
         }
     }
@@ -73,7 +75,7 @@ public class AnonymousSessionUtil {
             RealmService realmService, String domainName) throws CarbonException {
         try {
             int tenantId = realmService.getTenantManager().getTenantId(domainName);
-            if (tenantId < 0) {
+            if (tenantId == MultitenantConstants.INVALID_TENANT_ID) {
                 throw new CarbonException("Invalid domain name");
             }
             if (!realmService.getTenantManager().isTenantActive(tenantId)) {
@@ -105,10 +107,10 @@ public class AnonymousSessionUtil {
     public static UserRealm getRealmByUserName(RegistryService registryService,
             RealmService realmService, String userName) throws CarbonException {
         try {
-            String tenantDomain = UserCoreUtil.getTenantDomain(realmService, userName);
+            String tenantDomain = MultitenantUtils.getTenantDomain(userName);
             return AnonymousSessionUtil.getRealmByTenantDomain(registryService, realmService,
                     tenantDomain);
-        } catch (UserStoreException e) {
+        } catch (Exception e) {
             throw new CarbonException(e.getMessage(), e);
         }
     }
@@ -116,8 +118,11 @@ public class AnonymousSessionUtil {
     public static UserRealm getRealmByTenantDomain(RegistryService registryService,
             RealmService realmService, String tenantDomain) throws CarbonException {
         try {
+        	if (MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
+        		return realmService.getBootstrapRealm();
+        	}
             int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
-            if (tenantId < 0) {
+            if (tenantId == MultitenantConstants.INVALID_TENANT_ID) {
                 log.warn("Failed to retrieve Realm for the Invalid Domain : " + tenantDomain);
                 return null;
             }

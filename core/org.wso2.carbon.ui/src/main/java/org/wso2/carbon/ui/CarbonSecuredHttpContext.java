@@ -30,6 +30,7 @@ import org.wso2.carbon.ui.internal.CarbonUIServiceComponent;
 import org.wso2.carbon.ui.util.CarbonUIAuthenticationUtil;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -409,13 +410,13 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
                 // The tenant id part(i.e. acme.com) should be set into
                 // http session for further UI related processing
                 String userName = request.getParameter("username");
-                String tenantDomain = UserCoreUtil.getTenantDomain(
-                        CarbonUIServiceComponent.getRealmService(), userName);
+                String tenantDomain = MultitenantUtils.getTenantDomain(userName);
                 if (tenantDomain == null) {
                     tenantDomain = (String) request
                             .getAttribute(MultitenantConstants.TENANT_DOMAIN);
                 }
-                if (tenantDomain != null) {
+                if (tenantDomain != null && 
+                		!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
                     // we will add it to the context
                     contextPath += "/" + MultitenantConstants.TENANT_AWARE_URL_PREFIX + "/"
                             + tenantDomain;

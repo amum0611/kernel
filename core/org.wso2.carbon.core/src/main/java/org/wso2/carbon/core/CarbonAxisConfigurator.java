@@ -429,7 +429,7 @@ public class CarbonAxisConfigurator extends DeploymentEngine implements AxisConf
         schedulerTask = new CarbonDeploymentSchedulerTask(listener,
                                                           axisConfig,
                                                           MultitenantConstants.SUPER_TENANT_ID,
-                                                          MultitenantConstants.SUPER_TENANT_NAME);
+                                                          MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
         scheduler = Executors.newScheduledThreadPool(1);
         String deploymentInterval =
                 CarbonCoreDataHolder.getInstance().

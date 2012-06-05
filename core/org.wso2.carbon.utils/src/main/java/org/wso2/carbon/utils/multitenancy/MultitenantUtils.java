@@ -37,13 +37,9 @@ public class MultitenantUtils {
 
     public static String getTenantAwareUsername(String username) {
         ServerConfiguration serverConfig = ServerConfiguration.getInstance();
-        String value = serverConfig.getFirstProperty(CarbonConstants.USERNAME_STYLE);
-        if (!CarbonConstants.USERNAME_STYLE_VALUE_EMAIL.equals(value)) { // if user name style is 'Email'
-            if (username.contains("@")) {
-                username = username.substring(0, username.lastIndexOf('@')); // then pick user name, which is preceding last '@' sign
-            }
-        } // else return user name as it is 
-        
+        if (username.contains("@")) {
+        	username = username.substring(0, username.lastIndexOf('@')); // then pick user name, which is preceding last '@' sign
+        }
         return username;
     }
 
@@ -56,19 +52,9 @@ public class MultitenantUtils {
     }
 
     public static String getTenantDomain(String username) {
-        String tenantDomain = null;
+        String tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
         if (username.contains("@")) {
             tenantDomain = username.substring(username.lastIndexOf('@') + 1);
-            ServerConfiguration serverConfig = ServerConfiguration.getInstance();
-            String superTenantDomain =
-                    serverConfig.getFirstProperty(MultitenantConstants.SUPER_TENANT_DOMAIN);
-            String userNameStyle =
-                    serverConfig.getFirstProperty(CarbonConstants.USERNAME_STYLE);
-
-            if (superTenantDomain != null && superTenantDomain.equals(tenantDomain)
-                    && CarbonConstants.USERNAME_STYLE_VALUE_EMAIL.equals(userNameStyle)) {
-                tenantDomain = null; // no domain for super tenant
-            }
         }
         return tenantDomain;
     }

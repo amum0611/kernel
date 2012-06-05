@@ -47,13 +47,11 @@ import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.config.RealmConfigXMLProcessor;
 import org.wso2.carbon.user.core.util.DatabaseUtil;
 import org.wso2.carbon.utils.DBUtils;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 public class JDBCTenantManager implements TenantManager {
 	DataSource dataSource;
 	private static Log log = LogFactory.getLog(TenantManager.class);
-
-	protected String superTenantDomain = null;
-
 	protected BundleContext bundleContext;
 
     /**
@@ -75,21 +73,12 @@ public class JDBCTenantManager implements TenantManager {
         if (dataSource == null) {
             throw new Exception("Data Source is null");
         }
-        if (omElement != null) {
-            Iterator ite =
-                           omElement.getChildrenWithLocalName(UserCoreConstants.LOCAL_NAME_PROPERTY);
-            if (ite != null && ite.hasNext()) {
-                OMElement element = (OMElement) ite.next();
-                this.superTenantDomain = element.getText();
-            }
-
-        }
         this.tenantCacheManager.clear();
     }
 
+	//TODO : Remove the unused variable
 	public JDBCTenantManager(DataSource dataSource, String superTenantDomain) {
 		this.dataSource = dataSource;
-		this.superTenantDomain = superTenantDomain;
 	}
 
     public int addTenant(org.wso2.carbon.user.api.Tenant tenant) throws UserStoreException {
@@ -280,7 +269,9 @@ public class JDBCTenantManager implements TenantManager {
 	}
 
     public String getDomain(int tenantId) throws UserStoreException {
-		if (tenantId == 0) {
+		if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
+			return MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
+		} else if (tenantId == MultitenantConstants.INVALID_TENANT_ID) {
 			return null;
 		}
 
@@ -316,7 +307,8 @@ public class JDBCTenantManager implements TenantManager {
 			DatabaseUtil.closeAllConnections(dbConnection, result, prepStmt);
 		}
 		
-		if(tenantDomain != null && !tenantDomain.isEmpty() && tenantId != -1 ) {
+		if(tenantDomain != null && !tenantDomain.isEmpty() && 
+				tenantId != MultitenantConstants.INVALID_TENANT_ID) {
             tenantIdDomainMap.put(tenantId, tenantDomain);
         }
         
@@ -324,11 +316,10 @@ public class JDBCTenantManager implements TenantManager {
 	}
 
     public int getTenantId(String tenantDomain) throws UserStoreException {
-		if (tenantDomain == null) {
-			return 0;
-		} else if (superTenantDomain != null
-				&& superTenantDomain.equals(tenantDomain)) {
-			return 0;
+		if (MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
+			return MultitenantConstants.SUPER_TENANT_ID;
+		} else if (tenantDomain == null) {
+			return MultitenantConstants.INVALID_TENANT_ID;
 		}
         Integer tenantId = (Integer) tenantDomainIdMap.get(tenantDomain);
         if(tenantId != null) {
@@ -338,7 +329,7 @@ public class JDBCTenantManager implements TenantManager {
         Connection dbConnection = null;
 		PreparedStatement prepStmt = null;
 		ResultSet result = null;
-		tenantId = -1;
+		tenantId = MultitenantConstants.INVALID_TENANT_ID;
 		try {
 			dbConnection = getDBConnection();
 			String sqlStmt = TenantConstants.GET_TENANT_ID_SQL;
@@ -351,7 +342,8 @@ public class JDBCTenantManager implements TenantManager {
 				tenantId = result.getInt("UM_ID");
 			}
 			dbConnection.commit();
-            if (tenantDomain != null && !tenantDomain.isEmpty() && tenantId != -1 ) {
+            if (tenantDomain != null && !tenantDomain.isEmpty() && 
+            		tenantId != MultitenantConstants.INVALID_TENANT_ID ) {
                 tenantDomainIdMap.put(tenantDomain, tenantId);
             }
         } catch (SQLException e) {
@@ -366,6 +358,7 @@ public class JDBCTenantManager implements TenantManager {
 	}
 
     public void activateTenant(int tenantId) throws UserStoreException {
+    	    	
         tenantCacheManager.clearCacheEntry(new TenantIdKey(tenantId));
         
 		Connection dbConnection = null;
@@ -417,8 +410,7 @@ public class JDBCTenantManager implements TenantManager {
 	}
 
     public boolean isTenantActive(int tenantId) throws UserStoreException {
-		if (tenantId == 0) {
-			// this is always active..
+		if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
 			return true;
 		}
 		Connection dbConnection = null;
@@ -492,6 +484,6 @@ public class JDBCTenantManager implements TenantManager {
 	}
 
     public String getSuperTenantDomain() throws UserStoreException {
-		return superTenantDomain;
+		return MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
 	}
 }

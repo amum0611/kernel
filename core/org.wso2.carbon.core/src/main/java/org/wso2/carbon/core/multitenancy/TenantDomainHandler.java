@@ -36,7 +36,7 @@ public class TenantDomainHandler extends AbstractHandler {
 
     public InvocationResponse invoke(MessageContext msgContext) throws AxisFault {
         CarbonContextHolder carbonContext = CarbonContextHolder.getThreadLocalCarbonContextHolder();
-        String tenantDomain = null;
+        String tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
         EndpointReference epr = msgContext.getTo();
         if (epr != null) {
             String toAddress = epr.getAddress();
@@ -45,7 +45,7 @@ public class TenantDomainHandler extends AbstractHandler {
                 if (tenantDelimiterIndex != -1) {
                     String temp = toAddress.substring(tenantDelimiterIndex + 3);
                     tenantDomain = temp.substring(0, temp.indexOf('/'));
-                    if (tenantDomain != null) {
+                    if (!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
                         carbonContext.setTenantDomain(tenantDomain);
                         SuperTenantCarbonContext.getCurrentContext().getTenantId(true);
                     }
@@ -55,14 +55,14 @@ public class TenantDomainHandler extends AbstractHandler {
                     msgContext.setTo(newEpr);
                     msgContext.getOptions().setTo(newEpr);
                 }else {
-                    if (carbonContext.getTenantId() == -1) {
+                    if (carbonContext.getTenantId() == MultitenantConstants.INVALID_TENANT_ID) {
                         carbonContext.setTenantId(MultitenantConstants.SUPER_TENANT_ID);
                     }
                 }
             }
         }
 
-        if (tenantDomain == null) {
+        if (MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
             // try to dispatch from the soap header.
             SOAPHeader soapHeader = msgContext.getEnvelope().getHeader();
             if (soapHeader != null) {
@@ -77,14 +77,14 @@ public class TenantDomainHandler extends AbstractHandler {
 
         }
 
-        if (tenantDomain == null) {
+        if (MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
             Map<String, String> transportHeaders =
                     (Map<String, String>) msgContext.getProperty(MessageContext.TRANSPORT_HEADERS);
             if (transportHeaders != null) {
                 tenantDomain = transportHeaders.get(MultitenantConstants.TENANT_DOMAIN_HEADER_NAME);
             }
         }
-        if (tenantDomain != null) {
+        if (!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
             carbonContext.setTenantDomain(tenantDomain);
         }
         return InvocationResponse.CONTINUE;

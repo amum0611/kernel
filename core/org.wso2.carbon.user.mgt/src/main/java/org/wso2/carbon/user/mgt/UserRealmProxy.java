@@ -434,7 +434,7 @@ public class UserRealmProxy {
         UIPermissionNode nodeRoot;
         try {
             Collection regRoot;
-            if (tenantId == 0) {
+            if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
                 if (CarbonContext.getCurrentContext().getTenantId() != MultitenantConstants.SUPER_TENANT_ID) {
                     log.error("Illegal access attempt");
                     throw new UserStoreException("Illegal access attempt");
@@ -464,7 +464,7 @@ public class UserRealmProxy {
         UIPermissionNode nodeRoot;
         try {
             Collection regRoot;
-            if (tenantId == 0) {
+            if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
                 regRoot = (Collection) registry.get(UserMgtConstants.UI_PERMISSION_ROOT);
                 String displayName = regRoot.getProperty(UserMgtConstants.DISPLAY_NAME);
                 nodeRoot = new UIPermissionNode(UserMgtConstants.UI_PERMISSION_ROOT, displayName);

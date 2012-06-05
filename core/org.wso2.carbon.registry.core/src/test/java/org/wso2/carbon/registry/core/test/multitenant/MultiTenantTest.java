@@ -36,6 +36,7 @@ import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.tenant.Tenant;
 import org.wso2.carbon.user.core.tenant.TenantManager;
 import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -75,7 +76,8 @@ public class MultiTenantTest extends BaseTestCase {
 
         RealmConfiguration realmConfig = ctx.getRealmService().getBootstrapRealmConfiguration();
         UserRegistry registry1 =
-                embeddedRegistryService.getUserRegistry(realmConfig.getAdminUserName(), 0);
+                embeddedRegistryService.getUserRegistry(realmConfig.getAdminUserName(), 
+                		MultitenantConstants.SUPER_TENANT_ID);
         Resource r = registry1.newResource();
         registry1.put("/test", r);
 
@@ -104,7 +106,8 @@ public class MultiTenantTest extends BaseTestCase {
             throw new RegistryException("Error in adding a user", e);
         }
 
-        Registry registry3 = embeddedRegistryService.getUserRegistry("don1", "password", 0);
+        Registry registry3 = embeddedRegistryService.getUserRegistry("don1", "password", 
+        		MultitenantConstants.SUPER_TENANT_ID);
         r = registry3.get("/");
         assertEquals("The property name should be value", r.getProperty("name"), "value");
 
@@ -120,7 +123,8 @@ public class MultiTenantTest extends BaseTestCase {
         RealmConfiguration realmConfig = ctx.getRealmService().getBootstrapRealmConfiguration();
         // first we will fill the user store for tenant 0
         UserRegistry registry1 =
-                embeddedRegistryService.getUserRegistry(realmConfig.getAdminUserName(), 0);
+                embeddedRegistryService.getUserRegistry(realmConfig.getAdminUserName(), 
+                		MultitenantConstants.SUPER_TENANT_ID);
 
         Resource r = registry1.newResource();
         registry1.put("/test2", r);
@@ -363,8 +367,11 @@ public class MultiTenantTest extends BaseTestCase {
                 (tenants[0].getDomain() + tenants[1].getDomain()).contains("abc.org"));
 
         // if the domain exists
-        assertTrue("wso2.org should exist", tenantManager.getTenantId("wso2.org") > 0);
-        assertTrue("pqr.org should not exists", tenantManager.getTenantId("pqr.org") < 0);
+        int tempTenantId = tenantManager.getTenantId("wso2.org");
+        assertTrue("wso2.org should exist", (tempTenantId != MultitenantConstants.INVALID_TENANT_ID &&
+        		tempTenantId != MultitenantConstants.SUPER_TENANT_ID));
+        tempTenantId = tenantManager.getTenantId("pqr.org");
+        assertTrue("pqr.org should not exists",  tempTenantId == MultitenantConstants.INVALID_TENANT_ID);
 
         int tenantId4 = tenantManager.getTenantId("wso2.org");
         assertEquals("tenant domain should be wso2.org", "wso2.org",

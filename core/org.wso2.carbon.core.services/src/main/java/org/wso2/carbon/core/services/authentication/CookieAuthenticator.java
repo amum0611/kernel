@@ -27,6 +27,7 @@ import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 /**
  * An authenticator which will authenticate users based on the cookie value passed in the
@@ -62,7 +63,7 @@ public class CookieAuthenticator extends AbstractAuthenticator {
     @Override
     protected void doAuthentication(String userNameInRequest, int tenantId, MessageContext msgContext)
             throws AuthenticationFailureException {
-        String userName = UserCoreUtil.getTenantLessUsername(userNameInRequest);
+        String userName = MultitenantUtils.getTenantAwareUsername(userNameInRequest);
 
         String cookieData = getCookieData(msgContext);
 

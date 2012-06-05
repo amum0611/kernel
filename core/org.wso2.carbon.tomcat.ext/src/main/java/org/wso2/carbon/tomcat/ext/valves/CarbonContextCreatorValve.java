@@ -57,11 +57,10 @@ public class CarbonContextCreatorValve extends ValveBase {
 
     public void initCarbonContext(Request request) throws Exception {
         String tenantDomain = Utils.getTenantDomain(request);
-        CarbonContextHolder carbonContextHolder =
-                CarbonContextHolder.getThreadLocalCarbonContextHolder();
+        CarbonContextHolder carbonContextHolder = CarbonContextHolder.getThreadLocalCarbonContextHolder();
         carbonContextHolder.setTenantDomain(tenantDomain);
-        UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
-        if (userRealmService != null) {
+		if (tenantDomain != null) {
+        	UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
             TenantManager tenantManager = userRealmService.getTenantManager();
             int tenantId = tenantManager.getTenantId(tenantDomain);
             carbonContextHolder.setTenantId(tenantId);

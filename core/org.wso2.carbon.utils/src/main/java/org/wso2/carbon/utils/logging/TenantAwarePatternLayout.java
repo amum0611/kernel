@@ -199,7 +199,8 @@ public class TenantAwarePatternLayout extends PatternLayout {
 				if (event instanceof TenantAwareLoggingEvent) {
 					return ((TenantAwareLoggingEvent) event).getTenantId();
 				} else {
-					if (CarbonContextHolder.getCurrentCarbonContextHolder().getTenantId() > -1) {
+					if (CarbonContextHolder.getCurrentCarbonContextHolder().getTenantId() != 
+							MultitenantConstants.INVALID_TENANT_ID) {
 						return Integer.toString(CarbonContextHolder.getCurrentCarbonContextHolder()
 								.getTenantId());
 					}
@@ -315,7 +316,8 @@ public class TenantAwarePatternLayout extends PatternLayout {
 			}
 
 			public String getFullyQualifiedName(LoggingEvent event) {
-				if (CarbonContextHolder.getCurrentCarbonContextHolder().getTenantId() > -1
+				if (CarbonContextHolder.getCurrentCarbonContextHolder().getTenantId() !=
+						MultitenantConstants.INVALID_TENANT_ID
 						&& CarbonContextHolder.getCurrentCarbonContextHolder().getTenantId() != MultitenantConstants.SUPER_TENANT_ID) {
 					return new TenantAwarePatternLayout(tenantPattern).format(event);
 				}

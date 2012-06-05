@@ -75,7 +75,7 @@ public abstract class AbstractAdmin {
             // If a tenant has been set, then try to get the ConfigurationContext of that tenant
             SuperTenantCarbonContext carbonContext = SuperTenantCarbonContext.getCurrentContext(msgContext);
             String domain = carbonContext.getTenantDomain();
-            if (domain != null) {
+            if (domain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(domain)) {
                 return  TenantAxisUtils.getTenantConfigurationContext(domain, mainConfigContext);
             } else if(carbonContext.getTenantId() == MultitenantConstants.SUPER_TENANT_ID) {
                 return mainConfigContext;

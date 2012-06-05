@@ -21,6 +21,8 @@ import java.io.Serializable;
  * Date: Oct 7, 2010 Time: 11:13:54 AM
  */
 
+import org.wso2.carbon.base.MultitenantConstants;
+
 /**
  * A key class which wraps a cache key used by Authorization manager.
  */
@@ -87,7 +89,10 @@ public class AuthorizationKey implements Serializable {
     private int getHashCodeForAttributes(int tenantId, String userName, String resourceId,
                                          String action) {
 
-        if ((tenantId != -1) && userName != null) {
+        if ((tenantId != MultitenantConstants.INVALID_TENANT_ID) && userName != null) {
+        	if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
+        		tenantId = 0;
+        	}
             return tenantId + userName.hashCode() * 5 + resourceId.hashCode() * 7 +
                    action.hashCode() * 11;
         } else {

@@ -26,6 +26,7 @@ import org.wso2.carbon.registry.core.jdbc.handlers.RequestContext;
 import org.wso2.carbon.registry.core.jdbc.handlers.filters.URLMatcher;
 import org.wso2.carbon.registry.core.session.CurrentSession;
 import org.wso2.carbon.registry.core.test.utils.BaseTestCase;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.ByteArrayInputStream;
 
@@ -84,7 +85,7 @@ public class HandlerTest extends BaseTestCase {
         URLMatcher filter = new URLMatcher();
         filter.setPattern(".*");
 
-        CurrentSession.setCallerTenantId(0);
+        CurrentSession.setCallerTenantId(MultitenantConstants.SUPER_TENANT_ID);
         try {
             registry.getRegistryContext().getHandlerManager().addHandler(null, filter, handler,
                     HandlerLifecycleManager.COMMIT_HANDLER_PHASE);
@@ -136,7 +137,7 @@ public class HandlerTest extends BaseTestCase {
         filter = new URLMatcher();
         filter.setPattern(".*");
 
-        CurrentSession.setCallerTenantId(0);
+        CurrentSession.setCallerTenantId(MultitenantConstants.SUPER_TENANT_ID);
         try {
             registry.getRegistryContext().getHandlerManager().addHandler(null, filter, handler,
                     HandlerLifecycleManager.ROLLBACK_HANDLER_PHASE);

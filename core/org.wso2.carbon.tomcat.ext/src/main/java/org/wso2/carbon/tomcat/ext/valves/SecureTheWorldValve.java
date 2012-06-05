@@ -29,6 +29,7 @@ import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -111,7 +112,7 @@ public class SecureTheWorldValve extends ValveBase {
             RealmService realmService = CarbonRealmServiceHolder.getRealmService();
             try {
                 int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
-                if(tenantId == -1){
+                if(tenantId == MultitenantConstants.INVALID_TENANT_ID){
                     return false;
                 }
                 UserRealm userRealm = realmService.getTenantUserRealm(tenantId);

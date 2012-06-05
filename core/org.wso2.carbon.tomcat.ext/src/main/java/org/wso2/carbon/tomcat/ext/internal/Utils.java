@@ -29,19 +29,20 @@ public class Utils {
 
     public static String getTenantDomain(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        if (!requestURI.contains("/t/")) {
+        String domain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
+		if (!requestURI.contains("/t/")) {
             //check for admin services - tenant admin services are deployed in super tenant flow
             HttpSession session = request.getSession(false);
-            String domain = null;
-            if (session != null) {
+            if (session != null && session.getAttribute(MultitenantConstants.TENANT_DOMAIN) != null) {
                 domain = (String)session.getAttribute(MultitenantConstants.TENANT_DOMAIN);
             }
-            return domain;
+        } else {
+	        String temp = requestURI.substring(requestURI.indexOf("/t/") + 3);
+	        if (temp.indexOf('/') != -1) {
+	            temp = temp.substring(0, temp.indexOf('/'));
+	            domain = temp;
+	        }
         }
-        String temp = requestURI.substring(requestURI.indexOf("/t/") + 3);
-        if (temp.indexOf('/') != -1) {
-            temp = temp.substring(0, temp.indexOf('/'));
-        }
-        return temp;
+        return domain;
     }
 }

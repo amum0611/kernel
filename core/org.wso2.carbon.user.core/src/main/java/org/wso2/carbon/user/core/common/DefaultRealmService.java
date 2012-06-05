@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -37,10 +36,9 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jivesoftware.smackx.packet.MUCAdmin;
 import org.osgi.framework.BundleContext;
 import org.wso2.carbon.caching.core.realm.RealmCache;
-import org.wso2.carbon.caching.core.realm.RealmCacheEntry;
-import org.wso2.carbon.caching.core.realm.RealmCacheKey;
 import org.wso2.carbon.user.api.RealmConfiguration;
 import org.wso2.carbon.user.api.TenantMgtConfiguration;
 import org.wso2.carbon.user.core.UserCoreConstants;
@@ -117,7 +115,7 @@ public class DefaultRealmService implements RealmService {
         this.tenantManager.initializeExistingPartitions();
         // initializing the bootstrapRealm
         this.bc = bc;
-        bootstrapRealm = initializeRealm(bootstrapRealmConfig, 0);
+        bootstrapRealm = initializeRealm(bootstrapRealmConfig, MultitenantConstants.SUPER_TENANT_ID);
         Dictionary<String, String> dictionary = new Hashtable<String, String>();
         dictionary.put(UserCoreConstants.REALM_GENRE, UserCoreConstants.DELEGATING_REALM);
         if (bc != null) {
@@ -147,7 +145,7 @@ public class DefaultRealmService implements RealmService {
             properties.put(UserCoreConstants.LDAP_CONNECTION_SOURCE, ldapConnectionSource);
         }
         this.tenantManager = tenantManager;
-        bootstrapRealm = initializeRealm(bootstrapRealmConfig, 0);
+        bootstrapRealm = initializeRealm(bootstrapRealmConfig, MultitenantConstants.SUPER_TENANT_ID);
     }
 
     private RealmConfiguration buildBootStrapRealmConfig() throws UserStoreException {
@@ -205,41 +203,19 @@ public class DefaultRealmService implements RealmService {
     public UserRealm getUserRealm(RealmConfiguration tenantRealmConfig) throws UserStoreException {
         UserRealm userRealm = null;
         int tenantId = tenantRealmConfig.getTenantId();
-        userRealm = (UserRealm) realmCache.getUserRealm(tenantId, PRIMARY_TENANT_REALM);
-        if (userRealm == null && tenantId == 0) {
-            userRealm = bootstrapRealm;
+        if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
+            return bootstrapRealm;
         }
-
-        if (tenantId != 0) {
+        userRealm = (UserRealm) realmCache.getUserRealm(tenantId, PRIMARY_TENANT_REALM);        
+        if (userRealm == null) {
             MultiTenantRealmConfigBuilder realmConfigBuilder = getMultiTenantRealmConfigBuilder();
             if (realmConfigBuilder != null) {
                 tenantRealmConfig = realmConfigBuilder.getRealmConfigForTenantToCreateRealm(
                         bootstrapRealmConfig, tenantRealmConfig, tenantId);
             }
-        }
-
-        if (userRealm == null) {
             synchronized (this) {
                 userRealm = initializeRealm(tenantRealmConfig, tenantId);
                 realmCache.addToCache(tenantId, PRIMARY_TENANT_REALM, userRealm);
-            }
-        } else {
-            long existingRealmPersistedTime = -1L;
-            long newRealmConfigPersistedTime = -1L;
-            if (userRealm.getRealmConfiguration().getPersistedTimestamp() != null) {
-                existingRealmPersistedTime = userRealm.getRealmConfiguration()
-                        .getPersistedTimestamp().getTime();
-            }
-            if (tenantRealmConfig.getPersistedTimestamp() != null) {
-                newRealmConfigPersistedTime = tenantRealmConfig.getPersistedTimestamp().getTime();
-            }
-
-            if (existingRealmPersistedTime != newRealmConfigPersistedTime) {
-                // this is an update
-                userRealm = initializeRealm(tenantRealmConfig, tenantId);
-                synchronized (this) {
-                    realmCache.addToCache(tenantId, PRIMARY_TENANT_REALM, userRealm);
-                }
             }
         }
         return userRealm;

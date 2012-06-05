@@ -37,6 +37,7 @@ import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -308,11 +309,11 @@ public class EmbeddedRegistryService implements RegistryService {
      */
     public UserRegistry getUserRegistry(String userName, String password) throws RegistryException {
         try {
-            String tenantDomain = UserCoreUtil
-                    .getTenantDomain(RegistryCoreServiceComponent.getRealmService(), userName);
-            userName = UserCoreUtil.getTenantLessUsername(userName);
+            String tenantDomain = MultitenantUtils.getTenantDomain(userName);
+            userName = MultitenantUtils.getTenantAwareUsername(userName);
             int tenantId = MultitenantConstants.SUPER_TENANT_ID;
-            if (tenantDomain != null) {
+            if (tenantDomain != null &&
+            		!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
                 tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
             }
             return getUserRegistry(userName, password, tenantId);
@@ -378,11 +379,11 @@ public class EmbeddedRegistryService implements RegistryService {
      */
     public UserRegistry getUserRegistry(String userName) throws RegistryException {
         try {
-            String tenantDomain = UserCoreUtil
-                    .getTenantDomain(RegistryCoreServiceComponent.getRealmService(), userName);
-            userName = UserCoreUtil.getTenantLessUsername(userName);
+            String tenantDomain = MultitenantUtils.getTenantDomain(userName);
+            userName = MultitenantUtils.getTenantAwareUsername(userName);
             int tenantId = MultitenantConstants.SUPER_TENANT_ID;
-            if (tenantDomain != null) {
+            if (tenantDomain != null &&
+            		!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
                 tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
             }
             return getUserRegistry(userName, tenantId);

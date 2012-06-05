@@ -27,6 +27,7 @@ import org.wso2.carbon.user.core.claim.dao.ClaimDAO;
 import org.wso2.carbon.user.core.profile.builder.ProfileConfigurationBuilder;
 import org.wso2.carbon.user.core.profile.dao.ProfileConfigDAO;
 import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class AdvancedProfileConfigManagerTest extends BaseTestCase {
     private ProfileConfigurationManager profileConfigMan;
     private BasicDataSource ds;
     private String realmName="test";
-    private int tenantId=0;
+    private int tenantId = MultitenantConstants.SUPER_TENANT_ID;
     
     public void setUp() throws Exception {
             super.setUp();

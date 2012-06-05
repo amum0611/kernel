@@ -18,6 +18,7 @@ package org.wso2.carbon.caching.core.realm;
 
 import java.io.Serializable;
 
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.caching.core.CacheKey;
 
 public class RealmCacheKey extends CacheKey implements Serializable {
@@ -27,7 +28,8 @@ public class RealmCacheKey extends CacheKey implements Serializable {
     private String key;
 
     public RealmCacheKey(int tenantId, String realmName) {
-        this.key = realmName + tenantId;
+        this.key = realmName + 
+        		(tenantId == MultitenantConstants.SUPER_TENANT_ID ? 0 : tenantId) ;
     }
 
     public boolean equals(Object otherObject) {

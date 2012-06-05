@@ -24,6 +24,7 @@ import org.wso2.carbon.registry.core.jdbc.EmbeddedRegistryService;
 import org.wso2.carbon.registry.core.jdbc.handlers.RequestContext;
 import org.wso2.carbon.registry.core.test.utils.BaseTestCase;
 import org.wso2.carbon.user.api.RealmConfiguration;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 public class SimpleLifecycleTest extends BaseTestCase {
 
@@ -105,7 +106,7 @@ public class SimpleLifecycleTest extends BaseTestCase {
 
         RegistryContext context = registry.getRegistryContext();
         context.selectDBConfig("h2-db");
-        context.addAspect(LIFECYCLE, new SimpleLifecycle(), 0);
+        context.addAspect(LIFECYCLE, new SimpleLifecycle(), MultitenantConstants.SUPER_TENANT_ID);
 
         String [] aspects = registry.getAvailableAspects();
         assertTrue(aspects.length > 0);

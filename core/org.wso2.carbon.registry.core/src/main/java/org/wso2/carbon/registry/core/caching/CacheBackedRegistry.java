@@ -30,6 +30,7 @@ import org.wso2.carbon.registry.core.session.CurrentSession;
 import org.wso2.carbon.registry.core.utils.AuthorizationUtils;
 import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -46,7 +47,7 @@ public class CacheBackedRegistry implements Registry {
      */
     private Registry registry;
 
-    private int tenantId = -1;
+    private int tenantId = MultitenantConstants.INVALID_TENANT_ID;
 
     /**
      * used to store cached data
@@ -78,9 +79,9 @@ public class CacheBackedRegistry implements Registry {
         String connectionId = "";
 
         int tenantId;
-        if (this.tenantId == -1) {
+        if (this.tenantId == MultitenantConstants.INVALID_TENANT_ID) {
             tenantId = CurrentSession.getTenantId();
-            if (tenantId < 0) {
+            if (tenantId == MultitenantConstants.INVALID_TENANT_ID) {
                 tenantId = CarbonContextHolder.getCurrentCarbonContextHolder().getTenantId();
             }
         } else {

@@ -38,6 +38,7 @@ import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -575,7 +576,7 @@ public class RegistryConfigurationProcessor {
             return false;
         }
         if (lifecyclePhase != null) {
-            if (handlerDefinitionObject.getTenantId() != -1 &&
+            if (handlerDefinitionObject.getTenantId() != MultitenantConstants.INVALID_TENANT_ID &&
                     !HandlerLifecycleManager.DEFAULT_SYSTEM_HANDLER_PHASE.equals(lifecyclePhase) &&
                     !HandlerLifecycleManager.USER_DEFINED_SYSTEM_HANDLER_PHASE.equals(
                             lifecyclePhase)) {
@@ -865,11 +866,11 @@ public class RegistryConfigurationProcessor {
             String handlerClassName = handlerConfigElement.getAttributeValue(new QName("class"));
             String methodsValue = handlerConfigElement.getAttributeValue(new QName("methods"));
             String tenantIdString = handlerConfigElement.getAttributeValue(new QName("tenant"));
-            tenantId = -1;
+            tenantId = MultitenantConstants.INVALID_TENANT_ID;
             int tempTenantId = CarbonContextHolder.getCurrentCarbonContextHolder().getTenantId();
             // if the tenant id was found from the carbon context, it will be greater than -1. If not, it will be equal
             // to -1. Therefore, we need to check whether the carbon context had a tenant id and use it if it did.
-            if (tempTenantId > -1) {
+            if (tempTenantId != MultitenantConstants.INVALID_TENANT_ID) {
                 tenantId = tempTenantId;
             } else if (tenantIdString != null) {
                 try {

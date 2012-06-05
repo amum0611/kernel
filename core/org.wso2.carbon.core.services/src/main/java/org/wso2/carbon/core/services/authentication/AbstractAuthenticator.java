@@ -37,6 +37,7 @@ import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.AuthenticationObserver;
 import org.wso2.carbon.utils.ServerConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -149,7 +150,7 @@ public abstract class AbstractAuthenticator extends AbstractAdmin implements Ser
 
         String remoteAddress = getRemoteAddress(msgContext);
 
-        String tenantLessUserName = UserCoreUtil.getTenantLessUsername(userNameInRequest);
+        String tenantLessUserName = MultitenantUtils.getTenantAwareUsername(userNameInRequest);
 
         // Do actual authentication
         try {
@@ -208,7 +209,7 @@ public abstract class AbstractAuthenticator extends AbstractAdmin implements Ser
         data.setValue(userName + "-" + uuid);
 
         RealmService realmService = CarbonServicesServiceComponent.getRealmService();
-        String tenantDomain = UserCoreUtil.getTenantDomain(realmService, userName);
+        String tenantDomain = MultitenantUtils.getTenantDomain(userName);
 
         int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
 
@@ -384,7 +385,7 @@ public abstract class AbstractAuthenticator extends AbstractAdmin implements Ser
 
 
     protected String getTenantDomain(String userName, RealmService realmService) throws org.wso2.carbon.user.core.UserStoreException {
-        return UserCoreUtil.getTenantDomain(realmService, userName);
+        return MultitenantUtils.getTenantDomain(userName);
     }
 
     /**

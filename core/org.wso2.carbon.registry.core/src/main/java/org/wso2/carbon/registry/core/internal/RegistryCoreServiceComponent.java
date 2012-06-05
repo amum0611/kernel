@@ -823,7 +823,9 @@ public class RegistryCoreServiceComponent {
             // Only signed code can load the registry of a tenant, for security reasons. Accessing
             // the registry can be done by unsigned code, after the registry has been properly
             // loaded.
-            if (tenantId > 0 && canInitializeTenant(tenantId)) {
+            if (tenantId != MultitenantConstants.INVALID_TENANT_ID &&
+            		tenantId != MultitenantConstants.SUPER_TENANT_ID && 
+            		canInitializeTenant(tenantId)) {
                 RegistryCoreServiceComponent.initializeTenant(service, tenantId);
             }
         }

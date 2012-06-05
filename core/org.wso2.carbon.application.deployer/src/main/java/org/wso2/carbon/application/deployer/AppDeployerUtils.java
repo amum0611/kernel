@@ -473,7 +473,8 @@ public final class AppDeployerUtils {
                                                 String artifactType,
                                                 String runtimeObjectName,
                                                 int tenantId) {
-        if (fileName == null || artifactType == null || tenantId == -1) {
+        if (fileName == null || artifactType == null || 
+        		tenantId == MultitenantConstants.INVALID_TENANT_ID) {
             return;
         }
         ApplicationManager appManager = ApplicationManager.getInstance();

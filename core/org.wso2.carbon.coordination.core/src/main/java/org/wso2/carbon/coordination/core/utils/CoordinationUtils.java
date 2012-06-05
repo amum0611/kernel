@@ -15,6 +15,7 @@
  */
 package org.wso2.carbon.coordination.core.utils;
 
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.coordination.common.CoordinationConstants;
 import org.wso2.carbon.coordination.common.CoordinationException;
 import org.wso2.carbon.coordination.core.CoordinationConfiguration;
@@ -39,10 +40,10 @@ public class CoordinationUtils {
 		    tenantId = SuperTenantCarbonContext.getCurrentContext().getTenantId();
 		} catch (Throwable e) {
 			/* when running tests */
-			tenantId = 0;
+			tenantId = MultitenantConstants.SUPER_TENANT_ID;
 		}
-		if (tenantId < 0) {
-			tenantId = 0;
+		if (tenantId == MultitenantConstants.INVALID_TENANT_ID) {
+			tenantId = MultitenantConstants.SUPER_TENANT_ID;
 		}
 		return CoordinationConstants.CONTENT_PATH_ROOT + "/" + tenantId + "/" + context + "/" + id; 		
 	}

@@ -90,14 +90,6 @@ public final class RegistryConstants {
     @Deprecated
     public static final String TENANT_DOMAIN = MultitenantConstants.TENANT_DOMAIN;
 
-    /**
-     * The super tenant name. reserved name for the super tenant, used in outside.
-     * @deprecated use MultitenantConstants.SUPER_TENANT_NAME
-     */
-    @SuppressWarnings("unused")
-    @Deprecated
-    public static final String SUPER_TENANT_NAME = MultitenantConstants.SUPER_TENANT_NAME;
-
     /*
      * Built in user name, Anonymous.
      */

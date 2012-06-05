@@ -260,10 +260,7 @@ public final class CarbonConstants {
     /**
      * @deprecated use MultitenantConstants.SUPER_TENANT_DOMAIN
      */
-    @Deprecated
-    public static final String SUPER_TENANT_DOMAIN = MultitenantConstants.SUPER_TENANT_DOMAIN;
-
-
+   
     public static final String NAME_REGULAR_EXPRESSION = "^[^~!@#$;%^*+={}\\|\\\\<>]{3,30}$";
     //Axis2 related constants.
     public static final String AXIS2_CONFIG_SERVICE = "org.apache.axis2.osgi.config.service";
@@ -361,10 +358,6 @@ public final class CarbonConstants {
         public static final int TRANSPORT_BINDING_ADDED = 100;
         public static final int TRANSPORT_BINDING_REMOVED = 101;
     }
-
-    public static final String USERNAME_STYLE = "UserName.UserNameStyle";
-    public static final String USERNAME_STYLE_VALUE_EMAIL = "Email";
-    public static final String USERNAME_STYLE_VALUE_PLAIN = "TruncatedDomain";
 
     public static final String REGISTRY_HTTP_PORT = "RegistryHttpPort";
 

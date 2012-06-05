@@ -31,6 +31,7 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Calendar;
@@ -169,7 +170,7 @@ public class BasicAccessAuthenticator extends AbstractAuthenticator {
                     (AuthenticationFailureException.AuthenticationFailureReason.SYSTEM_ERROR, userNameInRequest);
         }
 
-        String userName = UserCoreUtil.getTenantLessUsername(userNameInRequest);
+        String userName = MultitenantUtils.getTenantAwareUsername(userNameInRequest);
         String password = (String) msgContext.getProperty(CARBON_BASIC_AUTH_PASSWORD);
 
         if (password == null) {

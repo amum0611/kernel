@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.wso2.carbon.base.MultitenantConstants;
+
 /**
  * The object representing the realm configuration.
  */
@@ -48,7 +50,7 @@ public class RealmConfiguration {
     }
 
     public RealmConfiguration() {
-        tenantId = 0;
+        tenantId = MultitenantConstants.SUPER_TENANT_ID;
     }
     
     public RealmConfiguration cloneRealmConfiguration() throws Exception {

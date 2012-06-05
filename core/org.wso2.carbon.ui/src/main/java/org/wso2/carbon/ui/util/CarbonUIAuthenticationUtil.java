@@ -35,19 +35,20 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.logging.Log;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.ui.CarbonUIUtil;
 import org.wso2.carbon.ui.UIAuthenticationExtender;
 import org.wso2.carbon.ui.internal.CarbonUIServiceComponent;
 import org.wso2.carbon.core.commons.stub.loggeduserinfo.LoggedUserInfoAdminStub;
 
-
-
-import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.ServerConstants;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 public class CarbonUIAuthenticationUtil {
+    private static Log audit = CarbonConstants.AUDIT_LOG;
+
 
     /**
      * @deprecated
@@ -55,14 +56,16 @@ public class CarbonUIAuthenticationUtil {
     public static void onSuccessAdminLogin(HttpServletRequest request, String userName)
             throws Exception {
         HttpSession session = request.getSession();
-        String tenantDomain = UserCoreUtil.getTenantDomain(
-                CarbonUIServiceComponent.getRealmService(), userName);
+        String tenantDomain = MultitenantUtils.getTenantDomain(userName);
         if (tenantDomain != null && tenantDomain.trim().length() > 0) {
             session.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
             // we will make it an attribute on request as well
             if (request.getAttribute(MultitenantConstants.TENANT_DOMAIN) == null) {
                 request.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
             }
+        } else {
+        	audit.info("User with null domain tried to login.");
+        	return;
         }
         onSuccessAdminLogin(request, userName, tenantDomain);
     }
@@ -79,19 +82,21 @@ public class CarbonUIAuthenticationUtil {
             throw new Exception("Cannot proceed logging in. The server URL and/or Cookie is null");
         }
         
-        String tenantDomain = UserCoreUtil.getTenantDomain(
-                CarbonUIServiceComponent.getRealmService(), userName);
-        if (tenantDomain != null && tenantDomain.trim().length() > 0) {
+        String tenantDomain = MultitenantUtils.getTenantDomain(userName);
+        if(tenantDomain != null && MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain.trim())){
+            request.getSession().setAttribute(MultitenantConstants.IS_SUPER_TENANT, "true");
+        }else if (tenantDomain != null && tenantDomain.trim().length() > 0) {
             session.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
             // we will make it an attribute on request as well
             if (request.getAttribute(MultitenantConstants.TENANT_DOMAIN) == null) {
                 request.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
             }
         } else {
-            request.getSession().setAttribute(MultitenantConstants.IS_SUPER_TENANT, "true");
+        	audit.info("User with null domain tried to login.");
+        	return;
         }
 
-        String tenantAwareUserName = UserCoreUtil.getTenantLessUsername(userName);     
+        String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(userName);     
 
         setUserInformation(cookie, serverURL,session);
         session.setAttribute(CarbonConstants.LOGGED_USER, tenantAwareUserName);

@@ -33,6 +33,7 @@ import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.net.MalformedURLException;
 
@@ -190,11 +191,11 @@ public class RemoteRegistryService implements RegistryService {
 
     public UserRegistry getUserRegistry(String userName) throws RegistryException {
         try {
-            String tenantDomain = org.wso2.carbon.user.core.util.UserCoreUtil
-                    .getTenantDomain(RegistryCoreServiceComponent.getRealmService(), userName);
-            userName = UserCoreUtil.getTenantLessUsername(userName);
+            String tenantDomain = MultitenantUtils.getTenantDomain(userName);
+            userName = MultitenantUtils.getTenantAwareUsername(userName);
             int tenantId = MultitenantConstants.SUPER_TENANT_ID;
-            if (tenantDomain != null) {
+            if (tenantDomain != null &&
+            		!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
                 if (realmService == null) {
                     String msg = "Unable to obtain an instance of a UserRegistry. The realm " +
                             "service is not available.";

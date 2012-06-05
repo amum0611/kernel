@@ -105,8 +105,9 @@ public class Utils {
                 (UserRegistry) request.getSession().getAttribute(
                         RegistryConstants.ROOT_REGISTRY_INSTANCE);
         String tenantDomain = (String) request.getAttribute(MultitenantConstants.TENANT_DOMAIN);
-        int calledTenantId = 0;
-        if (tenantDomain != null) {
+        int calledTenantId = MultitenantConstants.SUPER_TENANT_ID;
+        if (tenantDomain != null &&
+        		!MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
             try {
                 if (RegistryContext.getBaseInstance().getRealmService() == null) {
                     String msg = "Error in getting the tenant manager. " +

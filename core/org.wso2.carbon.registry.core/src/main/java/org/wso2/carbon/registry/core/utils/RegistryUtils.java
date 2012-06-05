@@ -1703,7 +1703,9 @@ public final class RegistryUtils {
     public static String getExtensionLibDirectoryPath() {
         CarbonContextHolder carbonContextHolder =
                 CarbonContextHolder.getCurrentCarbonContextHolder();
-        return (carbonContextHolder.getTenantId() > 0 ?
+        int tempTenantId = carbonContextHolder.getTenantId();
+        return ((tempTenantId != MultitenantConstants.INVALID_TENANT_ID &&
+        		tempTenantId != MultitenantConstants.SUPER_TENANT_ID) ?
                 (CarbonUtils.getCarbonTenantsDirPath() + File.separator +
                         carbonContextHolder.getTenantId()) :
                 (CarbonUtils.getCarbonHome() + File.separator + "repository" + File.separator +

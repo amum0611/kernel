@@ -35,6 +35,7 @@ import org.wso2.carbon.user.core.config.RealmConfigXMLProcessor;
 import org.wso2.carbon.user.core.config.TestRealmConfigBuilder;
 import org.wso2.carbon.user.core.util.DatabaseUtil;
 import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -83,7 +84,7 @@ public class JDBCRealmTest extends BaseTestCase {
         RealmConfiguration realmConfig = TestRealmConfigBuilder
                 .buildRealmConfigWithJDBCConnectionUrl(inStream, TEST_URL);
         realm.init(realmConfig, ClaimTestUtil.getClaimTestData(), ClaimTestUtil
-                .getProfileTestData(), 0);
+                .getProfileTestData(), MultitenantConstants.SUPER_TENANT_ID);
         ds.close();
     }
 

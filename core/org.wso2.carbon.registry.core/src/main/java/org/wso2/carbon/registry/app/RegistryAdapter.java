@@ -1372,7 +1372,8 @@ public class RegistryAdapter
         // for all the referred link
         String tenantDomain = (String) requestContext.getAttribute(RequestContext.Scope.REQUEST,
                 MultitenantConstants.TENANT_DOMAIN);
-        if (tenantDomain != null && !tenantDomain.equals("")) {
+        if (tenantDomain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain) &&
+        		!tenantDomain.equals("")) {
             int atomPos = link.indexOf("/registry/atom");
             if (atomPos != -1) {
                 link = link.substring(0, atomPos) + "/" + MultitenantConstants.TENANT_AWARE_URL_PREFIX +

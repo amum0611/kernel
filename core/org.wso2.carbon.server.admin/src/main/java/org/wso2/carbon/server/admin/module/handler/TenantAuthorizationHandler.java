@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 
 /**
@@ -54,7 +55,7 @@ public class TenantAuthorizationHandler extends AbstractHandler {
 
         int tenantId = SuperTenantCarbonContext.getCurrentContext(msgContext).getTenantId();
 
-        if (tenantId != 0) {
+        if (tenantId != MultitenantConstants.SUPER_TENANT_ID) {
 
             AxisService axisService = msgContext.getAxisService();
             AxisOperation axisOperation = msgContext.getAxisOperation();

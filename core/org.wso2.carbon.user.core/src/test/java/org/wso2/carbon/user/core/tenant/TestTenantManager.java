@@ -25,6 +25,7 @@ import org.wso2.carbon.user.core.UserCoreTestConstants;
 import org.wso2.carbon.user.core.config.RealmConfigXMLProcessor;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -94,7 +95,7 @@ public class TestTenantManager extends BaseTestCase{
         assertEquals(1,tenantMan.getTenantId("UpdateDomain1"));
         assertEquals(2,tenantMan.getTenantId("domain2"));
         assertEquals(3,tenantMan.getTenantId("domain3"));
-        assertEquals(-1,tenantMan.getTenantId("abxxxx")); //a Non existing domain name
+        assertEquals(MultitenantConstants.INVALID_TENANT_ID, tenantMan.getTenantId("abxxxx")); //a Non existing domain name
 
         assertEquals(3,tenantMan.getAllTenants().length);
 

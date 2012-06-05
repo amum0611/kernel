@@ -32,8 +32,8 @@
     String serverURL = CarbonUIUtil.getServerURL(config.getServletContext(),
                                                      session);
     boolean isTenantRequest =
-            request.getAttribute(MultitenantConstants.TENANT_DOMAIN) != null ||
-            session.getAttribute(MultitenantConstants.TENANT_DOMAIN) != null;
+            !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals((String)session.getAttribute(MultitenantConstants.TENANT_DOMAIN));
+            //request.getAttribute(MultitenantConstants.TENANT_DOMAIN) != null ||   TODO:remove this after testing
     if (isTenantRequest) {
         return;
     }

@@ -28,6 +28,7 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.session.UserRegistry;
 import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -57,7 +58,7 @@ public class KeyStoreManager {
 
     private UserRegistry registry = null;
     private ConcurrentHashMap<String, KeyStoreBean> loadedKeyStores = null;
-    private int tenantId = 0;
+    private int tenantId = MultitenantConstants.SUPER_TENANT_ID;
     
     private ServerConfigurationService serverConfigService;
     
@@ -111,7 +112,7 @@ public class KeyStoreManager {
     		ServerConfigurationService serverConfigService,
     		RegistryService registryService) {
     	CarbonUtils.checkSecurity();
-        String tenantId = "0";
+        String tenantId = Integer.valueOf(MultitenantConstants.SUPER_TENANT_ID).toString();
         if (userRegistry != null) {
             tenantId = Integer.valueOf(userRegistry.getTenantId()).toString();
         }
@@ -288,7 +289,7 @@ public class KeyStoreManager {
      *                   than tenant 0
      */
     public KeyStore getPrimaryKeyStore() throws Exception {
-        if (tenantId == 0) {
+        if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
             if (primaryKeyStore == null) {
 
                 ServerConfigurationService config = this.getServerConfigService();
@@ -325,7 +326,7 @@ public class KeyStoreManager {
      * @throws Exception Carbon Exception for tenants other than tenant 0
      */
     public PrivateKey getDefaultPrivateKey() throws Exception {
-        if (tenantId == 0) {
+        if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
             ServerConfigurationService config = this.getServerConfigService();
             String password = config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_PASSWORD);
@@ -343,7 +344,7 @@ public class KeyStoreManager {
      * @throws Exception Exception Carbon Exception for tenants other than tenant 0
      */
     public PublicKey getDefaultPublicKey() throws Exception {
-        if (tenantId == 0) {
+        if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
             ServerConfigurationService config = this.getServerConfigService();
             String alias = config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);
@@ -359,7 +360,7 @@ public class KeyStoreManager {
      * @throws CarbonException Exception Carbon Exception for tenants other than tenant 0
      */
     public String getPrimaryPrivateKeyPasssword() throws CarbonException {
-        if (tenantId == 0) {
+        if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
             ServerConfigurationService config = this.getServerConfigService();
             return config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_PASSWORD);
@@ -374,7 +375,7 @@ public class KeyStoreManager {
      * @throws Exception Permission denied for accessing primary key store
      */
     public X509Certificate getDefaultPrimaryCertificate() throws Exception {
-        if (tenantId == 0) {
+        if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
             ServerConfigurationService config = this.getServerConfigService();
             String alias = config
                     .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);

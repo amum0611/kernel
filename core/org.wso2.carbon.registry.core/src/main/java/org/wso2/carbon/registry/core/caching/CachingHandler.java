@@ -34,6 +34,7 @@ import org.wso2.carbon.registry.core.jdbc.handlers.RequestContext;
 import org.wso2.carbon.registry.core.session.CurrentSession;
 import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -103,7 +104,7 @@ public class CachingHandler extends Handler {
         }
         int tenantId;
         tenantId = CurrentSession.getTenantId();
-        if (tenantId < 0) {
+        if (tenantId == MultitenantConstants.INVALID_TENANT_ID) {
             tenantId = CarbonContextHolder.getCurrentCarbonContextHolder().getTenantId();
         }
         removeFromCache(connectionId, tenantId, cachePath);

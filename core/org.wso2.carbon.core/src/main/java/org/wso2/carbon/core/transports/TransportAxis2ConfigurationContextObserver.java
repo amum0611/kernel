@@ -56,7 +56,7 @@ public class TransportAxis2ConfigurationContextObserver extends
         SuperTenantCarbonContext carbonContext = SuperTenantCarbonContext.getCurrentContext(axisConfig);
         int tenantId = carbonContext.getTenantId();
         String tenantDomain = carbonContext.getTenantDomain();
-        return (tenantId != -1 && tenantId != MultitenantConstants.SUPER_TENANT_ID) ?
+        return (tenantId != MultitenantConstants.INVALID_TENANT_ID && tenantId != MultitenantConstants.SUPER_TENANT_ID) ?
                 " {" + tenantDomain + "[" + tenantId + "]}" : " {super-tenant}";
     }
 

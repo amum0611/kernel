@@ -33,6 +33,8 @@ import org.wso2.carbon.tomcat.ext.saas.TenantSaaSRules;
 import org.wso2.carbon.user.api.UserRealmService;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 /**
  * This is a custom Tomcat realm that uses Carbon realm inside.
@@ -89,9 +91,7 @@ public class CarbonTomcatRealm extends RealmBase {
 
     public Principal authenticate(String userName, String credential) {
         String tenantDomain = null;
-        if (userName.contains("@")) {
-            tenantDomain = userName.substring(userName.indexOf('@') + 1);
-        }
+        tenantDomain = MultitenantUtils.getTenantDomain(userName);
         String tenantLessUserName;
         if (userName.lastIndexOf('@') > -1) {
             tenantLessUserName = userName.substring(0, userName.lastIndexOf('@'));
@@ -103,7 +103,7 @@ public class CarbonTomcatRealm extends RealmBase {
 
             UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
             int tenantId = userRealmService.getTenantManager().getTenantId(tenantDomain);
-            if(tenantId < 0) {
+            if(tenantId == MultitenantConstants.INVALID_TENANT_ID) {
                 return null;
             }
             String[] roles = userRealmService.getTenantUserRealm(tenantId).getUserStoreManager().getRoleListOfUser(tenantLessUserName);

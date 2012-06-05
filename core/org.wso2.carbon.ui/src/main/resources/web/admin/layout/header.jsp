@@ -55,7 +55,8 @@
 		                        String signedInAs = (String) request.getSession().getAttribute("logged-user");
 //		                        String serverURL = (String) request.getSession().getAttribute(CarbonConstants.SERVER_URL);
 		                        String domainName = (String) request.getSession().getAttribute(MultitenantConstants.TENANT_DOMAIN);
-		                        if (domainName == null) {
+		                        if (domainName == null || 
+		                        		MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(domainName)) {
                                     //TODO Hack checking whether this is the local transport.
                                     if(serverURL.startsWith("local")){
                                         domainName = "localhost";

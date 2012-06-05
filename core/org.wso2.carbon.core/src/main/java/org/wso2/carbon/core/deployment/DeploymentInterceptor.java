@@ -69,7 +69,7 @@ public class DeploymentInterceptor implements AxisObserver {
 
     private Registry registry;
     private int tenantId = -1;
-    private String tenantDomain = null;
+    private String tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME; // TODO: intitializing the tenant domain
     private CarbonCoreDataHolder dataHolder = CarbonCoreDataHolder.getInstance();
 
     public void setRegistry(Registry registry) {

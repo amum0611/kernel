@@ -35,8 +35,13 @@ import java.util.concurrent.atomic.AtomicReference;
 @SuppressWarnings("unused")
 public final class CarbonContextHolderBase {
 
-	private int tenantId;
-	private String username;
+	private int tenantId = MultitenantConstants.INVALID_TENANT_ID;
+    private static final int CARBON_AUTHENTICATION_UTIL_INDEX = 5;
+    private static final String CARBON_AUTHENTICATION_UTIL_CLASS = "org.wso2.carbon.core.services.util.CarbonAuthenticationUtil";
+    private static final int CARBON_AUTHENTICATION_HANDLER_INDEX = 5;
+    private static final String CARBON_AUTHENTICATION_HANDLER_CLASS = "org.wso2.carbon.server.admin.module.handler.AuthenticationHandler";
+    
+    private String username;
 	private String tenantDomain;
 	private Map<String, Object> properties;
 
@@ -162,7 +167,7 @@ public final class CarbonContextHolderBase {
 	 * Default constructor to disallow creation of the CarbonContext.
 	 */
 	private CarbonContextHolderBase() {
-		this.tenantId = -1;
+		this.tenantId = MultitenantConstants.INVALID_TENANT_ID;
 		this.username = null;
 		this.tenantDomain = null;
 		this.properties = new HashMap<String, Object>();
@@ -199,17 +204,18 @@ public final class CarbonContextHolderBase {
 	 *            the tenant id.
 	 */
 	public void setTenantId(int tenantId) {
-		if (this.tenantId != tenantId) {
-			try {
-				if (this.tenantId != -1 && this.tenantId != 0) {
-					throw new IllegalStateException("Tenant Id setting from : "
-							+ this.tenantId + " to : " + tenantId);
-				}
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
-			this.tenantId = tenantId;
-		}
+	    try {
+            if (this.tenantId == MultitenantConstants.INVALID_TENANT_ID ) {
+                this.tenantId = tenantId;
+            } else if (this.tenantId != tenantId) {
+                StackTraceElement[] traces = Thread.currentThread().getStackTrace();
+                if (!isAllowedToChangeTenantDomain(traces)) {
+                    throw new IllegalStateException("Trying to set the domain from " + this.tenantId + " to " + tenantId);
+                }
+            }
+        } catch (IllegalStateException e) {
+            log.error(e.getMessage(), e);
+        }
 	}
 
 	/**
@@ -246,15 +252,19 @@ public final class CarbonContextHolderBase {
 	 * @param tenantDomain
 	 *            the tenant domain.
 	 */
-	public void setTenantDomain(String tenantDomain) {
-
-		if (this.tenantDomain != null
-				&& !this.tenantDomain.equals(tenantDomain)) {
-			throw new IllegalStateException("Domain setting from : "
-					+ this.tenantDomain + " to : " + tenantDomain);
-		}
-
-		this.tenantDomain = tenantDomain;
+	public void setTenantDomain(String domain) {
+		try {
+		    if (this.tenantDomain == null ) {
+		        this.tenantDomain = domain;
+            } else if (!tenantDomain.equals(domain)) {
+		        StackTraceElement[] traces = Thread.currentThread().getStackTrace();
+                if (!isAllowedToChangeTenantDomain(traces)) {
+		            throw new IllegalStateException("Trying to set the domain from " + this.tenantDomain + " to " + domain);
+		        }
+		    }
+        } catch (IllegalStateException e) {
+            log.error(e.getMessage(), e);
+        }
 	}
 
 	/**
@@ -296,6 +306,18 @@ public final class CarbonContextHolderBase {
 			properties.clear();
 		}
 	}
+	
+	private boolean isAllowedToChangeTenantDomain(StackTraceElement[] traces) {
+	    boolean allowChange = false;
+	    if ((traces.length > CARBON_AUTHENTICATION_UTIL_INDEX) &&
+                (traces[CARBON_AUTHENTICATION_UTIL_INDEX].getClassName().equals(CARBON_AUTHENTICATION_UTIL_CLASS))) {
+	        allowChange = true;
+	    } else if ((traces.length > CARBON_AUTHENTICATION_HANDLER_INDEX) &&
+                traces[CARBON_AUTHENTICATION_HANDLER_INDEX].getClassName().equals(CARBON_AUTHENTICATION_HANDLER_CLASS)) {
+	        allowChange = true;
+	    }
+	    return allowChange;
+	}
 
 	/**
 	 * This method will destroy the current CarbonContext holder.
@@ -314,7 +336,7 @@ public final class CarbonContextHolderBase {
 			this.properties = new HashMap<String, Object>(
 					carbonContextHolder.properties);
 		} else {
-			this.tenantId = -1;
+			this.tenantId = MultitenantConstants.INVALID_TENANT_ID;
 			this.username = null;
 			this.tenantDomain = null;
 			this.properties = new HashMap<String, Object>();

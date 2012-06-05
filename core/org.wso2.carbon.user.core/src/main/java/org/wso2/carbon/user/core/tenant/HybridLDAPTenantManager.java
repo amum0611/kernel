@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.wso2.carbon.user.core.UserStoreException;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class HybridLDAPTenantManager extends JDBCTenantManager {
             Tenant[] existingTenants = getAllTenants();
             LDAPTenantManager ldapTenantManager = getLDAPTenantManager();
             for (Tenant tenant : existingTenants) {
-                if (!tenant.getDomain().equals(this.superTenantDomain)) {
+                if (!tenant.getDomain().equals(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME)) {
                     ldapTenantManager.addPartitionToTenant(tenant);
                 }
             }

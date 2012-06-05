@@ -36,6 +36,7 @@ import org.wso2.carbon.registry.core.session.CurrentSession;
 import org.wso2.carbon.registry.core.utils.AuthorizationUtils;
 import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.utils.DBUtils;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -268,12 +269,19 @@ public class JDBCResourceDAO implements ResourceDAO {
         if (!(resourceImpl instanceof CollectionImpl) &&
                 resourceImpl.getDbBasedContentID() > 0) {
             fillResourceContentWithNoUpdate(resourceImpl);
-        } else if (resourceImpl instanceof CollectionImpl &&
-                CurrentSession.getTenantId() > 0) {
-            JDBCDatabaseTransaction.ManagedRegistryConnection conn =
-                    JDBCDatabaseTransaction.getConnection();
-            fillChildren((CollectionImpl) resourceImpl, 0, -1, conn);
+        } else {
+			if (resourceImpl instanceof CollectionImpl) {
+				int tempTenantId = CurrentSession.getTenantId();
+
+				if (tempTenantId != MultitenantConstants.INVALID_TENANT_ID &&
+						tempTenantId != MultitenantConstants.SUPER_TENANT_ID) {
+					JDBCDatabaseTransaction.ManagedRegistryConnection conn = JDBCDatabaseTransaction
+							.getConnection();
+					fillChildren((CollectionImpl) resourceImpl, 0, -1, conn);
+				}
+			}
         }
+        
         fillResourcePropertiesWithNoUpdate(resourceImpl);
     }
 

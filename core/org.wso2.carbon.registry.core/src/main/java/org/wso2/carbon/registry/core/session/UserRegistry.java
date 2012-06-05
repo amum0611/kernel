@@ -35,6 +35,7 @@ import org.wso2.carbon.user.core.UserStoreManager;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -148,8 +149,10 @@ public class UserRegistry implements Registry {
                 log.error(msg);
                 throw new RegistryException(msg, e);
             }
-            if (authenticator.getTenantId() > 0) {
-                tenantUserName = UserCoreUtil.getTenantLessUsername(userName);
+            int tempTenantId = authenticator.getTenantId();
+            if (tempTenantId != MultitenantConstants.INVALID_TENANT_ID &&
+            		tempTenantId != MultitenantConstants.SUPER_TENANT_ID) {
+                tenantUserName = MultitenantUtils.getTenantAwareUsername(userName);
             }
             if (!authenticator.authenticate(tenantUserName, password)) {
                 String msg = "Attempted to authenticate invalid user.";

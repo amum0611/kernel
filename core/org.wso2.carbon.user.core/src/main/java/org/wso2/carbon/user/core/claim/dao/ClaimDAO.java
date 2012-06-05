@@ -24,6 +24,7 @@ import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.claim.Claim;
 import org.wso2.carbon.user.core.claim.ClaimMapping;
 import org.wso2.carbon.user.core.util.DatabaseUtil;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -40,7 +41,7 @@ public class ClaimDAO {
 
     private DataSource dataSource = null;
 
-    private int tenantId = 0;
+    private int tenantId = MultitenantConstants.INVALID_TENANT_ID;
 
     public ClaimDAO(DataSource dataSource, int tenantId) {
         this.dataSource = dataSource;

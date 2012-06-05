@@ -39,6 +39,7 @@ import org.wso2.carbon.registry.core.utils.AuthorizationUtils;
 import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.registry.core.utils.VersionedPath;
 import org.wso2.carbon.utils.DBUtils;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -214,7 +215,10 @@ public class JDBCResourceVersionDAO implements ResourceVersionDAO {
             collectionImpl.setVersionListIndex(versionIndex);
             collectionImpl.setVersionList(versionRetriever);
             resourceImpl = collectionImpl;
-            if (CurrentSession.getTenantId() > 0) {
+            
+            int tempTenantId = CurrentSession.getTenantId();
+            if (tempTenantId != MultitenantConstants.SUPER_TENANT_ID &&
+            		tempTenantId != MultitenantConstants.INVALID_TENANT_ID) {
                 String[] childPaths = getChildPaths(resourceID,
                         versionRetriever, versionIndex,
                         0, -1, snapshotID, JDBCDatabaseTransaction.getConnection());

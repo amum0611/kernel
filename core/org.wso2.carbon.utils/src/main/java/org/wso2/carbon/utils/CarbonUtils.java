@@ -37,6 +37,7 @@ import org.wso2.carbon.base.CarbonBaseUtils;
 import org.wso2.carbon.base.ServerConfiguration;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -404,7 +405,10 @@ public class CarbonUtils {
                 CarbonContextHolder carbonCtxHolder = CarbonContextHolder
                         .getCurrentCarbonContextHolder(axisConfig);
                 if (carbonCtxHolder != null) {
-                    tmpPath += File.separator + carbonCtxHolder.getTenantId();
+                	int tempTenantId = carbonCtxHolder.getTenantId();
+                	if (tempTenantId != MultitenantConstants.SUPER_TENANT_ID) {
+                		tmpPath += File.separator + carbonCtxHolder.getTenantId();
+                	}
                     if (createDir(tmpPath)) {
                         tenantTmpDirPath = tmpPath;
                     }

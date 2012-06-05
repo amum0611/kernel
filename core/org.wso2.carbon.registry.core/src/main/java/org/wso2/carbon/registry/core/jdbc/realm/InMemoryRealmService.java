@@ -21,6 +21,7 @@ package org.wso2.carbon.registry.core.jdbc.realm;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.user.api.RealmConfiguration;
 import org.wso2.carbon.user.api.TenantMgtConfiguration;
@@ -64,7 +65,7 @@ public class InMemoryRealmService implements RealmService {
         setup();
         try {
             realmService = new DefaultRealmService(bootstrapRealmConfig, tenantManager);
-            bootstrapRealm = initializeRealm(bootstrapRealmConfig, dataSource, 0);
+            bootstrapRealm = initializeRealm(bootstrapRealmConfig, dataSource, MultitenantConstants.SUPER_TENANT_ID);
             
         } catch (Exception e) {
             String msg = "Error in init bootstrap realm";
@@ -82,7 +83,7 @@ public class InMemoryRealmService implements RealmService {
      */
     public UserRealm getUserRealm(RealmConfiguration tenantRealmConfig) throws UserStoreException {
         int tenantId = tenantRealmConfig.getTenantId();
-        if (tenantId == 0) {
+        if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
             return bootstrapRealm;
         }
         UserRealm userRealm = userRealmMap.get(tenantId);
@@ -224,6 +225,9 @@ public class InMemoryRealmService implements RealmService {
     public org.wso2.carbon.user.api.UserRealm getTenantUserRealm(int tenantId)
             throws UserStoreException {
         try {
+        	if (tenantId == MultitenantConstants.SUPER_TENANT_ID) {
+        		return this.bootstrapRealm;
+        	}
             return realmService.getTenantUserRealm(tenantId);
         } catch (org.wso2.carbon.user.api.UserStoreException e) {
             String msg = "Failed to initialize the user manager. " + e.getMessage();

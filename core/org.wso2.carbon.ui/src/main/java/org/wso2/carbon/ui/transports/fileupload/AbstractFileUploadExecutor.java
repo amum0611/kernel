@@ -522,7 +522,8 @@ public abstract class AbstractFileUploadExecutor {
         // Make the context root tenant aware, eg: /t/wso2.com in a multi-tenant scenario
         String tenantDomain = (String)request.getSession().getAttribute(MultitenantConstants.TENANT_DOMAIN);
         if(!contextPath.startsWith("/" + MultitenantConstants.TENANT_AWARE_URL_PREFIX + "/")
-                && tenantDomain != null){
+                && (tenantDomain != null &&
+                !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) ){
             contextPath = contextPath + "/" + MultitenantConstants.TENANT_AWARE_URL_PREFIX + "/" +
                           tenantDomain;
             // replace the possible '//' with '/ '

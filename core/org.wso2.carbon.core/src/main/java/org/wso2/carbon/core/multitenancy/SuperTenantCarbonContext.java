@@ -243,7 +243,8 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      * @return the tenant domain.
      */
     public String getTenantDomain(boolean resolve) {
-        if (resolve && getTenantDomain() == null && getTenantId() > 0) {
+        if (resolve && getTenantDomain() == null && 
+        		(getTenantId() > 0 || getTenantId() == MultitenantConstants.SUPER_TENANT_ID) ) {
             resolveTenantDomain(getTenantId());
         }
         return getTenantDomain();
@@ -259,7 +260,7 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      * @return the tenant id.
      */
     public int getTenantId(boolean resolve) {
-        if (resolve && getTenantId() < 0 && getTenantDomain() != null) {
+        if (resolve && getTenantId() == MultitenantConstants.INVALID_TENANT_ID && getTenantDomain() != null) {
             resolveTenantId(getTenantDomain());
         }
         return getTenantId();
@@ -379,7 +380,7 @@ public final class SuperTenantCarbonContext extends CarbonContext {
                 CarbonUtils.checkSecurity();
                 try {
                     int tenantId = getTenantId();
-                    if (tenantId != -1) {
+                    if (tenantId != MultitenantConstants.INVALID_TENANT_ID) {
                         registry =
                                 dataHolder.getRegistryService().getConfigSystemRegistry(tenantId);
                         setRegistry(RegistryType.SYSTEM_CONFIGURATION, registry);
@@ -395,7 +396,7 @@ public final class SuperTenantCarbonContext extends CarbonContext {
                 CarbonUtils.checkSecurity();
                 try {
                     int tenantId = getTenantId();
-                    if (tenantId != -1) {
+                    if (tenantId != MultitenantConstants.INVALID_TENANT_ID) {
                         registry =
                                 dataHolder.getRegistryService().getGovernanceSystemRegistry(
                                         tenantId);
