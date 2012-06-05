@@ -345,12 +345,12 @@ public class Repository {
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             if (rejectIfEmptyOrWhitespace(entry.getKey())) {
                 String errMsg = "The resource at " + path +
-                        " contains a property that has a key with an empty string.";
+                        " contains a property that has a key with an empty string or NULL.";
                 log.warn(errMsg);
                 throw new RegistryException(errMsg);
             } else if (rejectIfEmptyOrWhitespace(entry.getValue())) {
                 String errMsg = "The resource at " + path + " with property '" + entry.getKey() +
-                        "' contains an empty string value.";
+                        "' contains an empty string value or NULL.";
                 log.warn(errMsg);
                 throw new RegistryException(errMsg);
             }
@@ -368,7 +368,7 @@ public class Repository {
             }
             return isEmpty;
         } else {
-            return "".equals(value.toString().trim());
+            return value == null || "".equals(value.toString().trim());
         }
     }
 

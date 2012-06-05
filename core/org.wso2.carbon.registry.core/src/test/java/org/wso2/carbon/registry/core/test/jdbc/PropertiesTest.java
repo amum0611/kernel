@@ -95,6 +95,7 @@ public class PropertiesTest extends BaseTestCase {
                 propValues.contains("p1v2"));
     }
 
+/*
     public void testNullValuedProperties() throws RegistryException {
 
         Resource r2 = registry.newResource();
@@ -126,7 +127,7 @@ public class PropertiesTest extends BaseTestCase {
         assertEquals("Property p1 of /propTest4/r1 should contain the value null",
                 propValues.get(1), null);
     }
-
+*/
     public void testRemovingProperties() throws RegistryException {
 
         Resource r1 = registry.newResource();
