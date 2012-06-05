@@ -192,8 +192,8 @@ public final class CarbonConstants {
     public static final String SERVICE_IDLE_TIME = "service.idle.time";
     public static final int SERVICE_CLEANUP_PERIOD_SECS = 60;
 
-    // parameter to indicate whether a service is being unloaded and loaded as ghost
-    public static final String IS_SERVICE_BEING_UNLOADED = "isBeingUnloaded";
+    // parameter to indicate whether a service/webapp is being unloaded and loaded as ghost
+    public static final String IS_ARTIFACT_BEING_UNLOADED = "isBeingUnloaded";
     /**
      * The allowed idle time for a webapp deployed
      */

@@ -50,7 +50,7 @@ public class GhostDispatcher extends AbstractDispatcher {
                 // if the service is found in the temp ghost list, we have to wait until the
                 // particular actual service is deployed or unloaded..
                 Parameter isUnloadingParam = transitService.
-                        getParameter(CarbonConstants.IS_SERVICE_BEING_UNLOADED);
+                        getParameter(CarbonConstants.IS_ARTIFACT_BEING_UNLOADED);
                 if (isUnloadingParam != null && "true".equals(isUnloadingParam.getValue())) {
                     // wait until service is unloaded by the unload task
                     GhostDeployerUtils.waitForServiceToLeaveTransit(transitService.getName(),
