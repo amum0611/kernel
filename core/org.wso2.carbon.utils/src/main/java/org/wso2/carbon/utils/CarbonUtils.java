@@ -253,6 +253,10 @@ public class CarbonUtils {
                 "components" + File.separator + "dropins";
     }
 
+    public static String getCarbonConfigMultitenacyDirPath() {
+        return getCarbonConfigDirPath() + File.separator + "multitenancy";
+    }
+
     public static String getAxis2Repo() {
         String axis2Repo = System.getProperty(ServerConstants.AXIS2_REPO);
         if (axis2Repo == null) {
