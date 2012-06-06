@@ -69,7 +69,7 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
             SuperTenantCarbonContext.getCurrentContext().setTenantDomain(tenantDomain);
 
             //invoke CarbonDeploymentSchedulerExtenders
-            DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(axisConfig, tenantId);
+            DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(axisConfig);
 
             deploymentSyncUpdate();
             synchronized (this) {

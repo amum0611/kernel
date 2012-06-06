@@ -430,6 +430,9 @@ public class TenantAxisConfigurator extends DeploymentEngine implements AxisConf
             carbonContext.setRegistry(RegistryType.SYSTEM_GOVERNANCE,
                     CarbonCoreDataHolder.getInstance().getRegistryService()
                             .getGovernanceSystemRegistry(tenantId));
+            carbonContext.setRegistry(RegistryType.LOCAL_REPOSITORY,
+                    CarbonCoreDataHolder.getInstance().getRegistryService().
+                            getLocalRepository(tenantId));
         } catch (Exception ignored) {
             // We are not worried about the exception in here.
         }

@@ -108,16 +108,16 @@ public class ServerManagement {
 
         serverConfigContext.getAxisConfiguration().getConfigurator().cleanup();
         DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(
-                serverConfigContext.getAxisConfiguration(),
-                MultitenantUtils.getTenantId(serverConfigContext));
+                serverConfigContext.getAxisConfiguration());
 
         for (ConfigurationContext tenantConfigCtx : tenantConfigContexts.values()) {
             int tenantId = MultitenantUtils.getTenantId(tenantConfigCtx);
             if(log.isDebugEnabled()){
-                log.debug("invoking  CarbonDeploymentSchedulerExtenders before shutdown..");
+                log.debug("invoking CarbonDeploymentSchedulerExtenders before shutdown, tenant " +
+                tenantId);
             }
             DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(
-                    tenantConfigCtx.getAxisConfiguration(), tenantId);
+                    tenantConfigCtx.getAxisConfiguration());
 
             tenantConfigCtx.getAxisConfiguration().getConfigurator().cleanup();
         }

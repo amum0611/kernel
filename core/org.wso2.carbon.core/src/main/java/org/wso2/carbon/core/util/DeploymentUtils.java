@@ -12,8 +12,7 @@ import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 public class DeploymentUtils {
     private static final Log log = LogFactory.getLog(DeploymentUtils.class);
 
-    public static void invokeCarbonDeploymentSchedulerExtenders(AxisConfiguration axisConfig,
-                                                                int tenantId) {
+    public static void invokeCarbonDeploymentSchedulerExtenders(AxisConfiguration axisConfig) {
         if(log.isDebugEnabled()){
             log.debug("Start invoking CarbonDeploymentSchedulerExtenders..");
         }
@@ -27,7 +26,7 @@ public class DeploymentUtils {
                 Object[] services = serviceTracker.getServices();
                 if (services != null) {
                     for (Object service : services) {
-                        ((CarbonDeploymentSchedulerExtender) service).invoke(axisConfig, tenantId);
+                        ((CarbonDeploymentSchedulerExtender) service).invoke(axisConfig);
                     }
                 }
             } catch (Exception e) {
