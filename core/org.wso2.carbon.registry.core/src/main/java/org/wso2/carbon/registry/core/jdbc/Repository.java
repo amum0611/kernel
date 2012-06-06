@@ -290,7 +290,7 @@ public class Repository {
             throw new RegistryException(RegistryConstants.CHECK_IN_META_DIR + " is an illegal " +
                     "name for a resource.");
         }
-        // validating the resource properties for empty strings. This is important when adding properties via the API.
+        // validating the resource property names for NULL. This is important when adding properties via the API.
         validateProperties(path, resource);
 
         String purePath = RegistryUtils.getPureResourcePath(path);
@@ -343,14 +343,9 @@ public class Repository {
         Properties properties = resource.getProperties();
 
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            if (rejectIfEmptyOrWhitespace(entry.getKey())) {
+            if (rejectIfNull(entry.getKey())) {
                 String errMsg = "The resource at " + path +
-                        " contains a property that has a key with an empty string or NULL.";
-                log.warn(errMsg);
-                throw new RegistryException(errMsg);
-            } else if (rejectIfEmptyOrWhitespace(entry.getValue())) {
-                String errMsg = "The resource at " + path + " with property '" + entry.getKey() +
-                        "' contains an empty string value or NULL.";
+                        " contains a property that has a key with NULL.";
                 log.warn(errMsg);
                 throw new RegistryException(errMsg);
             }
@@ -358,18 +353,8 @@ public class Repository {
 
     }
 
-    private boolean rejectIfEmptyOrWhitespace(Object value) {
-
-        if (value instanceof List) {
-            boolean isEmpty = false;
-            List<Object> list = (List<Object>) value;
-            for (Object item : list) {
-                isEmpty = isEmpty || rejectIfEmptyOrWhitespace(item);
-            }
-            return isEmpty;
-        } else {
-            return value == null || "".equals(value.toString().trim());
-        }
+    private boolean rejectIfNull(Object value) {
+        return value == null;
     }
 
     // Method to prepare a resource for an update.
