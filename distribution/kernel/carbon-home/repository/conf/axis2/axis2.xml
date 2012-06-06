@@ -397,10 +397,6 @@
 
         <phase name="Validation"/>
         <phase name="Transport">
-            <handler name="TenantDomainHandler"
-                     class="org.wso2.carbon.core.multitenancy.TenantDomainHandler">
-                   <order phase="Transport"/>
-            </handler>
             <handler name="RequestURIBasedDispatcher"
                      class="org.apache.axis2.dispatchers.RequestURIBasedDispatcher">
                 <order phase="Transport"/>
