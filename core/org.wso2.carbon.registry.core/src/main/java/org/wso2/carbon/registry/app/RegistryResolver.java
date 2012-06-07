@@ -643,7 +643,7 @@ public class RegistryResolver implements Resolver<Target> {
         int atIndex = userNameWithDomain.indexOf('@');
         if (atIndex == -1) {
             // no domain 
-            return 0;
+            return MultitenantConstants.SUPER_TENANT_ID;
         }
         String domain = userNameWithDomain.substring(atIndex + 1, userNameWithDomain.length());
         return getTenantIdFromDomain(domain);
