@@ -581,9 +581,9 @@ public final class RegistryConstants {
     @SuppressWarnings("unused")
     public static final String POLICY_MEDIA_TYPE = "application/policy+xml";
 
-    @SuppressWarnings("unused")
-    @Deprecated
-    public static final String SYNPASE_REPOSITORY_MEDIA_TYPE = "application/vnd.apache.synapse";
+//    @SuppressWarnings("unused")
+//    @Deprecated
+//    public static final String SYNPASE_REPOSITORY_MEDIA_TYPE = "application/vnd.apache.synapse";
 
     @SuppressWarnings("unused")
     @Deprecated

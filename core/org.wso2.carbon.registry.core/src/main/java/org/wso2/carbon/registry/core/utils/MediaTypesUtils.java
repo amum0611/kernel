@@ -105,10 +105,6 @@ public class MediaTypesUtils {
         if (!configSystemRegistry.resourceExists(resourcePath + RegistryConstants.PATH_SEPARATOR +
                 COLLECTION_MIME_TYPE_INDEX)) {
             resource = configSystemRegistry.newResource();
-            resource.setProperty("synapse", "application/vnd.apache.synapse");
-            resource.setProperty("esb", "application/vnd.wso2.esb");
-            resource.setProperty("axis2", "application/vnd.apache.axis2");
-            resource.setProperty("wsas", "application/vnd.wso2.wsas");
             resource.setDescription("This resource contains the media Types associated with " +
                     "collections on the Registry. Add, Edit or Delete properties to Manage Media " +
                     "Types.");
