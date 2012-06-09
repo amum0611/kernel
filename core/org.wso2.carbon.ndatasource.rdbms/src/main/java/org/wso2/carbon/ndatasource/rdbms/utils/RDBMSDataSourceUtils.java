@@ -15,13 +15,6 @@
  */
 package org.wso2.carbon.ndatasource.rdbms.utils;
 
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.tomcat.jdbc.pool.PoolConfiguration;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
@@ -29,15 +22,23 @@ import org.wso2.carbon.ndatasource.rdbms.RDBMSConfiguration;
 import org.wso2.carbon.ndatasource.rdbms.RDBMSConfiguration.DataSourceProperty;
 import org.wso2.carbon.ndatasource.rdbms.RDBMSDataSourceConstants.TX_ISOLATION_LEVELS;
 
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+
 /**
  * Utility class for RDBMS data sources.
  */
 public class RDBMSDataSourceUtils {
 
-	public static void assignBeanProps(Object obj, Map<String, String> props) 
+	public static void assignBeanProps(Object obj, Map<String, Object> props)
 			throws DataSourceException {
 		Method method;
-		for (Entry<String, String> prop : props.entrySet()) {
+		for (Entry<String, Object> prop : props.entrySet()) {
 			method = getSetterMethod(obj, getSetterMethodNameFromPropName(prop.getKey()));
 			if (method == null) {
 				throw new DataSourceException("Setter method for property '" + prop.getKey() 
@@ -53,32 +54,32 @@ public class RDBMSDataSourceUtils {
 		}
 	}
 	
-	private static Object convertStringToGivenType(String value, Class<?> type) 
+	private static Object convertStringToGivenType(Object value, Class<?> type) 
 			throws DataSourceException {
-		if (String.class.equals(type)) {
+		if (String.class.equals(type) || Properties.class.equals(type)) {
 			return value;
 		}
 		if (boolean.class.equals(type) || Boolean.class.equals(type)) {
-			return Boolean.parseBoolean(value);
+			return Boolean.parseBoolean(String.valueOf(value));
 		}
 		if (int.class.equals(type) || Integer.class.equals(type)) {
-			return Integer.parseInt(value);
+			return Integer.parseInt(String.valueOf(value));
 		}
 		if (short.class.equals(type) || Short.class.equals(type)) {
-			return Short.parseShort(value);
+			return Short.parseShort(String.valueOf(value));
 		}
 		if (byte.class.equals(type) || Byte.class.equals(type)) {
-			return Byte.parseByte(value);
+			return Byte.parseByte(String.valueOf(value));
 		}
 		if (long.class.equals(type) || Long.class.equals(type)) {
-			return Long.parseLong(value);
+			return Long.parseLong(String.valueOf(value));
 		}
 		if (float.class.equals(type) || Float.class.equals(type)) {
-			return Float.parseFloat(value);
+			return Float.parseFloat(String.valueOf(value));
 		}
 		if (double.class.equals(type) || Double.class.equals(type)) {
-			return Double.parseDouble(value);
-		}		
+			return Double.parseDouble(String.valueOf(value));
+		}
 		throw new DataSourceException("Cannot convert value: '" + 
 				value + "' to type: '" + type.getName() + "'");
 	}
@@ -220,16 +221,32 @@ public class RDBMSDataSourceUtils {
 		return props;
 	}
 	
-	private static Map<String, String> dataSourcePropsToMap(List<DataSourceProperty> dsProps) {
-		Map<String, String> result = new HashMap<String, String>();
-		if (dsProps != null) {
+	private static Map<String, Object> dataSourcePropsToMap(List<DataSourceProperty> dsProps) {
+		Map<String, Object> result = new HashMap<String, Object>();
+        if (dsProps != null) {
+            String[] prop;
+            Map<String, Properties> tmpPropertiesObjects = new HashMap<String, Properties>();
+            Properties tmpProp;
 		    for (DataSourceProperty dsProp : dsProps) {
-			    result.put(dsProp.getName(), dsProp.getValue());
+                prop = dsProp.getName().split("\\.");
+                if (prop.length > 1) {
+                    if (!tmpPropertiesObjects.containsKey(prop[0])) {
+                        tmpProp = new Properties();
+                        tmpPropertiesObjects.put(prop[0], tmpProp);
+                    } else {
+                        tmpProp = tmpPropertiesObjects.get(prop[0]);
+                    }
+                    tmpProp.setProperty(prop[1], dsProp.getValue());
+                } else {
+                    result.put(dsProp.getName(), dsProp.getValue());
+                }
 		    }
+            result.putAll(tmpPropertiesObjects);
+
 		}
 		return result;
 	}
-	
+    
 	private static void handleExternalDataSource(PoolProperties poolProps, RDBMSConfiguration config) 
 			throws DataSourceException {
 		String dsClassName = config.getDataSourceClassName();
