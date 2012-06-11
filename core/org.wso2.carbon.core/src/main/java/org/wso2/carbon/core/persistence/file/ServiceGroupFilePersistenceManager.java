@@ -1,13 +1,11 @@
 package org.wso2.carbon.core.persistence.file;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jaxen.JaxenException;
 import org.wso2.carbon.core.Resources;
 import org.wso2.carbon.core.persistence.PersistenceDataNotFoundException;
 import org.wso2.carbon.core.persistence.PersistenceException;
@@ -71,8 +69,8 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
         try {
             if (resourceMap.get(serviceGroupId) != null &&
                     resourceMap.get(serviceGroupId).isTransactionStarted()) {
-                throw new PersistenceException("A transaction is already started. " +
-                        "Nested transactions are no longer supported in this persistence model");
+                throw new PersistenceException("A transaction is already started for this service group. " +
+                        "Nested transactions are no longer supported in this persistence model - " + serviceGroupId);
             }
 
             OMElement sgElement;
@@ -86,10 +84,10 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
             resourceMap.put(serviceGroupId, fileData);
         } catch (XMLStreamException e1) {
             log.error("Failed to use XMLStreamReader. Exception in beginning the transaction ", e1);
-            throw new PersistenceException("Exception in beginning the transaction " + e1);
+            throw new PersistenceException("Exception in beginning the transaction ", e1);
         } catch (FileNotFoundException e) {
             log.error("File not found. Exception in beginning the transaction " + sgFile.getAbsolutePath(), e);
-            throw new PersistenceException("Exception in beginning the transaction" + e);
+            throw new PersistenceException("Exception in beginning the transaction", e);
         } catch (IOException e) {
             log.error("Exception in closing service group file " + serviceGroupId, e);
             throw new PersistenceException("Exception in closing service group file", e);
@@ -130,36 +128,6 @@ public class ServiceGroupFilePersistenceManager extends AbstractFilePersistenceM
         return getAll(serviceGroupId, associationXPath);
     }
 
-
-    @Override
-    public void delete(String serviceGroupId, String xpathStrOfElement) throws PersistenceDataNotFoundException {
-        ResourceFileData fileData = resourceMap.get(serviceGroupId);
-
-        try {
-            if (fileData != null && fileData.isTransactionStarted()) {
-                OMElement sgElement = fileData.getOMElement();
-                AXIOMXPath xpathExpr = new AXIOMXPath(xpathStrOfElement);
-                OMElement el = (OMElement) xpathExpr.selectSingleNode(sgElement);
-                if (el == null) {
-                    throw new PersistenceDataNotFoundException(
-                            "The Element specified by path not found " + serviceGroupId + xpathStrOfElement);
-                }
-                if (el.getParent() == null) { //this is the root element
-                    fileData.setOMElement(null);
-                } else {
-                    el.detach();
-                }
-                setMetaFileModification(serviceGroupId);
-            } else {
-                throw new PersistenceDataNotFoundException(
-                        "The Element specified by path not found or a transaction isn't started yet. " +
-                                xpathStrOfElement);
-            }
-        } catch (JaxenException e) {
-            log.error("Error parsing xpath string " + serviceGroupId + xpathStrOfElement, e);
-            throw new PersistenceDataNotFoundException("Error parsing xpath string ", e);
-        }
-    }
 
     public void init() {
         try {

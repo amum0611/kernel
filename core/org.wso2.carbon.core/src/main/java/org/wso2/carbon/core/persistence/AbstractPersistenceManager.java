@@ -135,6 +135,7 @@ public abstract class AbstractPersistenceManager {
      * @param resourceId       - resource id/name
      * @param parameter        - parameter instance
      * @param xpathStrOfParent xpathStrOfParent
+     * @throws java.io.IOException
      */
     public void updateParameter(String resourceId, Parameter parameter, String xpathStrOfParent) throws
             XMLStreamException, IOException, PersistenceException, JaxenException {
@@ -359,17 +360,6 @@ public abstract class AbstractPersistenceManager {
                     paramElement.addAttribute(Resources.ParameterProperties.NAME, parameter.getName(), null);
 
                     getCurrentFPM().put(resourceId, paramElement, xpathStrOfParent);
-
-                    if (log.isDebugEnabled()) {
-                        log.debug("adding param " + paramElement + "  to " + resourceId + " " + xpathStrOfParent);
-                    }
-//                    Resource paramResource = configRegistry.newResource();
-//                    paramResource.setContent(parameter.getParameterElement().toString());
-//                    paramResource.addProperty(Resources.ID, parameter.getName());
-
-//                    configRegistry.put(aadPathdPath + Resources.PARAMETERS
-//                            + parameter.getName(), paramResource);
-//                    paramResource.discard();
                 }
             }
         }

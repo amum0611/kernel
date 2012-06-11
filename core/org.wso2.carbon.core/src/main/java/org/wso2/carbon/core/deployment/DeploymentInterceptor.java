@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.core.deployment;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
@@ -263,8 +264,17 @@ public class DeploymentInterceptor implements AxisObserver {
                 return;
             }
             String serviceName = axisService.getName();
+            String serviceGroupId = axisService.getAxisServiceGroup().getServiceGroupName();
+            String serviceXPath = PersistenceUtils.getResourcePath(axisService);
             try {
-                OMElement service = pf.getServicePM().getService(axisService);
+
+                boolean transactionStarted = pf.getServiceGroupFilePM().isTransactionStarted(serviceGroupId);
+                if (!transactionStarted) {
+                    pf.getServiceGroupFilePM().beginTransaction(serviceGroupId);
+                }
+
+                boolean isNewService = ! pf.getServiceGroupFilePM().
+                        elementExists(serviceGroupId, serviceXPath);
 
                 // if (eventType == AxisEvent.SERVICE_STOP) do nothing
 
@@ -278,19 +288,23 @@ public class DeploymentInterceptor implements AxisObserver {
                                 getTenantIdAndDomainString());
                     }
 
-                    if (service == null) {
+                    if (isNewService) {
                         pf.getServicePM().handleNewServiceAddition(axisService);
                     } else {
                         pf.getServicePM().handleExistingServiceInit(axisService);
                     }
                 } else if (eventType == AxisEvent.SERVICE_START) {
-                    service.addAttribute(Resources.ServiceProperties.ACTIVE, "true", null);
-                } else if (eventType == AxisEvent.SERVICE_STOP && service != null) {
+                    OMAttribute attr = OMAbstractFactory.getOMFactory().
+                            createOMAttribute(Resources.ServiceProperties.ACTIVE, null, "true");
+                    pf.getServiceGroupFilePM().put(serviceGroupId, attr, serviceXPath);
+                } else if (eventType == AxisEvent.SERVICE_STOP && !isNewService) {
                     // in a shared registry scenario the resource could have been already removed
                     // by some other node
-                    service.addAttribute(Resources.ServiceProperties.ACTIVE, "false", null);
+                    OMAttribute attr = OMAbstractFactory.getOMFactory().
+                            createOMAttribute(Resources.ServiceProperties.ACTIVE, null, "false");
+                    pf.getServiceGroupFilePM().put(serviceGroupId, attr, serviceXPath);
                 } else if (eventType == AxisEvent.SERVICE_REMOVE) {
-                    if (service != null) {
+                    if (!isNewService) {
                         try {
                             Parameter svcHistoryParam = axisService.getParameter(
                                     CarbonConstants.KEEP_SERVICE_HISTORY_PARAM);
@@ -306,9 +320,9 @@ public class DeploymentInterceptor implements AxisObserver {
                     }
                 }
 
-//                if (service != null) {
-//                    service.discard();
-//                }
+                if (!transactionStarted) {
+                    pf.getServiceGroupFilePM().commitTransaction(serviceGroupId);
+                }
 
             } catch (Axis2ModuleNotFound e) {
                 addFaultyServiceDueToModule(e.getModuleName(), axisService);
