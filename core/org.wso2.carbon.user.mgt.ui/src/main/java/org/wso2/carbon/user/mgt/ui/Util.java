@@ -74,10 +74,11 @@ public class Util {
             return new ClaimValue[0];
         }
         ClaimValue[] values = new ClaimValue[claimValues.length];
-        for (org.wso2.carbon.user.mgt.common.ClaimValue cvalue : claimValues) {
+        for (int i = 0; i < claimValues.length; i++) {
             ClaimValue value = new ClaimValue();
-            value.setClaimURI(cvalue.getClaimURI());
-            value.setValue(cvalue.getValue());
+            value.setClaimURI(claimValues[i].getClaimURI());
+            value.setValue(claimValues[i].getValue());
+            values[i] = value;
         }
         return values;
     }

@@ -122,6 +122,23 @@
                 </tbody>
                 </table>
                 <% } %>
+                <% if (CarbonUIUtil.isContextRegistered(config, "/identity-mgt/") &&
+                        CarbonUIUtil.isUserAuthorized(request, "/permission/admin")) {%>
+                    <br />
+                    <table class="styledLeft">
+                    <tbody>
+                    <tr>
+                        <td class="middle-header"><fmt:message key="manage.challenge.questions"/></td>
+                    </tr>
+                    <tr>
+                    <td >
+                        <a class="icon-link" style="background-image:url(images/keys.gif);"
+                           href="../identity-mgt/challenges-set-mgt.jsp"><fmt:message key="add.questions"/></a>
+                    </td>
+                    </tr>
+                    </tbody>
+                    </table>
+                <% } %>            
             
         </div>
     </div>

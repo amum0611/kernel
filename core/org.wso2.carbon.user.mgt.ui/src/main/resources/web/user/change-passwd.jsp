@@ -77,27 +77,60 @@
 
     <script type="text/javascript">
 
+        var skipPasswordValidation = false;
+
         function doCancel() {
             location.href = '<%=cancelPath%>';
         }
 
+        function definePasswordHere(){
+            var passwordMethod = document.getElementById('defineHere');
+            if(passwordMethod.checked){
+                skipPasswordValidation = false;
+                jQuery('#emailRow').hide();
+                jQuery('#passwordRow').show();
+                jQuery('#checkPasswordRow').show();
+            }
+        }
+
+        function askPasswordFromUser(){
+            var emailRow = document.getElementById('emailRow');
+            var passwordMethod = document.getElementById('askFromUser');
+            if(passwordMethod.checked){
+                skipPasswordValidation = true;
+                jQuery('#passwordRow').hide();
+                jQuery('#checkPasswordRow').hide();
+                var mainTable = document.getElementById('secondaryTable');
+                var newTr = mainTable.insertRow(mainTable.rows.length);
+                newTr.id = "emailRow";
+                if(emailRow == null) {
+                    newTr.innerHTML = '<td colspan="2"><font color="red">*</font><fmt:message key="email.user.profile"/></td>';
+                }   else {
+                    jQuery('#emailRow').show();
+                }
+            }
+        }
+
+
         function doValidation() {
             var reason = "";
 
-            reason = validatePasswordOnCreation("newPassword", "checkPassword", "<%=userStoreInfo.getJsRegEx()%>");
-            if (reason != "") {
-                if (reason == "Empty Password") {
-                    CARBON.showWarningDialog("<fmt:message key="enter.the.same.password.twice"/>");
-                } else if (reason == "Min Length") {
-                    CARBON.showWarningDialog("<fmt:message key="password.mimimum.characters"/>");
-                } else if (reason == "Invalid Character") {
-                    CARBON.showWarningDialog("<fmt:message key="invalid.character.in.password"/>");
-                } else if (reason == "Password Mismatch") {
-                    CARBON.showWarningDialog("<fmt:message key="password.mismatch"/>");
-                } else if (reason == "No conformance") {
-                    CARBON.showWarningDialog("<fmt:message key="password.conformance"/>");
+            if(!skipPasswordValidation){
+                reason = validatePasswordOnCreation("newPassword", "checkPassword", "<%=userStoreInfo.getJsRegEx()%>");
+                if (reason != "") {
+                    if (reason == "Empty Password") {
+                        CARBON.showWarningDialog("<fmt:message key="enter.the.same.password.twice"/>");
+                    } else if (reason == "Min Length") {
+                        CARBON.showWarningDialog("<fmt:message key="password.mimimum.characters"/>");
+                    } else if (reason == "Invalid Character") {
+                        CARBON.showWarningDialog("<fmt:message key="invalid.character.in.password"/>");
+                    } else if (reason == "Password Mismatch") {
+                        CARBON.showWarningDialog("<fmt:message key="password.mismatch"/>");
+                    } else if (reason == "No conformance") {
+                        CARBON.showWarningDialog("<fmt:message key="password.conformance"/>");
+                    }
+                    return false;
                 }
-                return false;
             }
             return true;
         }
@@ -125,18 +158,41 @@
                     </thead>
                     <tr>
                         <td class="formRaw">
-                            <table class="normal">
+                            <table class="normal" id="secondaryTable" >
                                 <% if (isUserChange != null) { %>
                                 <tr>
                                     <td><fmt:message key="current.password"/><font color="red">*</font></td>
                                     <td><input type="password" name="currentPassword"/></td>
                                 </tr>
                                 <% } %>
+
+                                <%
+                                    if (CarbonUIUtil.isContextRegistered(config, "/identity-mgt/")) {
+                                %>
+
                                 <tr>
+                                    <td >
+                                        <input type="radio" name="passwordMethod"  id="defineHere"
+                                               value="defineHere" checked="checked" onclick="definePasswordHere();"/>
+                                    </td>
+                                    <td><fmt:message key="define.password.here"/></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="radio" name="passwordMethod"  id="askFromUser"
+                                               value="askFromUser" onclick="askPasswordFromUser();" />
+                                    </td>
+                                    <td><fmt:message key="ask.password.user"/></td>
+                                </tr>
+
+                                <%
+                                    }
+                                %>
+                                <tr id="passwordRow">
                                     <td><fmt:message key="new.password"/><font color="red">*</font></td>
                                     <td><input type="password" name="newPassword"/></td>
                                 </tr>
-                                <tr>
+                                <tr id="checkPasswordRow">
                                     <td><fmt:message key="new.password.repeat"/><font color="red">*</font></td>
                                     <td><input type="password" name="checkPassword"/></td>
                                 </tr>

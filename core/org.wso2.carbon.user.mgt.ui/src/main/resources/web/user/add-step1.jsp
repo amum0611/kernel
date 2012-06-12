@@ -69,6 +69,8 @@ try{
 
 <script type="text/javascript">
 
+    var skipPasswordValidation = false;
+
     function validateString(fld1name, regString) {
         var stringValue = document.getElementsByName(fld1name)[0].value;
         var errorMessage = "";
@@ -100,20 +102,33 @@ try{
             return false;
         }
 
-        reason = validatePasswordOnCreation("password", "retype", "<%=userStoreInfo.getJsRegEx()%>");
-        if (reason != "") {
-            if (reason == "Empty Password") {
-                CARBON.showWarningDialog("<fmt:message key="enter.the.same.password.twice"/>");
-            } else if (reason == "Min Length") {
-                CARBON.showWarningDialog("<fmt:message key="password.mimimum.characters"/>");
-            } else if (reason == "Invalid Character") {
-                CARBON.showWarningDialog("<fmt:message key="invalid.character.in.password"/>");
-            } else if (reason == "Password Mismatch") {
-                CARBON.showWarningDialog("<fmt:message key="password.mismatch"/>");
-            } else if (reason == "No conformance") {
-            	CARBON.showWarningDialog("<fmt:message key="password.conformance"/>");
+        if(!skipPasswordValidation){
+            reason = validatePasswordOnCreation("password", "retype", "<%=userStoreInfo.getJsRegEx()%>");
+            if (reason != "") {
+                if (reason == "Empty Password") {
+                    CARBON.showWarningDialog("<fmt:message key="enter.the.same.password.twice"/>");
+                } else if (reason == "Min Length") {
+                    CARBON.showWarningDialog("<fmt:message key="password.mimimum.characters"/>");
+                } else if (reason == "Invalid Character") {
+                    CARBON.showWarningDialog("<fmt:message key="invalid.character.in.password"/>");
+                } else if (reason == "Password Mismatch") {
+                    CARBON.showWarningDialog("<fmt:message key="password.mismatch"/>");
+                } else if (reason == "No conformance") {
+                    CARBON.showWarningDialog("<fmt:message key="password.conformance"/>");
+                }
+                return false;
             }
-            return false;
+        } else {
+            var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;            
+            reason = validateString("email", emailPattern);
+            if (reason != "") {
+                if (reason == "Empty string") {
+                    CARBON.showWarningDialog("<fmt:message key="enter.email.empty"/>");
+                } else if (reason == "No conformance") {
+                    CARBON.showWarningDialog("<fmt:message key="enter.email.not.conforming"/>");
+                }
+                return false;
+            }
         }
         return true;
     }
@@ -121,7 +136,6 @@ try{
     function showHideUsers(element) {
         element.style.display = (element.style.display != 'block') ? 'block' : 'none';
     }
-
 
     function doCancel() {
         location.href = 'user-mgt.jsp?ordinal=1';
@@ -141,6 +155,36 @@ try{
         }
     }
 
+    function definePasswordHere(){
+        var passwordMethod = document.getElementById('defineHere');
+        if(passwordMethod.checked){
+            skipPasswordValidation = false;
+            jQuery('#emailRow').hide();
+            jQuery('#passwordRow').show();
+            jQuery('#retypeRow').show();
+        }
+    }
+
+    function askPasswordFromUser(){
+        var emailInput = document.getElementsByName('email')[0];
+        var passwordMethod = document.getElementById('askFromUser');
+        if(passwordMethod.checked){
+            skipPasswordValidation = true;
+            jQuery('#passwordRow').hide();
+            jQuery('#retypeRow').hide();
+            if(emailInput == null) {
+                var mainTable = document.getElementById('mainTable');
+                var newTr = mainTable.insertRow(mainTable.rows.length);
+                newTr.id = "emailRow";
+                newTr.innerHTML = '<td><fmt:message key="enter.email"/><font color="red">*</font></td><td>' +
+                        '<input type="text" name="email" style="width:150px"/></td>' ;
+            } else {
+                jQuery('#emailRow').show();    
+            }
+        }
+    }
+
+
 </script>
 <div id="middle">
     <h2><fmt:message key="add.user"/></h2>
@@ -157,7 +201,7 @@ try{
                 </thead>
                 <tr>
                     <td class="formRaw">
-                        <table class="normal">
+                        <table class="normal" id="mainTable">
                             <tr>
                                 <td><fmt:message key="user.name"/><font color="red">*</font>
                                 </td>
@@ -165,13 +209,34 @@ try{
                                            value="<jsp:getProperty name="userBean" property="username" />"
                                            style="width:150px"/></td>
                             </tr>
+                            <%
+                                if (CarbonUIUtil.isContextRegistered(config, "/identity-mgt/")) {
+                            %>
+
                             <tr>
+                                <td >
+                                    <input type="radio" name="passwordMethod"  id="defineHere"
+                                           value="defineHere" checked="checked" onclick="definePasswordHere();"/>
+                                </td>
+                                <td><fmt:message key="define.password.here"/></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="radio" name="passwordMethod"  id="askFromUser"
+                                           value="askFromUser" onclick="askPasswordFromUser();" />
+                                </td>
+                                <td><fmt:message key="ask.password.user"/></td>
+                            </tr>
+
+                            <%
+                                }
+                            %>
+                            <tr id="passwordRow">
                                 <td><fmt:message key="password"/><font color="red">*</font></td>
                                 <td><input type="password" name="password" style="width:150px"/></td>
                             </tr>
-                            <tr>
-                                <td><fmt:message key="password.repeat"/><font
-                                        color="red">*</font></td>
+                            <tr id="retypeRow">
+                                <td><fmt:message key="password.repeat"/><font color="red">*</font></td>
                                 <td><input type="password" name="retype" style="width:150px"/></td>
                             </tr>
                         </table>

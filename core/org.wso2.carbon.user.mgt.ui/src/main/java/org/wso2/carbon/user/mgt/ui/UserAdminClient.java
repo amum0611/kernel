@@ -38,6 +38,7 @@ public class UserAdminClient implements IUserAdmin {
     public static final String USER_STORE_INFO = "org.wso2.carbon.userstore.info";
     public static final String DO_USER_LIST = "org.wso2.usermgt.user.list.error";
     public static final String USER_LIST_FILTER = "org.wso2.usermgt.internal.filter";
+    public static final String EMAIL_CLAIM_URI = "http://wso2.org/claims/emailaddress";
     protected UserAdminStub stub = null;
 
     protected static Log log = LogFactory.getLog(UserAdminClient.class);

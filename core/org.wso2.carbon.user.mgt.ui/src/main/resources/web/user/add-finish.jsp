@@ -27,6 +27,7 @@
 <%@page import="org.wso2.carbon.ui.util.CharacterEncoder"%>
 <%@page import="java.util.ResourceBundle" %>
 <%@ page import="org.wso2.carbon.user.mgt.ui.UserBean" %>
+<%@ page import="org.wso2.carbon.user.mgt.common.ClaimValue" %>
 
 
 <%
@@ -51,9 +52,18 @@
             (IUserAdmin) CarbonUIUtil.
                     getServerProxy(new UserAdminClient(cookie, backendServerURL, configContext),
                                          IUserAdmin.class, session);
-        proxy.addUser(((UserBean)session.getAttribute("userBean")).getUsername(),
-                                      ((UserBean)session.getAttribute("userBean")).getPassword(),
-                                      ((UserBean)session.getAttribute("userBean")).getUserRoles(), null, null);
+
+        ClaimValue[] claims = null;
+        String userPassword = ((UserBean)session.getAttribute("userBean")).getPassword();
+        if(userBean.getEmail().trim().length() > 0 ){
+            ClaimValue emailClaim = new ClaimValue();
+            emailClaim.setClaimURI(UserAdminClient.EMAIL_CLAIM_URI);
+            emailClaim.setValue(userBean.getEmail());
+            claims = new ClaimValue[]{emailClaim};
+            userPassword = null;
+        }
+        proxy.addUser(((UserBean)session.getAttribute("userBean")).getUsername(), userPassword,
+                          ((UserBean)session.getAttribute("userBean")).getUserRoles(), claims, null);
         forwardTo = "user-mgt.jsp?ordinal=1";
     }
     catch(InstantiationException e){

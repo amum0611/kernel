@@ -25,6 +25,7 @@ public class UserBean {
     private String username = ""; 
     private String password = "";
     private String[] userRoles = new String[0];
+    private String email = "";
 
     public String getUsername() {
         return username;
@@ -44,6 +45,15 @@ public class UserBean {
     public void setUserRoles(String[] userRoles) {
         this.userRoles = Arrays.copyOf(userRoles, userRoles.length);
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setClaimMapping(){
         
     }
