@@ -46,6 +46,7 @@
 		<module>commons/ciphertool</module>
                 <module>transports/1.1.0-wso2v6</module>
                 <module>eclipse-p2/org.eclipse.equinox.p2.touchpoint.eclipse</module>
+                <module>h2-database-engine/1.2.140-wso2v2</module>
 		
 		<!-- orbit/modules -->
                 <module>orbit/axis2</module>
@@ -59,6 +60,7 @@
 		<module>orbit/axis2-jibx</module>
 		<module>orbit/axis2-jaxbri</module>
 		<module>orbit/xalan</module>
+                <module>orbit/h2-database-engine</module>
 	     </modules>
    <dependencyManagement>
 	<dependencies>
