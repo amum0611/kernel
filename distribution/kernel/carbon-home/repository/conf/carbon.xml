@@ -188,6 +188,13 @@
         </Restrictions>
     </JNDI>
 
+    <!--
+        Property to determine if the server is running an a cloud deployment environment.
+        This property should only be used to determine deployment specific details that are
+        applicable only in a cloud deployment, i.e when the server deployed *-as-a-service.
+    -->
+    <IsCloudDeployment>false</IsCloudDeployment>
+
     <!-- The Max time a thread should take for execution in seconds -->
     <MaxThreadExecutionTime>600</MaxThreadExecutionTime>
 

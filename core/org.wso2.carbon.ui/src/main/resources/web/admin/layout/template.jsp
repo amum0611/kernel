@@ -22,6 +22,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="org.wso2.carbon.utils.multitenancy.MultitenantConstants" %>
+<%@ page import="org.wso2.carbon.base.ServerConfiguration" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -53,8 +54,14 @@
             mainCSS += "?rsuffix=" + request.getSession().getAttribute(
                 CarbonConstants.THEME_URL_RANDOM_SUFFIX_SESSION_KEY);
         }
-	} else {
-		mainCSS = "../styles/css/main.css";
+    } else {
+        if ("true".equals(ServerConfiguration.getInstance().getFirstProperty(CarbonConstants.IS_CLOUD_DEPLOYMENT))) {
+            mainCSS = "../../registry/resource"
+                      + RegistryConstants.GOVERNANCE_REGISTRY_BASE_PATH
+                      + "/repository/components/org.wso2.carbon.all-themes/Default/admin/main.css";
+        } else {
+            mainCSS = "../styles/css/main.css";
+        }
 	}
 	//read web application's title if it's set on product.xml
     String webAdminConsoleTitle = (String) config.getServletContext().getAttribute(CarbonConstants.PRODUCT_XML_WSO2CARBON +

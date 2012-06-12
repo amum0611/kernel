@@ -40,6 +40,7 @@ public class Menu implements Comparable<Menu>, Serializable {
     private boolean atLeastOnePermissionsRequired = false;
     private boolean requireSuperTenant = false;
     private boolean requireNotSuperTenant = false;
+    private boolean requireCloudDeployment = false;
 
     private boolean requireNotLoggedIn = false;
 	//eg: param1=Claims&action=add
@@ -234,5 +235,13 @@ public class Menu implements Comparable<Menu>, Serializable {
 
     public void setRequireNotLoggedIn(boolean requireNotLoggedIn) {
         this.requireNotLoggedIn = requireNotLoggedIn;
+    }
+
+    public boolean isRequireCloudDeployment() {
+        return requireCloudDeployment;
+    }
+
+    public void setRequireCloudDeployment(boolean requireCloudDeployment) {
+        this.requireCloudDeployment = requireCloudDeployment;
     }
 }

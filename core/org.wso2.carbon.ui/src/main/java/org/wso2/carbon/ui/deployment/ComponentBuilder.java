@@ -670,6 +670,15 @@ public final class ComponentBuilder {
                     }
                 }
 
+                Iterator requireServiceModeEls =
+                        menuEle.getChildrenWithName(new QName(WSO2CARBON_NS, CarbonConstants.REQUIRE_CLOUD_DEPLOYMENT));
+                if (requireServiceModeEls.hasNext()) {
+                    OMElement requireServiceModeEle = (OMElement) requireServiceModeEls.next();
+                    if ("true".equalsIgnoreCase(requireServiceModeEle.getText())) {
+                        menu.setRequireCloudDeployment(true);
+                    }
+                }
+
                 //url parameters
                 Iterator<OMElement> urlParamsEles = menuEle.getChildrenWithName(new QName(WSO2CARBON_NS, "url-params"));
                 if (urlParamsEles.hasNext()) {

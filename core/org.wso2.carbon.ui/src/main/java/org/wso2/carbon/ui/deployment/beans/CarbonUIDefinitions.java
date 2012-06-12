@@ -19,6 +19,8 @@ package org.wso2.carbon.ui.deployment.beans;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.base.ServerConfiguration;
 import org.wso2.carbon.ui.CarbonUIUtil;
 import org.wso2.carbon.ui.MenuAdminClient;
 
@@ -189,7 +191,8 @@ public class CarbonUIDefinitions {
             //HashMap<String,String> grantedPermissions = getGrantedPermissions(loggedInUserName, userPermissions);
 
             for (int a = 0; a < currentMenuItems.length; a++) {
-
+                String serverInServiceMode = ServerConfiguration.getInstance().
+                        getFirstProperty(CarbonConstants.IS_CLOUD_DEPLOYMENT);
                 Menu menu = currentMenuItems[a];
                 boolean continueAdding = true;
                 if (menu.isRequireSuperTenant() && !isSuperTenant) {
@@ -212,6 +215,12 @@ public class CarbonUIDefinitions {
                                 " is logged in, the menu only shows when not logged in -> " + menu);
                     }
 
+                } else if (menu.isRequireCloudDeployment() && !"true".equals(serverInServiceMode)) {
+                    continueAdding = false;
+                    if (log.isDebugEnabled()) {
+                        log.debug("Server is not running in a cloud deployment, " +
+                                  "the menu is only shown when running in cloud deployment -> " + menu);
+                    }
                 }
                 if (continueAdding) {
                     String[] requiredPermissions = menu.getRequirePermission();

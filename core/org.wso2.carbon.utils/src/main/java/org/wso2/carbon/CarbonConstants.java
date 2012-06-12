@@ -367,4 +367,8 @@ public final class CarbonConstants {
     
     public static final String CARBON_ADMIN_SERVICE_PERMISSIONS = "carbon.permissions";
 
+    public static final String REQUIRE_CLOUD_DEPLOYMENT = "require-cloud-deployment";
+
+    public static final String IS_CLOUD_DEPLOYMENT = "IsCloudDeployment";
+
 }
