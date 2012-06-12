@@ -243,7 +243,7 @@ if(issuetrackerURL == null){
                         <%
                             if(CarbonUIUtil.isContextRegistered(config, "/identity-mgt/")){
                         %>
-                            &nbsp;|&nbsp;<a href="../identity-mgt/forgot_root_ajaxprocessor.jsp"
+                            &nbsp;|&nbsp;<a href="../identity-mgt/forgot_root.jsp"
                             target="_blank" tabindex="5" ><fmt:message key="lost.account"/></a>
                         <%
                             } else if(CarbonUIUtil.isContextRegistered(config, "/admin-mgt/")){
