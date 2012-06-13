@@ -134,21 +134,12 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
         String xpathStr = PersistenceUtils.getResourcePath(axisService);
         String sgName = axisService.getAxisServiceGroup().getServiceGroupName();
         try {
-
-            boolean transactionStarted = getServiceGroupFilePM().isTransactionStarted(sgName);
-            if (!transactionStarted) {
-                getServiceGroupFilePM().beginTransaction(sgName);
-            }
-
+            getServiceGroupFilePM().beginTransaction(sgName);
             if (getServiceGroupFilePM().fileExists(sgName)
                     && (param == null || !JavaUtils.isTrue(param.getValue().toString()))) {
                 getServiceGroupFilePM().delete(sgName, xpathStr);
             }
-
-            if (!transactionStarted) {
-                getServiceGroupFilePM().commitTransaction(sgName);
-            }
-            
+            getServiceGroupFilePM().commitTransaction(sgName);
         } catch (PersistenceDataNotFoundException e) {
             log.debug(sgName + " deleteService exception", e);
             handleExceptionWithRollback(sgName, "Could not delete Service " +
@@ -174,12 +165,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
         boolean isProxyService = PersistenceUtils.isProxyService(axisService);
         synchronized (WRITE_LOCK) {
             try {
-
-                boolean transactionStarted = getServiceGroupFilePM().isTransactionStarted(sgName);
-                if (!transactionStarted) {
-                    getServiceGroupFilePM().beginTransaction(sgName);
-                }
-                
+                getServiceGroupFilePM().beginTransaction(sgName);
                 configRegistry.beginTransaction();
                 //Add service
                 OMElement serviceElement = omFactory.createOMElement(Resources.ServiceProperties.SERVICE_XML_TAG, null);
@@ -335,10 +321,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                     getServiceGroupFilePM().setMetaFileModification(sgName);
                 }
 
-                if (!transactionStarted) {
-                    getServiceGroupFilePM().commitTransaction(sgName);
-                }
-
+                getServiceGroupFilePM().commitTransaction(sgName);
                 configRegistry.commitTransaction();
                 if (log.isDebugEnabled()) {
                     log.debug("Added new service - " + axisService.getName());
@@ -416,12 +399,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
         String serviceGroupId = axisService.getAxisServiceGroup().getServiceGroupName();
 
         try {
-
-            boolean transactionStarted = getServiceGroupFilePM().isTransactionStarted(serviceGroupId);
-            if (!transactionStarted) {
-                getServiceGroupFilePM().beginTransaction(serviceGroupId);
-            }
-            
+            getServiceGroupFilePM().beginTransaction(serviceGroupId);
             String serviceElementPath = PersistenceUtils.getResourcePath(axisService);
             OMElement serviceElement = (OMElement) getServiceGroupFilePM().get(serviceGroupId, serviceElementPath);
 
@@ -726,9 +704,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
             }
             axisService.setActive(Boolean.parseBoolean(serviceState));
 
-            if (!transactionStarted) {
-                getServiceGroupFilePM().commitTransaction(serviceGroupId);
-            }
+            getServiceGroupFilePM().commitTransaction(serviceGroupId);
 
             if (log.isDebugEnabled()) {
                 log.debug("Initialized service - " + axisService.getName());

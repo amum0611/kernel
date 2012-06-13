@@ -1,10 +1,12 @@
 package org.wso2.carbon.core.persistence.file;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jaxen.JaxenException;
 import org.wso2.carbon.core.Resources;
 import org.wso2.carbon.core.persistence.PersistenceDataNotFoundException;
 import org.wso2.carbon.core.persistence.PersistenceException;
@@ -68,12 +70,6 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
     public synchronized void beginTransaction(String moduleName) throws PersistenceException {
         File moduleFile = new File(metafilesDir, getFilePathFromResourceId(moduleName));
         try {
-//            if (resourceMap.get(moduleName) != null &&
-//                    resourceMap.get(moduleName).isTransactionStarted()) {
-//                throw new PersistenceException("A transaction is already started for this module. " +
-//                        "Nested transactions are no longer supported in this persistence model" + moduleName);
-//            }
-
             OMElement moduleElement;
             if (moduleFile.exists()) {
                 moduleElement = PersistenceUtils.getResourceDocumentElement(moduleFile);
@@ -109,5 +105,28 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
         return (OMElement) get(moduleId, Resources.ModuleProperties.ROOT_XPATH);
     }
 
+    @Override
+    public void delete(String moduleId, String xpathStr) throws PersistenceDataNotFoundException {
+        ResourceFileData fileData = resourceMap.get(moduleId);
+
+        try {
+            if (fileData != null && fileData.isTransactionStarted()) {
+                OMElement sgElement = fileData.getOMElement();
+                AXIOMXPath xpathExpr = new AXIOMXPath(xpathStr);
+                OMElement el = (OMElement) xpathExpr.selectSingleNode(sgElement);
+                if (el != null && el.getParent() == null) { //this is the root element
+                    fileData.setOMElement(null);
+                } else if (el != null) {
+                    el.detach();
+                }
+                setMetaFileModification(moduleId);
+            } else {
+                throw new PersistenceDataNotFoundException("transaction isn't started");
+            }
+        } catch (JaxenException e) {
+            log.error("Error parsing xpath string " + moduleId + xpathStr, e);
+            throw new PersistenceDataNotFoundException("Error parsing xpath string " + e);
+        }
+    }
 
 }
