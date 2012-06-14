@@ -205,7 +205,8 @@ public final class CarbonContextHolderBase {
 	 */
 	public void setTenantId(int tenantId) {
 	    try {
-            if (this.tenantId == MultitenantConstants.INVALID_TENANT_ID ) {
+            if (this.tenantId == MultitenantConstants.INVALID_TENANT_ID  ||
+                    this.tenantId == MultitenantConstants.SUPER_TENANT_ID) {
                 this.tenantId = tenantId;
             } else if (this.tenantId != tenantId) {
                 StackTraceElement[] traces = Thread.currentThread().getStackTrace();
@@ -254,7 +255,8 @@ public final class CarbonContextHolderBase {
 	 */
 	public void setTenantDomain(String domain) {
 		try {
-		    if (this.tenantDomain == null ) {
+		    if (this.tenantDomain == null ||
+                    this.tenantDomain == MultitenantConstants.SUPER_TENANT_DOMAIN_NAME ) {
 		        this.tenantDomain = domain;
             } else if (!tenantDomain.equals(domain)) {
 		        StackTraceElement[] traces = Thread.currentThread().getStackTrace();
