@@ -26,9 +26,7 @@ import org.wso2.carbon.core.common.AuthenticationException;
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.ui.deployment.beans.CarbonUIDefinitions;
 import org.wso2.carbon.ui.deployment.beans.Context;
-import org.wso2.carbon.ui.internal.CarbonUIServiceComponent;
 import org.wso2.carbon.ui.util.CarbonUIAuthenticationUtil;
-import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
@@ -593,9 +591,8 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
                 || requestedURI.endsWith(".ico")
                 || tmp.startsWith("/openid/")
                 || // This is ugly - till we find a solution
-                requestedURI.indexOf("/openid/") > -1 || tmp.startsWith("/oauth/")
-                || tmp.startsWith("/oauth2/")
-                || requestedURI.indexOf("/oauth/") > -1
+                requestedURI.indexOf("/openid/") > -1 || requestedURI.indexOf("/oauth/") > -1
+                || requestedURI.indexOf("/oauth2/") > -1
                 || requestedURI.indexOf("/openidserver") > -1
                 || requestedURI.indexOf("/gadgets") > -1 || requestedURI.indexOf("/samlsso") > -1) {
 
