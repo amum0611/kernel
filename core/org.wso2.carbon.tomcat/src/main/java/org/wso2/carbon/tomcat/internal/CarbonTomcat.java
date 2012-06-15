@@ -168,8 +168,8 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
      */
     public Context addWebApp(String contextPath, String webappFilePath)
             throws CarbonTomcatException {
-        Host localHost = (Host)this.getEngine().findChild("localhost");
-        return this.addWebApp(localHost, contextPath, webappFilePath, null);
+        Host defaultHost = (Host)this.getEngine().findChild(this.getEngine().getDefaultHost());
+        return this.addWebApp(defaultHost, contextPath, webappFilePath, null);
     }
 
     /**
@@ -193,8 +193,8 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
      */
     public Context addWebApp(String contextPath, String webappFilePath, LifecycleListener lifecycleListener)
             throws CarbonTomcatException {
-        Host localHost = (Host)this.getEngine().findChild("localhost");
-        return this.addWebApp(localHost, contextPath, webappFilePath, lifecycleListener);
+        Host defaultHost = (Host)this.getEngine().findChild(this.getEngine().getDefaultHost());
+        return this.addWebApp(defaultHost, contextPath, webappFilePath, lifecycleListener);
     }
 
     /**
