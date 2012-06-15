@@ -40,6 +40,7 @@ import org.wso2.carbon.base.CarbonBaseUtils;
 import org.wso2.carbon.caching.core.CacheConfiguration;
 import org.wso2.carbon.caching.core.CarbonCacheManager;
 
+import java.net.CacheResponse;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -343,21 +344,46 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
             }
             this.cache = cache;
         }
+        
+        private void logInvalidCacheStatus(String method) {
+        	log.info("InfinispanJCacheWrapper Error: Cache is terminated: " + method); 
+        }
 
         public org.infinispan.Cache getOriginal() {
             return cache;
         }
 
         public boolean containsKey(Object o) {
-            return cache.containsKey(o);
+            boolean result = false;
+            try {
+            	result = cache.containsKey(o);            	
+            } catch (IllegalStateException e) {
+            	logInvalidCacheStatus("containsKey");
+            	return false;
+            }
+            return result;
         }
 
         public boolean containsValue(Object o) {
-            return cache.containsValue(o);
+            boolean result = false;
+            try {
+            	result = cache.containsValue(o);
+            } catch (IllegalStateException e) {
+            	logInvalidCacheStatus("containsValue");
+            	return false;
+            }
+            return result;
         }
 
         public Set entrySet() {
-            return cache.entrySet();
+            Set result = null;
+            try {
+            	result = cache.entrySet();
+            } catch (IllegalStateException e) {
+            	logInvalidCacheStatus("entrySet");
+            	return null;
+            }
+            return result;
         }
 
         public boolean equals(Object o) {
@@ -371,35 +397,80 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
         }
 
         public boolean isEmpty() {
-            return cache.isEmpty();
+            boolean result = false;
+            try {
+            	result = cache.isEmpty();
+            } catch (IllegalStateException e) { 
+            	logInvalidCacheStatus("isEmpty");
+            	return true;
+            }
+            return result;
         }
 
         public Set keySet() {
-            return cache.keySet();
+            Set result = null;
+            try {
+            	result = cache.keySet();
+            } catch (IllegalStateException e) {
+            	logInvalidCacheStatus("keySet");
+            	return null; //TODO //return new HashSet<Object>();
+            }
+            return result;
         }
 
         @SuppressWarnings("unchecked")
-        public void putAll(Map map) {
-            cache.putAll(map);
+        public void putAll(Map map) {        	
+        	try {
+        		cache.putAll(map);
+        	} catch (IllegalStateException e) {   
+        		logInvalidCacheStatus("putAll");
+        	}
         }
 
         public int size() {
-            return cache.size();
+        	int result = 0;
+        	try {
+        		result = cache.size();
+        	} catch (IllegalStateException e) {
+        		logInvalidCacheStatus("size");
+        		return 0;
+        	}
+        	return result;
         }
 
         public Collection values() {
-            return cache.values();
+        	Collection result = null;
+        	try {
+            	result = cache.values();
+        	} catch (IllegalStateException e) {
+        		logInvalidCacheStatus("values");
+        		return null;
+        	}
+        	return result;
         }
 
         public Object get(Object o) {
-            return cache.get(o);
+        	Object result = null;
+        	try {
+        		result = cache.get(o);
+        	} catch (IllegalStateException e) {
+        		logInvalidCacheStatus("get");
+        		return null;
+        	}
+        	return result;
         }
 
         public Map getAll(Collection collection) throws CacheException {
             Map<Object, Object> output = new ConcurrentHashMap<Object, Object>();
-            for (Object o : collection) {
-                output.put(o, get(o));
-            }
+
+        	try { 
+	            for (Object o : collection) {
+	                output.put(o, get(o));
+	            }
+        	} catch (IllegalStateException e) {
+        		logInvalidCacheStatus("getAll");
+        		return null; // TODO return empry output 
+        	}
             return output;
         }
 
@@ -417,18 +488,39 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
             }
         }
 
-        public Object peek(Object o) {
-            return cache.getAdvancedCache().get(o);
+        public Object peek(Object o) {       	
+        	Object result = null;
+        	try {
+            	result = cache.getAdvancedCache().get(o);
+        	} catch (IllegalStateException e) {
+        		logInvalidCacheStatus("peek");
+        		return null;
+        	}
+        	return result;
         }
 
         @SuppressWarnings("unchecked")
         public Object put(Object o, Object o1) {
-            return cache.put(o, o1);
+        	Object result = null;
+        	try {
+            	result = cache.put(o, o1);
+        	} catch (IllegalStateException e) {
+        		logInvalidCacheStatus("put");
+        		return null;
+        	}
+        	return result;
         }
 
         public CacheEntry getCacheEntry(Object o) {
-            return new InfinispanJCacheEntry(
+        	CacheEntry result = null;
+        	try {
+            	result = new InfinispanJCacheEntry(
                     cache.getAdvancedCache().getDataContainer().get(o));
+        	} catch (IllegalStateException e) {
+        		logInvalidCacheStatus("getCacheEntry");
+        		return null;
+        	}
+        	return result;
         }
 
         public CacheStatistics getCacheStatistics() {
@@ -436,11 +528,20 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
         }
 
         public Object remove(Object o) {
-            return cache.remove(o);
+        	try {
+        		return cache.remove(o);
+        	} catch (IllegalStateException e){ 
+        		logInvalidCacheStatus("remove");
+        		return null;
+        	}
         }
 
-        public void clear() {
-            cache.clear();
+        public void clear() {       	
+        	try {
+        		cache.clear();
+        	} catch (IllegalStateException e) { 
+        		logInvalidCacheStatus("clear");
+        	}
         }
 
         public void evict() {
