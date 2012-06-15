@@ -29,7 +29,7 @@ import java.util.List;
  * Bean class used to render pagination
  */
 public class PaginatedNamesBean implements Pageable {
-    private FlaggedName[] names;
+    private FlaggedName[] names = new FlaggedName[0];
     private int numberOfPages;
 
     public FlaggedName[] getNames() {
