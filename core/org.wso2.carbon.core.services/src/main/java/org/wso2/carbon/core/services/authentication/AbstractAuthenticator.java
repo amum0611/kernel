@@ -34,7 +34,6 @@ import org.wso2.carbon.registry.core.RegistryConstants;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.service.RealmService;
-import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.AuthenticationObserver;
 import org.wso2.carbon.utils.ServerConstants;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
@@ -264,7 +263,7 @@ public abstract class AbstractAuthenticator extends AbstractAdmin implements Ser
         String tenantDomain = getTenantDomain();
         int tenantId = getTenantId(tenantDomain);
 
-        CarbonAuthenticationUtil.setRootRegistry(httpSession, userName, tenantId);
+        CarbonAuthenticationUtil.initializeLoggedInUserRegistry(httpSession, userName, tenantId, tenantDomain);
     }
 
     /**

@@ -31,7 +31,6 @@ import org.wso2.carbon.registry.core.RegistryConstants;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.session.UserRegistry;
 import org.wso2.carbon.utils.ServerConstants;
-import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpSession;
@@ -77,34 +76,9 @@ public class CarbonAuthenticationUtil {
 
     public static void onSuccessAdminLogin(HttpSession httpSess, String username, int tenantId,
             String tenantDomain, String remoteAddress) throws Exception {    
-        RegistryService registryService = CarbonServicesServiceComponent.getRegistryService();
-        UserRegistry userRegistry = registryService.getConfigUserRegistry(username, tenantId);
-        UserRegistry governanceUserRegistry =
-                registryService.getGovernanceUserRegistry(username, tenantId);
-        UserRegistry systemRegistry = registryService.getConfigSystemRegistry(tenantId);
-        UserRegistry governanceRegistry = registryService.getGovernanceSystemRegistry(tenantId);
-        if (httpSess != null) {
-            httpSess.setAttribute(ServerConstants.USER_LOGGED_IN, username);
-            if (tenantDomain != null) {
-                httpSess.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
-            } else {
-            	audit.info("User with null domain tried to login.");
-            	return;
-            }
 
-            setRootRegistry(httpSess, username, tenantId);
+        initializeLoggedInUserRegistry(httpSess, username, tenantId, tenantDomain);
 
-            SuperTenantCarbonContext carbonContext = SuperTenantCarbonContext.getCurrentContext(httpSess);
-            carbonContext.setUsername(username);
-            carbonContext.setTenantDomain(tenantDomain);
-            carbonContext.setTenantId(tenantId);
-            carbonContext.setRegistry(RegistryType.SYSTEM_CONFIGURATION, systemRegistry);
-            carbonContext.setRegistry(RegistryType.SYSTEM_GOVERNANCE, governanceRegistry);
-            carbonContext.setRegistry(RegistryType.USER_CONFIGURATION, userRegistry);
-            carbonContext.setRegistry(RegistryType.USER_GOVERNANCE, governanceUserRegistry);
-            carbonContext.setUserRealm(governanceUserRegistry.getUserRealm());
-        }
-        
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
 
@@ -113,7 +87,6 @@ public class CarbonAuthenticationUtil {
                    date.format(currentTime) + " from IP address " + remoteAddress;
         log.info(msg);
         audit.info(msg);
-        
 
         // trigger the callbacks subscribe to the login event
         LoginSubscriptionManagerServiceImpl loginSubscriptionManagerServiceImpl = CarbonServicesServiceComponent
@@ -132,21 +105,48 @@ public class CarbonAuthenticationUtil {
 
     /**
      * Sets the root registry for user and for given tenant id.
+     *
      * @param httpSession  The http session
-     * @param username  The user name
-     * @param tenantId The tenant id
+     * @param username     The user name
+     * @param tenantId     The tenant id
+     * @param tenantDomain The tenant domain.
      * @throws Exception If an error occurred while creating the registry
      */
-    public static void setRootRegistry(HttpSession httpSession, String username, int tenantId) throws Exception {
-
-        if (httpSession.getAttribute(RegistryConstants.ROOT_REGISTRY_INSTANCE) != null) {
-            return;
-        }
+    public static void initializeLoggedInUserRegistry(HttpSession httpSession, String username, int tenantId, String tenantDomain)
+            throws Exception {
 
         RegistryService registryService = CarbonServicesServiceComponent.getRegistryService();
 
-        httpSession.setAttribute(RegistryConstants.ROOT_REGISTRY_INSTANCE, registryService
+        UserRegistry userRegistry = registryService.getConfigUserRegistry(username, tenantId);
+        UserRegistry governanceUserRegistry =
+                registryService.getGovernanceUserRegistry(username, tenantId);
+        UserRegistry systemRegistry = registryService.getConfigSystemRegistry(tenantId);
+        UserRegistry governanceRegistry = registryService.getGovernanceSystemRegistry(tenantId);
+
+        if (httpSession != null) {
+            httpSession.setAttribute(ServerConstants.USER_LOGGED_IN, username);
+
+            if (tenantDomain != null) {
+                httpSession.setAttribute(MultitenantConstants.TENANT_DOMAIN, tenantDomain);
+            } else {
+                audit.info("User with null domain tried to login.");
+                return;
+            }
+
+            httpSession.setAttribute(RegistryConstants.ROOT_REGISTRY_INSTANCE, registryService
                     .getRegistry(username, tenantId));
+
+            SuperTenantCarbonContext carbonContext = SuperTenantCarbonContext.getCurrentContext(httpSession);
+
+            carbonContext.setUsername(username);
+            carbonContext.setTenantDomain(tenantDomain);
+            carbonContext.setTenantId(tenantId);
+            carbonContext.setRegistry(RegistryType.SYSTEM_CONFIGURATION, systemRegistry);
+            carbonContext.setRegistry(RegistryType.SYSTEM_GOVERNANCE, governanceRegistry);
+            carbonContext.setRegistry(RegistryType.USER_CONFIGURATION, userRegistry);
+            carbonContext.setRegistry(RegistryType.USER_GOVERNANCE, governanceUserRegistry);
+            carbonContext.setUserRealm(governanceUserRegistry.getUserRealm());
+        }
 
     }
 
