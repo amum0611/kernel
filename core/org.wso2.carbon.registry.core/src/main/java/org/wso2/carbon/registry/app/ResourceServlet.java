@@ -38,6 +38,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
 /**
@@ -73,6 +75,11 @@ public class ResourceServlet extends HttpServlet {
             try {
                 UserRegistry registry = Utils.getRegistry(request);
                 String decodedPath = URLDecoder.decode(path, RegistryConstants.DEFAULT_CHARSET_ENCODING);
+                try {
+                    decodedPath = new URI(decodedPath).normalize().toString();
+                } catch (URISyntaxException e) {
+                    log.error("Unable to normalize requested resource path: " + decodedPath, e);
+                }
                 CurrentSession.setUserRealm(registry.getUserRealm());
                 CurrentSession.setUser(registry.getUserName());
                 try {
