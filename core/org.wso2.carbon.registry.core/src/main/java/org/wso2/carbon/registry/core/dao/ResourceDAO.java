@@ -433,18 +433,6 @@ public interface ResourceDAO {
             throws RegistryException;
 
     /**
-     * Add a resource, provided whether it is overwriting existing one or not. If the resource
-     * already existing the removal of the older resource will not be handled in this function.
-     *
-     * @param resourceImpl       the resource object.
-     * @param isUpdatingExisting whether the resource is updating or not.
-     *
-     * @throws RegistryException throws if the operation failed.
-     */
-    void addResource(ResourceImpl resourceImpl, boolean isUpdatingExisting)
-            throws RegistryException;
-
-    /**
      * Add a resource without setting the resource modified flag on.
      *
      * @param resourceImpl the resource to be added.
