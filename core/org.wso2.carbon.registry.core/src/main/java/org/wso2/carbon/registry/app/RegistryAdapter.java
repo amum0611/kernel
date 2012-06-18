@@ -684,26 +684,15 @@ public class RegistryAdapter
                 Registry myRegistry = getSecureRegistry(request);
                 feed.addSimpleExtension(APPConstants.QN_AVERAGE_RATING,
                         "" + myRegistry.getAverageRating(path));
-                Resource r = myRegistry.get(path + RegistryConstants.URL_SEPARATOR +
-                        "ratings");
-                Collection c;
-                if (r instanceof Collection) {
-                    c = (Collection) r;
-                } else {
-                    EmptyResponseContext res =
-                            new EmptyResponseContext(400, "Empty Ratings result'");
-                    myRegistry.get(path + RegistryConstants.URL_SEPARATOR + "ratings");
-                    return res;
-                }
-                String[] ratings = (String[]) c.getContent();
-                if (ratings != null && ratings.length > 0) {
-                    for (String rating : ratings) {
-                        Entry e = factory.newEntry();
-                        e.setId("tag:something"); // TODO - make real ID
-                        e.setContent(rating);
-                        e.addLink(rating, APPConstants.PARAMETER_PATH);
-                        feed.addEntry(e);
-                    }
+                final String username =
+                        (String) request.getAttribute(RequestContext.Scope.REQUEST, "ratingUser");
+                String rating = Integer.toString(myRegistry.getRating(path, username));
+                if (username != null) {
+                    Entry e = factory.newEntry();
+                    e.setId("tag:something");
+                    e.setContent(rating);
+                    e.addLink(rating, APPConstants.PARAMETER_PATH);
+                    feed.addEntry(e);
                 }
             } catch (RegistryException e) {
                 return new StackTraceResponseContext(e);

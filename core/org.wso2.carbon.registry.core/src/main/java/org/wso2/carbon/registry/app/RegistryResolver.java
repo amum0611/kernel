@@ -416,7 +416,7 @@ public class RegistryResolver implements Resolver<Target> {
                 }
             } else {
                 // Store the split URL for later
-                context.setAttribute("splitPath", parts);
+                context.setAttribute(APPConstants.PARAMETER_SPLIT_PATH, parts);
                 int idx = discriminator.indexOf('?');
                 if (idx > -1) {
                     discriminator = discriminator.substring(0, idx);
@@ -442,6 +442,9 @@ public class RegistryResolver implements Resolver<Target> {
                 } else if (discriminator.equals("comment") && method.equals("DELETE") && hasColon) {
                     context.setAttribute("commentId", suffix);
                     type = DELETE_TYPE;
+                } else if (discriminator.equals("ratings") && hasColon) {
+                    context.setAttribute("ratingUser", suffix);
+                    type = DELETE_TYPE;
                 }
 
                 // If we have a discriminator that we don't understand, return a 404
@@ -454,7 +457,7 @@ public class RegistryResolver implements Resolver<Target> {
                         type.equals(TAGS_TYPE))) {
                     uri = parts[0];
                 }
-                if (hasColon && (type.equals(RATINGS_TYPE) || type.equals(TAGS_TYPE))) {
+                if (hasColon && type.equals(TAGS_TYPE)) {
                     type = null;
                 }
             }
