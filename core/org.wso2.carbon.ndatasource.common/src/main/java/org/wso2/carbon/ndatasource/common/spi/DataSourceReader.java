@@ -25,6 +25,6 @@ public interface DataSourceReader {
 
 	public String getType();
 	
-	public Object createDataSource(String xmlConfiguration) throws DataSourceException;
-		
+	public Object createDataSource(String xmlConfiguration, boolean isDataSourceFactoryReference) throws DataSourceException;
+	
 }
