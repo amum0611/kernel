@@ -40,6 +40,7 @@ import org.wso2.carbon.core.util.CryptoUtil;
 import org.wso2.carbon.ndatasource.common.DataSourceConstants;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.ndatasource.core.DataSourceMetaInfo;
+import org.wso2.carbon.ndatasource.core.JNDIConfig;
 import org.wso2.carbon.ndatasource.core.DataSourceMetaInfo.DataSourceDefinition;
 import org.wso2.carbon.ndatasource.core.internal.DataSourceServiceComponent;
 import org.wso2.carbon.registry.core.Registry;
@@ -118,7 +119,10 @@ public class DataSourceUtils {
 	private static DataSourceMetaInfo copyDSMInfo(DataSourceMetaInfo dsmInfo) {
 		DataSourceMetaInfo result = new DataSourceMetaInfo();
 		result.setDescription(dsmInfo.getDescription());
-		result.setJndiConfig(dsmInfo.getJndiConfig().copy());
+		JNDIConfig jndiConfig = dsmInfo.getJndiConfig();
+	    if (jndiConfig != null) {
+	    	result.setJndiConfig(dsmInfo.getJndiConfig().copy());
+	    }
 		result.setName(dsmInfo.getName());
 		result.setSystem(dsmInfo.isSystem());
 		DataSourceDefinition dsDef = new DataSourceDefinition();

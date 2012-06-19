@@ -15,15 +15,12 @@
  */
 package org.wso2.carbon.ndatasource.core;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlValue;
 
 import org.wso2.carbon.ndatasource.core.utils.DataSourceUtils;
@@ -37,6 +34,8 @@ public class JNDIConfig {
 	private String name;
 	
 	private EnvEntry[] environment;
+	
+	private boolean useDataSourceFactory;
 
 	public void setName(String name) {
 		this.name = name;
@@ -57,6 +56,15 @@ public class JNDIConfig {
 		return environment;
 	}
 	
+	@XmlAttribute
+	public boolean isUseDataSourceFactory() {
+		return useDataSourceFactory;
+	}
+
+	public void setUseDataSourceFactory(boolean useDataSourceFactory) {
+		this.useDataSourceFactory = useDataSourceFactory;
+	}
+	
 	public Hashtable<String, String> extractHashtableEnv() {
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		if (this.getEnvironment() != null) {
@@ -70,6 +78,7 @@ public class JNDIConfig {
 	public JNDIConfig copy() {
 		JNDIConfig result = new JNDIConfig();
 		result.setName(this.getName());
+		result.setUseDataSourceFactory(this.isUseDataSourceFactory());
 		EnvEntry[] envEntries = null;
 		EnvEntry[] origEntries = this.getEnvironment();
 		if (origEntries != null) {

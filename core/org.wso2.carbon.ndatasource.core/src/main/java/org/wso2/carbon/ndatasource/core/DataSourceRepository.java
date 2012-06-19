@@ -188,14 +188,19 @@ public class DataSourceRepository implements GroupEventListener {
 	}
 	
 	private Object createDataSourceObject(DataSourceMetaInfo dsmInfo) throws DataSourceException {
+		boolean isDataSourceFactoryReference = false;
 		DataSourceReader dsReader = DataSourceManager.getInstance().getDataSourceReader(
 				dsmInfo.getDefinition().getType());
 		if (dsReader == null) {
 			throw new DataSourceException("A data source reader cannot be found for the type '" +
 		            dsmInfo.getDefinition().getType() + "'");
 		}
+		JNDIConfig jndiConfig = dsmInfo.getJndiConfig();
+		if (jndiConfig != null) {
+			isDataSourceFactoryReference = dsmInfo.getJndiConfig().isUseDataSourceFactory();
+		} 
 		return dsReader.createDataSource(DataSourceUtils.elementToString(
-				(Element) dsmInfo.getDefinition().getDsXMLConfiguration()));
+					(Element) dsmInfo.getDefinition().getDsXMLConfiguration()), isDataSourceFactoryReference);
 	}
 	
 	private Context lookupJNDISubContext(Context context, String jndiName) 
@@ -250,9 +255,10 @@ public class DataSourceRepository implements GroupEventListener {
 		                e.getMessage(), e);
 		    }
 		    this.checkAndCreateJNDISubContexts(context, jndiConfig.getName());
+		    
 		    try {
-		        context.rebind(jndiConfig.getName(), dsObject);
-		    } catch (NamingException e) {
+			    context.rebind(jndiConfig.getName(), dsObject);
+			} catch (NamingException e) {
 		    	throw new DataSourceException("Error in binding to JNDI with name '" +
 		                jndiConfig.getName() + "' - " + e.getMessage(), e);
 			}
