@@ -35,7 +35,7 @@
                 <properties>
                     <property name="java.naming.factory.initial"></property>
                     <property name="java.naming.provider.url"></property>
-                </properties>svns:secretAlias="WSO2.DB.Password"
+                </properties>
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
