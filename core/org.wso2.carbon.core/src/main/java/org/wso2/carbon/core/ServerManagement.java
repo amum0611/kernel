@@ -107,17 +107,17 @@ public class ServerManagement {
                 TenantAxisUtils.getTenantConfigurationContexts(serverConfigContext);
 
         serverConfigContext.getAxisConfiguration().getConfigurator().cleanup();
-        DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(
-                serverConfigContext.getAxisConfiguration());
+        /*DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(
+                serverConfigContext.getAxisConfiguration());*/
 
         for (ConfigurationContext tenantConfigCtx : tenantConfigContexts.values()) {
-            int tenantId = MultitenantUtils.getTenantId(tenantConfigCtx);
+            /*int tenantId = MultitenantUtils.getTenantId(tenantConfigCtx);
             if(log.isDebugEnabled()){
                 log.debug("invoking CarbonDeploymentSchedulerExtenders before shutdown, tenant " +
                 tenantId);
             }
             DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(
-                    tenantConfigCtx.getAxisConfiguration());
+                    tenantConfigCtx.getAxisConfiguration());*/
 
             tenantConfigCtx.getAxisConfiguration().getConfigurator().cleanup();
         }
