@@ -91,11 +91,18 @@ public class GhostDeployer extends AbstractDeployer {
 
     public void deploy(DeploymentFileData deploymentFileData) throws DeploymentException {
         String absoluteFilePath = deploymentFileData.getAbsolutePath();
-        log.info("Ghost Deployer Deploying Artifact : " + absoluteFilePath);
+        String directoryName = calculateDirectoryName(absoluteFilePath);
+
+        if(!"servicemetafiles".equals(directoryName) && !"modulemetafiles".equals(directoryName)){
+            log.info("Ghost Deployer Deploying Artifact : " + absoluteFilePath);
+        } else {
+            if(log.isDebugEnabled()){
+                log.debug("Ghost Deployer Deploying Artifact : " + absoluteFilePath);
+            }
+        }
 
         // First extract out the file extension and the deployment folder
         String fileExtension = DeploymentFileData.getFileExtension(deploymentFileData.getName());
-        String directoryName = calculateDirectoryName(absoluteFilePath);
 
         // Now we can decide what is the correct deployer
         Deployer deployer = getDeployer(directoryName, fileExtension);
