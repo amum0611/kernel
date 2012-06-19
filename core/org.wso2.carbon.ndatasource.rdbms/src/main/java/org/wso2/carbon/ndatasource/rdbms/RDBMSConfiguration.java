@@ -420,7 +420,7 @@ public class RDBMSConfiguration {
 		this.dataSourceClassName = dataSourceClassName;
 	}
 	
-	@XmlElementWrapper (name = "dataSourceProps")
+	@XmlElementWrapper (name = RDBMSDataSourceConstants.DATASOURCE_PROPS_NAME)
 	@XmlElement (name = "property")
 	public List<DataSourceProperty> getDataSourceProps() {
 		return dataSourceProps;
