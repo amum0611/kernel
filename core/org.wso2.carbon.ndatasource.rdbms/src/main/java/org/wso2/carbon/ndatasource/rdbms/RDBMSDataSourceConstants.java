@@ -36,4 +36,7 @@ public class RDBMSDataSourceConstants {
 		
 	}
 	
+	public static final String[] CLASS_RETURN_TYPES = {"String", "Byte", "Character", 
+		"Short", "Integer", "Float", "Double", "Character", "Boolean"};
+	
 }
