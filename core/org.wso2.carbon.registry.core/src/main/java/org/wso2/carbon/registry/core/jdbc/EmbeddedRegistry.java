@@ -2719,8 +2719,8 @@ public class EmbeddedRegistry implements Registry {
                             CurrentSession.getUser());
 
                     String author = CurrentSession.getUser();
-                    RegistryUtils.addMountEntry(this, registryContext, path, target,
-                            false, author);
+                    RegistryUtils.addMountEntry(RegistryUtils.getSystemRegistry(this),
+                            registryContext, path, target, false, author);
 
 
                     if (context.isLoggingActivity()) {
@@ -2792,8 +2792,8 @@ public class EmbeddedRegistry implements Registry {
                             targetSubPath, CurrentSession.getUser());
 
                     String author = CurrentSession.getUser();
-                    RegistryUtils.addMountEntry(this, registryContext, path, target, targetSubPath,
-                            author);
+                    RegistryUtils.addMountEntry(RegistryUtils.getSystemRegistry(this),
+                            registryContext, path, target, targetSubPath, author);
 
                     if (context.isLoggingActivity()) {
                         registryContext.getLogWriter().addLog(
@@ -2866,7 +2866,7 @@ public class EmbeddedRegistry implements Registry {
                             throw new RegistryException(msg);
                         }
 
-                        delete(resource.getPath());
+                        RegistryUtils.getSystemRegistry(this).delete(resource.getPath());
                     } catch (ResourceNotFoundException ignored) {
                         // There can be situations where the mount resource is not found. In that
                         // case, we can simply ignore this exception being thrown. An example of
