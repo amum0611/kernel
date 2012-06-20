@@ -107,10 +107,14 @@ public class ServerManagement {
                 TenantAxisUtils.getTenantConfigurationContexts(serverConfigContext);
 
         serverConfigContext.getAxisConfiguration().getConfigurator().cleanup();
+        // uncomment following to execute registered deployment  scheduler extenders for super
+        // tenant in maintenance mode.
         /*DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(
                 serverConfigContext.getAxisConfiguration());*/
 
         for (ConfigurationContext tenantConfigCtx : tenantConfigContexts.values()) {
+            // uncomment following to execute registered deployment  scheduler extenders for each
+            // tenant in maintenance mode.
             /*int tenantId = MultitenantUtils.getTenantId(tenantConfigCtx);
             if(log.isDebugEnabled()){
                 log.debug("invoking CarbonDeploymentSchedulerExtenders before shutdown, tenant " +

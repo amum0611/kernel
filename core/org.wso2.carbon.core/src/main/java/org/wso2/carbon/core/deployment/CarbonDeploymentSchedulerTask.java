@@ -68,7 +68,8 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
             SuperTenantCarbonContext.getCurrentContext().setTenantId(tenantId);
             SuperTenantCarbonContext.getCurrentContext().setTenantDomain(tenantDomain);
 
-            //invoke CarbonDeploymentSchedulerExtenders
+            //invoke CarbonDeploymentSchedulerExtenders - uncomment following if there are any
+            // deployment extenders need to be registered.
 //            DeploymentUtils.invokeCarbonDeploymentSchedulerExtenders(axisConfig);
 
             deploymentSyncUpdate();
