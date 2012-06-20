@@ -282,13 +282,7 @@
 	<dependency>
 		<groupId>org.eclipse.ecf.provider.filetransfer</groupId>
 		<artifactId>httpclient</artifactId>
-		<version>1.0.0-v20070627-1030</version>
-		<exclusions>
-        		<exclusion>
-        		  <groupId>org.eclipse.equinox</groupId>
-        		  <artifactId>registry</artifactId>
-      	  		</exclusion>
-      		</exclusions> 
+		<version>4.0.200.v20120319-0616</version> 
 	</dependency>
     </dependencies>
 
