@@ -444,7 +444,7 @@ public class RegistryResolver implements Resolver<Target> {
                     type = DELETE_TYPE;
                 } else if (discriminator.equals("ratings") && hasColon) {
                     context.setAttribute("ratingUser", suffix);
-                    type = DELETE_TYPE;
+                    type = RATINGS_TYPE;
                 }
 
                 // If we have a discriminator that we don't understand, return a 404
