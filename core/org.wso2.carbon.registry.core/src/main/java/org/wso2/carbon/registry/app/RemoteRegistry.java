@@ -1296,10 +1296,19 @@ public class RemoteRegistry implements Registry {
                         getAuthorization());
         Document introspection =
                 clientResponse.getDocument();
-        Entry entry = (Entry) introspection.getRoot();
-        String intValue = entry.getContent();
+        if (introspection.getRoot() instanceof Feed) {
+            Feed feed = (Feed) introspection.getRoot();
+            List<Entry> entries = feed.getEntries();
+            if (entries.size() == 1) {
+                String intValue = entries.get(0).getContent();
+                abderaClient.teardown();
+                return Integer.parseInt(intValue);
+            }
+        }
+        String msg = "Getting rating failed. Path: " + path;
         abderaClient.teardown();
-        return Integer.parseInt(intValue);
+        log.error(msg);
+        throw new RegistryException(msg);
     }
 
     public Collection executeQuery(String path, Map parameters) throws RegistryException {
