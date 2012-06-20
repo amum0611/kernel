@@ -458,7 +458,7 @@ public class VersionRepository {
     public boolean removeVersionHistory(String path, long snapshotId)
     		throws RegistryException {
 
-        if (!AuthorizationUtils.authorize(path, ActionConstants.PUT)) {
+        if (!AuthorizationUtils.authorize(path, ActionConstants.DELETE)) {
             String msg = "User " + CurrentSession.getUser() + " is not authorized to " +
                     "remove the version of the resource " + path + ".";
             log.warn(msg);
