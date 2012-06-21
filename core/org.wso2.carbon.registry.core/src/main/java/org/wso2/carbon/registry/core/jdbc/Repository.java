@@ -260,7 +260,7 @@ public class Repository {
     }
 
     private String getUserNotAuthorizedMsg() {
-        return getUserNotAuthorizedMsg();
+        return "User " + CurrentSession.getUser() + " is not authorized to ";
 
     }
 
@@ -681,7 +681,8 @@ public class Repository {
             newName = oldDir + newName;
         }
 
-        if (!AuthorizationUtils.authorize(oldPath, ActionConstants.PUT)) {
+        if (!AuthorizationUtils.authorize(oldPath, ActionConstants.PUT) &&
+                !AuthorizationUtils.authorize(oldPath, ActionConstants.DELETE)) {
             String msg = getUserNotAuthorizedMsg() +
                     "rename the resource " + oldResourcePath + ".";
             log.warn(msg);
