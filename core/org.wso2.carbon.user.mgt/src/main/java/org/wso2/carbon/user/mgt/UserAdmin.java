@@ -249,6 +249,11 @@ public class UserAdmin extends AbstractAdmin implements IUserAdmin {
         return userAdminCore.getRolesOfUser(userName);
     }
 
+    // FIXME: Fix the documentation of this class including this.
+    public FlaggedName[] getRolesOfCurrentUser() throws UserAdminException {
+        return getRolesOfUser(CarbonContext.getCurrentContext().getUsername());
+    }
+
     /*
      * (non-Javadoc)
      * 

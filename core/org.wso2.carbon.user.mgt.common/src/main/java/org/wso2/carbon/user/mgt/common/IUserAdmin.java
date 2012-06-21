@@ -105,10 +105,13 @@ public interface IUserAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.wso2.carbon.user.mgt.UserAdmin#getUsersInRole(java.lang.String)
      */
     FlaggedName[] getRolesOfUser(String userName) throws UserAdminException;
+
+    // FIXME: Fix the documentation of this interface including this.
+    FlaggedName[] getRolesOfCurrentUser() throws UserAdminException;
 
     void updateRolesOfUser(String userName, String[] newUserList) throws UserAdminException;
     
