@@ -149,6 +149,15 @@ public class UserAdminClient implements IUserAdmin {
         return (new FlaggedName[0]);
     }
 
+    public FlaggedName[] getRolesOfCurrentUser() throws UserAdminException {
+        try {
+            return Util.toCommonFlaggedNames(stub.getRolesOfUser());
+        } catch (Exception e) {
+            handleException(e.getMessage(), e);
+        }
+        return (new FlaggedName[0]);
+    }
+
     public FlaggedName[] getUsersOfRole(String roleName, String filter) throws UserAdminException {
         try {
             return Util.toCommonFlaggedNames(stub.getUsersOfRole(roleName, filter));
