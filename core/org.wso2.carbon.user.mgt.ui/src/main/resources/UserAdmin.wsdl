@@ -189,6 +189,29 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="getRolesOfCurrentUserUserAdminException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="UserAdminException" nillable="true"
+                                    type="ax2289:UserAdminException"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getRolesOfCurrentUser">
+
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getRolesOfCurrentUserResponse">
+                <xs:complexType>
+                    <xs:sequence>
+
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return"
+                                    nillable="true" type="ax2289:FlaggedName"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="getRolePermissionsUserAdminException">
                 <xs:complexType>
                     <xs:sequence>
@@ -486,6 +509,16 @@
     <wsdl:message name="getRolesOfUserUserAdminException">
         <wsdl:part name="parameters" element="ns:getRolesOfUserUserAdminException"/>
     </wsdl:message>
+    <wsdl:message name="getRolesOfCurrentUserRequest">
+        <wsdl:part name="parameters" element="ns:getRolesOfCurrentUser"/>
+    </wsdl:message>
+    <wsdl:message name="getRolesOfCurrentUserResponse">
+        <wsdl:part name="parameters" element="ns:getRolesOfCurrentUserResponse"/>
+
+    </wsdl:message>
+    <wsdl:message name="getRolesOfCurrentUserUserAdminException">
+        <wsdl:part name="parameters" element="ns:getRolesOfCurrentUserUserAdminException"/>
+    </wsdl:message>
     <wsdl:message name="listUsersRequest">
         <wsdl:part name="parameters" element="ns:listUsers"/>
     </wsdl:message>
@@ -629,6 +662,14 @@
             <wsdl:fault message="ns:getRolesOfUserUserAdminException"
                         name="getRolesOfUserUserAdminException"
                         wsaw:Action="urn:getRolesOfUsergetRolesOfUserUserAdminException"/>
+        </wsdl:operation>
+        <wsdl:operation name="getRolesOfCurrentUser">
+            <wsdl:input message="ns:getRolesOfCurrentUserRequest" wsaw:Action="urn:getRolesOfCurrentUser"/>
+            <wsdl:output message="ns:getRolesOfCurrentUserResponse"
+                         wsaw:Action="urn:getRolesOfCurrentUserResponse"/>
+            <wsdl:fault message="ns:getRolesOfCurrentUserUserAdminException"
+                        name="getRolesOfCurrentUserUserAdminException"
+                        wsaw:Action="urn:getRolesOfCurrentUsergetRolesOfCurrentUserUserAdminException"/>
         </wsdl:operation>
         <wsdl:operation name="listUsers">
             <wsdl:input message="ns:listUsersRequest" wsaw:Action="urn:listUsers"/>
@@ -784,6 +825,19 @@
             </wsdl:output>
             <wsdl:fault name="getRolesOfUserUserAdminException">
                 <soap:fault use="literal" name="getRolesOfUserUserAdminException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getRolesOfCurrentUser">
+            <soap:operation soapAction="urn:getRolesOfCurrentUser" style="document"/>
+            <wsdl:input>
+
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="getRolesOfCurrentUserUserAdminException">
+                <soap:fault use="literal" name="getRolesOfCurrentUserUserAdminException"/>
             </wsdl:fault>
         </wsdl:operation>
 
@@ -1000,6 +1054,20 @@
                 <soap12:fault use="literal" name="getRolesOfUserUserAdminException"/>
             </wsdl:fault>
         </wsdl:operation>
+
+        <wsdl:operation name="getRolesOfCurrentUser">
+            <soap12:operation soapAction="urn:getRolesOfCurrentUser" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="getRolesOfCurrentUserUserAdminException">
+
+                <soap12:fault use="literal" name="getRolesOfCurrentUserUserAdminException"/>
+            </wsdl:fault>
+        </wsdl:operation>
         <wsdl:operation name="deleteRole">
             <soap12:operation soapAction="urn:deleteRole" style="document"/>
             <wsdl:input>
@@ -1192,6 +1260,16 @@
         </wsdl:operation>
         <wsdl:operation name="getRolesOfUser">
             <http:operation location="getRolesOfUser"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getRolesOfCurrentUser">
+            <http:operation location="getRolesOfCurrentUser"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>

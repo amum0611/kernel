@@ -29,6 +29,9 @@
 	    <operation name="changePasswordByUser">
 	        <parameter name="AuthorizationAction" locked="true">/permission/admin/login</parameter>
 	    </operation>
+        <operation name="getRolesOfCurrentUser">
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/login</parameter>
+        </operation>
 	    <operation name="getUserStoreInfo">
 	        <parameter name="AuthorizationAction" locked="true">/permission/admin/login</parameter>
 	    </operation>
