@@ -16,7 +16,11 @@
 package org.wso2.carbon.ndatasource.rdbms;
 
 import java.io.ByteArrayInputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
+import javax.sql.DataSource;
 import javax.xml.bind.JAXBContext;
 
 import org.wso2.carbon.ndatasource.common.DataSourceException;
@@ -26,7 +30,7 @@ import org.wso2.carbon.ndatasource.common.spi.DataSourceReader;
  * This class represents the RDBMS based data source reader implementation.
  */
 public class RDBMSDataSourceReader implements DataSourceReader {
-
+	
 	@Override
 	public String getType() {
 		return RDBMSDataSourceConstants.RDBMS_DATASOURCE_TYPE;
@@ -52,6 +56,40 @@ public class RDBMSDataSourceReader implements DataSourceReader {
 		} else {
 			return (new RDBMSDataSource(loadConfig(xmlConfiguration)).getDataSource());
 		}
+	}
+
+	@Override
+	public boolean testDataSourceConnection(String xmlConfiguration) throws DataSourceException {
+		RDBMSConfiguration rdbmsConfiguration = loadConfig(xmlConfiguration);
+		DataSource dataSource = new RDBMSDataSource(rdbmsConfiguration).getDataSource();
+		
+		Connection connection = null;
+		try {
+			connection = dataSource.getConnection();
+		} catch (SQLException e) {
+			throw new DataSourceException("Error establishing data source connection: " +
+		            e.getMessage(), e);
+		} 
+        if (connection != null) {
+        	String validationQuery = rdbmsConfiguration.getValidationQuery();
+        	if (validationQuery != null && !"".equals(validationQuery)) {
+        		PreparedStatement ps = null;
+                try {
+                	ps = connection.prepareStatement(validationQuery.trim());
+                    ps.execute();
+                    ps.close();
+                } catch (SQLException e) {
+                    throw new DataSourceException("Error during executing validation query: " +
+            		            e.getMessage(), e);
+                    } 
+                }
+        	try {
+				connection.close();
+			} catch (SQLException ignored) {
+				
+			}
+        }
+ 		return true;
 	}
 
 }
