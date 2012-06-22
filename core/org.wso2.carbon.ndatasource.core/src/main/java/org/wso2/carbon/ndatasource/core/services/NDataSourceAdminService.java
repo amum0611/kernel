@@ -85,4 +85,9 @@ public class NDataSourceAdminService extends AbstractAdmin {
 		return true;
 	}
 	
+	public boolean testDataSourceConnection(WSDataSourceMetaInfo dsmInfo) throws DataSourceException {
+		return DataSourceManager.getInstance().getDataSourceRepository().
+				testDataSourceConnection(dsmInfo.extractDataSourceMetaInfo());
+	}
+	
 }
