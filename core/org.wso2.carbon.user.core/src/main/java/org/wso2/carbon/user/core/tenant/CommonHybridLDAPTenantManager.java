@@ -315,7 +315,7 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
 
             //read user name attribute in user-mgt.xml
             String userNameAttribute = realmConfig.getUserStoreProperty(
-                    LDAPConstants.USER_NAME_ATTRIBUTE_NAME);
+                    LDAPConstants.USER_NAME_ATTRIBUTE);
 
             //if user name attribute is not cn, add it to attribute list
             if (!(CN_ATTRIBUTE_NAME.equals(userNameAttribute))) {
@@ -351,7 +351,7 @@ public class CommonHybridLDAPTenantManager extends JDBCTenantManager {
 
         //group name attribute
         String groupNameAttributeName = realmConfig.getUserStoreProperty(
-                LDAPConstants.ROLE_NAME_ATTRIBUTE_NAME);
+                LDAPConstants.GROUP_NAME_ATTRIBUTE);
         Attribute groupNameAttribute = new BasicAttribute(groupNameAttributeName);
         String adminRoleName = realmConfig.getAdminRoleName();
         groupNameAttribute.add(adminRoleName);

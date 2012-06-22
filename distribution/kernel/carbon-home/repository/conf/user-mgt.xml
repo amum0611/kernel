@@ -35,7 +35,7 @@
 	<!-- Following is the default user store manager. This user store manager is based on embedded-apacheds LDAP. It reads/writes users and roles into the 		     default apacheds LDAP user store. Descriptions about each of the following properties can be found in user management documentation of the respective 
 	     product.
 	     Note: Do not comment within UserStoreManager tags. Cause, specific tag names are used as tokens when building configurations for products. -->
-	<!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ApacheDSUserStoreManager">
+	<!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager">
             <Property name="ConnectionURL">ldap://localhost:${Ports.EmbeddedLDAP.LDAPServerPort}</Property>
             <Property name="ConnectionName">uid=admin,ou=system</Property>
             <Property name="ConnectionPassword">admin</Property>
@@ -62,6 +62,7 @@
 	    <Property name="UserRolesCacheEnabled">true</Property>
 	    <Property name="UserDNPattern">uid={0},ou=Users,dc=wso2,dc=org</Property>
         </UserStoreManager-->
+
 	<!-- Following is the configuration for internal JDBC user store. This user store manager is based on JDBC. In case if application needs to manage 		     passwords externally set property <Property name="PasswordsExternallyManaged">true</Property>. Furthermore properties, IsEmailUserName and 	     DomainCalculation are readonly properties.
 	     Note: Do not comment within UserStoreManager tags. Cause, specific tag names are used as tokens when building configurations for products. -->	
         <UserStoreManager class="org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager">
@@ -81,9 +82,8 @@
             <Property name="UserRolesCacheEnabled">true</Property>
         </UserStoreManager>
 	
-	<!-- If product is using an external LDAP as the user store in read only mode, use following user manager -->
-        <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.LDAPUserStoreManager">
-            <Property name="ReadOnly">true</Property>
+	<!-- If product is using an external LDAP as the user store in READ ONLY mode, use following user manager -->
+        <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadOnlyLDAPUserStoreManager">
             <Property name="MaxUserNameListLength">100</Property>
             <Property name="ConnectionURL">ldap://localhost:10389</Property>
             <Property name="ConnectionName">uid=admin,ou=system</Property>
@@ -100,34 +100,48 @@
 	    <Property name="ReplaceEscapeCharactersAtUserLogin">true</Property>
         </UserStoreManager-->
 	
-	<!-- Active directory configuration is as follows. This only operates under read mode.
-	    There are few special properties for "Active Directory"
-	    They are
-	    1.Referral - This enables LDAP referral support.
-	    2.BackLinksEnabled - In some cases LDAP works with BackLinksEnabled. In which role is stored
+	<!-- Active directory configuration is as follows.
+	    There are few special properties for "Active Directory". 
+	    They are : 
+	    1.Referral - (comment out this property if this feature is not reuired) This enables LDAP referral support.
+	    2.BackLinksEnabled - (Do not comment, set to true or false) In some cases LDAP works with BackLinksEnabled. In which role is stored
 	     at user level. Depending on this value we need to change the Search Base within code.
+	    3.isADLDSRole - (Do not comment) Set to true if connecting to an AD LDS instance else set to false.  
 	-->
-        <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.LDAPUserStoreManager">
-            <Property name="ReadOnly">true</Property>
-            <Property name="MaxUserNameListLength">100</Property>
-            <Property name="ConnectionURL">ldap://10.100.1.211:389</Property>
-            <Property name="ConnectionName">cn=Administrator,cn=users,dc=wso2,dc=lk</Property>
-            <Property name="ConnectionPassword">admin123</Property>
-            <Property name="UserSearchBase">cn=users,dc=wso2,dc=lk</Property>
-            <Property name="UserNameListFilter">(objectClass=person)</Property>
-            <Property name="UserNameAttribute">sAMAccountName</Property>
-            <Property name="ReadLDAPGroups">true</Property>
-            <Property name="GroupSearchBase">cn=users,dc=wso2,dc=lk</Property>
-            <Property name="GroupNameListFilter">(objectcategory=group)</Property>
+	<!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ActiveDirectoryUserStoreManager">
+            <Property name="defaultRealmName">WSO2.ORG</Property>
+            <Property name="kdcEnabled">false</Property>
+            <Property name="ConnectionURL">ldaps://10.100.1.100:636</Property> 
+            <Property name="ConnectionName">CN=admin,CN=Users,DC=WSO2,DC=Com</Property>
+            <Property name="ConnectionPassword">A1b2c3d4</Property>
+	    <Property name="passwordHashMethod">SHA</Property>
+            <Property name="UserSearchBase">CN=Users,DC=WSO2,DC=Com</Property>
+            <Property name="UserEntryObjectClass">user</Property>
+            <Property name="UserNameAttribute">cn</Property>
+            <Property name="isADLDSRole">false</Property
+            <Property name="UserNameListFilter">(objectClass=user)</Property>
+	    <Property name="UserNameSearchFilter">(&amp;(objectClass=user)(cn=?))</Property>
+            <Property name="UsernameJavaRegEx">^[^~!@#$;%^*+={}\\|\\\\&lt;&gt;]{3,30}$</Property>
+            <Property name="UsernameJavaScriptRegEx">[\\S]{3,30}</Property>
+            <Property name="PasswordJavaScriptRegEx">[\\S]{5,30}</Property>
+	    <Property name="RolenameJavaScriptRegEx">[\\S]{3,30}</Property>
+            <Property name="RolenameJavaRegEx">^[^~!@#$;%^*+={}\\|\\\\&lt;&gt;]{3,30}$</Property>
+	    <Property name="ReadLDAPGroups">true</Property>
+	    <Property name="WriteLDAPGroups">true</Property>
+	    <Property name="EmptyRolesAllowed">true</Property>
+            <Property name="GroupSearchBase">CN=Users,DC=WSO2,DC=Com</Property>
+	    <Property name="GroupEntryObjectClass">group</Property>
             <Property name="GroupNameAttribute">cn</Property>
-            <Property name="MemberOfAttribute">memberOf</Property>
-	    <Property name="Referral">follow</Property>
+            <Property name="MembershipAttribute">member</Property>
+            <Property name="GroupNameListFilter">(objectcategory=group)</Property>
+	    <Property name="GroupNameSearchFilter">(&amp;(objectClass=group)(cn=?))</Property>
             <Property name="UserRolesCacheEnabled">true</Property>
+            <Property name="Referral">follow</Property>
 	    <Property name="BackLinksEnabled">true</Property>
-        </UserStoreManager -->
+        </UserStoreManager-->
 	
 	<!-- If product is using an external LDAP as the user store in read/write mode, use following user manager -->
-	<!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ApacheDSUserStoreManager">
+	<!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager">
             <Property name="ConnectionURL">ldap://localhost:10389</Property>
             <Property name="ConnectionName">uid=admin,ou=system</Property>
             <Property name="ConnectionPassword">secret</Property>
@@ -137,6 +151,10 @@
             <Property name="UserSearchBase">ou=system</Property>
             <Property name="UserNameSearchFilter">(&amp;(objectClass=person)(uid=?))</Property>
             <Property name="UserNameAttribute">uid</Property>
+	    <Property name="UsernameJavaRegEx">^[^~!@#$;%^*+={}\\|\\\\&lt;&gt;]{3,30}$</Property>
+            <Property name="UsernameJavaScriptRegEx">[\\S]{3,30}</Property>
+	    <Property name="RolenameJavaScriptRegEx">[\\S]{3,30}</Property>
+            <Property name="RolenameJavaRegEx">^[^~!@#$;%^*+={}\\|\\\\&lt;&gt;]{3,30}$</Property>
             <Property name="PasswordJavaScriptRegEx">[\\S]{5,30}</Property>
 	    <Property name="ReadLDAPGroups">true</Property>
 	    <Property name="WriteLDAPGroups">true</Property>
@@ -156,7 +174,7 @@
 	     If "kdcEnabled" parameter is true, IS will allow service principle management. Thus "ServicePasswordJavaRegEx", "ServiceNameJavaRegEx"
 	     properties control the service name format and service password formats.
 	-->
-	<!--ISUserStoreManager class="org.wso2.carbon.user.core.ldap.ApacheDSUserStoreManager">
+	<!--ISUserStoreManager class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager">
             <Property name="defaultRealmName">WSO2.ORG</Property>
             <Property name="kdcEnabled">false</Property>
             <Property name="ConnectionURL">ldap://localhost:${Ports.EmbeddedLDAP.LDAPServerPort}</Property>

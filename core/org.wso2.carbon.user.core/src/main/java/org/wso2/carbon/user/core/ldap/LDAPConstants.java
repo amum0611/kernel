@@ -24,22 +24,22 @@ public class LDAPConstants {
     public static final String CONNECTION_PASSWORD = "ConnectionPassword";
     public static final String USER_SEARCH_BASE = "UserSearchBase";
     public static final String GROUP_SEARCH_BASE = "GroupSearchBase";
-    public static final String USER_FILTER = "UserNameListFilter";
-    public static final String USER_NAME_ATTRIBUTE_NAME = "UserNameAttribute";
+    public static final String USER_NAME_LIST_FILTER = "UserNameListFilter";
+    public static final String USER_NAME_ATTRIBUTE = "UserNameAttribute";
     public static final String DEFAULT_TENANT_USER_FILTER = "DefaultTenantUserFilter";
     public static final String USER_DN_PATTERN = "UserDNPattern";
     //Property that defines the status of the referral to be used:
     public static final String PROPERTY_REFERRAL = "Referral";
 
     //filter attribute in user-mgt.xml that filters users by user name
-    public static final String USER_NAME_FILTER = "UserNameSearchFilter";
+    public static final String USER_NAME_SEARCH_FILTER = "UserNameSearchFilter";
     //this property indicates which object class should be used for user entries in LDAP
     public static final String USER_ENTRY_OBJECT_CLASS = "UserEntryObjectClass";
     // roles
-    public static final String ROLE_FILTER = "GroupNameListFilter";
+    public static final String GROUP_NAME_LIST_FILTER = "GroupNameListFilter";
     public static final String ROLE_NAME_FILTER = "GroupNameSearchFilter";
-    public static final String ROLE_NAME_ATTRIBUTE_NAME = "GroupNameAttribute";
-    public static final String READ_EXTERNAL_ROLES = "ReadLDAPGroups";
+    public static final String GROUP_NAME_ATTRIBUTE = "GroupNameAttribute";
+    public static final String READ_LDAP_GROUPS = "ReadLDAPGroups";
     public static final String WRITE_EXTERNAL_ROLES = "WriteLDAPGroups";
     public static final String MEMBEROF_ATTRIBUTE = "MemberOfAttribute";
     public static final String MEMBERSHIP_ATTRIBUTE = "MembershipAttribute";
@@ -57,4 +57,14 @@ public class LDAPConstants {
 
     //password
     public static final String PASSWORD_HASH_METHOD = "passwordHashMethod";
+    
+    // Active Directory specific constants
+    public static final String ACTIVE_DIRECTORY_LDS_ROLE = "isADLDSRole";
+    public static final String ACTIVE_DIRECTORY_USER_ACCOUNT_CONTROL = "userAccountControl";
+    public static final String ACTIVE_DIRECTORY_MSDS_USER_ACCOUNT_DISSABLED = "msDS-UserAccountDisabled";
+    public static final String ACTIVE_DIRECTORY_UNICODE_PASSWORD_ATTRIBUTE = "unicodePwd";
+    public static final String ACTIVE_DIRECTORY_DISABLED_NORMAL_ACCOUNT = Integer.toString(514);
+    public static final String ACTIVE_DIRECTORY_ENABLED_NORMAL_ACCOUNT = Integer.toString(512);
+    
+    
 }

@@ -391,7 +391,7 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
         String userRolesCacheEnabledString = (realmConfig.getUserStoreProperty(
                 UserCoreConstants.RealmConfig.PROPERTY_ROLES_CACHE_ENABLED));
 
-        if (userRolesCacheEnabledString != null) {
+        if (userRolesCacheEnabledString != null && userRolesCacheEnabledString.equals("")) {
             userRolesCacheEnabled = Boolean.parseBoolean(userRolesCacheEnabledString);
             if (log.isDebugEnabled()) {
                 log.debug("User Roles Cache is configured to:" + userRolesCacheEnabledString);
