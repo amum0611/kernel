@@ -66,8 +66,16 @@ public interface PrivilegedActionExtension {
 	 */
 	public String getExtensionName();
 
+    /**
+	 * Extensions can skip service invocation if supported
+	 * @return
+	 */
     public boolean skipServiceInvocation();
 
+    /**
+	 * Extensions can skip lower priority extensions if supported
+	 * @return
+	 */
     public boolean skipLowerPriorityExtensions();
 
 }
