@@ -645,7 +645,7 @@ text/html					html htm shtml
 text/iuls					uls
 text/mathml					mml
 text/parityfec
-text/plain					asc txt text diff pot
+text/plain					asc txt text diff pot sql
 text/prs.lines.tag
 text/rfc822-headers
 text/richtext					rtx
