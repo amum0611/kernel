@@ -67,7 +67,12 @@ public class CommonLDAPRealmConfigBuilder implements MultiTenantRealmConfigBuild
                         LDAPConstants.GROUP_SEARCH_BASE,
                         persistedConfig.getUserStoreProperties().get(LDAPConstants.GROUP_SEARCH_BASE));
             }
-            
+            if (persistedConfig.getUserStoreProperties().get(LDAPConstants.USER_DN_PATTERN) != null) {
+                realmConfig.getUserStoreProperties().put(
+                        LDAPConstants.USER_DN_PATTERN,
+                        persistedConfig.getUserStoreProperties().get(LDAPConstants.USER_DN_PATTERN));
+            }
+
         } catch (Exception e) {
             String errorMessage = "Error while building tenant specific realm configuration" +
                                   "when creating tenant's realm.";
@@ -150,7 +155,8 @@ public class CommonLDAPRealmConfigBuilder implements MultiTenantRealmConfigBuild
         return persistedConfig;
     }
 
-    private void removePropertiesFromTenantRealmConfig(RealmConfiguration tenantRealmConfiguration) {
+    private void removePropertiesFromTenantRealmConfig(
+            RealmConfiguration tenantRealmConfiguration) {
         //remove sensitive information from realm properties before persisting
         // tenant specific user-mgt.xml
         tenantRealmConfiguration.getRealmProperties().clear();
