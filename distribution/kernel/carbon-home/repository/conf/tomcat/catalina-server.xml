@@ -82,7 +82,7 @@
 
       <Realm className="org.wso2.carbon.tomcat.ext.realms.CarbonTomcatRealm"/>
 
-      <Host name="localhost" unpackWARs="false" deployOnStartup="false" autoDeploy="false" appBase="${carbon.home}/repository/deployment/server/webapps/">
+      <Host name="localhost" unpackWARs="true" deployOnStartup="false" autoDeploy="false" appBase="${carbon.home}/repository/deployment/server/webapps/">
           <Valve className="org.wso2.carbon.tomcat.ext.valves.CarbonContextCreatorValve"/>
           <Valve className="org.apache.catalina.valves.AccessLogValve" directory="${carbon.home}/repository/logs"
                prefix="http_access_" suffix=".log"
