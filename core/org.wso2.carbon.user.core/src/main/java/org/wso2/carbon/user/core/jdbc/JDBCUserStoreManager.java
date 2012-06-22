@@ -675,7 +675,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
     /*
     This method persists the user information in the database.
      */
-    private void persistUser(String userName, Object credential, String[] roleList,
+    protected void persistUser(String userName, Object credential, String[] roleList,
                              Map<String, String> claims, String profileName,
                              boolean requirePasswordChange) throws UserStoreException {
         if (!checkUserNameValid(userName)) {
