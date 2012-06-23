@@ -50,17 +50,10 @@ public class PrivilegedActionExtensionMessageReceiver extends RPCMessageReceiver
 		boolean skipServiceInvocation = false;
 		int skipPriority = -1;
 
-		/* Getting extensions from the registry */
-		try {
-			extensions = PrivilegedActionExtensionRegistry.getPrivilegedActionExtensions(inMsgCtx);
-
-		} catch (PrivilegedActionExtensionException e) {
-			log.error("No privilaged action extension found", e);
-			throw new AxisFault("No privilaged action extension found");
-		}
+		extensions = PrivilegedActionExtensionRegistry.getPrivilegedActionExtensions(inMsgCtx);
 
 		if (extensions != null && !extensions.isEmpty()) {
-			
+
 			SOAPEnvelope inEnvelope = inMsgCtx.getEnvelope();
 			SOAPEnvelope outEnvelope = getOutEnvelope(inMsgCtx);
 
@@ -94,7 +87,7 @@ public class PrivilegedActionExtensionMessageReceiver extends RPCMessageReceiver
 			if (!skipServiceInvocation) {
 				super.invokeBusinessLogic(inMsgCtx, outMsgCtx);
 			}
-			
+
 		} else {
 			super.invokeBusinessLogic(inMsgCtx, outMsgCtx);
 		}
