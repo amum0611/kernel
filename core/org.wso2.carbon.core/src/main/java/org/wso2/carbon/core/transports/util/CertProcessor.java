@@ -22,6 +22,7 @@ import org.apache.axis2.description.AxisService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.protocol.HTTP;
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 import org.wso2.carbon.core.transports.CarbonHttpRequest;
@@ -34,7 +35,6 @@ import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.service.RegistryService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.KeyStore;
@@ -82,7 +82,8 @@ public class CertProcessor implements HttpGetRequestProcessor {
             Resource serviceResource = registry.get(servicePath);
             Association[] assoc = registry.getAssociations(servicePath, RegistryResources.Associations.PRIVATE_KEYSTORE);
             
-            KeyStoreManager keyStoreManager = KeyStoreManager.getInstance(null); 
+            KeyStoreManager keyStoreManager = KeyStoreManager.getInstance(
+                    MultitenantConstants.SUPER_TENANT_ID);
             
             KeyStore keyStore = null;
             if(assoc.length < 1){

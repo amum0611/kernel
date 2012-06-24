@@ -23,19 +23,14 @@ import org.wso2.carbon.CarbonException;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
+import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.registry.core.session.UserRegistry;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -56,43 +51,42 @@ public class KeyStoreManager {
             new ConcurrentHashMap<String, KeyStoreManager>();
     private static Log log = LogFactory.getLog(KeyStoreManager.class);
 
-    private UserRegistry registry = null;
+    private Registry registry = null;
     private ConcurrentHashMap<String, KeyStoreBean> loadedKeyStores = null;
     private int tenantId = MultitenantConstants.SUPER_TENANT_ID;
-    
+
     private ServerConfigurationService serverConfigService;
-    
+
     private RegistryService registryService;
 
     /**
-     * The private constructor of KeyStoreManager. This class implements a singleton.
+     * Private Constructor of the KeyStoreManager
      *
-     * @param userRegistry governance registry instance
+     * @param tenantId
+     * @param serverConfigService
+     * @param registryService
      */
-    private KeyStoreManager(UserRegistry userRegistry, ServerConfigurationService serverConfigService,
-    		RegistryService registryService) {
-    	this.serverConfigService = serverConfigService;
-    	this.registryService = registryService;
+    private KeyStoreManager(int tenantId, ServerConfigurationService serverConfigService,
+                            RegistryService registryService) {
+        this.serverConfigService = serverConfigService;
+        this.registryService = registryService;
         loadedKeyStores = new ConcurrentHashMap<String, KeyStoreBean>();
-        if (userRegistry == null) {
-            try {
-                registry = this.getRegistryService().getGovernanceSystemRegistry();
-            } catch (Exception e) {
-                String message = "Error when retrieving the system governance registry";
-                log.error(message, e);
-            }
-        } else {
-            registry = userRegistry;
-            tenantId = userRegistry.getTenantId();
+        this.tenantId = tenantId;
+        try {
+            registry = registryService.getGovernanceSystemRegistry(tenantId);
+        } catch (RegistryException e) {
+            String message = "Error when retrieving the system governance registry";
+            log.error(message, e);
+            throw new SecurityException(message, e);
         }
     }
-    
+
     public ServerConfigurationService getServerConfigService() {
-    	return serverConfigService;
+        return serverConfigService;
     }
-    
+
     public RegistryService getRegistryService() {
-    	return registryService;
+        return registryService;
     }
 
     /**
@@ -100,27 +94,24 @@ public class KeyStoreManager {
      * instance if exists, or creates a new one. Only use this at runtime, or else,
      * use KeyStoreManager#getInstance(UserRegistry, ServerConfigurationService).
      *
-     * @param userRegistry Governance Registry instance of the corresponding tenant
+     * @param tenantId id of the corresponding tenant
      * @return KeyStoreManager instance for that tenant
      */
-    public static KeyStoreManager getInstance(UserRegistry userRegistry) {
-        return getInstance(userRegistry, CarbonCoreDataHolder.getInstance().
-        		getServerConfigurationService(), CryptoUtil.lookupRegistryService());
+    public static KeyStoreManager getInstance(int tenantId) {
+        return getInstance(tenantId, CarbonCoreDataHolder.getInstance().
+                getServerConfigurationService(), CryptoUtil.lookupRegistryService());
     }
-    
-    public static KeyStoreManager getInstance(UserRegistry userRegistry, 
-    		ServerConfigurationService serverConfigService,
-    		RegistryService registryService) {
-    	CarbonUtils.checkSecurity();
-        String tenantId = Integer.valueOf(MultitenantConstants.SUPER_TENANT_ID).toString();
-        if (userRegistry != null) {
-            tenantId = Integer.valueOf(userRegistry.getTenantId()).toString();
+
+    public static KeyStoreManager getInstance(int tenantId,
+                                              ServerConfigurationService serverConfigService,
+                                              RegistryService registryService) {
+        CarbonUtils.checkSecurity();
+        String tenantIdStr = Integer.toString(tenantId);
+        if (!mtKeyStoreManagers.containsKey(tenantIdStr)) {
+            mtKeyStoreManagers.put(tenantIdStr, new KeyStoreManager(tenantId,
+                    serverConfigService, registryService));
         }
-        if (!mtKeyStoreManagers.containsKey(tenantId)) {
-            mtKeyStoreManagers.put(tenantId, new KeyStoreManager(userRegistry, 
-            		serverConfigService, registryService));
-        }
-        return mtKeyStoreManagers.get(tenantId);
+        return mtKeyStoreManagers.get(tenantIdStr);
     }
 
     /**
@@ -142,10 +133,10 @@ public class KeyStoreManager {
 
         String path = RegistryResources.SecurityManagement.KEY_STORES + "/" + keyStoreName;
         if (registry.resourceExists(path)) {
-            Resource resource = registry.get(path);
+            org.wso2.carbon.registry.api.Resource resource = registry.get(path);
             byte[] bytes = (byte[]) resource.getContent();
             KeyStore keyStore = KeyStore.getInstance(resource
-                                                             .getProperty(RegistryResources.SecurityManagement.PROP_TYPE));
+                    .getProperty(RegistryResources.SecurityManagement.PROP_TYPE));
             CryptoUtil cryptoUtil = CryptoUtil.getDefaultCryptoUtil();
             String encryptedPassword = resource
                     .getProperty(RegistryResources.SecurityManagement.PROP_PASSWORD);
@@ -180,7 +171,7 @@ public class KeyStoreManager {
             }
 
             String path = RegistryResources.SecurityManagement.KEY_STORES + "/" + keyStoreName;
-            Resource resource;
+            org.wso2.carbon.registry.api.Resource resource;
             KeyStore keyStore;
 
             if (registry.resourceExists(path)) {
@@ -202,7 +193,7 @@ public class KeyStoreManager {
                 String keyStorePassword = new String(cryptoUtil.base64DecodeAndDecrypt(resource.getProperty(
                         RegistryResources.SecurityManagement.PROP_PASSWORD)));
                 keyStore = KeyStore.getInstance(resource
-                                                        .getProperty(RegistryResources.SecurityManagement.PROP_TYPE));
+                        .getProperty(RegistryResources.SecurityManagement.PROP_TYPE));
                 ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
                 keyStore.load(stream, keyStorePassword.toCharArray());
 
@@ -213,7 +204,7 @@ public class KeyStoreManager {
         } catch (Exception e) {
             log.error("Error loading the private key from the key store : " + keyStoreName);
             throw new SecurityException("Error loading the private key from the key store : " +
-                                        keyStoreName, e);
+                    keyStoreName, e);
         }
     }
 
@@ -263,7 +254,7 @@ public class KeyStoreManager {
 
         String path = RegistryResources.SecurityManagement.KEY_STORES + "/" + name;
 
-        Resource resource = registry.get(path);
+        org.wso2.carbon.registry.api.Resource resource = registry.get(path);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         CryptoUtil cryptoUtil = CryptoUtil.getDefaultCryptoUtil();
@@ -295,11 +286,11 @@ public class KeyStoreManager {
                 ServerConfigurationService config = this.getServerConfigService();
                 String file =
                         new File(config
-                                         .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_FILE))
+                                .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_FILE))
                                 .getAbsolutePath();
                 KeyStore store = KeyStore
                         .getInstance(config
-                                             .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_TYPE));
+                                .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_TYPE));
                 String password = config
                         .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_PASSWORD);
                 FileInputStream in = null;
@@ -389,13 +380,13 @@ public class KeyStoreManager {
         boolean cachedKeyStoreValid = false;
         try {
             if (loadedKeyStores.containsKey(keyStoreName)) {
-                Resource metaDataResource = registry.get(path);
+                org.wso2.carbon.registry.api.Resource metaDataResource = registry.get(path);
                 KeyStoreBean keyStoreBean = loadedKeyStores.get(keyStoreName);
                 if (keyStoreBean.getLastModifiedDate().equals(metaDataResource.getLastModified())) {
                     cachedKeyStoreValid = true;
                 }
             }
-        } catch (RegistryException e) {
+        } catch (org.wso2.carbon.registry.api.RegistryException e) {
             String errorMsg = "Error reading key store meta data from registry.";
             log.error(errorMsg, e);
             throw new SecurityException(errorMsg, e);

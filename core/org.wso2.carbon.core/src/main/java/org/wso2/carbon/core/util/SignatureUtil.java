@@ -17,16 +17,12 @@
 */
 package org.wso2.carbon.core.util;
 
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 
-import java.security.KeyStore;
-import java.security.MessageDigest;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Security;
-import java.security.Signature;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -38,17 +34,18 @@ public class SignatureUtil {
 
     private static String signatureAlgorithm = "SHA1withRSA";
     private static String provider = "BC";
-    
+
     private SignatureUtil() {
-    	// hide default constructor for utility class
+        // hide default constructor for utility class
     }
- 
-    public static void init() throws Exception{
+
+    public static void init() throws Exception {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
     }
 
     /**
      * Retrieves the thumbprint for alias.
+     *
      * @param alias The alias
      * @return Thumbprint is returned.
      * @throws Exception
@@ -63,8 +60,9 @@ public class SignatureUtil {
 
     /**
      * Validates the signature with the given thumbprint
-     * @param thumb Thumbprint of the certificate
-     * @param data Data on which the signature is performed
+     *
+     * @param thumb     Thumbprint of the certificate
+     * @param data      Data on which the signature is performed
      * @param signature The signature.
      * @return
      * @throws Exception
@@ -75,10 +73,11 @@ public class SignatureUtil {
         signer.update(data.getBytes());
         return signer.verify(signature);
     }
-    
+
     /**
      * Validate the signature with the default thumbprint.
-     * @param data The data which is used to perfrom the signature.
+     *
+     * @param data      The data which is used to perfrom the signature.
      * @param signature The signature to be validated.
      * @return True is returned if singature is valid.
      * @throws Exception
@@ -92,29 +91,32 @@ public class SignatureUtil {
 
     /**
      * Performs the signature with the default private key in the system.
+     *
      * @param data Data to be signed.
      * @return The signature is returned.
      * @throws Exception
      */
-    public static byte[] doSignature(String data) throws Exception {       
+    public static byte[] doSignature(String data) throws Exception {
         Signature signer = Signature.getInstance(signatureAlgorithm, provider);
         signer.initSign(getDefaultPrivateKey());
         signer.update(data.getBytes());
         return signer.sign();
     }
-    
+
     private static PrivateKey getDefaultPrivateKey() throws Exception {
-        KeyStoreManager keyStoreMan = KeyStoreManager.getInstance(null);
+        KeyStoreManager keyStoreMan = KeyStoreManager.getInstance(
+                MultitenantConstants.SUPER_TENANT_ID);
         KeyStore keyStore = keyStoreMan.getPrimaryKeyStore();
         ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
         String password = config
                 .getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_PASSWORD);
         String alias = config.getFirstProperty(RegistryResources.SecurityManagement.SERVER_PRIMARY_KEYSTORE_KEY_ALIAS);
-        return (PrivateKey)keyStore.getKey(alias, password.toCharArray());
+        return (PrivateKey) keyStore.getKey(alias, password.toCharArray());
     }
-    
+
     private static PublicKey getDefaultPublicKey() throws Exception {
-        KeyStoreManager keyStoreMan = KeyStoreManager.getInstance(null);
+        KeyStoreManager keyStoreMan = KeyStoreManager.getInstance(
+                MultitenantConstants.SUPER_TENANT_ID);
         KeyStore keyStore = keyStoreMan.getPrimaryKeyStore();
         ServerConfigurationService config = CarbonCoreDataHolder.getInstance().getServerConfigurationService();
         String alias = config
@@ -124,13 +126,14 @@ public class SignatureUtil {
     }
 
     private static PublicKey getPublicKey(byte[] thumb) throws Exception {
-        KeyStoreManager keyStoreMan = KeyStoreManager.getInstance(null);
+        KeyStoreManager keyStoreMan = KeyStoreManager.getInstance(
+                MultitenantConstants.SUPER_TENANT_ID);
         KeyStore keyStore = keyStoreMan.getPrimaryKeyStore();
         PublicKey pubKey = null;
         Certificate cert = null;
         MessageDigest sha = MessageDigest.getInstance(THUMB_DIGEST_ALGORITHM);
         sha.reset();
-        for (Enumeration<String> e = keyStore.aliases(); e.hasMoreElements();) {
+        for (Enumeration<String> e = keyStore.aliases(); e.hasMoreElements(); ) {
             String alias = e.nextElement();
             cert = getCertificate(alias);
             sha.update(cert.getEncoded());
@@ -145,7 +148,8 @@ public class SignatureUtil {
     }
 
     private static Certificate getCertificate(String alias) throws Exception {
-        KeyStoreManager keyStoreMan = KeyStoreManager.getInstance(null);
+        KeyStoreManager keyStoreMan = KeyStoreManager.getInstance(
+                MultitenantConstants.SUPER_TENANT_ID);
         KeyStore keyStore = keyStoreMan.getPrimaryKeyStore();
         Certificate cert = null;
         Certificate[] certs = keyStore.getCertificateChain(alias);
