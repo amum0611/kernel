@@ -248,6 +248,9 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
                             Constants.ApplicationContextXml));
                 }
             }
+            if(ctx instanceof StandardContext) {
+                ((StandardContext) ctx).setClearReferencesStopTimerThreads(true);
+            }
             if (host == null) {
                 host = this.getHost();
             }
