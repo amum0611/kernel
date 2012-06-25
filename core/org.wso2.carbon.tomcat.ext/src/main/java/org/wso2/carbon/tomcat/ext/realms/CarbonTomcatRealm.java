@@ -17,13 +17,6 @@
  */
 package org.wso2.carbon.tomcat.ext.realms;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.catalina.realm.GenericPrincipal;
 import org.apache.catalina.realm.RealmBase;
 import org.apache.commons.logging.Log;
@@ -35,6 +28,13 @@ import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This is a custom Tomcat realm that uses Carbon realm inside.
@@ -95,6 +95,9 @@ public class CarbonTomcatRealm extends RealmBase {
         String tenantLessUserName;
         if (userName.lastIndexOf('@') > -1) {
             tenantLessUserName = userName.substring(0, userName.lastIndexOf('@'));
+        } else if (MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
+            tenantLessUserName = userName;
+            userName = userName + "@" + MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
         } else {
             tenantLessUserName = userName;
         }
