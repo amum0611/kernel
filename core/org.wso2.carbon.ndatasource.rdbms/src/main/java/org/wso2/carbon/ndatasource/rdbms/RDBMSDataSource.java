@@ -42,11 +42,11 @@ public class RDBMSDataSource {
 		poolProperties = RDBMSDataSourceUtils.createPoolConfiguration(config);
 	}
 	
-	public javax.sql.DataSource getDataSource() {
-		if (dataSource == null) {
+	public DataSource getDataSource() {
+		if (this.dataSource == null) {
 			this.dataSource = new DataSource(poolProperties);
 		}
-		return dataSource;
+		return this.dataSource;
 	}
 	
 	public Reference getDataSourceFactoryReference() throws DataSourceException {
