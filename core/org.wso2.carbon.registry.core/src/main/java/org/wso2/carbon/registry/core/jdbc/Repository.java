@@ -441,7 +441,7 @@ public class Repository {
     /**
      * Deletes the pure resource referred by the path.
      *
-     * @param path path Path of the resource deleted. Path should only refer to current version a
+     * @param _path path Path of the resource deleted. Path should only refer to current version a
      *             pure resource. i.e. Path should not contain any version information as it is
      *             impossible to delete old versions.
      *
@@ -484,7 +484,7 @@ public class Repository {
     /**
      * This will delete the entire resource, except it keeps the authorizations.
      *
-     * @param path the path to be restored.
+     * @param _path the path to be restored.
      *
      * @throws RegistryException if the operation failed.
      */
@@ -514,7 +514,7 @@ public class Repository {
     /**
      * This will delete only the current resource, keeps the authorizations.
      *
-     * @param path the path to be prepared to restore.
+     * @param _path the path to be prepared to restore.
      *
      * @throws RegistryException if the operation failed.
      */
@@ -983,7 +983,6 @@ public class Repository {
             log.error(msg);
             throw new RegistryException(msg);
         }
-
         ResourceImpl sourceResource = (ResourceImpl) get(sourcePath);
         if (sourceResource instanceof CollectionImpl) {
             resourceDAO.fillChildren((CollectionImpl) sourceResource, 0, -1);
@@ -996,7 +995,6 @@ public class Repository {
 
         ResourceImpl targetResource = sourceResource.getShallowCopy();
         put(targetPath, targetResource);
-
 
         if (sourceResource instanceof CollectionImpl) {
             // copy all the children recursively
@@ -1158,7 +1156,7 @@ public class Repository {
      * This will create an empty collection, if there is no such resource exist if the parent of the
      * empty collection doesn't exist, this will create they as well.
      *
-     * @param path Path of which all non-existent collections are added.
+     * @param _path Path of which all non-existent collections are added.
      *
      * @throws RegistryException If any ancestor of the given path is a resource.
      */
@@ -1231,7 +1229,7 @@ public class Repository {
     /**
      * Method to restore a dump.
      *
-     * @param path               the path to restore from a dump.
+     * @param _path               the path to restore from a dump.
      * @param reader             the reader used.
      *
      * @throws RegistryException if the operation failed.
@@ -1304,7 +1302,7 @@ public class Repository {
     /**
      * Method to do a dump.
      *
-     * @param path   the path to obtain the dump from.
+     * @param _path   the path to obtain the dump from.
      * @param writer the writer used.
      *
      * @throws RegistryException if the operation failed.
