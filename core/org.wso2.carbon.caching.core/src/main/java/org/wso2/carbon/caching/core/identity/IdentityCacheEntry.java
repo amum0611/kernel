@@ -20,8 +20,9 @@ package org.wso2.carbon.caching.core.identity;
 
 import org.wso2.carbon.caching.core.CacheEntry;
 
-import java.io.Serializable;
+import java.security.Key;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -35,6 +36,8 @@ public class IdentityCacheEntry extends CacheEntry {
     private int hashEntry;
     private long cacheInterval;
     private boolean cacheClearing;
+    private Key secretKey;
+    private Date date;    
     private static final long serialVersionUID = 3746964700806693258L;
 
     public IdentityCacheEntry(String cacheEntry) {
@@ -62,6 +65,12 @@ public class IdentityCacheEntry extends CacheEntry {
         this.cacheEntrySet = cacheEntrySet;
     }
 
+    public IdentityCacheEntry(String cacheEntry, Key secretKey, Date date) {
+        this.cacheEntry = cacheEntry;
+        this.secretKey = secretKey;
+        this.date = date;
+    }
+
     public String getCacheEntry() {
         return cacheEntry;
     }
@@ -84,5 +93,13 @@ public class IdentityCacheEntry extends CacheEntry {
 
     public String[] getCacheEntryArray() {
         return cacheEntryArray;
+    }
+
+    public Key getSecretKey() {
+        return secretKey;
+    }
+
+    public Date getDate() {
+        return date;
     }
 }
