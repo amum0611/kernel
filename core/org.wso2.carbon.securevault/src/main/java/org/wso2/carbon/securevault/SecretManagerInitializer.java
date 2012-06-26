@@ -42,6 +42,7 @@ public class SecretManagerInitializer {
     private String SECRET_CONF = "secret-conf.properties";
     private static String CONF_DIR = "conf";
     private static String REPOSITORY_DIR = "repository";
+    private static final String SECURITY_DIR = "security";
     private static String GLOBAL_PREFIX = "carbon.";
 
     public SecretCallbackHandlerServiceImpl init() {
@@ -86,7 +87,7 @@ public class SecretManagerInitializer {
         Properties properties = new Properties();
         String carbonHome = System.getProperty(CARBON_HOME);
         String filePath = carbonHome + File.separator + REPOSITORY_DIR + File.separator +
-                          CONF_DIR + File.separator + SECRET_CONF;
+                          CONF_DIR + File.separator + SECURITY_DIR+ File.separator + SECRET_CONF;
 
         File dataSourceFile = new File(filePath);
         if (!dataSourceFile.exists()) {
