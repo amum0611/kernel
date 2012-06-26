@@ -84,15 +84,104 @@ public class DatabaseUtil {
 			dataSource = null;
 		}
 	}
-    
-    public static DataSource createDataSource(RealmConfiguration realmConfig) {
-    	String dataSourceName = realmConfig.getRealmProperty(JDBCRealmConstants.DATASOURCE);
+	
+	private static DataSource lookupDataSource(String dataSourceName) {
+		try {
+			return (DataSource) InitialContext.doLookup(dataSourceName);
+		} catch (Exception e) {
+			throw new RuntimeException("Error in looking up data source: " + e.getMessage(), e);
+		}
+	}
+
+    public static DataSource createUserStoreDataSource(RealmConfiguration realmConfig) {
+        String dataSourceName = realmConfig.getUserStoreProperty(JDBCRealmConstants.DATASOURCE);
     	if (dataSourceName != null) {
-    		try {
-				return (DataSource) InitialContext.doLookup(dataSourceName);
-			} catch (Exception e) {
-				throw new RuntimeException("Error in creating data source: " + e.getMessage(), e);
-			}
+    		return lookupDataSource(dataSourceName);
+    	}
+		RDBMSConfiguration dsConfig = new RDBMSConfiguration();
+		dsConfig.setDriverClassName(realmConfig.getUserStoreProperty(JDBCRealmConstants.DRIVER_NAME));
+		if (dsConfig.getDriverClassName() == null) {
+			return null;
+		}
+		dsConfig.setUrl(realmConfig.getUserStoreProperty(JDBCRealmConstants.URL));
+		dsConfig.setUsername(realmConfig.getUserStoreProperty(JDBCRealmConstants.USER_NAME));
+		dsConfig.setPassword(realmConfig.getUserStoreProperty(JDBCRealmConstants.PASSWORD));
+
+		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.MAX_ACTIVE) != null
+				&& !realmConfig.getUserStoreProperty(JDBCRealmConstants.MAX_ACTIVE).equals("")) {
+			dsConfig.setMaxActive(Integer.parseInt(realmConfig.getUserStoreProperty(
+					JDBCRealmConstants.MAX_ACTIVE)));
+		} else {
+			dsConfig.setMaxActive(DEFAULT_MAX_ACTIVE);
+		}
+
+		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.MIN_IDLE) != null
+				&& !realmConfig.getUserStoreProperty(JDBCRealmConstants.MIN_IDLE).equals("")) {
+			dsConfig.setMinIdle(Integer.parseInt(realmConfig.getUserStoreProperty(
+					JDBCRealmConstants.MIN_IDLE)));
+		} else {
+			dsConfig.setMinIdle(DEFAULT_MIN_IDLE);
+		}
+
+		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.MAX_IDLE) != null
+				&& !realmConfig.getUserStoreProperty(JDBCRealmConstants.MAX_IDLE).equals("")) {
+			dsConfig.setMinIdle(Integer.parseInt(realmConfig.getUserStoreProperty(
+					JDBCRealmConstants.MAX_IDLE)));
+		} else {
+			dsConfig.setMinIdle(DEFAULT_MAX_IDLE);
+		}
+
+		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.MAX_WAIT) != null
+				&& !realmConfig.getUserStoreProperty(JDBCRealmConstants.MAX_WAIT).equals("")) {
+			dsConfig.setMaxWait(Integer.parseInt(realmConfig.getUserStoreProperty(
+					JDBCRealmConstants.MAX_WAIT)));
+		} else {
+			dsConfig.setMaxWait(DEFAULT_MAX_WAIT);
+		}
+		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.VALIDATION_QUERYTIME_OUT) != null
+				&& !realmConfig.getUserStoreProperty(
+						JDBCRealmConstants.VALIDATION_QUERYTIME_OUT).equals("")) {
+			dsConfig.setValidationInterval(Long.parseLong(realmConfig.getUserStoreProperty(
+					JDBCRealmConstants.VALIDATION_QUERYTIME_OUT)));
+		}
+
+		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.TEST_WHILE_IDLE) != null
+				&& !realmConfig.getUserStoreProperty(
+						JDBCRealmConstants.TEST_WHILE_IDLE).equals("")) {
+			dsConfig.setTestWhileIdle(Boolean.parseBoolean(realmConfig.getUserStoreProperty(
+					JDBCRealmConstants.TEST_WHILE_IDLE)));
+		}
+
+		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.TIME_BETWEEN_EVICTION_RUNS_MILLIS) != null
+				&& !realmConfig.getUserStoreProperty(
+						JDBCRealmConstants.TIME_BETWEEN_EVICTION_RUNS_MILLIS).equals("")) {
+			dsConfig.setTimeBetweenEvictionRunsMillis(Integer.parseInt(
+					realmConfig.getUserStoreProperty(
+							JDBCRealmConstants.TIME_BETWEEN_EVICTION_RUNS_MILLIS)));
+		}
+
+		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.MIN_EVIC_TABLE_IDLE_TIME_MILLIS) != null
+				&& !realmConfig.getUserStoreProperty(
+						JDBCRealmConstants.MIN_EVIC_TABLE_IDLE_TIME_MILLIS).equals("")) {
+			dsConfig.setMinEvictableIdleTimeMillis(Integer.parseInt(realmConfig.getUserStoreProperty(
+					JDBCRealmConstants.MIN_EVIC_TABLE_IDLE_TIME_MILLIS)));
+		}
+
+		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.VALIDATION_QUERY) != null) {
+			dsConfig.setValidationQuery(realmConfig.getUserStoreProperty(
+					JDBCRealmConstants.VALIDATION_QUERY));
+		}
+        try {
+			return new RDBMSDataSource(dsConfig).getDataSource();
+		} catch (DataSourceException e) {
+			throw new RuntimeException("Error in creating data source: " + e.getMessage(), e);
+		}
+    }
+    
+    private static DataSource createRealmDataSource(RealmConfiguration realmConfig) {
+        String dataSourceName = realmConfig.getRealmProperty(JDBCRealmConstants.DATASOURCE);
+    	if (dataSourceName != null) {
+    		return lookupDataSource(dataSourceName);
     	}
 		RDBMSConfiguration dsConfig = new RDBMSConfiguration();
 		dsConfig.setDriverClassName(realmConfig.getRealmProperty(JDBCRealmConstants.DRIVER_NAME));
@@ -165,15 +254,11 @@ public class DatabaseUtil {
 					JDBCRealmConstants.VALIDATION_QUERY));
 		}
         try {
-			return new RDBMSDataSource(dsConfig).getDataSource();
+			dataSource = new RDBMSDataSource(dsConfig).getDataSource();
+			return dataSource;
 		} catch (DataSourceException e) {
 			throw new RuntimeException("Error in creating data source: " + e.getMessage(), e);
 		}
-    }
-
-    private static DataSource createRealmDataSource(RealmConfiguration realmConfig) {
-        dataSource = createDataSource(realmConfig);
-        return dataSource;
     }
 
     public static String[] getStringValuesFromDatabase(Connection dbConnection, String sqlStmt, Object... params)

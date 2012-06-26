@@ -1666,7 +1666,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
     }
 
     private DataSource loadUserStoreSpacificDataSoruce() throws UserStoreException {
-        return DatabaseUtil.createDataSource(realmConfig);
+        return DatabaseUtil.createUserStoreDataSource(realmConfig);
     }
 
     public Map<String, String> getProperties(Tenant tenant) throws UserStoreException {
