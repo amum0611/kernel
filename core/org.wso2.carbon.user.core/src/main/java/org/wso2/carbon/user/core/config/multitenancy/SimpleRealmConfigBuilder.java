@@ -67,6 +67,7 @@ public class SimpleRealmConfigBuilder implements MultiTenantRealmConfigBuilder {
             realmConfig.getRealmProperties().remove(JDBCRealmConstants.MAX_ACTIVE);
             realmConfig.getRealmProperties().remove(JDBCRealmConstants.MIN_IDLE);
             realmConfig.getRealmProperties().remove(JDBCRealmConstants.MAX_WAIT);
+            realmConfig.getRealmProperties().remove(JDBCRealmConstants.DATASOURCE);
             
             return realmConfig;
         } catch (Exception e) {

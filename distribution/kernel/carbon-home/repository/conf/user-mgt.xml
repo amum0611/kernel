@@ -23,13 +23,7 @@
                      <Password>admin</Password>
                 </AdminUser>
             <EveryOneRoleName>everyone</EveryOneRoleName> <!-- By default users in this role sees the registry root -->
-            <Property name="url">jdbc:h2:repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE</Property>
-            <Property name="userName">wso2carbon</Property>
-            <Property name="password">wso2carbon</Property>
-            <Property name="driverName">org.h2.Driver</Property>
-            <Property name="maxActive">50</Property>
-            <Property name="maxWait">60000</Property>
-            <Property name="minIdle">5</Property>
+            <Property name="dataSource">jdbc/WSO2CarbonDB</Property>
             <Property name="MultiTenantRealmConfigBuilder">org.wso2.carbon.user.core.config.multitenancy.SimpleRealmConfigBuilder</Property>
         </Configuration>
 	<!-- Following is the default user store manager. This user store manager is based on embedded-apacheds LDAP. It reads/writes users and roles into the 		     default apacheds LDAP user store. Descriptions about each of the following properties can be found in user management documentation of the respective 

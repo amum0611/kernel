@@ -18,7 +18,6 @@
 package org.wso2.carbon.user.core.jdbc;
 
 import org.apache.axiom.om.util.Base64;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonConstants;
@@ -1667,22 +1666,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
     }
 
     private DataSource loadUserStoreSpacificDataSoruce() throws UserStoreException {
-        BasicDataSource ds = null;
-        String url = realmConfig.getUserStoreProperty(JDBCRealmConstants.DRIVER_NAME);
-        if (url != null) {
-            ds = new BasicDataSource();
-            ds.setDriverClassName(url);
-            ds.setUrl(realmConfig.getUserStoreProperty(JDBCRealmConstants.URL));
-            ds.setUsername(realmConfig.getUserStoreProperty(JDBCRealmConstants.USER_NAME));
-            ds.setPassword(realmConfig.getUserStoreProperty(JDBCRealmConstants.PASSWORD));
-            ds.setMaxActive(Integer.parseInt(realmConfig
-                    .getUserStoreProperty(JDBCRealmConstants.MAX_ACTIVE)));
-            ds.setMinIdle(Integer.parseInt(realmConfig
-                    .getUserStoreProperty(JDBCRealmConstants.MIN_IDLE)));
-            ds.setMaxWait(Integer.parseInt(realmConfig
-                    .getUserStoreProperty(JDBCRealmConstants.MAX_WAIT)));
-        }
-        return ds;
+        return DatabaseUtil.createDataSource(realmConfig);
     }
 
     public Map<String, String> getProperties(Tenant tenant) throws UserStoreException {

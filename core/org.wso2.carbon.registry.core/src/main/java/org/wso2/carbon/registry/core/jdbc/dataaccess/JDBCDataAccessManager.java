@@ -18,9 +18,10 @@
  */
 package org.wso2.carbon.registry.core.jdbc.dataaccess;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.ndatasource.rdbms.RDBMSConfiguration;
+import org.wso2.carbon.ndatasource.rdbms.RDBMSDataSource;
 import org.wso2.carbon.registry.core.config.DataBaseConfiguration;
 import org.wso2.carbon.registry.core.dataaccess.*;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
@@ -59,7 +60,6 @@ public class JDBCDataAccessManager implements DataAccessManager {
 	 * @param dataSource
 	 *            the JDBC data source.
 	 */
-	@SuppressWarnings("unused")
 	public JDBCDataAccessManager(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
@@ -163,6 +163,8 @@ public class JDBCDataAccessManager implements DataAccessManager {
 		return dataSource;
 	}
 
+	
+	
 	/**
 	 * Method to build a data source from a given database configuration.
 	 * 
@@ -172,65 +174,68 @@ public class JDBCDataAccessManager implements DataAccessManager {
 	 * @return the built data source.
 	 */
 	public static DataSource buildDataSource(DataBaseConfiguration config) {
-
-		BasicDataSource basicDataSource = new BasicDataSource();
-		basicDataSource.setUrl(config.getDbUrl());
-		basicDataSource.setDriverClassName(config.getDriverName());
-		basicDataSource.setUsername(config.getUserName());
-		basicDataSource.setPassword(config.getResolvedPassword());
+		RDBMSConfiguration dsConf = new RDBMSConfiguration();
+		dsConf.setUrl(config.getDbUrl());
+		dsConf.setDriverClassName(config.getDriverName());
+		dsConf.setUsername(config.getUserName());
+		dsConf.setPassword(config.getResolvedPassword());
 
 		if (config.getValidationQueryTimeout() != null) {
-			basicDataSource.setValidationQueryTimeout(Integer.parseInt(config
+			dsConf.setValidationInterval(Long.parseLong(config
 					.getValidationQueryTimeout()));
 		}
 
 		if (config.getTestWhileIdle() != null) {
-			basicDataSource.setTestWhileIdle(Boolean.parseBoolean(config
+			dsConf.setTestWhileIdle(Boolean.parseBoolean(config
 					.getTestWhileIdle()));
 		}
 
 		if (config.getTimeBetweenEvictionRunsMillis() != null) {
-			basicDataSource.setTimeBetweenEvictionRunsMillis(Integer
+			dsConf.setTimeBetweenEvictionRunsMillis(Integer
 					.parseInt(config.getTimeBetweenEvictionRunsMillis()));
 		}
 
 		if (config.getMinEvictableIdleTimeMillis() != null) {
-			basicDataSource.setMinEvictableIdleTimeMillis(Long.parseLong(config
+			dsConf.setMinEvictableIdleTimeMillis(Integer.parseInt(config
 					.getMinEvictableIdleTimeMillis()));
 		}
 
 		if (config.getNumTestsPerEvictionRun() != null) {
-			basicDataSource.setNumTestsPerEvictionRun(Integer.parseInt(config
+			dsConf.setNumTestsPerEvictionRun(Integer.parseInt(config
 					.getNumTestsPerEvictionRun()));
 		}
 
 		if (config.getMaxActive() != null) {
-			basicDataSource
+			dsConf
 					.setMaxActive(Integer.parseInt(config.getMaxActive()));
 		} else {
-			basicDataSource.setMaxActive(DatabaseConstants.DEFAULT_MAX_ACTIVE);
+			dsConf.setMaxActive(DatabaseConstants.DEFAULT_MAX_ACTIVE);
 		}
 
 		if (config.getMaxWait() != null) {
-			basicDataSource.setMaxWait(Integer.parseInt(config.getMaxWait()));
+			dsConf.setMaxWait(Integer.parseInt(config.getMaxWait()));
 		} else {
-			basicDataSource.setMaxWait(DatabaseConstants.DEFAULT_MAX_WAIT);
+			dsConf.setMaxWait(DatabaseConstants.DEFAULT_MAX_WAIT);
 		}
 
 		if (config.getMaxIdle() != null) {
-			basicDataSource.setMaxIdle(Integer.parseInt(config.getMaxIdle()));
+			dsConf.setMaxIdle(Integer.parseInt(config.getMaxIdle()));
 		}
 
 		if (config.getMinIdle() != null) {
-			basicDataSource.setMinIdle(Integer.parseInt(config.getMinIdle()));
+			dsConf.setMinIdle(Integer.parseInt(config.getMinIdle()));
 		} else {
-			basicDataSource.setMinIdle(DatabaseConstants.DEFAULT_MIN_IDLE);
+			dsConf.setMinIdle(DatabaseConstants.DEFAULT_MIN_IDLE);
 		}
 
 		if (config.getValidationQuery() != null) {
-			basicDataSource.setValidationQuery(config.getValidationQuery());
+			dsConf.setValidationQuery(config.getValidationQuery());
 		}
-
-		return basicDataSource;
+		try {
+		    return new RDBMSDataSource(dsConf).getDataSource();
+		} catch (Exception e) {
+			throw new RuntimeException("Error in creating data source for the registry: " +
+		            e.getMessage(), e);
+		}
 	}
 }

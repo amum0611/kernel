@@ -69,6 +69,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.ndatasource.rdbms</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.wso2.securevault</groupId>
             <artifactId>org.wso2.securevault</artifactId>
         </dependency>
@@ -136,13 +141,13 @@
                             org.apache.axiom.*; version="${imp.pkg.version.axiom}",
                             javax.sql.*,
                             org.apache.commons.logging.*,
-                            org.apache.commons.dbcp.*; version="0.0.0",
                             javax.naming.*,
                             javax.xml.stream.*; version="1.0.1",
                             javax.xml.namespace; version=0.0.0,
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
+                        <ListenerManager-RequiredServices>org.wso2.carbon.ndatasource.core.DataSourceService</ListenerManager-RequiredServices>
                     </instructions>
                 </configuration>
             </plugin>

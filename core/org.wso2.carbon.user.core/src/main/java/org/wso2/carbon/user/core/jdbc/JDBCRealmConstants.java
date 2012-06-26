@@ -107,6 +107,7 @@ public final class JDBCRealmConstants {
 	public static final String STORE_SALTED_PASSWORDS = "StoreSaltedPassword";
 
 	// properties
+	public static final String DATASOURCE = "dataSource";
 	public static final String URL = "url";
 	public static final String USER_NAME = "userName";
 	public static final String PASSWORD = "password";

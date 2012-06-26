@@ -205,7 +205,6 @@ public class DataBaseConfiguration {
 	 * 
 	 * @return the password.
 	 */
-	@SuppressWarnings("unused")
 	public String getPassWord() {
 		return password;
 	}

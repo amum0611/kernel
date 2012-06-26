@@ -39,7 +39,7 @@ import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
 * cardinality="1..1" policy="dynamic"
 * bind="setSecretCallbackHandlerService" unbind="unsetSecretCallbackHandlerService"
 * @scr.reference name="user.realmservice.default"
-* interface="org.wso2.carbon.user.core.service.RealmService" cardinality="1..1" policy="dynamic"
+* interface="org.wso2.carbon.user.core.service.RealmService" cardinality="0..1" policy="dynamic"
 * bind="setRealmService" unbind="unsetRealmService"
 * @scr.reference name="coordination.service" interface="org.wso2.carbon.coordination.core.services.CoordinationService"
 * cardinality="1..1" policy="dynamic"  bind="setCoordinationService" unbind="unsetCoordinationService"

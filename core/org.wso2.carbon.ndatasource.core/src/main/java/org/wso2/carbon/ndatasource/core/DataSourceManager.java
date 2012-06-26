@@ -132,7 +132,8 @@ public class DataSourceManager {
 			/* then rest of the system data sources */
 			File dataSourcesFolder = new File(dataSourcesDir);
 			for (File sysDSFile : dataSourcesFolder.listFiles()) {
-				if (sysDSFile.getName().endsWith(DataSourceConstants.SYS_DS_FILE_NAME_SUFFIX)) {
+				if (sysDSFile.getName().endsWith(DataSourceConstants.SYS_DS_FILE_NAME_SUFFIX)
+						&& !sysDSFile.getName().equals(DataSourceConstants.MASTER_DS_FILE_NAME)) {
 					this.initSystemDataSource(sysDSFile);
 				}
 			}
