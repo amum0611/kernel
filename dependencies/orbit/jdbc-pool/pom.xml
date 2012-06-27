@@ -53,7 +53,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.apache.tomcat.*;version="1.7.0";-split-package:=merge-last,
+                            org.apache.tomcat.jdbc.pool.*;version="1.7.0",
                         </Export-Package>
                         <Private-Package>
                             org.apache.juli.*
