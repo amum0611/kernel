@@ -63,6 +63,8 @@ public class GhostDeployer extends AbstractDeployer {
     private boolean initialized = false;
     private boolean cleanedUp = false;
 
+    private static final String DIRECTORY_DEPLOYER_KEY = ".";
+
     private AxisConfiguration axisConfig = null;
     private ConfigurationContext configCtx = null;
 
@@ -102,7 +104,7 @@ public class GhostDeployer extends AbstractDeployer {
         }
 
         // First extract out the file extension and the deployment folder
-        String fileExtension = DeploymentFileData.getFileExtension(deploymentFileData.getName());
+        String fileExtension = getFileExtension(deploymentFileData.getName());
 
         // Now we can decide what is the correct deployer
         Deployer deployer = getDeployer(directoryName, fileExtension);
@@ -248,6 +250,9 @@ public class GhostDeployer extends AbstractDeployer {
 
     public Deployer getDeployer(String directory, String extension) {
         Map<String, Deployer> extensionMap = deployerMap.get(directory);
+        if(extension == null) {
+            extension = DIRECTORY_DEPLOYER_KEY;
+        }
         return (extensionMap != null) ? extensionMap.get(extension) : null;
     }
 
@@ -259,21 +264,27 @@ public class GhostDeployer extends AbstractDeployer {
      * @param extension the extension of the deployable artifacts for this Deployer
      */
     public void addDeployer(Deployer deployer, String directory, String extension) {
-        if (deployer == null || directory == null || extension == null) {
+        if (deployer == null || directory == null) {
             if (log.isDebugEnabled()) {
                 log.debug("Failed to add Deployer : Couldn't find needed information..");
             }
             return;
         }
+        String deployerKey;
+        //we use extension as "" when deployer is registered on a directory
+        if(extension == null) {
+            deployerKey = DIRECTORY_DEPLOYER_KEY;
+        } else {
+            // A leading dot is redundant, so strip it.  So we allow either ".foo" or "foo", either
+            // of which will result in extension="foo"
+            deployerKey = extension;
+            if (extension.charAt(0) == '.') {
+                deployerKey = extension.substring(1);
+            }
+        }
         // if the ghost deployer is already initialized, we have to init the new deployer
         if (initialized) {
             deployer.init(configCtx);
-        }
-        // A leading dot is redundant, so strip it.  So we allow either ".foo" or "foo", either
-        // of which will result in extension="foo"
-        String extensionWithoutDot = extension;
-        if (extension.charAt(0) == '.') {
-        	extensionWithoutDot = extension.substring(1);
         }
 
         deployerLock.lock();
@@ -283,7 +294,7 @@ public class GhostDeployer extends AbstractDeployer {
                 extensionMap = new HashMap<String, Deployer>();
                 deployerMap.put(directory, extensionMap);
             }
-            extensionMap.put(extensionWithoutDot, deployer);
+            extensionMap.put(deployerKey, deployer);
         } finally {
             deployerLock.unlock();
         }
@@ -296,11 +307,15 @@ public class GhostDeployer extends AbstractDeployer {
      * @param extension the extension of deployables
      */
     public void removeDeployer(String directory, String extension) {
-        if (directory == null || extension == null) {
+        if (directory == null) {
             if (log.isDebugEnabled()) {
                 log.debug("Failed to remove Deployer : Couldn't find needed information..");
             }
             return;
+        }
+
+        if(extension == null) {
+            extension = DIRECTORY_DEPLOYER_KEY;
         }
 
         Map<String, Deployer> extensionMap = deployerMap.get(directory);
@@ -337,6 +352,11 @@ public class GhostDeployer extends AbstractDeployer {
             }
         }
         return dirName;
+    }
+
+    private String getFileExtension(String fileName) {
+        int index = fileName.lastIndexOf('.');
+        return (index != -1) ? fileName.substring(index + 1) : null;
     }
 
 }
