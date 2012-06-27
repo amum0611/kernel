@@ -69,6 +69,7 @@
                                 <bundleDef>org.apache.ws.security.wso2:wss4j</bundleDef>
                                 <bundleDef>org.apache.poi.wso2:poi-ooxml</bundleDef>
                                 <bundleDef>org.apache.zookeeper.wso2:apache-zookeeper</bundleDef>
+                                <bundleDef>org.apache.tomcat.wso2:jdbc-pool</bundleDef>
                             </bundles>
                         </configuration>
                     </execution>

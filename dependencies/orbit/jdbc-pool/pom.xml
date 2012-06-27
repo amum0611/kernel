@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- ~ Copyright (c) 2009-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) WSO2 Inc. (http://wso2.com) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -14,59 +14,58 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.wso2.carbon</groupId>
-        <artifactId>carbon-kernel</artifactId>
+        <artifactId>orbit-parent</artifactId>
         <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.carbon.ndatasource.rdbms</artifactId>
+    <groupId>org.apache.tomcat.wso2</groupId>
+    <artifactId>jdbc-pool</artifactId>
+    <version>7.0.27.wso2v1</version>
     <packaging>bundle</packaging>
-    <name>WSO2 Carbon - New Data Sources RDBMS</name>
-    <description>This provides the new data sources RDBMS functionality for WSO2 Carbon</description>
+    <name>tomcat jdbc-pool orbit bundle</name>
+    <description>Apache Tomcat JDBC Pool</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.ndatasource.common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.wso2</groupId>
-            <artifactId>jdbc-pool</artifactId>
-            <version>${jdbc-pool.version}</version>
-        </dependency>	
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-jdbc</artifactId>
+                <version>${version.tomcat}</version>
+            </dependency>	    
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
-                <artifactId>maven-scr-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.carbon.ndatasource.rdbms.*
+                            org.apache.tomcat.*;version="1.7.0";-split-package:=merge-last,
                         </Export-Package>
+                        <Private-Package>
+                            org.apache.juli.*
+                        </Private-Package>
+                        <Import-Package>
+                            *;resolution:=optional
+                        </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <jdbc-pool.version>7.0.27.wso2v1</jdbc-pool.version>
-    </properties>
-
 </project>
+
