@@ -138,12 +138,6 @@ public class DatabaseUtil {
 		} else {
 			dsConfig.setMaxWait(DEFAULT_MAX_WAIT);
 		}
-		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.VALIDATION_QUERYTIME_OUT) != null
-				&& !realmConfig.getUserStoreProperty(
-						JDBCRealmConstants.VALIDATION_QUERYTIME_OUT).equals("")) {
-			dsConfig.setValidationInterval(Long.parseLong(realmConfig.getUserStoreProperty(
-					JDBCRealmConstants.VALIDATION_QUERYTIME_OUT)));
-		}
 
 		if (realmConfig.getUserStoreProperty(JDBCRealmConstants.TEST_WHILE_IDLE) != null
 				&& !realmConfig.getUserStoreProperty(
@@ -219,12 +213,6 @@ public class DatabaseUtil {
 					JDBCRealmConstants.MAX_WAIT)));
 		} else {
 			dsConfig.setMaxWait(DEFAULT_MAX_WAIT);
-		}
-		if (realmConfig.getRealmProperty(JDBCRealmConstants.VALIDATION_QUERYTIME_OUT) != null
-				&& !realmConfig.getRealmProperty(
-						JDBCRealmConstants.VALIDATION_QUERYTIME_OUT).equals("")) {
-			dsConfig.setValidationInterval(Long.parseLong(realmConfig.getRealmProperty(
-					JDBCRealmConstants.VALIDATION_QUERYTIME_OUT)));
 		}
 
 		if (realmConfig.getRealmProperty(JDBCRealmConstants.TEST_WHILE_IDLE) != null

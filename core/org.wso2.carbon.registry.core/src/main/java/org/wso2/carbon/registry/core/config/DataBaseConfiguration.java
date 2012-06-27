@@ -38,30 +38,10 @@ public class DataBaseConfiguration {
 	private String minIdle = null;
 	private String validationQuery = null;
 	private SecretResolver secretResolver;
-	private String validationQueryTimeout = null;
 	private String testWhileIdle = null;
 	private String timeBetweenEvictionRunsMillis = null;
 	private String minEvictableIdleTimeMillis = null;
 	private String numTestsPerEvictionRun = null;
-
-	/**
-	 * Method to obtain the validation query timeout of the data source.
-	 * 
-	 * @return the validationQueryTimeout of the data source.
-	 */
-	public String getValidationQueryTimeout() {
-		return validationQueryTimeout;
-	}
-
-	/**
-	 * Method to set the ValidationQueryTimeout of the data source.
-	 * 
-	 * @param ValidationQueryTimeout
-	 *            the ValidationQueryTimeout vlaue of the data source.
-	 */
-	public void setValidationQueryTimeout(String validationQueryTimeout) {
-		this.validationQueryTimeout = validationQueryTimeout;
-	}
 
 	/**
 	 * Method to obtain the test while idle of the data source.

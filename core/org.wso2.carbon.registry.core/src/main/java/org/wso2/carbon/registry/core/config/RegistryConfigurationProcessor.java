@@ -189,15 +189,6 @@ public class RegistryConfigurationProcessor {
                         if (maxWait != null) {
                             dataBaseConfiguration.setMaxWait(maxWait.getText());
                         }
-						
-						OMElement validationQueryTimeout = dbConfig
-								.getFirstChildWithName(new QName(
-										"validationQueryTimeout"));
-						if (validationQueryTimeout != null) {
-							dataBaseConfiguration
-									.setValidationQueryTimeout(validationQueryTimeout
-											.getText());
-						}
 
 						OMElement testWhileIdle = dbConfig
 								.getFirstChildWithName(new QName(

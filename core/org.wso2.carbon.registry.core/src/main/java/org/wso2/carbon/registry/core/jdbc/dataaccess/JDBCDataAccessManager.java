@@ -180,11 +180,6 @@ public class JDBCDataAccessManager implements DataAccessManager {
 		dsConf.setUsername(config.getUserName());
 		dsConf.setPassword(config.getResolvedPassword());
 
-		if (config.getValidationQueryTimeout() != null) {
-			dsConf.setValidationInterval(Long.parseLong(config
-					.getValidationQueryTimeout()));
-		}
-
 		if (config.getTestWhileIdle() != null) {
 			dsConf.setTestWhileIdle(Boolean.parseBoolean(config
 					.getTestWhileIdle()));

@@ -118,7 +118,6 @@ public final class JDBCRealmConstants {
 	public static final String MAX_IDLE = "maxIdle";
 	public static final String VALIDATION_QUERY = "validationQuery";
 	public static final String DIALECT_FLAG = "dialectFlag";
-	public static final String VALIDATION_QUERYTIME_OUT = "validationQueryTimeout";
 	public static final String TEST_WHILE_IDLE = "testWhileIdle";
 	public static final String TIME_BETWEEN_EVICTION_RUNS_MILLIS = "timeBetweenEvictionRunsMillis";
 	public static final String MIN_EVIC_TABLE_IDLE_TIME_MILLIS = "minEvictableIdleTimeMillis";
