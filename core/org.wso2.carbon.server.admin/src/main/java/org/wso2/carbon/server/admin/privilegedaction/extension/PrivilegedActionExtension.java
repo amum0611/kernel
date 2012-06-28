@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.carbon.server.admin.privilegedaction.extension.core;
+package org.wso2.carbon.server.admin.privilegedaction.extension;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axis2.context.MessageContext;
@@ -31,7 +31,8 @@ public interface PrivilegedActionExtension {
 	 * @param outEnvelope 
 	 * @return outEnvelope
 	 */
-	public SOAPEnvelope execute(SOAPEnvelope inEnvelope, SOAPEnvelope outEnvelope) throws PrivilegedActionExtensionException;
+	public SOAPEnvelope execute(SOAPEnvelope inEnvelope, SOAPEnvelope outEnvelope) throws
+                                                                                   PrivilegedActionExtensionException;
 
 	/**
 	 * Return the priority of the extension in the framework

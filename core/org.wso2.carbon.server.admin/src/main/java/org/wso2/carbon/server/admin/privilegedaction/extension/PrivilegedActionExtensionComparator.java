@@ -1,9 +1,9 @@
-package org.wso2.carbon.server.admin.privilegedaction.extension.utills;
+package org.wso2.carbon.server.admin.privilegedaction.extension;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.wso2.carbon.server.admin.privilegedaction.extension.core.PrivilegedActionExtension;
+import org.wso2.carbon.server.admin.privilegedaction.extension.PrivilegedActionExtension;
 
 public class PrivilegedActionExtensionComparator implements Comparator<PrivilegedActionExtension>,Serializable{
 

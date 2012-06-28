@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.server.admin.privilegedaction.extension.messagereceiver;
+package org.wso2.carbon.server.admin.privilegedaction.extension;
 
 import java.util.ArrayList;
 
@@ -30,9 +30,6 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.rpc.receivers.RPCMessageReceiver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.server.admin.privilegedaction.extension.core.PrivilegedActionExtension;
-import org.wso2.carbon.server.admin.privilegedaction.extension.core.PrivilegedActionExtensionException;
-import org.wso2.carbon.server.admin.privilegedaction.extension.core.PrivilegedActionExtensionRegistry;
 
 public class PrivilegedActionExtensionMessageReceiver extends RPCMessageReceiver {
 

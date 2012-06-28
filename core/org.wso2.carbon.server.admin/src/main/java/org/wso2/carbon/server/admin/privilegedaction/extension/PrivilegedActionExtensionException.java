@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.carbon.server.admin.privilegedaction.extension.core;
+package org.wso2.carbon.server.admin.privilegedaction.extension;
 
 public class PrivilegedActionExtensionException extends Exception {
 

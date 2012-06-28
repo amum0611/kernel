@@ -23,7 +23,7 @@ import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
-import org.wso2.carbon.server.admin.privilegedaction.extension.core.PrivilegedActionExtensionRegistry;
+import org.wso2.carbon.server.admin.privilegedaction.extension.PrivilegedActionExtensionRegistry;
 
 /**
  * @scr.component name="org.wso2.carbon.server.admin.privilegedaction.extension" immediate="true"

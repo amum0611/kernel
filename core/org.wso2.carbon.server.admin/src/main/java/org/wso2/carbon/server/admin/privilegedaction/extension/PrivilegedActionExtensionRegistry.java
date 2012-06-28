@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.server.admin.privilegedaction.extension.core;
+package org.wso2.carbon.server.admin.privilegedaction.extension;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
-import org.wso2.carbon.server.admin.privilegedaction.extension.utills.PrivilegedActionExtensionComparator;
 
 public class PrivilegedActionExtensionRegistry {
 
