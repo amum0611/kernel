@@ -21,6 +21,8 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.engine.AxisConfiguration;
+import org.apache.axis2.engine.ListenerManager;
+import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 import org.wso2.carbon.core.util.SystemFilter;
 
 import java.util.ArrayList;
@@ -32,6 +34,12 @@ import java.util.List;
 public class SecurityVerifierService {
 
     public boolean verifyAdminServices() throws AxisFault {
+
+        // The following API calls check that the OSGi service retrieval API works
+        ListenerManager listenerManager = (ListenerManager)
+                SuperTenantCarbonContext.getCurrentContext().getOSGiService(ListenerManager.class);
+        System.out.println("Is listener running: " + !listenerManager.isStopped());
+
         AxisConfiguration axisConfig =
                 MessageContext.getCurrentMessageContext().
                         getConfigurationContext().getAxisConfiguration();
