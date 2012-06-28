@@ -45,7 +45,7 @@
 	        <parameter name="AuthorizationAction" locked="true">/permission/admin</parameter>
 	    </operation>
         <operation name="addUser">
-            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="org.wso2.carbon.server.admin.privilegedaction.extension.messagereceiver.PrivilegedActionExtensionMessageReceiver"/>
+            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="org.wso2.carbon.server.admin.privilegedaction.extension.PrivilegedActionExtensionMessageReceiver"/>
 	    </operation>
     </service>
     
