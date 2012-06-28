@@ -26,20 +26,27 @@ import org.apache.axis2.description.AxisService;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.RegistryType;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
-import org.wso2.carbon.utils.ThriftSession;
 import org.wso2.carbon.registry.api.Registry;
-import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.TenantManager;
 import org.wso2.carbon.user.api.UserRealm;
+import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.utils.ThriftSession;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * This provides the API for super-tenant programming around
@@ -96,7 +103,6 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      * Context. If an instance does not exist, it will first be added to the Message Context.
      *
      * @param messageContext The Message Context on which the CarbonContext is found.
-     *
      * @return the CarbonContext instance.
      */
     public static SuperTenantCarbonContext getCurrentContext(MessageContext messageContext) {
@@ -110,7 +116,6 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      * Axis2 Configuration Context.
      *
      * @param configContext The Axis2 Configuration Context on which the CarbonContext is found.
-     *
      * @return the CarbonContext instance.
      */
     public static SuperTenantCarbonContext getCurrentContext(ConfigurationContext configContext) {
@@ -124,7 +129,6 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      * Configuration.
      *
      * @param axisConfiguration The Axis2 Configuration on which the CarbonContext is found.
-     *
      * @return the CarbonContext instance.
      */
     public static SuperTenantCarbonContext getCurrentContext(AxisConfiguration axisConfiguration) {
@@ -137,13 +141,12 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      * Axis2 Service. If an instance does not exist, it will first be attached to the Axis2 Service.
      *
      * @param axisService The Axis2 Service on which the CarbonContext is attached to.
-     *
      * @return the CarbonContext instance.
      */
     public static SuperTenantCarbonContext getCurrentContext(AxisService axisService) {
         AxisConfiguration axisConfiguration = axisService.getAxisConfiguration();
         return (axisConfiguration != null) ? getCurrentContext(axisConfiguration) :
-                getCurrentContext();
+               getCurrentContext();
     }
 
     /**
@@ -152,7 +155,6 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      * Configuration.
      *
      * @param httpSession The HTTP Session on which the CarbonContext is found.
-     *
      * @return the CarbonContext instance.
      */
     public static SuperTenantCarbonContext getCurrentContext(HttpSession httpSession) {
@@ -165,10 +167,9 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      * Session. If an instance does not exist, it will first be added to the Thrift Session.
      *
      * @param thriftSession The HTTP Session on which the CarbonContext is found.
-     *
      * @return the CarbonContext instance.
      */
-    public static SuperTenantCarbonContext getCurrentContext(ThriftSession thriftSession){
+    public static SuperTenantCarbonContext getCurrentContext(ThriftSession thriftSession) {
         return new SuperTenantCarbonContext(
                 CarbonContextHolder.getCurrentCarbonContextHolder(thriftSession));
     }
@@ -239,12 +240,11 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      *
      * @param resolve whether the tenant domain should be calculated based on the tenant id that is
      *                already known.
-     *
      * @return the tenant domain.
      */
     public String getTenantDomain(boolean resolve) {
-        if (resolve && getTenantDomain() == null && 
-        		(getTenantId() > 0 || getTenantId() == MultitenantConstants.SUPER_TENANT_ID) ) {
+        if (resolve && getTenantDomain() == null &&
+            (getTenantId() > 0 || getTenantId() == MultitenantConstants.SUPER_TENANT_ID)) {
             resolveTenantDomain(getTenantId());
         }
         return getTenantDomain();
@@ -256,7 +256,6 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      *
      * @param resolve whether the tenant id should be calculated based on the tenant domain that is
      *                already known.
-     *
      * @return the tenant id.
      */
     public int getTenantId(boolean resolve) {
@@ -421,7 +420,6 @@ public final class SuperTenantCarbonContext extends CarbonContext {
      * meantime.
      *
      * @param name the name of the cache instance.
-     *
      * @return the cache instance.
      */
     public Cache getCache(String name) {
@@ -430,5 +428,39 @@ public final class SuperTenantCarbonContext extends CarbonContext {
 
     public void setUserRealm(UserRealm userRealm) {
         getCarbonContextHolder().setProperty(CarbonContextHolder.USER_REALM, userRealm);
+    }
+
+    /**
+     * Obtain the first OSGi service found for interface or class <code>clazz</code>
+     * @param clazz The type of the OSGi service
+     * @return The OSGi service
+     */
+    public Object getOSGiService(Class clazz) {
+        BundleContext bundleContext = CarbonCoreDataHolder.getInstance().getBundleContext();
+        ServiceTracker serviceTracker = new ServiceTracker(bundleContext, clazz, null);
+        try {
+            serviceTracker.open();
+            return serviceTracker.getServices()[0];
+        } finally {
+            serviceTracker.close();
+        }
+    }
+
+    /**
+     * Obtain the OSGi services found for interface or class <code>clazz</code>
+     * @param clazz The type of the OSGi service
+     * @return The List of OSGi services
+     */
+    public List<Object> getOSGiServices(Class clazz) {
+        BundleContext bundleContext = CarbonCoreDataHolder.getInstance().getBundleContext();
+        ServiceTracker serviceTracker = new ServiceTracker(bundleContext, clazz, null);
+        List<Object> services = new ArrayList<Object>();
+        try {
+            serviceTracker.open();
+            Collections.addAll(services, serviceTracker.getServices());
+        } finally {
+            serviceTracker.close();
+        }
+        return services;
     }
 }
