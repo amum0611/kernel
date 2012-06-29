@@ -352,8 +352,10 @@ public class DeploymentInterceptor implements AxisObserver {
                     moduleVersion = axisModule.getVersion().toString();
                 }
                 if (!SystemFilter.isFilteredOutModule(axisModule)) {
-                    log.info("Deploying Axis2 module: " + axisModule.getArchiveName() +
-                            getTenantIdAndDomainString());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Deploying Axis2 module: " + axisModule.getArchiveName() +
+                                  getTenantIdAndDomainString());
+                    }
                 }
 
                 OMElement module = null;
