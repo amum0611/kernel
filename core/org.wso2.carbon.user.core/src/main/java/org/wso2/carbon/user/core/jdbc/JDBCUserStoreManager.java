@@ -693,8 +693,8 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         
         boolean isExisting = checkExistingUserName(userName);
         if (isExisting) {
-            throw new UserStoreException("Username : " + userName
-                    + " exists in the system. Please pick another user name");
+            throw new UserStoreException("Username '" + userName
+                    + "' already exists in the system. Please pick another username.");
         }
 
         Connection dbConnection = null;
