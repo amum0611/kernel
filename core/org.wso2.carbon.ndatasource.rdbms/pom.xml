@@ -65,8 +65,4 @@
         </plugins>
     </build>
 
-    <properties>
-        <jdbc-pool.version>7.0.27.wso2v1</jdbc-pool.version>
-    </properties>
-
 </project>
