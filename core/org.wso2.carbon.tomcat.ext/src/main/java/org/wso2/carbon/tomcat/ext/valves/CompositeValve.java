@@ -6,20 +6,10 @@ import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.context.RegistryType;
-import org.wso2.carbon.registry.api.RegistryService;
-import org.wso2.carbon.registry.core.ghostregistry.GhostRegistry;
-import org.wso2.carbon.tomcat.ext.internal.CarbonRealmServiceHolder;
-import org.wso2.carbon.tomcat.ext.saas.TenantSaaSRules;
-import org.wso2.carbon.tomcat.ext.internal.Utils;
 import org.wso2.carbon.tomcat.ext.realms.CarbonTomcatRealm;
-import org.wso2.carbon.user.api.TenantManager;
-import org.wso2.carbon.user.api.UserRealmService;
-import org.wso2.carbon.utils.CarbonUtils;
-import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
+import org.wso2.carbon.tomcat.ext.saas.TenantSaaSRules;
 
 import javax.servlet.ServletException;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -138,7 +128,9 @@ public class CompositeValve extends ValveBase {
 
             TomcatValveContainer.invokeValves(request, response);
             int status = response.getStatus();
-            if (status != Response.SC_MOVED_TEMPORARILY && status != Response.SC_FORBIDDEN) {
+            //skipping invoking other valves for accessing service urls from the root when enabling a url mapping for services.
+            if (status != Response.SC_MOVED_TEMPORARILY && status != Response.SC_FORBIDDEN &&
+                    !(request.getRequestURI().equals("/") && (request.getQueryString().equals("wsdl")))) {
                 // See  http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
                 getNext().invoke(request, response);
             }
