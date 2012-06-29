@@ -29,6 +29,7 @@ import org.wso2.carbon.tomcat.ext.internal.CarbonRealmServiceHolder;
 import org.wso2.carbon.tomcat.ext.internal.Utils;
 import org.wso2.carbon.user.api.TenantManager;
 import org.wso2.carbon.user.api.UserRealmService;
+import org.wso2.carbon.utils.multitenancy.CarbonApplicationContextHolder;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 
 import javax.servlet.ServletException;
@@ -51,6 +52,9 @@ public class CarbonContextCreatorValve extends ValveBase {
         } finally {
             // This will destroy the carbon context holder on the current thread after
             // invoking subsequent valves.
+            if(!request.getContext().getName().equals("/")) {
+                CarbonApplicationContextHolder.destroyCurrentCarbonAppContextHolder();
+            }
             CarbonContextHolder.destroyCurrentCarbonContextHolder();
         }
     }
@@ -59,6 +63,13 @@ public class CarbonContextCreatorValve extends ValveBase {
         String tenantDomain = Utils.getTenantDomain(request);
         CarbonContextHolder carbonContextHolder = CarbonContextHolder.getThreadLocalCarbonContextHolder();
         carbonContextHolder.setTenantDomain(tenantDomain);
+        if(!request.getContext().getName().equals("/")) {
+            //setting application id for webapps requests only
+            CarbonApplicationContextHolder currentCarbonAppContextHolder =
+                    CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder();
+            currentCarbonAppContextHolder.startApplicationFlow();
+            currentCarbonAppContextHolder.setApplicationName(request.getContext().getBaseName());
+        }
 		if (tenantDomain != null) {
         	UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
             TenantManager tenantManager = userRealmService.getTenantManager();
