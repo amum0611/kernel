@@ -258,9 +258,11 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
             if (ctx.getState().equals(LifecycleState.STOPPED)) {
                 ctx.setRealm(null);
                 ctx.destroy();
-                log.error("webApp" + ctx + "failed to deploy");
+                log.error("Webapp" + ctx + "failed to deploy");
             }
-            log.info("web application context: " + ctx);
+            if (log.isDebugEnabled()) {
+                log.debug("Webapp context: " + ctx);
+            }
         } catch (MalformedURLException e) {
             throw new CarbonTomcatException("Webapp failed to deploy", e);
         } catch (LifecycleException e) {
