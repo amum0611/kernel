@@ -306,7 +306,9 @@ public final class CarbonServerManager implements Controllable {
         timer.cancel();
 
         try {
-            log.info("Starting Carbon initialization...");
+            if (log.isDebugEnabled()) {
+                log.debug("Starting Carbon initialization...");
+            }
 
             ThreadCleanupContainer.addThreadCleanup(new CarbonThreadCleanup());
 
@@ -391,13 +393,17 @@ public final class CarbonServerManager implements Controllable {
 
             //This is the point where we initialize Axis2.
             long start = System.currentTimeMillis();
-            log.info("Creating super-tenant Axis2 ConfigurationContext");
+            if (log.isDebugEnabled()) {
+                log.debug("Creating super-tenant Axis2 ConfigurationContext");
+            }
             serverConfigContext =
                     CarbonConfigurationContextFactory.
                             createNewConfigurationContext(carbonAxisConfigurator, bundleContext);
             long end = System.currentTimeMillis();
-            log.info("Completed super-tenant Axis2 ConfigurationContext creation in " +
-                    ((double) (end - start) / 1000) + " sec");
+            if (log.isDebugEnabled()) {
+                log.debug("Completed super-tenant Axis2 ConfigurationContext creation in " +
+                          ((double) (end - start) / 1000) + " sec");
+            }
 
             // Initialize ListenerManager
             ListenerManager listenerManager = serverConfigContext.getListenerManager();
