@@ -39,7 +39,7 @@ public class SQLQueryHandler extends Handler {
 
         Object content = resource.getContent();
         if (content instanceof byte[]) {
-            resource.setContent(new String((byte[]) content));
+            resource.setContent(RegistryUtils.decodeBytes((byte[]) content));
         }
         // else:
         // This case should not happen. If execution comes here
@@ -66,7 +66,7 @@ public class SQLQueryHandler extends Handler {
         Object content = resource.getContent();
         if (content instanceof String) {
             String textContent = (String) content;
-            resource.setContent(textContent.getBytes());
+            resource.setContent(RegistryUtils.encodeString(textContent));
         }
 
         String queryPath = requestContext.getResourcePath().getPath();

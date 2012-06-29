@@ -1712,5 +1712,43 @@ public final class RegistryUtils {
                         "deployment" + File.separator + "server")) +
                 File.separator + "registryextensions";
     }
+
+    public static String decodeBytes(byte[] byteContent)
+            throws RegistryException {
+        String co;
+        String encodeType = null;
+        try {
+            if (System.getProperty("encodeType") == null) {
+                co = new String(byteContent);
+            } else {
+                encodeType = System.getProperty("encodeType");
+                co = new String(byteContent, encodeType);
+            }
+        } catch (UnsupportedEncodingException e) {
+            String msg = encodeType + " is unsupported encoding type";
+            log.error(msg ,e);
+            throw new RegistryException(msg, e);
+        }
+        return co;
+    }
+
+    public static byte[] encodeString(String content) throws RegistryException {
+        String encodeType = null;
+        byte[] bytes;
+        try {
+            if (System.getProperty("encodeType") == null) {
+                bytes = content.getBytes();
+            } else {
+                encodeType = System.getProperty("encodeType");
+                bytes = content.getBytes(encodeType);
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            String msg = encodeType + " is unsupported encoding type";
+            log.error(msg,e);
+            throw new RegistryException(msg, e);
+        }
+        return bytes;
+    }
 }
 

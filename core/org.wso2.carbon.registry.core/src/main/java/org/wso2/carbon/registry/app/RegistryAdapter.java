@@ -42,6 +42,7 @@ import org.wso2.carbon.registry.core.Collection;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.exceptions.ResourceNotFoundException;
 import org.wso2.carbon.registry.core.jdbc.EmbeddedRegistryService;
+import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.activation.MimeType;
@@ -1864,7 +1865,7 @@ public class RegistryAdapter
                 } catch (IOException e) {
                     // nothing here
                 }
-                String content = new String(bos.toByteArray());
+                String content = RegistryUtils.decodeBytes(bos.toByteArray());
                 ret.setContent(content);
             }
 

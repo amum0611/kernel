@@ -89,12 +89,12 @@ public class VersionHandlingTest extends BaseTestCase {
         Resource r1vv1 = registry.get(r1Versions[1]);
 
         assertEquals("r1's first version's content should be 'content 1'",
-                new String((byte[]) r1vv1.getContent()), "content 1");
+                RegistryUtils.decodeBytes((byte[]) r1vv1.getContent()), "content 1");
 
         Resource r1vv2 = registry.get(r1Versions[0]);
 
         assertEquals("r1's second version's content should be 'content 2'",
-                new String((byte[]) r1vv2.getContent()), "content 2");
+                RegistryUtils.decodeBytes((byte[]) r1vv2.getContent()), "content 2");
     }
 
     public void testResourcePropertyVersioning() throws RegistryException {
@@ -176,7 +176,7 @@ public class VersionHandlingTest extends BaseTestCase {
         Resource r1r1 = registry.get("/test/v10/r1");
 
         assertEquals("Restored resource should have content 'content 1'",
-                "content 1", new String((byte[]) r1r1.getContent()));
+                "content 1", RegistryUtils.decodeBytes((byte[]) r1r1.getContent()));
     }
 
     public void testSimpleCollectionRestore() throws RegistryException {
@@ -313,13 +313,13 @@ public class VersionHandlingTest extends BaseTestCase {
             fail("Version 2 of c1 should have child c11/c2");
         }
 
-        String r1e2Content = new String((byte[]) r1e2.getContent());
+        String r1e2Content = RegistryUtils.decodeBytes((byte[]) r1e2.getContent());
         assertEquals("c11/r1 content should be 'r1c1", r1e2Content, "r1c1");
 
         registry.restoreVersion(c1Versions[0]);
 
         Resource r1e3 = registry.get("/test/v12/c1/c11/r1");
-        String r1e3Content = new String((byte[]) r1e3.getContent());
+        String r1e3Content = RegistryUtils.decodeBytes((byte[]) r1e3.getContent());
         assertEquals("c11/r1 content should be 'r1c2", r1e3Content, "r1c2");
     }
 

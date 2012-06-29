@@ -887,7 +887,7 @@ public class ResourceImpl implements Resource {
             return new ByteArrayInputStream((byte[]) content);
 
         } else if (content instanceof String) {
-            byte[] contentBytes = ((String) content).getBytes();
+            byte[] contentBytes = RegistryUtils.encodeString(((String) content));
             return new ByteArrayInputStream(contentBytes);
 
         } else {
@@ -973,7 +973,7 @@ public class ResourceImpl implements Resource {
     public void prepareContentForPut() throws RegistryException {
 
         if (content instanceof String) {
-            content = ((String) content).getBytes();
+            content = RegistryUtils.encodeString((String) content);
         } else if (content instanceof InputStream) {
             content = RegistryUtils.getByteArray((InputStream) content);
         }

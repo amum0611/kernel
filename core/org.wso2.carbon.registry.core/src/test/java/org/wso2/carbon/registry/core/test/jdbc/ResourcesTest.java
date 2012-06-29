@@ -21,6 +21,7 @@ import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.jdbc.EmbeddedRegistryService;
 import org.wso2.carbon.registry.core.test.utils.BaseTestCase;
+import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.user.api.RealmConfiguration;
 
 public class ResourcesTest extends BaseTestCase {
@@ -65,7 +66,7 @@ public class ResourcesTest extends BaseTestCase {
         Resource r1e2 = registry.get(r1Path);
         assertNotNull("r1 content should not be null", r1e2.getContent());
 
-        String r1e2Content = new String((byte[]) r1e2.getContent());
+        String r1e2Content = RegistryUtils.decodeBytes((byte[]) r1e2.getContent());
         assertEquals("r1 content should be c1", r1e2Content, "c1");
     }
 }

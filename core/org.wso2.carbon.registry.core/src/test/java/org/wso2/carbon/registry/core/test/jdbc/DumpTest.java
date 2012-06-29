@@ -78,7 +78,7 @@ public class DumpTest extends BaseTestCase {
         registry.restore("/testDumpDup", input);
         r = registry.get("/testDumpDup");
 
-        assertEquals(new String((byte[])r.getContent()), "content 1");
+        assertEquals(RegistryUtils.decodeBytes((byte[])r.getContent()), "content 1");
 
         // checking the properties.
         assertEquals(r.getProperties().size(), 2);
@@ -162,7 +162,7 @@ public class DumpTest extends BaseTestCase {
         assertEquals(r1.getProperty("key2"), "value2C");
 
         r2 = registry.get("/testDumpDupC/child2R");
-        assertEquals(new String((byte[])r2.getContent()), "content child2R");
+        assertEquals(RegistryUtils.decodeBytes((byte[])r2.getContent()), "content child2R");
     }
 
 
@@ -224,7 +224,7 @@ public class DumpTest extends BaseTestCase {
         assertEquals(r1.getProperty("key2"), "value2C");
 
         r2 = registry.get("/testDumpDupR/child2RX");
-        assertEquals(new String((byte[])r2.getContent()), "content child2R");
+        assertEquals(RegistryUtils.decodeBytes((byte[])r2.getContent()), "content child2R");
     }
 
     public void testRootRestore() throws RegistryException, XMLStreamException {
@@ -285,7 +285,7 @@ public class DumpTest extends BaseTestCase {
         assertEquals(r1.getProperty("key2"), "value2C");
 
         r2 = registry.get("/child2RY");
-        assertEquals(new String((byte[])r2.getContent()), "content child2R");
+        assertEquals(RegistryUtils.decodeBytes((byte[])r2.getContent()), "content child2R");
     }
 
     public void testSimpleNewRestore() throws RegistryException, XMLStreamException {
@@ -385,7 +385,7 @@ public class DumpTest extends BaseTestCase {
         assertTrue((r2 instanceof CollectionImpl));
 
         r2 = registry.get("/child2RY");
-        assertEquals(new String((byte[])r2.getContent()), "content child2R");
+        assertEquals(RegistryUtils.decodeBytes((byte[])r2.getContent()), "content child2R");
     }
 
     public void testAbsoluteAssociationPath() throws Exception {

@@ -98,7 +98,7 @@ public final class ServiceConfigUtil {
             }
             String serviceConfig = getConfigFile();
             if (serviceConfig != null) {
-                config.setContent(serviceConfig.getBytes());
+                config.setContent(RegistryUtils.encodeString(serviceConfig));
             }
             registry.put(path, config);
         }
@@ -123,7 +123,7 @@ public final class ServiceConfigUtil {
             }
             String serviceConfig = getConfigSchemaFile();
             if (serviceConfig != null) {
-                config.setContent(serviceConfig.getBytes());
+                config.setContent(RegistryUtils.encodeString(serviceConfig));
             }
             registry.put(path, config);
         }

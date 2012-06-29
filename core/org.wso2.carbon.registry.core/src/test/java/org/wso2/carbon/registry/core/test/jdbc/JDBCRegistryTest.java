@@ -22,6 +22,7 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.jdbc.EmbeddedRegistryService;
 import org.wso2.carbon.registry.core.test.utils.BaseTestCase;
 import org.wso2.carbon.registry.core.utils.MediaTypesUtils;
+import org.wso2.carbon.registry.core.utils.RegistryUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -105,7 +106,7 @@ public class JDBCRegistryTest extends BaseTestCase {
             outStream.write(c);
         }
         inContent.close();
-        assertEquals(str, new String(outStream.toByteArray()));
+        assertEquals(str, RegistryUtils.decodeBytes(outStream.toByteArray()));
         r1.discard();
     }
 
@@ -120,7 +121,8 @@ public class JDBCRegistryTest extends BaseTestCase {
         Resource r1f = registry.get("/r1");
 
         assertEquals("Content is not equal.",
-                new String((byte[])r1.getContent()), new String((byte[])r1f.getContent()));
+                RegistryUtils.decodeBytes((byte[])r1.getContent()),
+                RegistryUtils.decodeBytes((byte[])r1f.getContent()));
 
         assertEquals("Description is not equal.", r1.getDescription(), r1f.getDescription());
 
@@ -171,7 +173,7 @@ public class JDBCRegistryTest extends BaseTestCase {
         Resource r1f = registry.get("/d1/r1");
 
         assertEquals("Resource content is not stored correctly.", r1content,
-                new String((byte[])r1f.getContent()));
+                RegistryUtils.decodeBytes((byte[])r1f.getContent()));
 
         registry.delete("/d1");
 
@@ -233,9 +235,9 @@ public class JDBCRegistryTest extends BaseTestCase {
         Resource v2 = registry.get(versionPaths[1]);
         Resource v3 = registry.get(versionPaths[0]);
 
-        String content1 = new String((byte[])v1.getContent());
-        String content2 = new String((byte[])v2.getContent());
-        String content3 = new String((byte[])v3.getContent());
+        String content1 = RegistryUtils.decodeBytes((byte[])v1.getContent());
+        String content2 = RegistryUtils.decodeBytes((byte[])v2.getContent());
+        String content3 = RegistryUtils.decodeBytes((byte[])v3.getContent());
 
         assertEquals("Content is not versioned properly.", content1, "R1 content");
         assertEquals("Content is not versioned properly.", content2, "New content");
@@ -249,7 +251,7 @@ public class JDBCRegistryTest extends BaseTestCase {
 
         Resource r5restored = registry.get("/r5");
 
-        String restoredContent = new String((byte[])r5restored.getContent());
+        String restoredContent = RegistryUtils.decodeBytes((byte[])r5restored.getContent());
         assertEquals("Content is not restored properly.", "R1 content", restoredContent);
     }
 

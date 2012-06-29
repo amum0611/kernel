@@ -20,6 +20,7 @@ import org.wso2.carbon.registry.core.*;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.jdbc.EmbeddedRegistryService;
 import org.wso2.carbon.registry.core.test.utils.BaseTestCase;
+import org.wso2.carbon.registry.core.utils.RegistryUtils;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -231,11 +232,11 @@ public class SymlinkTest extends BaseTestCase {
         // now just check the link is created
         Resource testRSym1 = registry.get("/source/symR");
         byte[] testRSym1Bytes = (byte[])testRSym1.getContent();
-        assertEquals("test R content", new String(testRSym1Bytes));
+        assertEquals("test R content", RegistryUtils.decodeBytes(testRSym1Bytes));
         
         Resource testR2Sym1 = registry.get("/source/symC/r2");
         byte[] testR2Sym1Bytes = (byte[])testR2Sym1.getContent();
-        assertEquals("test R2 content", new String(testR2Sym1Bytes));
+        assertEquals("test R2 content", RegistryUtils.decodeBytes(testR2Sym1Bytes));
 
         // now copy the source
         registry.copy("/source", "/source-copy");
@@ -243,11 +244,11 @@ public class SymlinkTest extends BaseTestCase {
         // now check the copied symbolic links
         Resource testRSym2 = registry.get("/source-copy/symR");
         byte[] testRSym2Bytes = (byte[])testRSym2.getContent();
-        assertEquals("test R content", new String(testRSym2Bytes));
+        assertEquals("test R content", RegistryUtils.decodeBytes(testRSym2Bytes));
 
         Resource testR2Sym2 = registry.get("/source-copy/symC/r2");
         byte[] testR2Sym2Bytes = (byte[])testR2Sym2.getContent();
-        assertEquals("test R2 content", new String(testR2Sym2Bytes));
+        assertEquals("test R2 content", RegistryUtils.decodeBytes(testR2Sym2Bytes));
 
         // change the symbolic links and whether the original is updated
         testRSym2.setContent("test R updated content");
@@ -258,11 +259,11 @@ public class SymlinkTest extends BaseTestCase {
         // and check whether the original is updated.
         testR = registry.get("/target/originalR");
         byte[] testRBytes = (byte[])testR.getContent();
-        assertEquals("test R updated content", new String(testRBytes));
+        assertEquals("test R updated content", RegistryUtils.decodeBytes(testRBytes));
 
         testR2 = registry.get("/target/originalC/r2");
         byte[] testR2Bytes = (byte[])testR2.getContent();
-        assertEquals("test R2 updated content", new String(testR2Bytes));
+        assertEquals("test R2 updated content", RegistryUtils.decodeBytes(testR2Bytes));
 
         // cleaning up for the next test case
         registry.delete("/source");
@@ -289,11 +290,12 @@ public class SymlinkTest extends BaseTestCase {
         // now just check the link is created
         Resource testRSym1 = registry.get("/source/symR");
         byte[] testRSym1Bytes = (byte[])testRSym1.getContent();
-        assertEquals("test R content", new String(testRSym1Bytes));
+        assertEquals("test R content", RegistryUtils.decodeBytes(testRSym1Bytes));
+
 
         Resource testR2Sym1 = registry.get("/source/symC/r2");
         byte[] testR2Sym1Bytes = (byte[])testR2Sym1.getContent();
-        assertEquals("test R2 content", new String(testR2Sym1Bytes));
+        assertEquals("test R2 content", RegistryUtils.decodeBytes(testR2Sym1Bytes));
 
         // now copy the source
         registry.move("/source", "/source-copy");
@@ -301,11 +303,11 @@ public class SymlinkTest extends BaseTestCase {
         // now check the copied symbolic links
         Resource testRSym2 = registry.get("/source-copy/symR");
         byte[] testRSym2Bytes = (byte[])testRSym2.getContent();
-        assertEquals("test R content", new String(testRSym2Bytes));
+        assertEquals("test R content", RegistryUtils.decodeBytes(testRSym2Bytes));
 
         Resource testR2Sym2 = registry.get("/source-copy/symC/r2");
         byte[] testR2Sym2Bytes = (byte[])testR2Sym2.getContent();
-        assertEquals("test R2 content", new String(testR2Sym2Bytes));
+        assertEquals("test R2 content", RegistryUtils.decodeBytes(testR2Sym2Bytes));
 
         // change the symbolic links and whether the original is updated
         testRSym2.setContent("test R updated content");
@@ -316,11 +318,11 @@ public class SymlinkTest extends BaseTestCase {
         // and check whether the original is updated.
         testR = registry.get("/target/originalR");
         byte[] testRBytes = (byte[])testR.getContent();
-        assertEquals("test R updated content", new String(testRBytes));
+        assertEquals("test R updated content", RegistryUtils.decodeBytes(testRBytes));
 
         testR2 = registry.get("/target/originalC/r2");
         byte[] testR2Bytes = (byte[])testR2.getContent();
-        assertEquals("test R2 updated content", new String(testR2Bytes));
+        assertEquals("test R2 updated content", RegistryUtils.decodeBytes(testR2Bytes));
 
         // cleaning up for the next test case
         registry.delete("/source-copy");
@@ -347,11 +349,11 @@ public class SymlinkTest extends BaseTestCase {
         // now just check the link is created
         Resource testRSym1 = registry.get("/source/symR");
         byte[] testRSym1Bytes = (byte[])testRSym1.getContent();
-        assertEquals("test R content", new String(testRSym1Bytes));
+        assertEquals("test R content", RegistryUtils.decodeBytes(testRSym1Bytes));
 
         Resource testR2Sym1 = registry.get("/source/symC/r2");
         byte[] testR2Sym1Bytes = (byte[])testR2Sym1.getContent();
-        assertEquals("test R2 content", new String(testR2Sym1Bytes));
+        assertEquals("test R2 content", RegistryUtils.decodeBytes(testR2Sym1Bytes));
 
         // now copy the source
         registry.rename("/source", "source-copy");
@@ -359,11 +361,11 @@ public class SymlinkTest extends BaseTestCase {
         // now check the copied symbolic links
         Resource testRSym2 = registry.get("/source-copy/symR");
         byte[] testRSym2Bytes = (byte[])testRSym2.getContent();
-        assertEquals("test R content", new String(testRSym2Bytes));
+        assertEquals("test R content", RegistryUtils.decodeBytes(testRSym2Bytes));
 
         Resource testR2Sym2 = registry.get("/source-copy/symC/r2");
         byte[] testR2Sym2Bytes = (byte[])testR2Sym2.getContent();
-        assertEquals("test R2 content", new String(testR2Sym2Bytes));
+        assertEquals("test R2 content", RegistryUtils.decodeBytes(testR2Sym2Bytes));
 
         // change the symbolic links and whether the original is updated
         testRSym2.setContent("test R updated content");
@@ -374,11 +376,11 @@ public class SymlinkTest extends BaseTestCase {
         // and check whether the original is updated.
         testR = registry.get("/target/originalR");
         byte[] testRBytes = (byte[])testR.getContent();
-        assertEquals("test R updated content", new String(testRBytes));
+        assertEquals("test R updated content", RegistryUtils.decodeBytes(testRBytes));
 
         testR2 = registry.get("/target/originalC/r2");
         byte[] testR2Bytes = (byte[])testR2.getContent();
-        assertEquals("test R2 updated content", new String(testR2Bytes));
+        assertEquals("test R2 updated content", RegistryUtils.decodeBytes(testR2Bytes));
 
         // cleaning up for the next test case
         registry.delete("/source-copy");
@@ -428,7 +430,7 @@ public class SymlinkTest extends BaseTestCase {
         assertTrue(!(r2 instanceof Collection));
 
         byte[] content = (byte[])r2.getContent();
-        String contentStr = new String(content);
+        String contentStr = RegistryUtils.decodeBytes(content);
         assertEquals("guess me if you can", contentStr);
         assertEquals("cycle-value1", r2.getProperty("key1"));
         assertEquals("cycle-value2", r2.getProperty("key2"));
@@ -491,7 +493,7 @@ public class SymlinkTest extends BaseTestCase {
         assertTrue(!(r2 instanceof Collection));
 
         byte[] content = (byte[])r2.getContent();
-        String contentStr = new String(content);
+        String contentStr = RegistryUtils.decodeBytes(content);
         assertEquals("guess me if you can", contentStr);
         assertEquals("cycle-value1", r2.getProperty("key1"));
         assertEquals("cycle-value2", r2.getProperty("key2"));
@@ -598,31 +600,31 @@ public class SymlinkTest extends BaseTestCase {
 
         registry.createLink("/Root", "/Root_01");
         r = registry.get("/Root/r1");
-        assertEquals("01", new String(((byte[])r.getContent())));
+        assertEquals("01", RegistryUtils.decodeBytes((byte[])r.getContent()));
 
         // dynamically change /Root to each of the above collections
         registry.createLink("/Root", "/Root_02");
         r = registry.get("/Root/r1");
-        assertEquals("02", new String(((byte[])r.getContent())));
+        assertEquals("02", RegistryUtils.decodeBytes((byte[])r.getContent()));
 
         registry.createLink("/Root", "/Root_03");
         r = registry.get("/Root/r1");
-        assertEquals("03", new String(((byte[])r.getContent())));
+        assertEquals("03", RegistryUtils.decodeBytes((byte[])r.getContent()));
 
         // create the transitive super link and check the behaviour by changing /Root symlink target
         registry.createLink("/super-link", "/Root/r1");
 
         registry.createLink("/Root", "/Root_03");
         r = registry.get("/super-link");
-        assertEquals("03", new String(((byte[])r.getContent())));
+        assertEquals("03", RegistryUtils.decodeBytes((byte[])r.getContent()));
 
         registry.createLink("/Root", "/Root_02");
         r = registry.get("/super-link");
-        assertEquals("02", new String(((byte[])r.getContent())));
+        assertEquals("02", RegistryUtils.decodeBytes((byte[])r.getContent()));
 
         registry.createLink("/Root", "/Root_01");
         r = registry.get("/super-link");
-        assertEquals("01", new String(((byte[])r.getContent())));
+        assertEquals("01", RegistryUtils.decodeBytes((byte[])r.getContent()));
 
 
         // create a transitive and cyclic symlink at the same time and check the behaviour by
@@ -631,15 +633,15 @@ public class SymlinkTest extends BaseTestCase {
 
         registry.createLink("/Root", "/Root_03");
         r = registry.get("/Root_01/bang");
-        assertEquals("03", new String(((byte[])r.getContent())));
+        assertEquals("03", RegistryUtils.decodeBytes((byte[])r.getContent()));
 
         registry.createLink("/Root", "/Root_02");
         r = registry.get("/Root_01/bang");
-        assertEquals("02", new String(((byte[])r.getContent())));
+        assertEquals("02", RegistryUtils.decodeBytes((byte[])r.getContent()));
 
         registry.createLink("/Root", "/Root_01");
         r = registry.get("/Root_01/bang");
-        assertEquals("01", new String(((byte[])r.getContent())));
+        assertEquals("01", RegistryUtils.decodeBytes((byte[])r.getContent()));
     }
 
 }

@@ -31,6 +31,7 @@ import org.wso2.carbon.registry.core.jdbc.handlers.filters.Filter;
 import org.wso2.carbon.registry.core.jdbc.handlers.filters.URLMatcher;
 import org.wso2.carbon.registry.core.session.CurrentSession;
 import org.wso2.carbon.registry.core.test.utils.BaseTestCase;
+import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.user.api.RealmConfiguration;
 
 public class SystemRegistryInHandlerTest  extends BaseTestCase {
@@ -80,7 +81,7 @@ public class SystemRegistryInHandlerTest  extends BaseTestCase {
         Resource rr = adminRegistry.get("/to/my/private/handler");
 
         byte[] newContent = (byte[])rr.getContent();
-        String newContentString = new String(newContent);
+        String newContentString = RegistryUtils.decodeBytes(newContent);
 
         String expectedString = "<adminRegistry-output><systemRegistry-output>" +
                             "<systemRegistry-input><adminRegistry-input>" +
@@ -102,7 +103,7 @@ public class SystemRegistryInHandlerTest  extends BaseTestCase {
                 Registry systemRegistry = embeddedRegistryService.getSystemRegistry();
                 Resource r = systemRegistry.get(path);
                 byte[] content = (byte[])r.getContent();
-                String contentString = new String(content);
+                String contentString = RegistryUtils.decodeBytes(content);
                 contentString = "<adminRegistry-output>" + contentString +
                         "</adminRegistry-output>";
                 r.setContent(contentString.getBytes());
@@ -117,7 +118,7 @@ public class SystemRegistryInHandlerTest  extends BaseTestCase {
                 Repository repository = requestContext.getRepository();
                 Resource r = repository.get(path);
                 byte[] content = (byte[])r.getContent();
-                String contentString = new String(content);
+                String contentString = RegistryUtils.decodeBytes(content);
                 contentString = "<systemRegistry-output>" + contentString +
                         "</systemRegistry-output>";
                 r.setContent(contentString.getBytes());
@@ -138,7 +139,7 @@ public class SystemRegistryInHandlerTest  extends BaseTestCase {
                 // we will get the system registry for this
                 Registry systemRegistry = embeddedRegistryService.getSystemRegistry();
                 byte[] content = (byte[])r.getContent();
-                String contentString = new String(content);
+                String contentString = RegistryUtils.decodeBytes(content);
                 contentString = "<adminRegistry-input>" + contentString +
                         "</adminRegistry-input>";
                 r.setContent(contentString.getBytes());
@@ -147,7 +148,7 @@ public class SystemRegistryInHandlerTest  extends BaseTestCase {
                 // now this should be the system registry, so lets return the real content
                 Repository repository = requestContext.getRepository();
                 byte[] content = (byte[])r.getContent();
-                String contentString = new String(content);
+                String contentString = RegistryUtils.decodeBytes(content);
                 contentString = "<systemRegistry-input>" + contentString +
                         "</systemRegistry-input>";
                 r.setContent(contentString.getBytes());

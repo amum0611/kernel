@@ -1215,7 +1215,7 @@ public class JDBCResourceVersionDAO implements ResourceVersionDAO {
             InputStream contentStream = resourceDAO.getContentStream(contentID);
             if (contentStream == null) {
                 // create an empty input stream
-                contentStream = new ByteArrayInputStream("".getBytes());
+                contentStream = new ByteArrayInputStream(RegistryUtils.encodeString(""));
             }
             // copy the content to the content_history table
             JDBCDatabaseTransaction.ManagedRegistryConnection conn =

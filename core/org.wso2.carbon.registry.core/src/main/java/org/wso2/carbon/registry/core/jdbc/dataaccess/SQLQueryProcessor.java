@@ -39,6 +39,7 @@ import org.wso2.carbon.registry.core.jdbc.dataobjects.RatingDO;
 import org.wso2.carbon.registry.core.jdbc.dataobjects.TaggingDO;
 import org.wso2.carbon.registry.core.session.CurrentSession;
 import org.wso2.carbon.registry.core.utils.AuthorizationUtils;
+import org.wso2.carbon.registry.core.utils.RegistryUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -116,7 +117,7 @@ public class SQLQueryProcessor implements QueryProcessor {
             if (obj instanceof String) {
                 sqlString = (String) obj;
             } else if (obj instanceof byte[]) {
-                sqlString = new String((byte[]) obj);
+                sqlString = RegistryUtils.decodeBytes((byte[]) obj);
             } else {
                 throw new RegistryException("Unable to execute query at " + query.getPath()
                         + ".Found resource content of type " +

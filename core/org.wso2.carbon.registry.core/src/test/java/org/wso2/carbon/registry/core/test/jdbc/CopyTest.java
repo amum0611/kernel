@@ -20,6 +20,7 @@ import org.wso2.carbon.registry.core.*;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.jdbc.EmbeddedRegistryService;
 import org.wso2.carbon.registry.core.test.utils.BaseTestCase;
+import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.user.api.RealmConfiguration;
 
 public class CopyTest extends BaseTestCase {
@@ -68,8 +69,8 @@ public class CopyTest extends BaseTestCase {
         assertEquals("Original resource should have a property named 'test' with value 'copy'.",
                 oldR1.getProperty("test"), "copy");
 
-        String newContent = new String((byte[]) newR1.getContent());
-        String oldContent = new String((byte[]) oldR1.getContent());
+        String newContent = RegistryUtils.decodeBytes((byte[]) newR1.getContent());
+        String oldContent = RegistryUtils.decodeBytes((byte[]) oldR1.getContent());
         assertEquals("Contents are not equal in copied resources", newContent, oldContent);
     }
 
@@ -116,8 +117,8 @@ public class CopyTest extends BaseTestCase {
         assertEquals("Original resource should have a property named 'test' with value 'copy'.",
                 oldR1.getProperty("test"), "copy");
 
-        String newContent = new String((byte[]) newR1.getContent());
-        String oldContent = new String((byte[]) oldR1.getContent());
+        String newContent = RegistryUtils.decodeBytes((byte[]) newR1.getContent());
+        String oldContent = RegistryUtils.decodeBytes((byte[]) oldR1.getContent());
         assertEquals("Contents are not equal in copied resources", newContent, oldContent);
 
         Comment[] comments = registry.getComments("/test/copy/c4/copy1");
@@ -146,8 +147,8 @@ public class CopyTest extends BaseTestCase {
         assertEquals("Original resource should have a property named 'test' with value 'copy'.",
                 oldR1.getProperty("test"), "copy");
 
-        String newContent = new String((byte[]) newR1.getContent());
-        String oldContent = new String((byte[]) oldR1.getContent());
+        String newContent = RegistryUtils.decodeBytes((byte[]) newR1.getContent());
+        String oldContent = RegistryUtils.decodeBytes((byte[]) oldR1.getContent());
         assertEquals("Contents are not equal in copied resources", newContent, oldContent);
 
         Tag[] tags = registry.getTags("/test/copy/c5/copy1");

@@ -17,6 +17,7 @@ package org.wso2.carbon.registry.app;
 
 import org.wso2.carbon.registry.core.ResourceImpl;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
+import org.wso2.carbon.registry.core.utils.RegistryUtils;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -85,7 +86,7 @@ public class RemoteResourceImpl extends ResourceImpl {
             if (content instanceof String) {
                 // Remote registry put method handles String content in a different manner - this is
                 // to reflect that change - to be consistent with embedded registry.
-                return ((String) content).getBytes();
+                return RegistryUtils.encodeString((String) content);
             }
             return content;
         }
