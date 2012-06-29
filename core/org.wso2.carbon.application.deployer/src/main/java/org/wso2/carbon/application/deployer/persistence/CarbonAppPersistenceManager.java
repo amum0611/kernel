@@ -434,7 +434,7 @@ public class CarbonAppPersistenceManager {
         try {
             reg.beginTransaction();
             Resource resource = reg.newResource();
-            resource.setContent(new String(content));
+            resource.setContent(content);
             if (mediaType == null) {
                 mediaType = MediaTypesUtils.getMediaType(file.getName());
             }
