@@ -20,11 +20,7 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
-import org.apache.axis2.description.AxisDescription;
-import org.apache.axis2.description.AxisModule;
-import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.AxisServiceGroup;
-import org.apache.axis2.description.Parameter;
+import org.apache.axis2.description.*;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.AxisEvent;
 import org.apache.axis2.engine.AxisObserver;
@@ -43,13 +39,10 @@ import org.wso2.carbon.core.util.SystemFilter;
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.deployment.GhostDeployerUtils;
+import org.wso2.carbon.utils.multitenancy.CarbonApplicationContextHolder;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This deployment interceptor will be called whenever before a module is initialized or service is
@@ -105,10 +98,14 @@ public class DeploymentInterceptor implements AxisObserver {
 
     public void serviceGroupUpdate(AxisEvent axisEvent, AxisServiceGroup axisServiceGroup) {
         SuperTenantCarbonContext.startTenantFlow();
+        CarbonApplicationContextHolder currentCarbonAppContextHolder =
+                CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder();
+        currentCarbonAppContextHolder.startApplicationFlow();
         try {
             SuperTenantCarbonContext carbonContext = SuperTenantCarbonContext.getCurrentContext();
             carbonContext.setTenantId(tenantId);
             carbonContext.setTenantDomain(tenantDomain);
+            currentCarbonAppContextHolder.setApplicationName(axisServiceGroup.getServiceGroupName());
             // We do not persist Admin service events
             if (SystemFilter.isFilteredOutService(axisServiceGroup)) {
                 return;
@@ -219,6 +216,7 @@ public class DeploymentInterceptor implements AxisObserver {
                 }
             }
         } finally {
+            currentCarbonAppContextHolder.endApplicationFlow();
             SuperTenantCarbonContext.endTenantFlow();
         }
     }
@@ -244,10 +242,14 @@ public class DeploymentInterceptor implements AxisObserver {
 
     public void serviceUpdate(AxisEvent axisEvent, AxisService axisService) {
         SuperTenantCarbonContext.startTenantFlow();
+        CarbonApplicationContextHolder currentCarbonAppContextHolder =
+                CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder();
+        currentCarbonAppContextHolder.startApplicationFlow();
         try {
             SuperTenantCarbonContext carbonContext = SuperTenantCarbonContext.getCurrentContext();
             carbonContext.setTenantId(tenantId);
             carbonContext.setTenantDomain(tenantDomain);
+            currentCarbonAppContextHolder.setApplicationName(axisService.getName());
             // We do not persist Admin service events
             if (SystemFilter.isFilteredOutService((AxisServiceGroup) axisService.getParent())) {
                 return;
@@ -322,16 +324,21 @@ public class DeploymentInterceptor implements AxisObserver {
                 log.error(msg, e);
             }
         } finally {
+            currentCarbonAppContextHolder.endApplicationFlow();
             SuperTenantCarbonContext.endTenantFlow();
         }
     }
 
     public void moduleUpdate(AxisEvent axisEvent, AxisModule axisModule) {
         SuperTenantCarbonContext.startTenantFlow();
+        CarbonApplicationContextHolder currentCarbonAppContextHolder =
+                CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder();
+        currentCarbonAppContextHolder.startApplicationFlow();
         try {
             SuperTenantCarbonContext carbonContext = SuperTenantCarbonContext.getCurrentContext();
             carbonContext.setTenantId(tenantId);
             carbonContext.setTenantDomain(tenantDomain);
+            currentCarbonAppContextHolder.setApplicationName(axisModule.getName());
             //TODO: Check whether we can ignore AdminModules - SystemFilter.isFilteredOutModule
             // We ignore admin module events
             String moduleName = axisModule.getName();
@@ -446,6 +453,7 @@ public class DeploymentInterceptor implements AxisObserver {
                 }
             }
         } finally {
+            currentCarbonAppContextHolder.endApplicationFlow();
             SuperTenantCarbonContext.endTenantFlow();
         }
     }
