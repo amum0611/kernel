@@ -44,6 +44,9 @@ public class MultitenantConstants {
     public static final String TENANT_MODULE_BUNDLES = "tenant.module.bundles";
     public static final String TENANT_MODULE_LOADED = "tenant.module.loaded";
 
+    public static final String ENABLE_EMAIL_USER_NAME = "EnableEmailUserName";
+
+
     /**
      * Last time at which this tenant was accessed
      */

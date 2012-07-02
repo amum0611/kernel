@@ -37,7 +37,7 @@ public class MultitenantUtils {
 
     public static String getTenantAwareUsername(String username) {
         ServerConfiguration serverConfig = ServerConfiguration.getInstance();
-        if (username.contains("@")) {
+        if (username.contains("@") && !isEmailUserName()) {
         	username = username.substring(0, username.lastIndexOf('@')); // then pick user name, which is preceding last '@' sign
         }
         return username;
@@ -53,7 +53,7 @@ public class MultitenantUtils {
 
     public static String getTenantDomain(String username) {
         String tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
-        if (username.contains("@")) {
+        if (username.contains("@") && !isEmailUserName()) {
             tenantDomain = username.substring(username.lastIndexOf('@') + 1);
         }
         return tenantDomain;
@@ -144,4 +144,11 @@ public class MultitenantUtils {
         return repoPath;
     }
 
+    public static boolean isEmailUserName(){
+
+        String enableEmailUserName = ServerConfiguration.getInstance().
+                                getFirstProperty(MultitenantConstants.ENABLE_EMAIL_USER_NAME);
+        return enableEmailUserName != null && "true".equals(enableEmailUserName.trim());
+
+    }
 }
