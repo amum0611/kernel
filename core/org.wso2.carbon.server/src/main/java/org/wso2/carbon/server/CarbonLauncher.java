@@ -150,7 +150,7 @@ public class CarbonLauncher {
             // install.area if not specified
             if (initialPropertyMap.get(OSGI_INSTALL_AREA) == null) {
                 initialPropertyMap
-                        .put(OSGI_INSTALL_AREA, platformDirectory.toURI().toURL().toExternalForm());
+                        .put(OSGI_INSTALL_AREA, platformDirectory.toURL().toExternalForm());
             }
 
             // configuration.area if not specified
@@ -158,14 +158,14 @@ public class CarbonLauncher {
                 File configurationDirectory =
                         new File(platformDirectory, "configuration");
                 initialPropertyMap.put(OSGI_CONFIGURATION_AREA,
-                        configurationDirectory.toURI().toURL().toExternalForm());
+                        configurationDirectory.toURL().toExternalForm());
             }
 
             // instance.area if not specified
             if (initialPropertyMap.get(OSGI_INSTANCE_AREA) == null) {
                 File workspaceDirectory = new File(platformDirectory, "workspace");
                 initialPropertyMap
-                        .put(OSGI_INSTANCE_AREA, workspaceDirectory.toURI().toURL().toExternalForm());
+                        .put(OSGI_INSTANCE_AREA, workspaceDirectory.toURL().toExternalForm());
             }
 
             // osgi.framework if not specified
@@ -185,7 +185,7 @@ public class CarbonLauncher {
                 }
 
                 initialPropertyMap.put(OSGI_FRAMEWORK,
-                        new File(path).toURI().toURL().toExternalForm());
+                        new File(path).toURL().toExternalForm());
             }
         } catch (MalformedURLException e) {
             throw new RuntimeException("Error establishing location");

@@ -132,7 +132,7 @@ if [ -z "$JAVA_HOME" ]; then
 fi
 
 if [ -e "$CARBON_HOME/wso2carbon.pid" ]; then
-  PID=`cat $CARBON_HOME/wso2carbon.pid`
+  PID=`cat "$CARBON_HOME"/wso2carbon.pid`
 fi
 
 # ----- Process the input command ----------------------------------------------
