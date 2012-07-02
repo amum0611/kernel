@@ -128,11 +128,17 @@ public class CompositeValve extends ValveBase {
 
             TomcatValveContainer.invokeValves(request, response);
             int status = response.getStatus();
-            //skipping invoking other valves for accessing service urls from the root when enabling a url mapping for services.
-            if (status != Response.SC_MOVED_TEMPORARILY && status != Response.SC_FORBIDDEN &&
-                    !(request.getRequestURI().equals("/") && (request.getQueryString().equals("wsdl")))) {
-                // See  http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-                getNext().invoke(request, response);
+            String queryString = request.getQueryString();
+            if (status != Response.SC_MOVED_TEMPORARILY && status != Response.SC_FORBIDDEN) {
+                //skipping invoking other valves for accessing service urls from the root when enabling a url mapping for services.
+                if (queryString != null &&
+                        !(request.getRequestURI().equals("/") && (queryString.equals("wsdl")))) {
+                    // See  http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+                    getNext().invoke(request, response);
+                } else {
+                    // See  http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+                    getNext().invoke(request, response);
+                }
             }
         } catch (Exception e) {
             log.error("Could not handle request: " + request.getRequestURI(), e);
