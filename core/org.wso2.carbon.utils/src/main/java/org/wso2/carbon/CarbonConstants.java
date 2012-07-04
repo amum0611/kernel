@@ -200,6 +200,12 @@ public final class CarbonConstants {
     public static final String WEBAPP_IDLE_TIME = "webapp.idle.time";
     public static final int WEBAPP_CLEANUP_PERIOD_SECS = 60;
 
+    /**
+     * Map to hold the session managers of webapps which will be called from session replication
+     * message to execute the received cluster message
+     */
+    public static final String TOMCAT_SESSION_MANAGER_MAP = "CarbonTomcatSessionManagerMap";
+
     //Constants useing for context config
     public static final String CONTEXTS = "contexts";
     public static final String CONTEXT = "context";
