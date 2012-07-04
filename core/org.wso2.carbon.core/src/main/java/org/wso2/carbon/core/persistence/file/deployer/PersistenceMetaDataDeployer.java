@@ -105,6 +105,12 @@ public class PersistenceMetaDataDeployer extends AbstractDeployer {
             }
 
             AxisModule module = axisConfig.getModule(name);
+            if(module == null){ //checking for null. eg:  CARBON-13556
+                if(log.isDebugEnabled()){
+                    log.debug("Module " + name + " not available.");
+                }
+                return;
+            }
             String version = PersistenceUtils.getModuleVersion(module);
             try {
                 OMElement moduleEle = (OMElement) persistenceFactory.getModuleFilePM().get(name,
