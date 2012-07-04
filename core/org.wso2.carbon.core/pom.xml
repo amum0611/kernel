@@ -115,6 +115,21 @@
 			<artifactId>httpcore</artifactId>
 			<version>${orbit.version.httpcore}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.ha.wso2</groupId>
+            <artifactId>tomcat-ha</artifactId>
+            <version>${orbit.version.tomcat}</version>
+            <exclusions>
+				<exclusion>
+					<groupId>org.apache.tomcat</groupId>
+					<artifactId>tomcat-coyote</artifactId>
+				</exclusion>
+                <exclusion>
+					<groupId>org.apache.tomcat</groupId>
+					<artifactId>tomcat-servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
+        </dependency>
 		<dependency>
 			<groupId>wsdl4j.wso2</groupId>
 			<artifactId>wsdl4j</artifactId>
