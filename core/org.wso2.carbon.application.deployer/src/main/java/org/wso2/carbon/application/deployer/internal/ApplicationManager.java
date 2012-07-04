@@ -39,7 +39,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages all cApp deployment aspects. Carbon App deployment is done in two steps. A cApp is
@@ -76,8 +76,8 @@ public final class ApplicationManager implements ApplicationManagerService {
      * Constructor initializes public instances and finds the initial handlers
      */
     private ApplicationManager() {
-        tenantcAppMap = new HashMap<String, ArrayList<CarbonApplication>>();
-        tenantPMMap = new HashMap<String, CarbonAppPersistenceManager>();
+        tenantcAppMap = new ConcurrentHashMap<String, ArrayList<CarbonApplication>>();
+        tenantPMMap = new ConcurrentHashMap<String, CarbonAppPersistenceManager>();
 
         appDeploymentHandlers = new ArrayList<AppDeploymentHandler>();
         pendingCarbonApps = new ArrayList<PendingApplication>();
@@ -126,7 +126,7 @@ public final class ApplicationManager implements ApplicationManagerService {
     }
 
     /**
-     * Deploy a sigle app by iterating all handlers and sending apps throgh the handler
+     * Deploy a single app by iterating all handlers and sending apps through the handler
      * chain..
      * @param archPath - carbon app archive path
      * @param axisConfig - AxisConfiguration of the current tenant
@@ -347,7 +347,7 @@ public final class ApplicationManager implements ApplicationManagerService {
      * @param carbonApp - CarbonApplication instance
      * @param axisConfig - AxisConfiguration of the current tenant
      */
-    public synchronized void undeployCarbonApp(CarbonApplication carbonApp,
+    public void undeployCarbonApp(CarbonApplication carbonApp,
                                                AxisConfiguration axisConfig) {
         log.info("Undeploying Carbon Application : " + carbonApp.getAppName() + "...");
         // Call the undeployer handler chain
@@ -406,10 +406,13 @@ public final class ApplicationManager implements ApplicationManagerService {
      * @param carbonApp - CarbonApplication instance
      */
     public void addCarbonApp(String tenantId, CarbonApplication carbonApp) {
-        ArrayList<CarbonApplication> cApps = tenantcAppMap.get(tenantId);
-        if (cApps == null) {
-            cApps = new ArrayList<CarbonApplication>();
-            tenantcAppMap.put(tenantId, cApps);
+        ArrayList<CarbonApplication> cApps;
+        synchronized (tenantId.intern()) {
+            cApps = tenantcAppMap.get(tenantId);
+            if (cApps == null) {
+                cApps = new ArrayList<CarbonApplication>();
+                tenantcAppMap.put(tenantId, cApps);
+            }
         }
         // don't add the cApp if it already exists
         for (CarbonApplication cApp : cApps) {
@@ -431,8 +434,10 @@ public final class ApplicationManager implements ApplicationManagerService {
      */
     public void removeCarbonApp(String tenantId, CarbonApplication carbonApp) {
         ArrayList<CarbonApplication> cApps = tenantcAppMap.get(tenantId);
-        if (cApps != null && cApps.contains(carbonApp)) {
-            cApps.remove(carbonApp);
+        synchronized (cApps) {
+            if (cApps != null && cApps.contains(carbonApp)) {
+                cApps.remove(carbonApp);
+            }
         }
     }
 
