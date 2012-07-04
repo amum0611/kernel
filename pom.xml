@@ -26,33 +26,49 @@
     </distributionManagement>
 
     <!--Moved the modules out of default profile  and disabled all the profiles-->
-   
+
     <profiles>
-	<profile>
-	  <id>default</id>
-	  <activation>
-		<activeByDefault>true</activeByDefault>
-	  </activation>
-	    <modules>
-		<module>dependencies</module>
-		<module>service-stubs</module>
-		<module>parent</module>
-                <module>core</module>
-		<module>features</module>
-                <module>distribution</module>
-             </modules>
-	</profile>
         <profile>
-	  <id>sonar-profile</id>
-	  <activation>
-		<property>
-		   <name>bamboo</name>
-                   <value>sonar</value>
-		</property>
-	  </activation>
-	  <modules>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>dependencies</module>
+                <module>service-stubs</module>
+                <module>parent</module>
                 <module>core</module>
-	  </modules>
-	</profile>
+                <module>features</module>
+                <module>distribution</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>builder</id>
+            <activation>
+                <property>
+                    <name>builder</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>service-stubs</module>
+                <module>parent</module>
+                <module>core</module>
+                <module>features</module>
+                <module>distribution</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>sonar-profile</id>
+            <activation>
+                <property>
+                    <name>bamboo</name>
+                    <value>sonar</value>
+                </property>
+            </activation>
+            <modules>
+                <module>core</module>
+            </modules>
+        </profile>
     </profiles>
 </project>
