@@ -476,7 +476,13 @@ public class DataSourceRepository implements GroupEventListener {
 		}
 		DataSourceReader dsReader = DataSourceManager.getInstance().getDataSourceReader(
 				dsmInfo.getDefinition().getType());
-		return dsReader.testDataSourceConnection(DataSourceUtils.elementToString((Element)dsmInfo.getDefinition().getDsXMLConfiguration()));
+		try {
+			return dsReader.testDataSourceConnection(DataSourceUtils.elementToString((Element)dsmInfo.getDefinition().getDsXMLConfiguration()));
+		} catch (DataSourceException e) {
+			log.error(e.getMessage(), e);
+			throw e;
+		}
+		
 	}
 	@Override
 	public void onGroupMessage(byte[] msg) {
