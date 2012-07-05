@@ -468,14 +468,6 @@ public class ReadWriteLDAPUserStoreManager extends ReadOnlyLDAPUserStoreManager 
 	@Override
 	public void doDeleteUser(String userName) throws UserStoreException {
 
-		if (realmConfig.getAdminUserName().equals(userName)) {
-			throw new UserStoreException("Cannot delete admin user");
-		}
-
-		if (CarbonConstants.REGISTRY_ANONNYMOUS_USERNAME.equals(userName)) {
-			throw new UserStoreException("Cannot delete anonymous user");
-		}
-
 		if (!readLDAPUserGroups && !writeLDAPUserGroups || readLDAPUserGroups &&
 				!writeLDAPUserGroups) {
 			if (this.hybridRoleManager != null) {
@@ -1128,7 +1120,7 @@ public class ReadWriteLDAPUserStoreManager extends ReadOnlyLDAPUserStoreManager 
 	 * @throws UserStoreException
 	 */
 	@Override
-	public void updateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles)
+	public void doUpdateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles)
 			throws UserStoreException {
 
 		if (!readLDAPUserGroups && !writeLDAPUserGroups || readLDAPUserGroups &&
@@ -1138,23 +1130,7 @@ public class ReadWriteLDAPUserStoreManager extends ReadOnlyLDAPUserStoreManager 
 			super.updateRoleListOfUser(userName, deletedRoles, newRoles);
 		}
 		if (readLDAPUserGroups && writeLDAPUserGroups) {
-			// check whether everyone role is trying to be deleted,
-			if (deletedRoles != null) {
-				Arrays.sort(deletedRoles);
-				if (Arrays.binarySearch(deletedRoles, realmConfig.getEveryOneRoleName()) > -1) {
-					log.error("An attempt to remove " + userName + " user from Everyone role ");
-					throw new UserStoreException("Everyone role is not updatable");
-				}
-			}
-			// check whether admin role is trying to be deleted from admin user.
-			if (deletedRoles != null) {
-				Arrays.sort(deletedRoles);
-				if (realmConfig.getAdminUserName().equals(userName) &&
-						Arrays.binarySearch(deletedRoles, realmConfig.getAdminRoleName()) > -1) {
-					log.error("An attempt to remove Admin user from Admin role ");
-					throw new UserStoreException("Cannot remove Admin user from Admin role");
-				}
-			}
+
 			// get the DN of the user entry
 			String userNameDN = this.getNameInSpaceForUserName(userName);
 			String membershipAttribute =
@@ -1291,7 +1267,7 @@ public class ReadWriteLDAPUserStoreManager extends ReadOnlyLDAPUserStoreManager 
 	 * @param newUsers
 	 */
 	@Override
-	public void updateUserListOfRole(String roleName, String[] deletedUsers, String[] newUsers)
+	public void doUpdateUserListOfRole(String roleName, String[] deletedUsers, String[] newUsers)
 			throws UserStoreException {
 		if (!readLDAPUserGroups && !writeLDAPUserGroups || readLDAPUserGroups &&
 				!writeLDAPUserGroups) {
@@ -1300,18 +1276,7 @@ public class ReadWriteLDAPUserStoreManager extends ReadOnlyLDAPUserStoreManager 
 			super.updateUserListOfRole(roleName, deletedUsers, newUsers);
 		}
 		if (readLDAPUserGroups && writeLDAPUserGroups) {
-			if (realmConfig.getEveryOneRoleName().equals(roleName)) {
-				throw new UserStoreException("Everyone role is not updatable");
-			}
 
-			if (deletedUsers != null) {
-				Arrays.sort(deletedUsers);
-				if (realmConfig.getAdminRoleName().equals(roleName) &&
-						Arrays.binarySearch(deletedUsers, realmConfig.getAdminUserName()) > -1) {
-					log.error("An attempt to remove Admin user from Admin role ");
-					throw new UserStoreException("Cannot remove Admin user from Admin role");
-				}
-			}
 			String errorMessage = null;
 			NamingEnumeration<SearchResult> groupSearchResults = null;
 

@@ -17,6 +17,8 @@
 */
 package org.wso2.carbon.user.core.common;
 
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonConstants;
@@ -36,15 +38,12 @@ import org.wso2.carbon.user.core.listener.UserOperationEventListener;
 import org.wso2.carbon.user.core.listener.UserStoreManagerListener;
 import org.wso2.carbon.user.core.profile.ProfileConfiguration;
 import org.wso2.carbon.user.core.profile.ProfileConfigurationManager;
+import org.wso2.carbon.utils.ServerConstants;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -504,6 +503,25 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
             }
         }
 
+        String loggedInUserName = getLoggedInUser();
+
+        if(userName != null && userName.equals(realmConfig.getAdminUserName()) &&
+                                  loggedInUserName != null && !userName.equals(loggedInUserName)){
+            log.error("An attempt to change password of Admin user by user : " + loggedInUserName);
+            throw new UserStoreException("Cannot change password of Admin user");
+        }
+
+        if(userName != null){
+            String[] roles = getRoleListOfUser(userName);
+            if(Arrays.binarySearch(roles, realmConfig.getAdminRoleName()) > -1 &&
+                    loggedInUserName != null && !userName.equals(loggedInUserName) &&
+                                                !userName.equals(realmConfig.getAdminUserName())){
+                log.error("An attempt to change password of user in Admin role by user : " +
+                                                                                loggedInUserName);
+                throw new UserStoreException("Cannot change password of user in Admin role");
+            }
+        }
+
         doUpdateCredentialByAdmin(userName, newCredential);
 
         for (UserOperationEventListener listener : UMListenerServiceComponent
@@ -531,6 +549,33 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
             }
         }
 
+        String loggedInUserName = getLoggedInUser();
+
+		if (realmConfig.getAdminUserName().equals(userName)) {
+			throw new UserStoreException("Cannot delete admin user");
+		}
+
+		if (CarbonConstants.REGISTRY_ANONNYMOUS_USERNAME.equals(userName)) {
+			throw new UserStoreException("Cannot delete anonymous user");
+		}
+
+        if(userName != null && userName.equals(realmConfig.getAdminUserName()) &&
+                                loggedInUserName != null &&  !userName.equals(loggedInUserName)){
+            log.error("An attempt to delete Admin user by user : " + loggedInUserName);
+            throw new UserStoreException("Cannot delete Admin user");
+        }
+
+        if(userName != null){
+            String[] roles = getRoleListOfUser(userName);
+            if(Arrays.binarySearch(roles, realmConfig.getAdminRoleName()) > -1 &&
+                loggedInUserName != null &&!userName.equals(loggedInUserName) &&
+                                                !userName.equals(realmConfig.getAdminUserName())){
+                log.error("An attempt to delete user in Admin role by user : " +
+                                                                                loggedInUserName);
+                throw new UserStoreException("Cannot delete user in Admin role");
+            }
+        }        
+
         doDeleteUser(userName);
 
         for (UserOperationEventListener listener : UMListenerServiceComponent
@@ -550,6 +595,25 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
                 .getUserOperationEventListeners()) {
             if (!listener.doPreSetUserClaimValue(userName, claimURI, claimValue, profileName, this)) {
                 return;
+            }
+        }
+
+        String loggedInUserName = getLoggedInUser();
+
+        if(userName != null && userName.equals(realmConfig.getAdminUserName()) &&
+                                   loggedInUserName != null && !userName.equals(loggedInUserName)){
+            log.error("An attempt to set claim value of Admin user by user : " + loggedInUserName);
+            throw new UserStoreException("Cannot set claim value of  Admin user");
+        }
+
+        if(userName != null){
+            String[] roles = getRoleListOfUser(userName);
+            if(Arrays.binarySearch(roles, realmConfig.getAdminRoleName()) > -1 &&
+                loggedInUserName != null && !userName.equals(loggedInUserName) &&
+                                                !userName.equals(realmConfig.getAdminUserName())){
+                log.error("An attempt to set claim value of user in Admin role by user : " +
+                                                                                loggedInUserName);
+                throw new UserStoreException("Cannot set claim value of user in Admin role");
             }
         }
 
@@ -575,6 +639,25 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
             }
         }
 
+        String loggedInUserName = getLoggedInUser();
+
+        if(userName != null && userName.equals(realmConfig.getAdminUserName()) &&
+                                    loggedInUserName != null && userName.equals(loggedInUserName)){
+            log.error("An attempt to set claim values of Admin user by user : " + loggedInUserName);
+            throw new UserStoreException("Cannot set claim values of  Admin user");
+        }
+
+        if(userName != null){
+            String[] roles = getRoleListOfUser(userName);
+            if(Arrays.binarySearch(roles, realmConfig.getAdminRoleName()) > -1 &&
+                loggedInUserName != null && !userName.equals(loggedInUserName) &&
+                                                !userName.equals(realmConfig.getAdminUserName())){
+                log.error("An attempt to set claim values of user in Admin role by user : " +
+                                                                                loggedInUserName);
+                throw new UserStoreException("Cannot set claim values of user in Admin role");
+            }
+        }
+        
         doSetUserClaimValues(userName, claims, profileName);
 
         for (UserOperationEventListener listener : UMListenerServiceComponent
@@ -596,6 +679,25 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
             }
         }
 
+        String loggedInUserName = getLoggedInUser();
+
+        if(userName != null && userName.equals(realmConfig.getAdminUserName()) &&
+                                    loggedInUserName != null && !userName.equals(loggedInUserName)){
+            log.error("An attempt to delete claim value of Admin user by user : " + loggedInUserName);
+            throw new UserStoreException("Cannot delete claim value of  Admin user");
+        }
+
+        if(userName != null){
+            String[] roles = getRoleListOfUser(userName);
+            if(Arrays.binarySearch(roles, realmConfig.getAdminRoleName()) > -1 &&
+                loggedInUserName != null &&  !userName.equals(loggedInUserName) &&
+                                                !userName.equals(realmConfig.getAdminUserName())){
+                log.error("An attempt to delete claim value of user in Admin role by user : " +
+                                                                                loggedInUserName);
+                throw new UserStoreException("Cannot delete claim value of user in Admin role");
+            }
+        }
+
         doDeleteUserClaimValue(userName, claimURI, profileName);
 
         for (UserOperationEventListener listener : UMListenerServiceComponent
@@ -614,6 +716,25 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
                 .getUserOperationEventListeners()) {
             if (!listener.doPreDeleteUserClaimValues(userName, claims, profileName, this)) {
                 return;
+            }
+        }
+
+        String loggedInUserName = getLoggedInUser();
+
+        if(userName != null && userName.equals(realmConfig.getAdminUserName()) &&
+                                loggedInUserName != null &&  !userName.equals(loggedInUserName)){
+            log.error("An attempt to delete claim values of Admin user by user : " + loggedInUserName);
+            throw new UserStoreException("Cannot delete claim values of  Admin user");
+        }
+
+        if(userName != null){
+            String[] roles = getRoleListOfUser(userName);
+            if(Arrays.binarySearch(roles, realmConfig.getAdminRoleName()) > -1 &&
+                loggedInUserName != null && !userName.equals(loggedInUserName) &&
+                                                !userName.equals(realmConfig.getAdminUserName())){
+                log.error("An attempt to delete claim values of user in Admin role by user : " +
+                                                                                loggedInUserName);
+                throw new UserStoreException("Cannot delete claim values of user in Admin role");
             }
         }
 
@@ -712,13 +833,84 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
         }
     }
 
+
+    @Override
+    public void updateUserListOfRole(String roleName, String[] deletedUsers, String[] newUsers)
+                                                                        throws UserStoreException {
+
+        if (realmConfig.getEveryOneRoleName().equals(roleName)) {
+            throw new UserStoreException("Everyone role can not be updated");
+        }
+
+        if (deletedUsers != null) {
+            Arrays.sort(deletedUsers);
+            if (realmConfig.getAdminRoleName().equals(roleName)
+                    && Arrays.binarySearch(deletedUsers, realmConfig.getAdminUserName()) > -1) {
+                log.error("An attempt to remove Admin user from Admin role ");
+                throw new UserStoreException("Cannot remove Admin user from Admin role");
+            }
+        }
+
+        String loggedInUserName = getLoggedInUser();
+        if (realmConfig.getAdminRoleName().equals(roleName) &&
+                                !realmConfig.getAdminUserName().equals(loggedInUserName)) {
+            log.error("An attempt to add or remove users from Admin role by user : "
+                                                                            + loggedInUserName);
+            throw new UserStoreException("Cannot add or remove user from Admin role");
+        }
+
+        doUpdateUserListOfRole(roleName, deletedUsers, newUsers);
+    }
+
+    @Override
+    public void updateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles)
+                                                                        throws UserStoreException {
+        if (deletedRoles != null) {
+            Arrays.sort(deletedRoles);
+            if(Arrays.binarySearch(deletedRoles, realmConfig.getEveryOneRoleName()) > -1){
+                log.error("An attempt to remove "+userName+" user from Everyone role ");
+                throw new UserStoreException("Everyone role can not be updated");
+            }
+
+            if (realmConfig.getAdminUserName().equals(userName)
+                    && Arrays.binarySearch(deletedRoles, realmConfig.getAdminRoleName()) > -1) {
+                log.error("An attempt to remove Admin user from Admin role ");
+                throw new UserStoreException("Cannot remove Admin user from Admin role");
+            }
+
+            String loggedInUserName = getLoggedInUser();
+            if (Arrays.binarySearch(deletedRoles, realmConfig.getAdminRoleName()) > -1 &&
+                                    !realmConfig.getAdminUserName().equals(loggedInUserName)) {
+                log.error("An attempt to remove user from Admin role by user : " + loggedInUserName);
+                throw new UserStoreException("Cannot remove user from Admin role");
+            }
+
+            if(newRoles != null){
+                Arrays.sort(newRoles);
+                if (Arrays.binarySearch(newRoles, realmConfig.getAdminRoleName()) > -1 &&
+                                        !realmConfig.getAdminUserName().equals(loggedInUserName)) {
+                    log.error("An attempt to add user to Admin role by user : " + loggedInUserName);
+                    throw new UserStoreException("Cannot add user to Admin role");
+                }
+            }
+        }
+
+        doUpdateRoleListOfUser(userName, deletedRoles, newRoles);
+
+    }
+
+    @Override
+    public void updateRoleName(String roleName, String newRoleName) throws UserStoreException {
+       
+    }
+
     /**
      * Retrieves a list of user names for given user's property in user profile
      *
      * @param property
      *              user property in user profile
      * @param value
- *                  value of property
+     *                  value of property
      * @param profileName
      *              profile name, can be null. If null the default profile is considered.
      * @return      An array of user names
@@ -758,7 +950,7 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
      * @param profileName
      *            profile name, can be null. If null the default profile is considered.
      * @throws UserStoreException
- *              An unexpected exception has occurred
+     *              An unexpected exception has occurred
      */
     public abstract void doAddUser(String userName, Object credential, String[] roleList,
                        Map<String, String> claims, String profileName) throws UserStoreException;
@@ -870,5 +1062,50 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
     public abstract void doDeleteUserClaimValues(String userName, String[] claims, String profileName)
                                                                         throws UserStoreException;
 
+    /**
+     * Update user list of a particular role
+     *
+     * @param roleName  The role name
+     *
+     * @param deletedUsers  Array of user names,  that is going to be removed from the role
+     *
+     * @param newUsers Array of user names,  that is going to be added to the role
+     *
+     * @throws UserStoreException  An unexpected exception has occurred
+     */
+    public abstract void doUpdateUserListOfRole(String roleName, String[] deletedUsers,
+                                                String[] newUsers)  throws UserStoreException;
 
+    /**
+     * Update role list of a particular user
+     *
+     * @param userName   The user name
+     *
+     * @param deletedRoles  Array of role names,  that is going to be removed from the user
+     *
+     * @param newRoles  Array of role names,  that is going to be added to the user
+     *
+     * @throws UserStoreException  An unexpected exception has occurred
+     */
+    public abstract void doUpdateRoleListOfUser(String userName, String[] deletedRoles,
+                                                String[] newRoles) throws UserStoreException;
+
+    /**
+     * Gets logged in user of the server
+     *
+     * @return  user name
+     */
+    private String getLoggedInUser(){
+
+        MessageContext context = MessageContext.getCurrentMessageContext();
+        if(context != null){
+            HttpServletRequest request = (HttpServletRequest) context.
+                                                getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST);
+            if(request != null){
+                HttpSession httpSession = request.getSession(false);
+                return (String) httpSession.getAttribute(ServerConstants.USER_LOGGED_IN);
+            }
+        }
+        return null;
+    }
 }

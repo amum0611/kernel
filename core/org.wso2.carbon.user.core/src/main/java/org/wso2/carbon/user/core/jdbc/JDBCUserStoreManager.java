@@ -53,6 +53,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
     protected DataSource jdbcDataSource = null;
     protected UserRealm jdbcUserRealm = null;
     protected int tenantId;
+    protected boolean useOnlyInternalRoles;
     protected Random random = new Random();
     
     private static Log log = LogFactory.getLog(JDBCUserStoreManager.class);
@@ -62,6 +63,10 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         this.tenantId = tenantId;
         realmConfig.setUserStoreProperties(JDBCRealmUtil.getSQL(realmConfig
                                            .getUserStoreProperties()));
+        if ("true".equals(realmConfig
+                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_INTERNAL_ROLES_ONLY))) {
+            useOnlyInternalRoles = true;
+        }        
         /*Initialize user roles cache as implemented in AbstractUserStoreManager*/
 	    initUserRolesCache();
     }
@@ -83,12 +88,26 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         }
         realmConfig.setUserStoreProperties(JDBCRealmUtil.getSQL(realmConfig
                                            .getUserStoreProperties()));
+        if ("true".equals(realmConfig
+                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_INTERNAL_ROLES_ONLY))) {
+            useOnlyInternalRoles = true;
+        }
+        
         this.jdbcDataSource = ds;
-        hybridRoleManager = new HybridRoleManager(jdbcDataSource, tenantId, realmConfig, jdbcUserRealm);
+
+        if (dataSource == null) {
+			dataSource = DatabaseUtil.getRealmDataSource(realmConfig);
+		}
+		if (dataSource == null) {
+			throw new UserStoreException("User Management Data Source is null");
+		}
+
+        hybridRoleManager = new HybridRoleManager(dataSource, tenantId, realmConfig, jdbcUserRealm);
 
         if (addInitData) {
             this.addInitialData();
         }
+
         if (log.isDebugEnabled()) {
             log.debug("Ended " + System.currentTimeMillis());
         }
@@ -104,18 +123,35 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         this.claimManager = claimManager;
         this.profileManager = profileManager;
         this.jdbcUserRealm = realm;
+
+        if ("true".equals(realmConfig
+                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_INTERNAL_ROLES_ONLY))) {
+            useOnlyInternalRoles = true;
+        }
+        
         jdbcDataSource = loadUserStoreSpacificDataSoruce();
 
         if (jdbcDataSource == null) {
             jdbcDataSource = (DataSource) properties.get(UserCoreConstants.DATA_SOURCE);
         }
+
         if (jdbcDataSource == null) {
             jdbcDataSource = DatabaseUtil.getRealmDataSource(realmConfig);
             properties.put(UserCoreConstants.DATA_SOURCE, jdbcDataSource);
         }
         if (jdbcDataSource == null) {
-            throw new UserStoreException("Data Source is null");
+            throw new UserStoreException("User Store Data Source is null");
         }
+
+		dataSource = (DataSource) properties.get(UserCoreConstants.DATA_SOURCE);
+		if (dataSource == null) {
+			dataSource = DatabaseUtil.getRealmDataSource(realmConfig);
+		}
+		if (dataSource == null) {
+			throw new UserStoreException("User Management Data Source is null");
+		}
+
+		properties.put(UserCoreConstants.DATA_SOURCE, dataSource);
 
         if (log.isDebugEnabled()) {
             log.debug("The jdbcDataSource being used by JDBCUserStoreManager :: "
@@ -123,13 +159,13 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         }
         realmConfig.setUserStoreProperties(JDBCRealmUtil.getSQL(realmConfig
                                            .getUserStoreProperties()));
-        hybridRoleManager = new HybridRoleManager(jdbcDataSource, tenantId, realmConfig, jdbcUserRealm);
+        hybridRoleManager = new HybridRoleManager(dataSource, tenantId, realmConfig, jdbcUserRealm);
         this.addInitialData();
         if (log.isDebugEnabled()) {
             log.debug("Ended " + System.currentTimeMillis());
         }
         /*Initialize user roles cache as implemented in AbstractUserStoreManager*/
-	    initUserRolesCache();
+	    initUserRolesCache();         
     }
 
     public boolean isExistingUser(String userName) throws UserStoreException {
@@ -216,20 +252,27 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
     }
 
     public String[] getRoleNames() throws UserStoreException {
-        String sqlStmt = realmConfig.getUserStoreProperty(JDBCRealmConstants.GET_ROLE_LIST);
-        if (sqlStmt == null) {
-            throw new UserStoreException("The sql statement for retrieving role name is null");
-        }
-        String[] names = getStringValuesFromDatabase(sqlStmt, tenantId);
-        if (isReadOnly() == true) {
+        String[] names = null;
+        if(useOnlyInternalRoles){
             String[] hybrids = hybridRoleManager.getHybridRoles();
             names = UserCoreUtil.combineArrays(names, hybrids);
+            return names;
+        } else {
+            String sqlStmt = realmConfig.getUserStoreProperty(JDBCRealmConstants.GET_ROLE_LIST);
+            if (sqlStmt == null) {
+                throw new UserStoreException("The sql statement for retrieving role name is null");
+            }
+            names = getStringValuesFromDatabase(sqlStmt, tenantId);
+            if (isReadOnly()) {
+                String[] hybrids = hybridRoleManager.getHybridRoles();
+                names = UserCoreUtil.combineArrays(names, hybrids);
+            }
         }
         return names;
     }
 
     public String[] getRoleListOfUser(String userName) throws UserStoreException {
-        String[] names;
+        String[] names = null;
         //check whether roles exist in cache
         try {
             names = getRoleListOfUserFromCache(this.tenantId, userName);
@@ -239,19 +282,25 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         } catch (Exception e) {
             //if not exist in cache, continue
         }
-        String sqlStmt = realmConfig.getUserStoreProperty(JDBCRealmConstants.GET_USER_ROLE);
-        if (sqlStmt == null) {
-            throw new UserStoreException("The sql statement for retrieving user roles is null");
-        }
-        if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-            names = getStringValuesFromDatabase(sqlStmt, userName, tenantId, tenantId, tenantId);
-        } else {
-            names = getStringValuesFromDatabase(sqlStmt, userName);
-        }
 
-        if (isReadOnly() == true) {
+        if(useOnlyInternalRoles){
             String[] hybrids = hybridRoleManager.getHybridRoleListOfUser(userName);
             names = UserCoreUtil.combineArrays(names, hybrids);
+        } else {
+            String sqlStmt = realmConfig.getUserStoreProperty(JDBCRealmConstants.GET_USER_ROLE);
+            if (sqlStmt == null) {
+                throw new UserStoreException("The sql statement for retrieving user roles is null");
+            }
+            if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                names = getStringValuesFromDatabase(sqlStmt, userName, tenantId, tenantId, tenantId);
+            } else {
+                names = getStringValuesFromDatabase(sqlStmt, userName);
+            }
+
+            if (isReadOnly()) {
+                String[] hybrids = hybridRoleManager.getHybridRoleListOfUser(userName);
+                names = UserCoreUtil.combineArrays(names, hybrids);
+            }
         }
         //add user roles into userRolesCache
         addToUserRolesCache(this.tenantId, userName, names);
@@ -265,40 +314,52 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
     
     public String[] getUserListOfRole(String roleName) throws UserStoreException {
         String[] names;
-        if (isReadOnly() == true && hybridRoleManager.isExistingRole(roleName)) {
+        if(useOnlyInternalRoles && hybridRoleManager.isExistingRole(roleName)){
             names = hybridRoleManager.getUserListOfHybridRole(roleName);
         } else {
-            String sqlStmt = realmConfig
-                    .getUserStoreProperty(JDBCRealmConstants.GET_USERS_IN_ROLE);
-            if (sqlStmt == null) {
-                throw new UserStoreException("The sql statement for retrieving user roles is null");
-            }
-            if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                names = getStringValuesFromDatabase(sqlStmt, roleName, tenantId, tenantId, tenantId);
+            if (isReadOnly() && hybridRoleManager.isExistingRole(roleName)) {
+                names = hybridRoleManager.getUserListOfHybridRole(roleName);
             } else {
-                names = getStringValuesFromDatabase(sqlStmt, roleName);
+                String sqlStmt = realmConfig
+                        .getUserStoreProperty(JDBCRealmConstants.GET_USERS_IN_ROLE);
+                if (sqlStmt == null) {
+                    throw new UserStoreException("The sql statement for retrieving user roles is null");
+                }
+                if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                    names = getStringValuesFromDatabase(sqlStmt, roleName, tenantId, tenantId, tenantId);
+                } else {
+                    names = getStringValuesFromDatabase(sqlStmt, roleName);
+                }
             }
         }
-
         return names;
     }
 
     public boolean isExistingRole(String roleName) throws UserStoreException {
-        String sqlStmt = realmConfig
-                .getUserStoreProperty(JDBCRealmConstants.GET_IS_ROLE_EXISTING);
-        if (sqlStmt == null) {
-            throw new UserStoreException("The sql statement for is role existing role null");
-        }
 
         boolean isExisting = false;
-        if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-            isExisting = isValueExisting(sqlStmt, null, roleName, tenantId);
-        } else {
-            isExisting = isValueExisting(sqlStmt, null, roleName);
-        }
-        if (isExisting == false && isReadOnly() == true) {
+
+        if(useOnlyInternalRoles){
             isExisting = hybridRoleManager.isExistingRole(roleName);
+        } else {
+            String sqlStmt = realmConfig
+                    .getUserStoreProperty(JDBCRealmConstants.GET_IS_ROLE_EXISTING);
+            if (sqlStmt == null) {
+                throw new UserStoreException("The sql statement for is role existing role null");
+            }
+
+            if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                isExisting = isValueExisting(sqlStmt, null, roleName, tenantId);
+            } else {
+                isExisting = isValueExisting(sqlStmt, null, roleName);
+            }
+
+            if (!isExisting && isReadOnly()) {
+                isExisting = hybridRoleManager.isExistingRole(roleName);
+            }
         }
+
+
         return isExisting;
     }
 
@@ -821,35 +882,40 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
                         "Role name: "+roleName+" in the system. Please pick another role name.");
             }
             dbConnection = getDBConnection();
-            if (isReadOnly() == true) {
+
+            if(useOnlyInternalRoles){
                 hybridRoleManager.addHybridRole(roleName, userList);
             } else {
-                String sqlStmt = realmConfig.getUserStoreProperty(JDBCRealmConstants.ADD_ROLE);
-                if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                    this.updateStringValuesToDatabase(dbConnection, sqlStmt, roleName, tenantId);
+                if (isReadOnly()) {
+                    hybridRoleManager.addHybridRole(roleName, userList);
                 } else {
-                    this.updateStringValuesToDatabase(dbConnection, sqlStmt, roleName);
-                }
-                if (userList != null) {
-                    // add role to user
-                    String type = DatabaseCreator.getDatabaseType(dbConnection);
-                    String sqlStmt2 = realmConfig
-                            .getUserStoreProperty(JDBCRealmConstants.ADD_USER_TO_ROLE +"-"+type);
-                    if (sqlStmt2 == null) {
-                        sqlStmt2 = realmConfig
-                                .getUserStoreProperty(JDBCRealmConstants.ADD_USER_TO_ROLE);
+                    String sqlStmt = realmConfig.getUserStoreProperty(JDBCRealmConstants.ADD_ROLE);
+                    if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                        this.updateStringValuesToDatabase(dbConnection, sqlStmt, roleName, tenantId);
+                    } else {
+                        this.updateStringValuesToDatabase(dbConnection, sqlStmt, roleName);
                     }
-                    if (sqlStmt2.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                        if (UserCoreConstants.OPENEDGE_TYPE.equals(type)) {
-                            DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
-                                    tenantId, userList, tenantId, roleName, tenantId);
+                    if (userList != null) {
+                        // add role to user
+                        String type = DatabaseCreator.getDatabaseType(dbConnection);
+                        String sqlStmt2 = realmConfig
+                                .getUserStoreProperty(JDBCRealmConstants.ADD_USER_TO_ROLE +"-"+type);
+                        if (sqlStmt2 == null) {
+                            sqlStmt2 = realmConfig
+                                    .getUserStoreProperty(JDBCRealmConstants.ADD_USER_TO_ROLE);
+                        }
+                        if (sqlStmt2.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                            if (UserCoreConstants.OPENEDGE_TYPE.equals(type)) {
+                                DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
+                                        tenantId, userList, tenantId, roleName, tenantId);
+                            } else {
+                                DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
+                                        userList, tenantId, roleName, tenantId, tenantId);
+                            }
                         } else {
                             DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
-                                    userList, tenantId, roleName, tenantId, tenantId);
+                                    userList, tenantId, roleName);
                         }
-                    } else {
-                        DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
-                                userList, tenantId, roleName);
                     }
                 }
             }
@@ -881,45 +947,50 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
 
     public void updateRoleName(String roleName, String newRoleName) throws UserStoreException {
 
-        if (isReadOnly() == true) {
-            hybridRoleManager.updateHybridRoleName(roleName, newRoleName);
+        if(useOnlyInternalRoles){
+            hybridRoleManager.updateHybridRoleName(roleName, newRoleName);            
         } else {
-            if (realmConfig.getAdminRoleName().equals(roleName)) {
-                throw new UserStoreException("Cannot delete admin role");
-            }
-            if (realmConfig.getEveryOneRoleName().equals(roleName)) {
-                throw new UserStoreException("Cannot delete everyone role");
-            }
-            if (isExistingRole(newRoleName)) {
-                throw new UserStoreException(
-                        "Role name: "+newRoleName+" in the system. Please pick another role name.");
-            }
-            String sqlStmt = realmConfig.getUserStoreProperty(JDBCRealmConstants.UPDATE_ROLE_NAME);
-            if (sqlStmt == null) {
-                throw new UserStoreException("The sql statement for update role name is null");
-            }            
-            Connection dbConnection = null;
-            try {
-
-                dbConnection = getDBConnection();
-                if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                    this.updateStringValuesToDatabase(dbConnection, sqlStmt, newRoleName, roleName,
-                            tenantId);
-                } else {
-                    this.updateStringValuesToDatabase(dbConnection, sqlStmt, newRoleName, roleName);
+            if (isReadOnly()) {
+                hybridRoleManager.updateHybridRoleName(roleName, newRoleName);
+            } else {
+                if (realmConfig.getAdminRoleName().equals(roleName)) {
+                    throw new UserStoreException("Cannot delete admin role");
                 }
-                dbConnection.commit();
-                this.jdbcUserRealm.getAuthorizationManager().resetPermissionOnUpdateRole(roleName,
-                                                                                     newRoleName);
+                if (realmConfig.getEveryOneRoleName().equals(roleName)) {
+                    throw new UserStoreException("Cannot delete everyone role");
+                }
+                if (isExistingRole(newRoleName)) {
+                    throw new UserStoreException(
+                            "Role name: "+newRoleName+" in the system. Please pick another role name.");
+                }
+                String sqlStmt = realmConfig.getUserStoreProperty(JDBCRealmConstants.UPDATE_ROLE_NAME);
+                if (sqlStmt == null) {
+                    throw new UserStoreException("The sql statement for update role name is null");
+                }
+                Connection dbConnection = null;
+                try {
 
-            } catch (SQLException e) {
-                log.error(e.getMessage(), e);
-                log.error("Using sql : " + sqlStmt);
-                throw new UserStoreException(e.getMessage(), e);
-            } finally {
-                DatabaseUtil.closeAllConnections(dbConnection);
+                    dbConnection = getDBConnection();
+                    if (sqlStmt.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                        this.updateStringValuesToDatabase(dbConnection, sqlStmt, newRoleName, roleName,
+                                tenantId);
+                    } else {
+                        this.updateStringValuesToDatabase(dbConnection, sqlStmt, newRoleName, roleName);
+                    }
+                    dbConnection.commit();
+                    this.jdbcUserRealm.getAuthorizationManager().resetPermissionOnUpdateRole(roleName,
+                                                                                         newRoleName);
+
+                } catch (SQLException e) {
+                    log.error(e.getMessage(), e);
+                    log.error("Using sql : " + sqlStmt);
+                    throw new UserStoreException(e.getMessage(), e);
+                } finally {
+                    DatabaseUtil.closeAllConnections(dbConnection);
+                }
             }
         }
+
         //need to update user role cache upon update of role names
         clearUserRolesCacheByTenant(this.tenantId);
     }
@@ -945,48 +1016,53 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
 
 
     public void deleteRole(String roleName) throws UserStoreException {
-        if (isReadOnly() == true && hybridRoleManager.isExistingRole(roleName)) {
-            hybridRoleManager.deleteHybridRole(roleName);
+
+        if(useOnlyInternalRoles && hybridRoleManager.isExistingRole(roleName)){
+            hybridRoleManager.deleteHybridRole(roleName);    
         } else {
-            if (realmConfig.getAdminRoleName().equals(roleName)) {
-                throw new UserStoreException("Cannot delete admin role");
-            }
-
-            if (realmConfig.getEveryOneRoleName().equals(roleName)) {
-                throw new UserStoreException("Cannot delete everyone role");
-            }
-            String sqlStmt1 = realmConfig
-                    .getUserStoreProperty(JDBCRealmConstants.ON_DELETE_ROLE_REMOVE_USER_ROLE);
-            if (sqlStmt1 == null) {
-                throw new UserStoreException(
-                        "The sql statement for delete user-role mapping is null");
-            }
-
-            String sqlStmt2 = realmConfig.getUserStoreProperty(JDBCRealmConstants.DELETE_ROLE);
-            if (sqlStmt2 == null) {
-                throw new UserStoreException("The sql statement for delete role is null");
-            }
-
-            Connection dbConnection = null;
-            try {
-                dbConnection = getDBConnection();
-                if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                    this.updateStringValuesToDatabase(dbConnection, sqlStmt1, roleName, tenantId,
-                            tenantId);
-                    this.updateStringValuesToDatabase(dbConnection, sqlStmt2, roleName, tenantId);
-                } else {
-                    this.updateStringValuesToDatabase(dbConnection, sqlStmt1, roleName);
-                    this.updateStringValuesToDatabase(dbConnection, sqlStmt2, roleName);
+            if (isReadOnly() && hybridRoleManager.isExistingRole(roleName)) {
+                hybridRoleManager.deleteHybridRole(roleName);
+            } else {
+                if (realmConfig.getAdminRoleName().equals(roleName)) {
+                    throw new UserStoreException("Cannot delete admin role");
                 }
-                this.jdbcUserRealm.getAuthorizationManager().clearRoleAuthorization(roleName);
-                dbConnection.commit();
 
-            } catch (SQLException e) {
-                log.error(e.getMessage(), e);
-                log.error("Using sql : " + sqlStmt1);
-                throw new UserStoreException(e.getMessage(), e);
-            } finally {
-                DatabaseUtil.closeAllConnections(dbConnection);
+                if (realmConfig.getEveryOneRoleName().equals(roleName)) {
+                    throw new UserStoreException("Cannot delete everyone role");
+                }
+                String sqlStmt1 = realmConfig
+                        .getUserStoreProperty(JDBCRealmConstants.ON_DELETE_ROLE_REMOVE_USER_ROLE);
+                if (sqlStmt1 == null) {
+                    throw new UserStoreException(
+                            "The sql statement for delete user-role mapping is null");
+                }
+
+                String sqlStmt2 = realmConfig.getUserStoreProperty(JDBCRealmConstants.DELETE_ROLE);
+                if (sqlStmt2 == null) {
+                    throw new UserStoreException("The sql statement for delete role is null");
+                }
+
+                Connection dbConnection = null;
+                try {
+                    dbConnection = getDBConnection();
+                    if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                        this.updateStringValuesToDatabase(dbConnection, sqlStmt1, roleName, tenantId,
+                                tenantId);
+                        this.updateStringValuesToDatabase(dbConnection, sqlStmt2, roleName, tenantId);
+                    } else {
+                        this.updateStringValuesToDatabase(dbConnection, sqlStmt1, roleName);
+                        this.updateStringValuesToDatabase(dbConnection, sqlStmt2, roleName);
+                    }
+                    this.jdbcUserRealm.getAuthorizationManager().clearRoleAuthorization(roleName);
+                    dbConnection.commit();
+
+                } catch (SQLException e) {
+                    log.error(e.getMessage(), e);
+                    log.error("Using sql : " + sqlStmt1);
+                    throw new UserStoreException(e.getMessage(), e);
+                } finally {
+                    DatabaseUtil.closeAllConnections(dbConnection);
+                }
             }
         }
         //need to clear user role cache upon delete of roles
@@ -994,10 +1070,6 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
     }
 
     public void doDeleteUser(String userName) throws UserStoreException {
-
-        if (realmConfig.getAdminUserName().equals(userName)) {
-            throw new UserStoreException("Cannot delete admin user");
-        }
 
         String sqlStmt1 = realmConfig
                 .getUserStoreProperty(JDBCRealmConstants.ON_DELETE_USER_REMOVE_USER_ROLE);
@@ -1020,13 +1092,21 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         try {
             dbConnection = getDBConnection();
             if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                this.updateStringValuesToDatabase(dbConnection, sqlStmt1, userName, tenantId,
-                        tenantId);
+                if(useOnlyInternalRoles){
+                    hybridRoleManager.updateHybridRoleListOfUser(userName, getRoleNames(), null);
+                } else {
+                    this.updateStringValuesToDatabase(dbConnection, sqlStmt1, userName, tenantId,
+                            tenantId);
+                }
                 this.updateStringValuesToDatabase(dbConnection, sqlStmt2, userName, tenantId,
                         tenantId);
                 this.updateStringValuesToDatabase(dbConnection, sqlStmt3, userName, tenantId);
             } else {
-                this.updateStringValuesToDatabase(dbConnection, sqlStmt1, userName);
+                if(useOnlyInternalRoles){
+                    hybridRoleManager.updateHybridRoleListOfUser(userName, getRoleNames(), null);
+                } else {
+                    this.updateStringValuesToDatabase(dbConnection, sqlStmt1, userName);
+                }
                 this.updateStringValuesToDatabase(dbConnection, sqlStmt2, userName);
                 this.updateStringValuesToDatabase(dbConnection, sqlStmt3, userName);
             }
@@ -1049,174 +1129,152 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         addRole(roleName, userList, (Permission[]) permissions);
     }
 
-    public void updateUserListOfRole(String roleName, String deletedUsers[], String[] newUsers)
+    public void doUpdateUserListOfRole(String roleName, String deletedUsers[], String[] newUsers)
             throws UserStoreException {
 
-        if (realmConfig.getEveryOneRoleName().equals(roleName)) {
-            throw new UserStoreException("Everyone role is not updatable");
-        }
-
-        if (deletedUsers != null) {
-            Arrays.sort(deletedUsers);
-            if (realmConfig.getAdminRoleName().equals(roleName)
-                    && Arrays.binarySearch(deletedUsers, realmConfig.getAdminUserName()) > -1) {
-                log.error("An attempt to remove Admin user from Admin role ");
-                throw new UserStoreException("Cannot remove Admin user from Admin role");
-            }
-        }
-
-        if (isReadOnly() == true && hybridRoleManager.isExistingRole(roleName)) {
+        if(useOnlyInternalRoles && hybridRoleManager.isExistingRole(roleName)){
             hybridRoleManager.updateUserListOfHybridRole(roleName, deletedUsers, newUsers);
         } else {
-            String sqlStmt1 = realmConfig
-                    .getUserStoreProperty(JDBCRealmConstants.REMOVE_USER_FROM_ROLE);
-            if (sqlStmt1 == null) {
-                throw new UserStoreException("The sql statement for remove user from role is null");
-            }
+            if (isReadOnly() && hybridRoleManager.isExistingRole(roleName)) {
+                hybridRoleManager.updateUserListOfHybridRole(roleName, deletedUsers, newUsers);
+            } else {
+                String sqlStmt1 = realmConfig
+                        .getUserStoreProperty(JDBCRealmConstants.REMOVE_USER_FROM_ROLE);
+                if (sqlStmt1 == null) {
+                    throw new UserStoreException("The sql statement for remove user from role is null");
+                }
 
-            Connection dbConnection = null;
-            try {
-                dbConnection = getDBConnection();
-                String type = DatabaseCreator.getDatabaseType(dbConnection);
-                String sqlStmt2 = realmConfig
-                        .getUserStoreProperty(JDBCRealmConstants.ADD_USER_TO_ROLE + "-" + type);
-                if (sqlStmt2 == null) {
-                    sqlStmt2 = realmConfig
-                            .getUserStoreProperty(JDBCRealmConstants.ADD_USER_TO_ROLE);
-                }
-                if (sqlStmt2 == null) {
-                    throw new UserStoreException("The sql statement for add user to role is null");
-                }
-                if (deletedUsers != null) {
-                    if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                        DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt1,
-                                deletedUsers, tenantId, roleName, tenantId, tenantId);
-                    } else {
-                        DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt1,
-                                deletedUsers, tenantId, roleName);
+                Connection dbConnection = null;
+                try {
+                    dbConnection = getDBConnection();
+                    String type = DatabaseCreator.getDatabaseType(dbConnection);
+                    String sqlStmt2 = realmConfig
+                            .getUserStoreProperty(JDBCRealmConstants.ADD_USER_TO_ROLE + "-" + type);
+                    if (sqlStmt2 == null) {
+                        sqlStmt2 = realmConfig
+                                .getUserStoreProperty(JDBCRealmConstants.ADD_USER_TO_ROLE);
                     }
-                    if (deletedUsers.length > 0) {
-                        //authz cache of deleted users from role, needs to be updated
-                        for (String deletedUser : deletedUsers) {
-                            jdbcUserRealm.getAuthorizationManager().clearUserAuthorization(deletedUser);
+                    if (sqlStmt2 == null) {
+                        throw new UserStoreException("The sql statement for add user to role is null");
+                    }
+                    if (deletedUsers != null) {
+                        if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                            DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt1,
+                                    deletedUsers, tenantId, roleName, tenantId, tenantId);
+                        } else {
+                            DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt1,
+                                    deletedUsers, tenantId, roleName);
+                        }
+                        if (deletedUsers.length > 0) {
+                            //authz cache of deleted users from role, needs to be updated
+                            for (String deletedUser : deletedUsers) {
+                                jdbcUserRealm.getAuthorizationManager().clearUserAuthorization(deletedUser);
+                            }
                         }
                     }
-                }
-                if (newUsers != null) {
-                    if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                        if (UserCoreConstants.OPENEDGE_TYPE.equals(type)) {
-                            DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
-                                    tenantId, newUsers, tenantId, roleName, tenantId);
+                    if (newUsers != null) {
+                        if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                            if (UserCoreConstants.OPENEDGE_TYPE.equals(type)) {
+                                DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
+                                        tenantId, newUsers, tenantId, roleName, tenantId);
+                            } else {
+                                DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
+                                    newUsers, tenantId, roleName, tenantId, tenantId);
+                            }
                         } else {
                             DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
-                                newUsers, tenantId, roleName, tenantId, tenantId);
+                                    newUsers, tenantId, roleName);
                         }
-                    } else {
-                        DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
-                                newUsers, tenantId, roleName);
                     }
-                }
-                dbConnection.commit();
+                    dbConnection.commit();
 
-            } catch (SQLException e) {
-                log.error(e.getMessage(), e);
-                throw new UserStoreException(e.getMessage(), e);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                throw new UserStoreException(e.getMessage(), e);
-            } finally {
-                DatabaseUtil.closeAllConnections(dbConnection);
+                } catch (SQLException e) {
+                    log.error(e.getMessage(), e);
+                    throw new UserStoreException(e.getMessage(), e);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    throw new UserStoreException(e.getMessage(), e);
+                } finally {
+                    DatabaseUtil.closeAllConnections(dbConnection);
+                }
             }
         }
         //need to clear user roles cache upon roles update
         clearUserRolesCacheByTenant(this.tenantId);
     }
 
-    public void updateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles)
+    public void doUpdateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles)
             throws UserStoreException {
 
-        if (deletedRoles != null) {
-            Arrays.sort(deletedRoles);
-            if(Arrays.binarySearch(deletedRoles, realmConfig.getEveryOneRoleName()) > -1){
-                log.error("An attempt to remove "+userName+" user from Everyone role ");
-                throw new UserStoreException("Everyone role is not updatable");
-            }
-        }
-        
-        if (deletedRoles != null) {
-            Arrays.sort(deletedRoles);
-            if (realmConfig.getAdminUserName().equals(userName)
-                    && Arrays.binarySearch(deletedRoles, realmConfig.getAdminRoleName()) > -1) {
-                log.error("An attempt to remove Admin user from Admin role ");
-                throw new UserStoreException("Cannot remove Admin user from Admin role");
-            }
-        }
-
-        if (isReadOnly() == true) {
-            hybridRoleManager.updateHybridRoleListOfUser(userName, deletedRoles, newRoles);
+        if(useOnlyInternalRoles){
+            hybridRoleManager.updateHybridRoleListOfUser(userName, deletedRoles, newRoles);            
         } else {
-            String sqlStmt1 = realmConfig
-                    .getUserStoreProperty(JDBCRealmConstants.REMOVE_ROLE_FROM_USER);
-            if (sqlStmt1 == null) {
-                throw new UserStoreException("The sql statement for remove user from role is null");
-            }
-            Connection dbConnection = null;
-            try {
-                dbConnection = getDBConnection();  
-                String type = DatabaseCreator.getDatabaseType(dbConnection);
-                String sqlStmt2 = realmConfig
-                        .getUserStoreProperty(JDBCRealmConstants.ADD_ROLE_TO_USER + "-" + type);
-                if (sqlStmt2 == null) {
-                    sqlStmt2 = realmConfig
-                            .getUserStoreProperty(JDBCRealmConstants.ADD_ROLE_TO_USER);
+            if (isReadOnly()) {
+                hybridRoleManager.updateHybridRoleListOfUser(userName, deletedRoles, newRoles);
+            } else {
+                String sqlStmt1 = realmConfig
+                        .getUserStoreProperty(JDBCRealmConstants.REMOVE_ROLE_FROM_USER);
+                if (sqlStmt1 == null) {
+                    throw new UserStoreException("The sql statement for remove user from role is null");
                 }
-                if (sqlStmt2 == null) {
-                    throw new UserStoreException("The sql statement for add user to role is null");
-                }
-
-                if (deletedRoles != null) {
-                    if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                        DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt1,
-                                deletedRoles, tenantId, userName, tenantId, tenantId);
-                    } else {
-                        DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt1,
-                                deletedRoles, tenantId, userName);
+                Connection dbConnection = null;
+                try {
+                    dbConnection = getDBConnection();
+                    String type = DatabaseCreator.getDatabaseType(dbConnection);
+                    String sqlStmt2 = realmConfig
+                            .getUserStoreProperty(JDBCRealmConstants.ADD_ROLE_TO_USER + "-" + type);
+                    if (sqlStmt2 == null) {
+                        sqlStmt2 = realmConfig
+                                .getUserStoreProperty(JDBCRealmConstants.ADD_ROLE_TO_USER);
                     }
-                }
+                    if (sqlStmt2 == null) {
+                        throw new UserStoreException("The sql statement for add user to role is null");
+                    }
 
-                if (newRoles != null) {
-                    if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                        // System.out.println("" +
-                        // DatabaseUtil.getIntegerValueFromDatabase(dbConnection,
-                        // sqlStmt, params));
-                        // System.out.println("" +
-                        // DatabaseUtil.getIntegerValueFromDatabase(dbConnection,
-                        // sqlStmt, params));
-                        if (UserCoreConstants.OPENEDGE_TYPE.equals(type)) {
-                            DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
-                                tenantId, newRoles, tenantId, userName, tenantId);
+                    if (deletedRoles != null) {
+                        if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                            DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt1,
+                                    deletedRoles, tenantId, userName, tenantId, tenantId);
+                        } else {
+                            DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt1,
+                                    deletedRoles, tenantId, userName);
+                        }
+                    }
+
+                    if (newRoles != null) {
+                        if (sqlStmt1.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                            // System.out.println("" +
+                            // DatabaseUtil.getIntegerValueFromDatabase(dbConnection,
+                            // sqlStmt, params));
+                            // System.out.println("" +
+                            // DatabaseUtil.getIntegerValueFromDatabase(dbConnection,
+                            // sqlStmt, params));
+                            if (UserCoreConstants.OPENEDGE_TYPE.equals(type)) {
+                                DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
+                                    tenantId, newRoles, tenantId, userName, tenantId);
+                            } else {
+                                DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
+                                    newRoles, tenantId, userName, tenantId, tenantId);
+                            }
                         } else {
                             DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
-                                newRoles, tenantId, userName, tenantId, tenantId);
+                                    newRoles, tenantId, userName);
                         }
-                    } else {
-                        DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
-                                newRoles, tenantId, userName);
                     }
+                    dbConnection.commit();
+                    //authz cache of user should also be updated if deleted roles are involved
+                    if (deletedRoles != null && deletedRoles.length > 0) {
+                        jdbcUserRealm.getAuthorizationManager().clearUserAuthorization(userName);
+                    }
+                } catch (SQLException e) {
+                    log.error(e.getMessage(), e);
+                    throw new UserStoreException(e.getMessage(), e);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    throw new UserStoreException(e.getMessage(), e);
+                } finally {
+                    DatabaseUtil.closeAllConnections(dbConnection);
                 }
-                dbConnection.commit();
-                //authz cache of user should also be updated if deleted roles are involved
-                if (deletedRoles != null && deletedRoles.length > 0) {
-                    jdbcUserRealm.getAuthorizationManager().clearUserAuthorization(userName);
-                }
-            } catch (SQLException e) {
-                log.error(e.getMessage(), e);
-                throw new UserStoreException(e.getMessage(), e);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                throw new UserStoreException(e.getMessage(), e);
-            } finally {
-                DatabaseUtil.closeAllConnections(dbConnection);
             }
         }
         //need to clear user roles cache upon roles update
@@ -1404,7 +1462,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
 
     public String[] getHybridRoles() throws UserStoreException {
         String[] names = new String[0];
-        if (isReadOnly() == true) {
+        if (isReadOnly() || useOnlyInternalRoles) {
             names = hybridRoleManager.getHybridRoles();
         }
         return names;
@@ -1642,7 +1700,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
                         null, null, null, false);
             }
         }
-        
+
         // use isUserInRole method
         if (isAdminRoleAdded) {
             this.updateRoleListOfUser(realmConfig.getAdminUserName(), null,

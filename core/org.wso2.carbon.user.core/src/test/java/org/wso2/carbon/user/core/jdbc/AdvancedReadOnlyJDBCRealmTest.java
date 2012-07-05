@@ -27,6 +27,7 @@ import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.UserStoreManager;
 import org.wso2.carbon.user.core.common.DefaultRealm;
 import org.wso2.carbon.user.core.config.RealmConfigXMLProcessor;
+import org.wso2.carbon.user.core.util.DatabaseUtil;
 import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
 
 import javax.sql.DataSource;
@@ -46,6 +47,7 @@ public class AdvancedReadOnlyJDBCRealmTest extends BaseTestCase {
     }
 
     public void testStuff() throws Exception {
+        DatabaseUtil.closeDatabasePoolConnection();
         initRealmStuff();
         doRoleStuff();
         /*commenting out following since
@@ -76,7 +78,7 @@ public class AdvancedReadOnlyJDBCRealmTest extends BaseTestCase {
         realm = new DefaultRealm();
         realm.init(realmConfig, ClaimTestUtil.getClaimTestData(), ClaimTestUtil
                 .getProfileTestData(), 0);
-        assertTrue(realm.getUserStoreManager().isExistingRole("adminx"));
+        assertTrue(realm.getUserStoreManager().isExistingRole("adminx"));    
     }
     
     public void doRoleStuff() throws Exception {

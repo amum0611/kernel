@@ -77,6 +77,7 @@ public class UserCoreConstants {
         public static final String PROPERTY_DOMAIN_CALCULATION = "DomainCalculation";
         public static final String PROPERTY_IS_USERS_OF_ROLE_LISTING = "IsUsersOfRoleListing";
         public static final String PROPERTY_READ_ONLY = "ReadOnly";
+        public static final String PROPERTY_INTERNAL_ROLES_ONLY = "InternalJDBCRolesOnly";
         public static final String PROPERTY_MAX_USER_LIST = "MaxUserNameListLength";
 
         public static final String PROPERTY_VALUE_DOMAIN_CALCULATION_DEFAULT = "default";

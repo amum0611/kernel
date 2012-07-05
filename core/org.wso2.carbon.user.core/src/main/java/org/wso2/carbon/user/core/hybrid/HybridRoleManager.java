@@ -175,19 +175,6 @@ public class HybridRoleManager {
     public void updateUserListOfHybridRole(String roleName, String[] deletedUsers, String[] newUsers)
             throws UserStoreException {
         
-        if (realmConfig.getEveryOneRoleName().equals(roleName)) {
-            throw new UserStoreException("Everyone role is not updatable");
-        }
-
-        if (deletedUsers != null) {
-            Arrays.sort(deletedUsers);
-            if (realmConfig.getAdminRoleName().equals(roleName)
-                    && Arrays.binarySearch(deletedUsers, realmConfig.getAdminUserName()) > -1) {
-                log.error("An attempt to remove Admin user from Admin role ");
-                throw new UserStoreException("Cannot remove Admin user from Admin role");
-            }
-        }
-
         String sqlStmt1 = HybridJDBCConstants.REMOVE_USER_FROM_ROLE_SQL;
         String sqlStmt2 = HybridJDBCConstants.ADD_USER_TO_ROLE_SQL;
         Connection dbConnection = null;
@@ -256,15 +243,6 @@ public class HybridRoleManager {
 
     public void updateHybridRoleListOfUser(String user, String[] deletedRoles, String[] addRoles)
             throws UserStoreException {
-
-        if (deletedRoles != null) {
-            Arrays.sort(deletedRoles);
-            if (realmConfig.getAdminUserName().equals(user)
-                    && Arrays.binarySearch(deletedRoles, realmConfig.getAdminRoleName()) > -1) {
-                log.error("An attempt to remove Admin user from Admin role ");
-                throw new UserStoreException("Cannot remove Admin user from Admin role");
-            }
-        }
 
         String sqlStmt1 = HybridJDBCConstants.REMOVE_ROLE_FROM_USER_SQL;
         String sqlStmt2 = HybridJDBCConstants.ADD_ROLE_TO_USER_SQL;

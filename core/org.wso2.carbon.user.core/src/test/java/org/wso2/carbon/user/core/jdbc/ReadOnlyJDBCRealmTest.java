@@ -28,6 +28,7 @@ import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.UserStoreManager;
 import org.wso2.carbon.user.core.common.DefaultRealm;
 import org.wso2.carbon.user.core.config.RealmConfigXMLProcessor;
+import org.wso2.carbon.user.core.util.DatabaseUtil;
 import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
 
 import javax.sql.DataSource;
@@ -47,6 +48,7 @@ public class ReadOnlyJDBCRealmTest extends BaseTestCase {
     }
 
     public void testStuff() throws Exception {
+        DatabaseUtil.closeDatabasePoolConnection();         
         initRealmStuff();
         doRoleStuff();
         /*commenting out following since

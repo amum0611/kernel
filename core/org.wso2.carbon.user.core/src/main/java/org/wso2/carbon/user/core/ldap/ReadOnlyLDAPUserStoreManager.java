@@ -1091,7 +1091,7 @@ public class ReadOnlyLDAPUserStoreManager extends AbstractUserStoreManager {
 	 * over***********************************************
 	 */
 
-	public void updateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles)
+	public void doUpdateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles)
 	                                                                                           throws UserStoreException {
 		this.hybridRoleManager.updateHybridRoleListOfUser(userName, deletedRoles, newRoles);
 		/*
@@ -1101,7 +1101,7 @@ public class ReadOnlyLDAPUserStoreManager extends AbstractUserStoreManager {
 		clearUserRolesCacheByTenant(this.tenantID);
 	}
 
-	public void updateUserListOfRole(String roleName, String[] deletedUsers, String[] newUsers)
+	public void doUpdateUserListOfRole(String roleName, String[] deletedUsers, String[] newUsers)
 	                                                                                           throws UserStoreException {
 		this.hybridRoleManager.updateUserListOfHybridRole(roleName, deletedUsers, newUsers);
 		/*
