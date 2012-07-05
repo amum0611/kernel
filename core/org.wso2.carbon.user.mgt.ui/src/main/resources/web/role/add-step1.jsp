@@ -69,6 +69,17 @@ try{
 
     <script type="text/javascript">
 
+        function validateTextForIllegal(fld) {
+
+           var illegalChars = /([?#^\|<>\"\'])/;
+           var illegalCharsInput = /(\<[a-zA-Z0-9\s\/]*>)/;
+             if (illegalChars.test(fld) || illegalCharsInput.test(fld)) {
+                return false;
+             } else {
+               return true;
+             }
+         }
+
         function validateString(fld1name, regString) {
             var stringValue = document.getElementsByName(fld1name)[0].value;
             var errorMessage = "";
@@ -107,8 +118,12 @@ try{
         }
         
         function doNext() {
+            if(!validateTextForIllegal(document.getElementsByName("roleName")[0].value)) {
+                CARBON.showWarningDialog(org_wso2_carbon_registry_common_ui_jsi18n["the"] + " "+ "role name "+" " + org_wso2_carbon_registry_common_ui_jsi18n["contains.illegal.chars"]);
+                return false;
+            }
             document.addRoleForm.action="add-step2.jsp";
-            if(doValidation() == true){
+            if(doValidation() == true) {
                 document.addRoleForm.submit();
             }
         }
