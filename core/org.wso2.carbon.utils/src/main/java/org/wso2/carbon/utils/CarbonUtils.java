@@ -33,9 +33,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.CarbonException;
+import org.wso2.carbon.base.CarbonBaseConstants;
 import org.wso2.carbon.base.CarbonBaseUtils;
 import org.wso2.carbon.base.ServerConfiguration;
 import org.wso2.carbon.base.api.ServerConfigurationService;
+import org.wso2.carbon.utils.component.xml.config.DeployerConfig;
 import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
@@ -938,5 +940,30 @@ public class CarbonUtils {
     public static void setBasicAccessSecurityHeaders(String userName, String password, ServiceClient serviceClient) {
 
         setBasicAccessSecurityHeaders(userName, password, false, serviceClient);
+    }
+
+    /**
+     * Adds the cApp deployer config into the original DeployerConfig array..
+     * This is to fix : https://wso2.org/jira/browse/CARBON-13598
+     *
+     * @param originalConfigs - original DeployerConfig array
+     * @return - new array which includes cApp deployer
+     */
+    public static DeployerConfig[] addCappDeployer(DeployerConfig[] originalConfigs) {
+        // create a new deployer config for cApps
+        DeployerConfig appDeployerConfig = new DeployerConfig();
+        // set cApp deployer class, car extension
+        appDeployerConfig.setClassStr("org.wso2.carbon.application.deployer.CappAxis2Deployer");
+        appDeployerConfig.setExtension("car");
+        // setting the deployment direcotry as CARBON_HOME/repository/carbonapps
+        String appsRepo = System.getProperty(CarbonBaseConstants.CARBON_HOME) + File.separator +
+                REPOSITORY + File.separator + "carbonapps";
+        appDeployerConfig.setDirectory(appsRepo);
+
+        // create a new configs array by including the dep deployer cofig
+        DeployerConfig[] newDepConfigs = new DeployerConfig[originalConfigs.length + 1];
+        System.arraycopy(originalConfigs, 0, newDepConfigs, 0, originalConfigs.length);
+        newDepConfigs[newDepConfigs.length - 1] = appDeployerConfig;
+        return newDepConfigs;
     }
 }

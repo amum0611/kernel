@@ -26,11 +26,13 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
 import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.component.xml.Component;
 import org.wso2.carbon.utils.component.xml.ComponentConfigFactory;
 import org.wso2.carbon.utils.component.xml.ComponentConstants;
 import org.wso2.carbon.utils.component.xml.config.DeployerConfig;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -105,7 +107,14 @@ public class GhostDeployerRegistry implements BundleListener {
             }
 
             if (deployerConfigs != null) {
-                for (DeployerConfig deployerConfig : deployerConfigs) {
+                /**
+                 * Adding the cApp deployer separately. This can't be taken through the
+                 * component.xml because we can't keep the cApp hot dir inside the axis2 repo.
+                 * Please see https://wso2.org/jira/browse/CARBON-13598 for more details..
+                 */
+                DeployerConfig[] newDepConfigs = CarbonUtils.addCappDeployer(deployerConfigs);
+
+                for (DeployerConfig deployerConfig : newDepConfigs) {
 
                     Class deployerClass;
                     try {
