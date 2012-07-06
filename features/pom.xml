@@ -307,7 +307,7 @@
             <dependency>
                 <groupId>org.apache.tomcat.wso2</groupId>
                 <artifactId>jdbc-pool</artifactId>
-                <version>${jdbc-pool.version}</version>
+                <version>${orbit.version.tomcat}</version>
             </dependency>
         </dependencies>
 
@@ -320,7 +320,6 @@
     </modules>
     
     <properties>
-        <jdbc-pool.version>7.0.27.wso2v1</jdbc-pool.version>
         <zookeeper.version>3.3.5.wso2v1</zookeeper.version>
     </properties>
 

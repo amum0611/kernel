@@ -24,6 +24,8 @@ public class RDBMSDataSourceConstants {
 	
 	public static final String DATASOURCE_PROPS_NAME = "dataSourceProps";
 	
+	public static final String ROLLBACK_ON_RETURN = "rollbackOnReturn";
+	
 	public static final class TX_ISOLATION_LEVELS {
 		
 		public static final String NONE = "NONE";

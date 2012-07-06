@@ -39,7 +39,8 @@ public class RDBMSDataSource {
 	private PoolConfiguration poolProperties;
 	
 	public RDBMSDataSource(RDBMSConfiguration config) throws DataSourceException {
-		poolProperties = RDBMSDataSourceUtils.createPoolConfiguration(config);
+		this.poolProperties = RDBMSDataSourceUtils.createPoolConfiguration(config);
+		this.poolProperties.setRollbackOnReturn(true);
 	}
 	
 	public DataSource getDataSource() {
@@ -62,6 +63,8 @@ public class RDBMSDataSource {
 				dataSourceFactoryReference.add(new StringRefAddr(pairs.getKey(),
 						pairs.getValue()));
 			}
+			dataSourceFactoryReference.add(new StringRefAddr(
+					RDBMSDataSourceConstants.ROLLBACK_ON_RETURN, Boolean.TRUE.toString()));
 		}
 		return dataSourceFactoryReference;
 	}
