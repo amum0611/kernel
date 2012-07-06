@@ -242,7 +242,7 @@ public class ServiceGroupPersistenceManager extends AbstractPersistenceManager {
                 log.debug("Initialized Service Group - " + serviceGroup.getServiceGroupName());
             }
         } catch (Throwable e) {
-            log.error("unable init. " + getCurrentFPM().get(serviceGroup.getServiceGroupName()), e);
+            log.error("unable init. " + getCurrentFPM().get(serviceGroup.getServiceGroupName()), e); //todo replace the get op with sgname
             handleExceptionWithRollback(serviceGroupId, "Unable to handle service group init. Service group: " +
                     serviceGroup.getServiceGroupName(), e);
         }

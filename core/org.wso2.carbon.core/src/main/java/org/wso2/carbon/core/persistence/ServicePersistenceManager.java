@@ -304,7 +304,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
                                         getTransportResource(exposedTransport);
                         if (transportResource == null) {
                             throw new CarbonException("The configuration resource " +
-                                    "for " + exposedTransport + " transport does not exist");
+                                    "for " + exposedTransport + " transport does not exist in Registry");
                         }
                         OMElement association = omFactory.createOMElement(
                                 Resources.Associations.ASSOCIATION_XML_TAG, null);

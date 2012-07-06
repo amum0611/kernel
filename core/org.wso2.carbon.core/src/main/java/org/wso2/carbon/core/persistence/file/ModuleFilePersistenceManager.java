@@ -1,12 +1,10 @@
 package org.wso2.carbon.core.persistence.file;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jaxen.JaxenException;
 import org.wso2.carbon.core.Resources;
 import org.wso2.carbon.core.persistence.PersistenceDataNotFoundException;
 import org.wso2.carbon.core.persistence.PersistenceException;
@@ -106,27 +104,8 @@ public class ModuleFilePersistenceManager extends AbstractFilePersistenceManager
     }
 
     @Override
-    public void delete(String moduleId, String xpathStr) throws PersistenceDataNotFoundException {
-        ResourceFileData fileData = resourceMap.get(moduleId);
-
-        try {
-            if (fileData != null && fileData.isTransactionStarted()) {
-                OMElement sgElement = fileData.getOMElement();
-                AXIOMXPath xpathExpr = new AXIOMXPath(xpathStr);
-                OMElement el = (OMElement) xpathExpr.selectSingleNode(sgElement);
-                if (el != null && el.getParent() == null) { //this is the root element
-                    fileData.setOMElement(null);
-                } else if (el != null) {
-                    el.detach();
-                }
-                setMetaFileModification(moduleId);
-            } else {
-                throw new PersistenceDataNotFoundException("transaction isn't started");
-            }
-        } catch (JaxenException e) {
-            log.error("Error parsing xpath string " + moduleId + xpathStr, e);
-            throw new PersistenceDataNotFoundException("Error parsing xpath string " + e);
-        }
+    public boolean delete(String moduleId, String xpathStr) {
+	return super.delete(moduleId, xpathStr);
     }
 
 }

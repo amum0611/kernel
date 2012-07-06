@@ -17,10 +17,10 @@
 */
 package org.wso2.carbon.core.test.persistence;
 
-import org.apache.axiom.om.*;
-import org.apache.axiom.om.util.UUIDGenerator;
-import org.apache.axiom.util.UIDGenerator;
-import org.apache.axis2.AxisFault;
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNode;
 import org.apache.axis2.description.AxisModule;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.AxisServiceGroup;
@@ -35,14 +35,10 @@ import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 import org.wso2.carbon.core.persistence.PersistenceFactory;
 import org.wso2.carbon.core.persistence.PersistenceUtils;
 import org.wso2.carbon.core.persistence.file.ServiceGroupFilePersistenceManager;
-import org.wso2.carbon.registry.core.Association;
 import org.wso2.carbon.registry.core.Registry;
-import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.internal.RegistryCoreServiceComponent;
-import org.wso2.carbon.registry.core.jdbc.EmbeddedRegistryService;
 import org.wso2.carbon.registry.core.jdbc.InMemoryEmbeddedRegistryService;
-import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.WSO2Constants;
 
 import javax.xml.namespace.QName;
@@ -295,6 +291,28 @@ public class PersistenceManagerTest extends BaseTestCase {
         assertTrue("testParam".equals(s1));
         assertTrue("5".equals(s2));
 
+        pf.getServiceGroupFilePM().beginTransaction("testUp");
+
+        OMElement delElement = OMAbstractFactory.getOMFactory().createOMElement("omelement", null);
+                
+        pf.getServiceGroupFilePM().put("testUp", delElement, serviceElementPath);
+        pf.getServiceGroupFilePM().put("testUp", delElement.cloneOMElement(), serviceElementPath);
+
+        List list = pf.getServiceGroupFilePM().getAll("testUp", serviceElementPath+"/omelement");
+        assertEquals(2, list.size());
+
+        pf.getServiceGroupFilePM().delete("testUp", serviceElementPath+"/omelement");
+        list = pf.getServiceGroupFilePM().getAll("testUp", serviceElementPath+"/omelement");
+        assertEquals(1, list.size());
+
+        boolean deleteAll = pf.getServiceGroupFilePM().deleteAll("testUp", serviceElementPath+"/omelement");
+        assertTrue(deleteAll);
+
+        boolean deleteAllFalse = pf.getServiceGroupFilePM().deleteAll("testUp", serviceElementPath+"/notExist");
+        assertFalse(deleteAllFalse);
+
+        pf.getServiceGroupFilePM().commitTransaction("testUp");
+        
         //deleting service(group) after the above process
         deleteServiceAsserts(asv);
         deleteServiceGroupAsserts(asvGroup);

@@ -38,7 +38,7 @@ public abstract class AbstractFilePersistenceManager {
     Map<String, ResourceFileData> resourceMap = new HashMap<String, ResourceFileData>();
 
     /**
-     *   Include meta files that gets modified sue to a user action done via the UI.
+     *   Include meta files that gets modified due to a user action done via the UI.
      */
     private Set<String> userModifiedItems = new HashSet<String>();
 
@@ -354,10 +354,72 @@ public abstract class AbstractFilePersistenceManager {
     /**
      * @param resourceId module name or service group name as applicable
      * @param xpathStr   xpath to the element which needs to be deleted
-     * @throws PersistenceDataNotFoundException
-     *          if path given xpathStr is not found or syntax error
+     * @return true if deleted successfully
      */
-    public abstract void delete(String resourceId, String xpathStr) throws PersistenceDataNotFoundException;
+    public boolean delete(String resourceId, String xpathStr) {
+        ResourceFileData fileData = resourceMap.get(resourceId);
+
+        try {
+            if (fileData != null && fileData.isTransactionStarted()) {
+                OMElement sgElement = fileData.getOMElement();
+                AXIOMXPath xpathExpr = new AXIOMXPath(xpathStr);
+                OMElement el = (OMElement) xpathExpr.selectSingleNode(sgElement);
+                if (el == null) {
+                    return false;
+                }
+                if (el.getParent() == null) { //this is the root element
+                    fileData.setOMElement(null);
+                } else {
+                    el.detach();
+                }
+                setMetaFileModification(resourceId);
+                return true;
+            } else {
+                log.error("The Element specified by path not found or a transaction isn't started yet. " +
+                        xpathStr);
+                return false;
+            }
+        } catch (JaxenException e) {
+            log.error("Error parsing xpath string " + resourceId + xpathStr, e);
+            return false;
+        }
+    }
+    
+    /**
+     * @param resourceId module name or service group name as applicable
+     * @param xpathStr   xpath to the element which needs to be deleted
+     * @return
+     */
+    public boolean deleteAll(String resourceId, String xpathStr) {
+        ResourceFileData fileData = resourceMap.get(resourceId);
+
+        try {
+            if (fileData != null && fileData.isTransactionStarted()) {
+                OMElement sgElement = fileData.getOMElement();
+                AXIOMXPath xpathExpr = new AXIOMXPath(xpathStr);
+                List nodeList = xpathExpr.selectNodes(sgElement);
+                if (nodeList == null || nodeList.isEmpty()) {
+                    return false;
+                }
+                for (Object obj : nodeList) {
+                    OMElement el = (OMElement) obj;
+                    if (el.getParent() == null) { //this is the root element
+                        fileData.setOMElement(null);
+                    } else {
+                        el.detach();
+                    }
+                }
+                setMetaFileModification(resourceId);
+                return true;
+            } else {
+                log.error("The Element specified by path not found or a transaction isn't started yet. " +
+                        xpathStr);
+            }
+        } catch (JaxenException e) {
+            log.error("Error parsing xpath string " + resourceId + xpathStr, e);
+        }
+        return false;
+    }
 
     /**
      * Handles exception and rollbacks an already started transaction. Don't use this method if
