@@ -17,7 +17,8 @@
 */
 package org.wso2.carbon.user.core.config.multitenancy;
 
-import org.apache.axiom.util.UIDGenerator;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonConstants;
@@ -27,8 +28,7 @@ import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.ldap.LDAPConstants;
 import org.wso2.carbon.user.core.tenant.Tenant;
-
-import java.util.Map;
+import org.wso2.carbon.user.core.util.UserCoreUtil;
 
 /**
  * This is to create tenant specific realm configuration when
@@ -89,7 +89,7 @@ public class CommonLDAPRealmConfigBuilder implements MultiTenantRealmConfigBuild
 
         try {
             RealmConfiguration ldapRealmConfig = bootStrapConfig.cloneRealmConfiguration();
-            ldapRealmConfig.setAdminPassword("dummy");
+            ldapRealmConfig.setAdminPassword(UserCoreUtil.getDummyPassword());
             ldapRealmConfig.setAdminUserName(tenantInfo.getAdminName());
             ldapRealmConfig.setTenantId(tenantId);
 

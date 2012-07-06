@@ -17,18 +17,13 @@
 */
 package org.wso2.carbon.user.core.config.multitenancy;
 
-import java.util.Map;
-
-import org.apache.axiom.om.util.UUIDGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.user.api.RealmConfiguration;
 import org.wso2.carbon.user.api.TenantMgtConfiguration;
-import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.UserStoreException;
-import org.wso2.carbon.user.core.jdbc.JDBCRealmConstants;
 import org.wso2.carbon.user.core.tenant.Tenant;
+import org.wso2.carbon.user.core.util.UserCoreUtil;
 
 public class SimpleRealmConfigBuilder implements MultiTenantRealmConfigBuilder {
 
@@ -37,7 +32,19 @@ public class SimpleRealmConfigBuilder implements MultiTenantRealmConfigBuilder {
     public RealmConfiguration getRealmConfigForTenantToCreateRealm(
             RealmConfiguration bootStrapConfig, RealmConfiguration persistedConfig, int tenantId)
             throws UserStoreException {
-        return persistedConfig;
+    	
+        RealmConfiguration realmConfig;
+        try {
+            realmConfig = bootStrapConfig.cloneRealmConfiguration();
+            realmConfig.setAdminUserName(persistedConfig.getAdminUserName());
+            realmConfig.setAdminPassword(persistedConfig.getAdminPassword());
+        } catch (Exception e) {
+            String errorMessage = "Error while building tenant specific realm configuration" +
+                                  "when creating tenant's realm.";
+            log.error(errorMessage, e);
+            throw new UserStoreException(errorMessage, e);
+        }
+        return realmConfig;
     }
 
     public RealmConfiguration getRealmConfigForTenantToCreateRealmOnTenantCreation(
@@ -46,34 +53,26 @@ public class SimpleRealmConfigBuilder implements MultiTenantRealmConfigBuilder {
         return persistedConfig;
     }
 
-    public RealmConfiguration getRealmConfigForTenantToPersist(RealmConfiguration bootStrapConfig,
-                                                               TenantMgtConfiguration
-                                                                       tenantMgtConfiguration,
-                                                               Tenant tenantInfo, int tenantId)
-            throws UserStoreException {
-        try {
-            RealmConfiguration realmConfig = (RealmConfiguration)bootStrapConfig.cloneRealmConfiguration();
-            // TODO :: Random password generation
-            realmConfig.setAdminPassword(UUIDGenerator.getUUID());
-            realmConfig.setAdminUserName(tenantInfo.getAdminName());
-            realmConfig.setTenantId(tenantId);
-            Map<String, String> authz = realmConfig.getAuthzProperties();
-            authz.put(UserCoreConstants.RealmConfig.PROPERTY_ADMINROLE_AUTHORIZATION,
-                    CarbonConstants.UI_ADMIN_PERMISSION_COLLECTION);
-            realmConfig.getRealmProperties().remove(JDBCRealmConstants.DRIVER_NAME);
-            realmConfig.getRealmProperties().remove(JDBCRealmConstants.URL);
-            realmConfig.getRealmProperties().remove(JDBCRealmConstants.USER_NAME);
-            realmConfig.getRealmProperties().remove(JDBCRealmConstants.PASSWORD);
-            realmConfig.getRealmProperties().remove(JDBCRealmConstants.MAX_ACTIVE);
-            realmConfig.getRealmProperties().remove(JDBCRealmConstants.MIN_IDLE);
-            realmConfig.getRealmProperties().remove(JDBCRealmConstants.MAX_WAIT);
-            realmConfig.getRealmProperties().remove(JDBCRealmConstants.DATASOURCE);
-            
-            return realmConfig;
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new UserStoreException(e.getMessage(), e);
-        }
-    }
+	public RealmConfiguration getRealmConfigForTenantToPersist(RealmConfiguration bootStrapConfig,
+	                                                           TenantMgtConfiguration tenantMgtConfig,
+	                                                           Tenant tenantInfo, int tenantId)
+	                                                                                           throws UserStoreException {
+		try {
+			RealmConfiguration realmConfig = bootStrapConfig.cloneRealmConfiguration();
+			removePropertiesFromTenantRealmConfig(realmConfig);
+			realmConfig.setAdminUserName(tenantInfo.getAdminName());
+			realmConfig.setAdminPassword(UserCoreUtil.getDummyPassword());
+			return realmConfig;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new UserStoreException(e.getMessage(), e);
+		}
+	}
+
+	private void removePropertiesFromTenantRealmConfig(RealmConfiguration tenantRealmConfiguration) {
+		tenantRealmConfiguration.getRealmProperties().clear();
+		tenantRealmConfiguration.getUserStoreProperties().clear();
+		tenantRealmConfiguration.getAuthzProperties().clear();
+	}
 
 }

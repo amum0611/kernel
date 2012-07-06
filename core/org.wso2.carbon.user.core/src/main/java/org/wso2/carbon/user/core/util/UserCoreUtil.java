@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,7 +49,8 @@ public final class UserCoreUtil {
     private static Boolean isCrossTenantUniqueUserName;
     private static final SynchronizingClass loadlock = new SynchronizingClass();
     private static RealmService realmService = null;
-
+    private static final String DUMMY_VALUE = "dummy";
+    
     private UserCoreUtil() {
     }
 
@@ -225,4 +227,9 @@ public final class UserCoreUtil {
             return false;
         }
     }
+    
+	public static String getDummyPassword() {
+		Random rand = new Random();
+		return DUMMY_VALUE + rand.nextInt(999999);
+	}
 }

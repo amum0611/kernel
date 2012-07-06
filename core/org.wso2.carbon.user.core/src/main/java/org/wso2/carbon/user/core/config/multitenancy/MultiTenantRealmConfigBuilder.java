@@ -46,6 +46,7 @@ public interface MultiTenantRealmConfigBuilder {
                                                         Tenant tenantInfo, int tenantId)
             throws UserStoreException;
 
+    @Deprecated
     RealmConfiguration getRealmConfigForTenantToCreateRealmOnTenantCreation(
             RealmConfiguration bootStrapConfig, RealmConfiguration persistedConfig, int tenantId)
             throws UserStoreException;
