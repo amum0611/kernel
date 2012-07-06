@@ -399,7 +399,10 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
         String serviceGroupId = axisService.getAxisServiceGroup().getServiceGroupName();
 
         try {
-            getServiceGroupFilePM().beginTransaction(serviceGroupId);
+            boolean isTransactionStarted = getServiceGroupFilePM().isTransactionStarted(serviceGroupId);
+            if(!isTransactionStarted) {
+                getServiceGroupFilePM().beginTransaction(serviceGroupId);
+            }
             String serviceElementPath = PersistenceUtils.getResourcePath(axisService);
             OMElement serviceElement = (OMElement) getServiceGroupFilePM().get(serviceGroupId, serviceElementPath);
 
@@ -704,7 +707,9 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
             }
             axisService.setActive(Boolean.parseBoolean(serviceState));
 
-            getServiceGroupFilePM().commitTransaction(serviceGroupId);
+            if(!isTransactionStarted) {
+                getServiceGroupFilePM().commitTransaction(serviceGroupId);
+            }
 
             if (log.isDebugEnabled()) {
                 log.debug("Initialized service - " + axisService.getName());

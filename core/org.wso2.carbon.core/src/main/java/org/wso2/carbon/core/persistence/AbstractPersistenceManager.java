@@ -181,7 +181,9 @@ public abstract class AbstractPersistenceManager {
                     if (name != null && name.equals(paramName) && type != null &&
                             type.equals(Integer.toString(paramType)) && content != null &&
                             content.equals(parameter.getParameterElement().toString())) {
-                        getCurrentFPM().commitTransaction(resourceId);
+                        if(!isTransactionStarted) {
+                            getCurrentFPM().rollbackTransaction(resourceId);
+                        }
                         return;
                     }
                     if (parameter.getParameterType() == Parameter.TEXT_PARAMETER) {

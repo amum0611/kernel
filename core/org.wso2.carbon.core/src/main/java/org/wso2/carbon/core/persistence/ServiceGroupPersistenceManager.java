@@ -208,7 +208,10 @@ public class ServiceGroupPersistenceManager extends AbstractPersistenceManager {
     public void handleExistingServiceGroupInit(AxisServiceGroup serviceGroup) throws Exception {
         String serviceGroupId = serviceGroup.getServiceGroupName();
         try {
-            getServiceGroupFilePM().beginTransaction(serviceGroupId);
+            boolean isTransactionStarted = getServiceGroupFilePM().isTransactionStarted(serviceGroupId);
+            if(!isTransactionStarted) {
+                getServiceGroupFilePM().beginTransaction(serviceGroupId);
+            }
             // Add the Service Group Parameters
             loadParameters(serviceGroupId, serviceGroup, Resources.
                     ServiceGroupProperties.ROOT_XPATH + Resources.ParameterProperties.PARAMETER);
@@ -231,8 +234,9 @@ public class ServiceGroupPersistenceManager extends AbstractPersistenceManager {
                     serviceGroup.engageModule(axisModule);
                 }
             }
-
-            getServiceGroupFilePM().commitTransaction(serviceGroupId);
+            if(!isTransactionStarted) {
+                getServiceGroupFilePM().commitTransaction(serviceGroupId);
+            }
 
             if (log.isDebugEnabled()) {
                 log.debug("Initialized Service Group - " + serviceGroup.getServiceGroupName());
