@@ -307,7 +307,7 @@
             <dependency>
                 <groupId>org.apache.tomcat.wso2</groupId>
                 <artifactId>jdbc-pool</artifactId>
-                <version>${orbit.version.tomcat}</version>
+                <version>${jdbc-pool.version}</version>
             </dependency>
         </dependencies>
 

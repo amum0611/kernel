@@ -261,7 +261,7 @@
         <version.axis2.json>1.6.1.wso2v5</version.axis2.json>
         <version.synapse>2.1.0-wso2v5</version.synapse>
         <version.lucene.core>2.3.2</version.lucene.core>
-        <version.tomcat>7.0.27</version.tomcat>
+        <version.tomcat>7.0.28</version.tomcat>
         <orbit.version.tomcat>${version.tomcat}.wso2v1</orbit.version.tomcat>
         <version.apacheds.shared.ldap>0.9.18</version.apacheds.shared.ldap>
 
@@ -317,7 +317,7 @@
 	<balana.version>1.0.0-SNAPSHOT</balana.version>	
 
 	<version.commons.logging>1.1.1</version.commons.logging>
-        <jdbc-pool.version>7.0.27.wso2v1</jdbc-pool.version>
+        <jdbc-pool.version>${orbit.version.tomcat}</jdbc-pool.version>
 
     </properties>
 
@@ -1082,7 +1082,7 @@
             <dependency>
                 <groupId>org.apache.tomcat.wso2</groupId>
                 <artifactId>jdbc-pool</artifactId>
-                <version>7.0.27.wso2v1</version>
+                <version>${jdbc-pool.version}</version>
 	   </dependency>
         </dependencies>
     </dependencyManagement>
