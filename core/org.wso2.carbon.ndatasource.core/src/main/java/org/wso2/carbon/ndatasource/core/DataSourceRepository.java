@@ -92,7 +92,6 @@ public class DataSourceRepository implements GroupEventListener {
 	 * @throws DataSourceException
 	 */
 	public void initRepository() throws DataSourceException {
-		this.registry = DataSourceUtils.getConfRegistryForTenant(this.getTenantId());
 		this.initSyncGroup();
 		this.refreshAllUserDataSources();
 	}
@@ -119,7 +118,14 @@ public class DataSourceRepository implements GroupEventListener {
 		}
 	}
 	
-	private Registry getRegistry() {
+	private synchronized Registry getRegistry() throws DataSourceException {
+		if (this.registry == null) {
+		    this.registry = DataSourceUtils.getConfRegistryForTenant(this.getTenantId());
+		    if (log.isDebugEnabled()) {
+		        log.debug("[datasources] Retrieving the governance registry for tenant: " +
+		                this.getTenantId());
+		    }
+		}
 		return registry;
 	}
 	
@@ -133,6 +139,11 @@ public class DataSourceRepository implements GroupEventListener {
 	 */
 	public void refreshAllUserDataSources() throws DataSourceException {
 		try {
+			/* check if there are any data sources registered for this tenant */
+			if (!DataSourceServiceComponent.getDsAvailabilityManager().checkDSAvailable(
+					this.getTenantId())) {
+				return;
+			}
 			if (this.getRegistry().resourceExists(
 					DataSourceConstants.DATASOURCES_REPOSITORY_BASE_PATH)) {
 				Collection dsCollection = (Collection) this.getRegistry().get(
@@ -295,6 +306,7 @@ public class DataSourceRepository implements GroupEventListener {
 		        this.getRegistry().delete(path);
 			}
 		    this.getRegistry().commitTransaction();
+		    this.processDSAvailable();
 		} catch (Exception e) {
 			try {
 				this.getRegistry().rollbackTransaction();
@@ -315,11 +327,37 @@ public class DataSourceRepository implements GroupEventListener {
 			ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
 			Resource resource = this.getRegistry().newResource();
 			resource.setContentStream(in);
+			DataSourceServiceComponent.getDsAvailabilityManager().setDSAvailable(
+					this.getTenantId(), true);
 			this.getRegistry().put(DataSourceConstants.DATASOURCES_REPOSITORY_BASE_PATH + "/" +
 			        dsmInfo.getName(), resource);
 		} catch (Exception e) {
+			this.processDSAvailable();
 			throw new DataSourceException("Error in persisting data source: " + 
 		            dsmInfo.getName() + " - " + e.getMessage(), e);
+		}
+	}
+	
+	private int getDSCount() throws DataSourceException {
+		try {
+			if (this.getRegistry().resourceExists(
+					DataSourceConstants.DATASOURCES_REPOSITORY_BASE_PATH)) {
+				Collection dsCollection = (Collection) this.getRegistry().get(
+						DataSourceConstants.DATASOURCES_REPOSITORY_BASE_PATH);
+				return dsCollection.getChildCount();
+			} else {
+				return 0;
+			}
+		} catch (Exception e) {			
+			throw new DataSourceException("Error in getting data sources count from repository: " +
+		            e.getMessage(), e);
+		}
+	}
+	
+	private void processDSAvailable() throws DataSourceException {
+		if (this.getDSCount() == 0) {
+			DataSourceServiceComponent.getDsAvailabilityManager().setDSAvailable(
+					this.getTenantId(), false);
 		}
 	}
 	

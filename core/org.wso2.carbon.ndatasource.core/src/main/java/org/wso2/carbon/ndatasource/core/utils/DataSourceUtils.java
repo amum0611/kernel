@@ -69,7 +69,24 @@ public class DataSourceUtils {
 			return DataSourceServiceComponent.getRegistryService().getConfigSystemRegistry(
 					tenantId);
 		} catch (RegistryException e) {
-			throw new DataSourceException("Error in retrieving registry instance: " + 
+			throw new DataSourceException("Error in retrieving conf registry instance: " + 
+		            e.getMessage(), e);
+		} finally {
+			/* go out of being super tenant */
+			SuperTenantCarbonContext.endTenantFlow();
+		}
+	}
+	
+	public static Registry getGovRegistryForTenant(int tenantId) throws DataSourceException {
+		try {
+			/* be super tenant to retrieve the registry of a given tenant id */
+			SuperTenantCarbonContext.startTenantFlow();
+			SuperTenantCarbonContext.getCurrentContext().setTenantId(
+					MultitenantConstants.SUPER_TENANT_ID);
+			return DataSourceServiceComponent.getRegistryService().getGovernanceSystemRegistry(
+					tenantId);
+		} catch (RegistryException e) {
+			throw new DataSourceException("Error in retrieving gov registry instance: " + 
 		            e.getMessage(), e);
 		} finally {
 			/* go out of being super tenant */

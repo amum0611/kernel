@@ -24,6 +24,7 @@ import org.wso2.carbon.coordination.core.services.CoordinationService;
 import org.wso2.carbon.ndatasource.core.DataSourceAxis2ConfigurationContextObserver;
 import org.wso2.carbon.ndatasource.core.DataSourceManager;
 import org.wso2.carbon.ndatasource.core.DataSourceService;
+import org.wso2.carbon.ndatasource.core.RegistryDSAvailabilityManager;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.securevault.SecretCallbackHandlerService;
 import org.wso2.carbon.user.core.service.RealmService;
@@ -65,6 +66,8 @@ public class DataSourceServiceComponent {
 	private ComponentContext ctx;
 	
 	private boolean tenantUserDataSourcesInitialized;
+	
+	private static RegistryDSAvailabilityManager dsAvailabilityManager;
 	
 	protected synchronized void activate(ComponentContext ctx) {
 		this.ctx = ctx;
@@ -183,6 +186,7 @@ public class DataSourceServiceComponent {
     
     private synchronized void initAllTenantUserDataSources() {
     	try {
+    		dsAvailabilityManager = new RegistryDSAvailabilityManager();
     		if (log.isDebugEnabled()) {
         		log.debug("Initializing tenant user data sources...");
         	}
@@ -199,7 +203,15 @@ public class DataSourceServiceComponent {
 		} 
     }
     
-    protected void setCoordinationService(CoordinationService coordinationService) {
+    public boolean isTenantUserDataSourcesInitialized() {
+		return tenantUserDataSourcesInitialized;
+	}
+
+	public static RegistryDSAvailabilityManager getDsAvailabilityManager() {
+		return dsAvailabilityManager;
+	}
+
+	protected void setCoordinationService(CoordinationService coordinationService) {
     	if (log.isDebugEnabled()) {
     		log.debug("CoordinationService acquired");
     	}
