@@ -27,13 +27,24 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.application.deployer.internal.ApplicationManager;
 import org.wso2.carbon.application.deployer.persistence.CarbonAppPersistenceManager;
 
+import java.io.File;
+
 public class CappAxis2Deployer extends AbstractDeployer {
 
     private static final Log log = LogFactory.getLog(CappAxis2Deployer.class);
 
     private AxisConfiguration axisConfig;
 
+    private String cAppDir;
+
     public void init(ConfigurationContext configurationContext) {
+        // create the cApp hot directory
+        if (cAppDir != null && !"".equals(cAppDir)) {
+            File cAppDirFile = new File(cAppDir);
+            if (!cAppDirFile.exists() && !cAppDirFile.mkdir()) {
+                log.warn("Couldn't create directory : " + cAppDirFile.getAbsolutePath());
+            }
+        }
         if (log.isDebugEnabled()) {
             log.debug("Initializing Capp Axis2 Deployer..");
         }
@@ -66,7 +77,7 @@ public class CappAxis2Deployer extends AbstractDeployer {
     }
 
     public void setDirectory(String s) {
-
+        this.cAppDir = s;
     }
 
     public void setExtension(String s) {

@@ -17,12 +17,14 @@
  -->
 <component xmlns="http://products.wso2.org/carbon">
 
-    <deployers>
-        <deployer>
-            <directory>carbonapps</directory>
-            <extension>car</extension>
-            <class>org.wso2.carbon.application.deployer.CappAxis2Deployer</class>
-            </deployer>
-    </deployers>
+    <!--cApp deployer is now hard coded in the CarbonUtils#addCappDeployer. This had to be done to fix-->
+    <!--https://wso2.org/jira/browse/CARBON-13598.-->
+    <!--<deployers>-->
+        <!--<deployer>-->
+            <!--<directory>carbonapps</directory>-->
+            <!--<extension>car</extension>-->
+            <!--<class>org.wso2.carbon.application.deployer.CappAxis2Deployer</class>-->
+            <!--</deployer>-->
+    <!--</deployers>-->
 
 </component>
