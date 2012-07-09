@@ -244,7 +244,13 @@ try{
                 </tr>
                 <tr>
                     <td class="buttonRow">
+                        <%
+                            if(CarbonUIUtil.isUserAuthorized(request, "/permission/admin/configure/security")){
+                        %>
                         <input type="button" class="button" value="<fmt:message key="next"/> >" onclick="doNext();"/>
+                        <%
+                            }
+                        %>
                         <input type="button" class="button" value="<fmt:message key="finish"/>" onclick="doFinish();"/>
                         <input type="button" class="button" value="<fmt:message key="cancel"/>" onclick="doCancel();"/>
                     </td>

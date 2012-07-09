@@ -200,10 +200,12 @@
                     </td>
                     <td>
                         <%
-                            if (userStoreInfo.isReadOnly() == false) {
+                            if (!userStoreInfo.isReadOnly()) {
                         %>
                         <%
-                            if (!userStoreInfo.isPasswordsExternallyManaged()) { //if passwords are managed externally do not allow to change passwords.
+                            if (!userStoreInfo.isPasswordsExternallyManaged() &&
+                                CarbonUIUtil.isUserAuthorized(request,
+                                         "/permission/admin/configure/security/usermgt/passwords")) { //if passwords are managed externally do not allow to change passwords.
                         %>
                         <a href="change-passwd.jsp?username=<%=data%>" class="icon-link"
                            style="background-image:url(../admin/images/edit.gif);"><fmt:message
@@ -211,11 +213,20 @@
                         <%
                             }
                         %>
+
+                        <%
+                            if(CarbonUIUtil.isUserAuthorized(request, "/permission/admin/configure/security")){
+                        %>
                         <a href="edit-user-roles.jsp?username=<%=data%>" class="icon-link"
                            style="background-image:url(../admin/images/edit.gif);"><fmt:message
                                 key="roles"/></a>
                         <%
-                            if (!data.equals(currentUser)
+                            }
+                        %>
+
+                        <%
+                            if (CarbonUIUtil.isUserAuthorized(request,
+                                "/permission/admin/configure/security/usermgt/users") && !data.equals(currentUser)
                                 && !data.equals(userStoreInfo.getAdminUser())) {
                         %>
                         <a href="#" onclick="deleteUser('<%=data%>')" class="icon-link"
@@ -229,7 +240,7 @@
                         <%
                             if (CarbonUIUtil.isContextRegistered(config, "/userprofile/")
                                 && CarbonUIUtil.isUserAuthorized(request,
-                                                                 "/permission/admin/manage/modify/user-profile")) {
+                                                                 "/permission/admin/configure/security/usermgt/profiles")) {
                         %>
                         <a href="../userprofile/index.jsp?username=<%=data%>&fromUserMgt=true"
                            class="icon-link"
@@ -267,7 +278,9 @@
                 }
             %>
             <%
-                if (userStoreInfo.isReadOnly() == false && userStoreInfo.getExternalIdP() == null) {
+                if (userStoreInfo.isReadOnly() == false && userStoreInfo.getExternalIdP() == null
+                        && CarbonUIUtil.isUserAuthorized(request,
+                                "/permission/admin/configure/security/usermgt/users")) {
             %>
             <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top:2px;">
                 <tr>

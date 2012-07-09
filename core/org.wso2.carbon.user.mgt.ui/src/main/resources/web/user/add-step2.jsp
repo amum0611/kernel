@@ -44,6 +44,7 @@
 <jsp:include page="../userstore/display-messages.jsp"/>
 <carbon:breadcrumb label="select.roles" resourceBundle="org.wso2.carbon.userstore.ui.i18n.Resources" topPage="false" request="<%=request%>"/>
     <%
+
         FlaggedName[] groupData = new FlaggedName[0];
         UserStoreInfo userStoreInfo = null;
         String cookie = (String) session.getAttribute(ServerConstants.ADMIN_SERVICE_COOKIE);

@@ -84,7 +84,11 @@
         <div id="workArea">
             <table width="100%">
             
-                <% if (CarbonUIUtil.isUserAuthorized(request, "/permission/admin")) {%>
+                <% if (CarbonUIUtil.isUserAuthorized(request, "/permission/admin/configure/security") ||
+                        CarbonUIUtil.isUserAuthorized(request, "/permission/admin/configure/security/usermgt") ||
+                        CarbonUIUtil.isUserAuthorized(request, "/permission/admin/configure/security/usermgt/users") ||
+                        CarbonUIUtil.isUserAuthorized(request, "/permission/admin/configure/security/usermgt/passwords") ||
+                        CarbonUIUtil.isUserAuthorized(request, "/permission/admin/configure/security/usermgt/profiles")) {%>
                 <tr>
                      <td>   
                         <table class="styledLeft" id="internal" width="100%">
@@ -98,11 +102,15 @@
                                 <a class="icon-link" style="background-image:url(images/users.gif);" href="../user/user-mgt.jsp"><fmt:message key="users"/></a>
                                 </td>
                             </tr>
+
+
+                            <% if (CarbonUIUtil.isUserAuthorized(request, "/permission/admin/configure/security")) { %>
                             <tr>
                                 <td>
                                 <a class="icon-link" style="background-image:url(images/user-roles.gif);" href="../role/role-mgt.jsp"><fmt:message key="roles"/></a>
                                 </td>
                             </tr>
+                            <% } %>
                         </table>
                     </td>
                 </tr>
