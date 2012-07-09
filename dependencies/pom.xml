@@ -36,6 +36,7 @@
 
             <modules>
                 <module>axis2/1.6.1-wso2v5</module>
+                <module>jdbc-pool/7.0.28-wso2v1</module>
                 <module>jsr107cache</module>
                 <module>neethi/2.0.4-wso2v2</module>
                 <module>wss4j/1.5.11-wso2v3</module>
@@ -60,6 +61,7 @@
 		<module>orbit/axis2-jibx</module>
 		<module>orbit/axis2-jaxbri</module>
 		<module>orbit/xalan</module>
+		<module>orbit/jdbc-pool</module>
                 <module>orbit/h2-database-engine</module>
 	     </modules>
    <dependencyManagement>
