@@ -57,6 +57,10 @@ public class UserMgtInitializer {
             map.put(UserMgtConstants.UI_ADMIN_PERMISSION_ROOT + "manage/add", "Add");
             map.put(UserMgtConstants.UI_ADMIN_PERMISSION_ROOT + "configure", "Configure");
             map.put(UserMgtConstants.UI_ADMIN_PERMISSION_ROOT + "configure/security", "Security");
+            map.put(UserMgtConstants.UI_ADMIN_PERMISSION_ROOT + "configure/security/usermgt", "Identity Management");
+            map.put(UserMgtConstants.UI_ADMIN_PERMISSION_ROOT + "configure/security/usermgt/users", "User Management");
+            map.put(UserMgtConstants.UI_ADMIN_PERMISSION_ROOT + "configure/security/usermgt/passwords", "Password Management");
+            map.put(UserMgtConstants.UI_ADMIN_PERMISSION_ROOT + "configure/security/usermgt/profiles", "Profile Management");
             map.put(UserMgtConstants.UI_ADMIN_PERMISSION_ROOT + "login", "Login");
 
             for (Iterator<Map.Entry<String, String>> ite = map.entrySet().iterator(); ite.hasNext();) {

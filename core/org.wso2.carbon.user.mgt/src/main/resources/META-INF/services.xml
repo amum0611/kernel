@@ -42,10 +42,20 @@
 	        <parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/rolemgt</parameter>
 	    </operation>
 	    <operation name="updateUsersOfRole">
-	        <parameter name="AuthorizationAction" locked="true">/permission/admin</parameter>
+	        <parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security</parameter>
 	    </operation>
         <operation name="addUser">
+            <parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/users</parameter>
             <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="org.wso2.carbon.server.admin.privilegedaction.extension.PrivilegedActionExtensionMessageReceiver"/>
+	    </operation>
+	    <operation name="changePassword">
+	        <parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/passwords</parameter>
+	    </operation>
+	    <operation name="deleteUser">
+	        <parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/users</parameter>
+	    </operation>
+	    <operation name="listUsers">
+	        <parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/users,/permission/admin/configure/security/usermgt/passwords,/permission/admin/configure/security/usermgt/profiles</parameter>
 	    </operation>
     </service>
     
