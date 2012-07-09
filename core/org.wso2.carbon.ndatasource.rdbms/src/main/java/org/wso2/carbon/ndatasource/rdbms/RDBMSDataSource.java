@@ -40,7 +40,16 @@ public class RDBMSDataSource {
 	
 	public RDBMSDataSource(RDBMSConfiguration config) throws DataSourceException {
 		this.poolProperties = RDBMSDataSourceUtils.createPoolConfiguration(config);
-		this.poolProperties.setRollbackOnReturn(true);
+		this.populateStandardProps();
+	}
+	
+	private void populateStandardProps() {
+		String jdbcInterceptors = this.poolProperties.getJdbcInterceptors();
+		if (jdbcInterceptors == null) {
+			jdbcInterceptors = "";
+		}
+		jdbcInterceptors = RDBMSDataSourceConstants.STANDARD_JDBC_INTERCEPTORS + jdbcInterceptors;
+		this.poolProperties.setJdbcInterceptors(jdbcInterceptors);
 	}
 	
 	public DataSource getDataSource() {
@@ -63,8 +72,6 @@ public class RDBMSDataSource {
 				dataSourceFactoryReference.add(new StringRefAddr(pairs.getKey(),
 						pairs.getValue()));
 			}
-			dataSourceFactoryReference.add(new StringRefAddr(
-					RDBMSDataSourceConstants.ROLLBACK_ON_RETURN, Boolean.TRUE.toString()));
 		}
 		return dataSourceFactoryReference;
 	}
