@@ -140,14 +140,14 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
     }
 
     private Host findHost() {
-        Engine engine = findEngine();
-        Container[] children = engine.findChildren();
-        for (Container container : children) {
-            if (container instanceof Host) {
-                return (Host) container;
-            }
+        if(this.host == null) {
+            Engine engine = findEngine();
+            String defaultHost = engine.getDefaultHost();
+            Container child = engine.findChild(defaultHost);
+            return (Host)child;
+        } else {
+            return this.host;
         }
-        throw new IllegalStateException("Unable to locate Host.");
     }
 
     public void init() throws LifecycleException {
