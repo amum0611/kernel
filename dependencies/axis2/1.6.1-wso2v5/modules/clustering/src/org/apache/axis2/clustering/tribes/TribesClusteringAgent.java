@@ -155,6 +155,10 @@ public class TribesClusteringAgent implements ClusteringAgent {
         return configurationManager;
     }
 
+    public MembershipManager getPrimaryMembershipManager() {
+        return primaryMembershipManager;
+    }
+
     public boolean isCoordinator(){
         return coordinator.isCoordinator();
     }
@@ -308,13 +312,10 @@ public class TribesClusteringAgent implements ClusteringAgent {
         AxisConfiguration axisConfig = configurationContext.getAxisConfiguration();
         TransportInDescription httpTransport = axisConfig.getTransportIn("http");
         int portOffset = 0;
-
-        Parameter param = getParameter(ClusteringConstants.Parameters.AVOID_INITIATION);
-        if(param != null && !JavaUtils.isTrueExplicitly(param.getValue())){
-            //AvoidInitialization = false, Hence we set the portOffset
-            if(System.getProperty("portOffset") != null){
-                portOffset = Integer.parseInt(System.getProperty("portOffset"));
-            }
+        
+        // read the portOffset value
+        if(System.getProperty("portOffset") != null){
+            portOffset = Integer.parseInt(System.getProperty("portOffset"));
         }
 
         if (httpTransport != null) {

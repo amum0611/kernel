@@ -225,36 +225,40 @@ public class WkaBasedMembershipScheme implements MembershipScheme {
 
         // ------------ END: Configure and add the local member ---------------------
 
-        // ------------ START: Add other members ---------------------
-        for (Member member : members) {
-            StaticMember tribesMember;
-            try {
-                tribesMember = new StaticMember(member.getHostName(), member.getPort(),
-                                                0, payload);
-            } catch (IOException e) {
-                String msg = "Could not add static member " +
-                             member.getHostName() + ":" + member.getPort();
-                log.error(msg, e);
-                throw new ClusteringFault(msg, e);
-            }
+		if (members != null) {
+			// ------------ START: Add other members ---------------------
+			for (Member member : members) {
+				StaticMember tribesMember;
+				try {
+					tribesMember =
+					               new StaticMember(member.getHostName(), member.getPort(), 0,
+					                                payload);
+				} catch (IOException e) {
+					String msg =
+					             "Could not add static member " + member.getHostName() + ":" +
+					                     member.getPort();
+					log.error(msg, e);
+					throw new ClusteringFault(msg, e);
+				}
 
-            // Do not add the local member to the list of members
-            if (!(Arrays.equals(localMember.getHost(), tribesMember.getHost()) &&
-                  localMember.getPort() == tribesMember.getPort())) {
-                tribesMember.setDomain(localDomain);
+				// Do not add the local member to the list of members
+				if (!(Arrays.equals(localMember.getHost(), tribesMember.getHost()) && localMember.getPort() == tribesMember.getPort())) {
+					tribesMember.setDomain(localDomain);
 
-                // We will add the member even if it is offline at this moment. When the
-                // member comes online, it will be detected by the GMS
-                staticMembershipInterceptor.addStaticMember(tribesMember);
-                primaryMembershipManager.addWellKnownMember(tribesMember);
-                if (canConnect(member)) {
-                    primaryMembershipManager.memberAdded(tribesMember);
-                    log.info("Added static member " + TribesUtil.getName(tribesMember));
-                } else {
-                    log.info("Could not connect to member " + TribesUtil.getName(tribesMember));
-                }
-            }
-        }
+					// We will add the member even if it is offline at this
+					// moment. When the
+					// member comes online, it will be detected by the GMS
+					staticMembershipInterceptor.addStaticMember(tribesMember);
+					primaryMembershipManager.addWellKnownMember(tribesMember);
+					if (canConnect(member)) {
+						primaryMembershipManager.memberAdded(tribesMember);
+						log.info("Added static member " + TribesUtil.getName(tribesMember));
+					} else {
+						log.info("Could not connect to member " + TribesUtil.getName(tribesMember));
+					}
+				}
+			}
+		}
     }
 
     /**
