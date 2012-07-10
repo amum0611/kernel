@@ -18,7 +18,7 @@
 chemical/x-alchemy				alc
 application/andrew-inset			ez
 application/wsdl+xml				wsdl
-application/vnd.wso2-wadl+xml	wadl
+application/vnd.sun.wadl+xml	wadl
 application/activemessage
 application/applefile
 application/atomicmail
