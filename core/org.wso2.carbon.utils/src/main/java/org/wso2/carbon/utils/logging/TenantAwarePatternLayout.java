@@ -285,9 +285,18 @@ public class TenantAwarePatternLayout extends PatternLayout {
 
 			public String getFullyQualifiedName(LoggingEvent event) {
 				if (event instanceof TenantAwareLoggingEvent) {
-					return ((TenantAwareLoggingEvent) event).getServiceName();
+					if (((TenantAwareLoggingEvent) event).getServiceName() != null) {
+						return ((TenantAwareLoggingEvent) event).getServiceName();
+					} else {
+						return "";
+					}
 				} else {
-					return CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder().getApplicationName();
+					if (CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder().getApplicationName() != null) {
+						return CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder().getApplicationName();
+					} else {
+						return "";
+					}
+					
 				}
 				
 //				
