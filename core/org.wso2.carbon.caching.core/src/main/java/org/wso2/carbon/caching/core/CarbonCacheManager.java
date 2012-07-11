@@ -50,7 +50,7 @@ public interface CarbonCacheManager {
      * @return the cache instance.
      */
     Cache getCache(String cacheName);
-
+    
     /**
      * Registers the given cache instance by the given name.
      *

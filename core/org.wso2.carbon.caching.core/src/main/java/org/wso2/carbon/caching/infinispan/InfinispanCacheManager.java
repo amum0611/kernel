@@ -40,6 +40,7 @@ import org.wso2.carbon.base.CarbonBaseUtils;
 import org.wso2.carbon.caching.core.CacheConfiguration;
 import org.wso2.carbon.caching.core.CarbonCacheManager;
 
+import java.io.IOException;
 import java.net.CacheResponse;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,16 +55,7 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
     private static final long DEFAULT_EXPIRATION_L1 = 600000L;      // 10 mins
     private static final String DEFAULT_CLUSTER_NAME = "wso2carbon-cache";
     
-    private String clusterName = DEFAULT_CLUSTER_NAME;
-    private CacheMode cacheMode = CacheMode.LOCAL;
-    private boolean isSync = true;
-    private long maxExpirationMillis = DEFAULT_EXPIRATION;
-    private long maxIdleExpirationMillis = DEFAULT_EXPIRATION;
-    private long l1LifeSpan = DEFAULT_EXPIRATION;
-    private boolean l1Enabled = true;
-    private String configurationFile = null;
-    private boolean isClusteringEnabled = false;
-    private ConfigurationBuilder configBuilder = null;
+	private ConfigurationBuilder configBuilder = null;
     
     private final Map<String, Cache> caches = Collections.synchronizedMap(new HashMap<String, Cache>());
 
@@ -75,7 +67,17 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
     public void initialize(String carbonHome) {
         CarbonBaseUtils.checkSecurity();
         log.debug("Starting Cache Manager initialization");
-        
+
+        String clusterName = DEFAULT_CLUSTER_NAME;
+        CacheMode cacheMode = CacheMode.LOCAL;
+        boolean isSync = true;
+        long maxExpirationMillis = DEFAULT_EXPIRATION;
+        long maxIdleExpirationMillis = DEFAULT_EXPIRATION;
+        long l1LifeSpan = DEFAULT_EXPIRATION;
+        boolean l1Enabled = true;
+        String configurationFile = null;
+        boolean isClusteringEnabled = false;
+
         CacheConfiguration cacheConfiguration = CacheConfiguration.getInstance();
         String cacheModeString = cacheConfiguration.getProperty("configuration.cacheMode") == null ? CacheConfiguration.CACHE_MODE_LOCAL :
                 cacheConfiguration.getProperty("configuration.cacheMode");
@@ -87,7 +89,17 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
                  Long.parseLong(cacheConfiguration.
                         getProperty("configuration.maxIdleExpirationMillis"));
 
-        if (!cacheModeString.equals("local")) {
+		if (cacheConfiguration.getProperty("configuration.file") != null) {
+			String path = cacheConfiguration.getProperty("configuration.file");
+			try {
+				cacheManager = new DefaultCacheManager(path);
+				Configuration dcc = cacheManager.getDefaultCacheConfiguration();
+				configBuilder = new ConfigurationBuilder().read(dcc);
+			} catch (IOException e) {
+				log.error("Infinispan configuration file cannot be read " + e.getMessage(), e);
+
+			}
+        } else if (!cacheModeString.equals("local")) {
             isClusteringEnabled = true;
 
             isSync = cacheConfiguration.getProperty("configuration.sync") == null ? true : Boolean.
@@ -122,15 +134,6 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
                         addProperty("configurationFile", configurationFile);
             }
             cacheManager = new DefaultCacheManager(builder.build());
-
-        } else {
-            GlobalConfigurationBuilder builder = new GlobalConfigurationBuilder();
-            cacheManager = new DefaultCacheManager(builder.nonClusteredDefault().build());
-        }
-        
-        Configuration dcc = cacheManager.getDefaultCacheConfiguration();
-        configBuilder = new ConfigurationBuilder().read(dcc);
-        if(isClusteringEnabled) {
             configBuilder.clustering().cacheMode(cacheMode);
             if (isSync) {
                 configBuilder.clustering().sync();
@@ -139,6 +142,10 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
                 configBuilder.clustering().l1().lifespan(l1LifeSpan);
             }
         } else {
+            GlobalConfigurationBuilder builder = new GlobalConfigurationBuilder();
+            cacheManager = new DefaultCacheManager(builder.nonClusteredDefault().build());
+            Configuration dcc = cacheManager.getDefaultCacheConfiguration();
+            configBuilder = new ConfigurationBuilder().read(dcc);
             configBuilder.expiration().lifespan(maxExpirationMillis);
             configBuilder.expiration().maxIdle(maxIdleExpirationMillis);
         }
