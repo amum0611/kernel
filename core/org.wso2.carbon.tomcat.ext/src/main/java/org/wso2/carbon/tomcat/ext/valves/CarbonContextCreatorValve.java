@@ -55,6 +55,9 @@ public class CarbonContextCreatorValve extends ValveBase {
             if(!request.getContext().getName().equals("/")) {
                 CarbonApplicationContextHolder.destroyCurrentCarbonAppContextHolder();
             }
+            if (request.getRequestURI().contains("/services/")) {
+            	CarbonApplicationContextHolder.destroyCurrentCarbonAppContextHolder();
+            }
             CarbonContextHolder.destroyCurrentCarbonContextHolder();
         }
     }
@@ -69,6 +72,13 @@ public class CarbonContextCreatorValve extends ValveBase {
                     CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder();
             currentCarbonAppContextHolder.startApplicationFlow();
             currentCarbonAppContextHolder.setApplicationName(request.getContext().getBaseName());
+        } if (request.getRequestURI().contains("/services/")) {
+        	//setting the application id for services
+        	String serviceName = Utils.getServiceName(request);
+        	 CarbonApplicationContextHolder currentCarbonAppContextHolder =
+                 CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder();
+         currentCarbonAppContextHolder.startApplicationFlow();
+         currentCarbonAppContextHolder.setApplicationName(serviceName);
         }
 		if (tenantDomain != null) {
         	UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
