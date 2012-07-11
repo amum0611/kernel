@@ -121,6 +121,10 @@ public abstract class AbstractAdmin {
     protected UserRealm getUserRealm() {
         return (UserRealm) CarbonContext.getCurrentContext().getUserRealm();
     }
+    
+    protected String getUsername() {
+    	return (String) CarbonContext.getCurrentContext().getUsername();
+    }
 
     protected Registry getLocalRepo() {
         return (Registry) SuperTenantCarbonContext.getCurrentContext(getAxisConfig()).getRegistry(
