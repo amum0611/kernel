@@ -125,6 +125,15 @@ public interface RatingsDAO {
     void removeRatings(ResourceImpl resourceImpl) throws RegistryException;
 
     /**
+     * Method to remove  rating added to a resource.
+     *
+     * @param resourceImpl the resource.
+     *
+     * @throws RegistryException if some error occurs while removing ratings.
+     */
+    void removeRating(ResourceImpl resourceImpl, int rateID) throws RegistryException;
+
+    /**
      * Method to get ratings added by all users to the given resource.
      *
      * @param resourceImpl the resource.

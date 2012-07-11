@@ -2058,7 +2058,11 @@ public class EmbeddedRegistry implements Registry {
                         // check for the existing rating.
                         int rateID = ratingsDAO.getRateID(resourceImpl, userName);
                         if (rateID > -1) {
-                            ratingsDAO.updateRating(resourceImpl, rateID, rating);
+                            if (rating == 0) {
+                                ratingsDAO.removeRating(resourceImpl,rateID);
+                            } else {
+                                ratingsDAO.updateRating(resourceImpl, rateID, rating);
+                            }
 
                             if (log.isDebugEnabled()) {
                                 log.debug("Updated the rating on the resource " +

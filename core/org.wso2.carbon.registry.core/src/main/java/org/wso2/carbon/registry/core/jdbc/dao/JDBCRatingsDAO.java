@@ -207,6 +207,61 @@ public class JDBCRatingsDAO implements RatingsDAO {
             }
         }
     }
+    public void removeRating(ResourceImpl resourceImpl , int ratingID) throws RegistryException {
+
+        JDBCDatabaseTransaction.ManagedRegistryConnection conn =
+                JDBCDatabaseTransaction.getConnection();
+
+        PreparedStatement ps1 = null, ps2 = null;
+        try {
+            String sql1 =
+                    "DELETE FROM REG_RESOURCE_RATING WHERE REG_RATING_ID = ? AND REG_TENANT_ID=?";
+            ps1 = conn.prepareStatement(sql1);
+
+            String sql2 = "DELETE FROM REG_RATING WHERE REG_ID = ? AND REG_TENANT_ID=?";
+            ps2 = conn.prepareStatement(sql2);
+
+            ps1.setLong(1, ratingID);
+            ps1.setInt(2, CurrentSession.getTenantId());
+
+            ps2.setLong(1, ratingID);
+            ps2.setInt(2, CurrentSession.getTenantId());
+            ps1.addBatch();
+            ps2.addBatch();
+
+            try {
+                ps1.executeBatch();
+                ps2.executeBatch();
+            } catch (SQLException e) {
+                ps1.clearBatch();
+                ps2.clearBatch();
+                // the exception will be handled in the next catch block
+                throw e;
+            }
+
+        } catch (SQLException e) {
+
+            String msg = "Failed to remove rating on resource " + resourceImpl.getPath() + ". " +
+                    e.getMessage();
+            log.error(msg, e);
+            throw new RegistryException(msg, e);
+        } finally {
+            try {
+                try {
+                    if (ps1 != null) {
+                        ps1.close();
+                    }
+                } finally {
+                    if (ps2 != null) {
+                        ps2.close();
+                    }
+                }
+            } catch (SQLException ex) {
+                String msg = RegistryConstants.RESULT_SET_PREPARED_STATEMENT_CLOSE_ERROR;
+                log.error(msg, ex);
+            }
+        }
+    }
 
     public int getRateID(ResourceImpl resourceImpl, String userID) throws RegistryException {
 
