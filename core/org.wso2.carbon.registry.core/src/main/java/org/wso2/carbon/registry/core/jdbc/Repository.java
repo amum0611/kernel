@@ -994,6 +994,10 @@ public class Repository {
         }
 
         ResourceImpl targetResource = sourceResource.getShallowCopy();
+
+//        We need to change the UUID of the new resource
+        setUUIDForResource(targetResource);
+
         put(targetPath, targetResource);
 
         if (sourceResource instanceof CollectionImpl) {
