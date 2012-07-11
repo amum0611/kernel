@@ -52,12 +52,7 @@ public class CarbonContextCreatorValve extends ValveBase {
         } finally {
             // This will destroy the carbon context holder on the current thread after
             // invoking subsequent valves.
-            if(!request.getContext().getName().equals("/")) {
-                CarbonApplicationContextHolder.destroyCurrentCarbonAppContextHolder();
-            }
-            if (request.getRequestURI().contains("/services/")) {
-            	CarbonApplicationContextHolder.destroyCurrentCarbonAppContextHolder();
-            }
+            CarbonApplicationContextHolder.destroyCurrentCarbonAppContextHolder();
             CarbonContextHolder.destroyCurrentCarbonContextHolder();
         }
     }
@@ -66,21 +61,14 @@ public class CarbonContextCreatorValve extends ValveBase {
         String tenantDomain = Utils.getTenantDomain(request);
         CarbonContextHolder carbonContextHolder = CarbonContextHolder.getThreadLocalCarbonContextHolder();
         carbonContextHolder.setTenantDomain(tenantDomain);
-        if(!request.getContext().getName().equals("/")) {
-            //setting application id for webapps requests only
-            CarbonApplicationContextHolder currentCarbonAppContextHolder =
-                    CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder();
-            currentCarbonAppContextHolder.startApplicationFlow();
-            currentCarbonAppContextHolder.setApplicationName(request.getContext().getBaseName());
-        } if (request.getRequestURI().contains("/services/")) {
-        	//setting the application id for services
-        	String serviceName = Utils.getServiceName(request);
-        	 CarbonApplicationContextHolder currentCarbonAppContextHolder =
-                 CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder();
-         currentCarbonAppContextHolder.startApplicationFlow();
-         currentCarbonAppContextHolder.setApplicationName(serviceName);
-        }
-		if (tenantDomain != null) {
+
+        CarbonApplicationContextHolder currentCarbonAppContextHolder =
+                CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder();
+        currentCarbonAppContextHolder.startApplicationFlow();
+        String appName = Utils.getAppNameFromRequest(request);
+        currentCarbonAppContextHolder.setApplicationName(appName);
+
+        if (tenantDomain != null) {
         	UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
             TenantManager tenantManager = userRealmService.getTenantManager();
             int tenantId = tenantManager.getTenantId(tenantDomain);
