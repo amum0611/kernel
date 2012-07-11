@@ -71,6 +71,7 @@
                             org.wso2.carbon.ndatasource.core.*
                         </Export-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
+                        <DeployBefore>UserCore</DeployBefore>
                     </instructions>
                 </configuration>
             </plugin>
