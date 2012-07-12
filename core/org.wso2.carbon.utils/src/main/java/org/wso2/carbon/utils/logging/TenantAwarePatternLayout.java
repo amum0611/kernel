@@ -291,8 +291,8 @@ public class TenantAwarePatternLayout extends PatternLayout {
 						return "";
 					}
 				} else {
-					if (CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder().getApplicationName() != null) {
-						return CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder().getApplicationName();
+					if (CarbonApplicationContextHolder.getThreadLocalCarbonApplicationContextHolder().getApplicationName() != null) {
+						return CarbonApplicationContextHolder.getThreadLocalCarbonApplicationContextHolder().getApplicationName();
 					} else {
 						return "";
 					}
