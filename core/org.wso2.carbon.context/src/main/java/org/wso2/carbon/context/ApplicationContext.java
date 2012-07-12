@@ -19,11 +19,12 @@
 package org.wso2.carbon.context;
 
 import org.wso2.carbon.base.CarbonBaseUtils;
-import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.CarbonApplicationContextHolder;
 
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ApplicationContext {
     // The reason to why we decided to have a ApplicationContext is to follow the same flow of CarbonContext and
@@ -74,43 +75,6 @@ public class ApplicationContext {
     public String getApplicationName() {
         CarbonBaseUtils.checkSecurity();
         return getCarbonApplicationContextHolder().getApplicationName();
-    }
-
-    /**
-     * Method to get the application name when a url mapping is available to a context.
-     * then we'll get the / as the context, so from the actual virtual host getting
-     * docbase of / context and filter out the application name from that.
-     *
-     * @param appPath doc base of the context
-     * @return  appName
-     */
-    public String getApplicationNameFromRequest(String appPath) {
-        File file = new File(appPath);
-        String appName = null;
-        String contextName;
-
-        if(appPath.contains(CarbonUtils.getCarbonTenantsDirPath())) {
-            //removing tenant repository path
-            contextName = appPath.substring(CarbonUtils.getCarbonTenantsDirPath().length(), appPath.length());
-            String[] elements;
-            elements = contextName.split("/");
-            if(file.isDirectory()) {
-                appName = elements[elements.length - 1];
-            } else if(appPath.contains(".war")) {
-                appName = elements[elements.length - 1].substring(0, elements[elements.length - 1].indexOf(".war"));
-            }
-        } else if(appPath.contains(CarbonUtils.getCarbonRepository())) {
-            //removing carbon repository path
-            contextName = appPath.substring(CarbonUtils.getCarbonRepository().length(), appPath.length());
-            String[] elements;
-            elements = contextName.split("/");
-            if(file.isDirectory()) {
-                appName = elements[elements.length - 1];
-            } else if(appPath.contains(".war")){
-                appName = elements[elements.length - 1].substring(0, elements[elements.length - 1].indexOf(".war"));
-            }
-        }
-        return appName;
     }
 
     /**
