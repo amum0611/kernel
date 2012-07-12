@@ -362,8 +362,8 @@ public final class CarbonServerManager implements Controllable {
 
             // Set the JGroups bind address for the use of the Caching Implementation based on
             // Infinispan.
-            if (System.getProperty("jgroups.bind_addr") == null) {
-                System.setProperty("jgroups.bind_addr",
+            if (System.getProperty("bind.address") == null) {
+                System.setProperty("bind.address",
                         (hostName != null && hostName.trim().length() != 0) ?
                                 hostName.trim() : NetworkUtils.getLocalHostname());
             }
