@@ -47,9 +47,11 @@
                 <module>transports/1.1.0-wso2v6</module>
                 <module>eclipse-p2/org.eclipse.equinox.p2.touchpoint.eclipse</module>
                 <module>h2-database-engine/1.2.140-wso2v2</module>
+                <module>axiom/1.2.11-wso2v2</module>
 		
 		<!-- orbit/modules -->
                 <module>orbit/axis2</module>
+                <module>orbit/axiom</module>
                 <module>orbit/jsr107cache</module>
                 <module>orbit/neethi</module>
                 <module>orbit/wss4j</module>
@@ -75,6 +77,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<axis2.version>1.6.1-wso2v5</axis2.version>
+    <axiom.version>1.2.11-wso2v2</axiom.version>
     </properties>
 
 </project>
