@@ -16,6 +16,10 @@
 
 package org.wso2.carbon.tomcat.ext.transport.statistics;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.ApplicationContext;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +27,7 @@ import java.util.regex.Pattern;
  * Entry which holds per request transport statistics including request, response sizes and request url.
  */
 public class TransportStatisticsEntry {
+    private static Log log = LogFactory.getLog(TransportStatisticsEntry.class);
 
     // Regex to extract tenant domain and request context.
     private static final Pattern servicesURLPattern = Pattern.compile("\\/services\\/t\\/(.*?)\\/");
@@ -91,5 +96,18 @@ public class TransportStatisticsEntry {
         }
 
         return null;
+    }
+    
+    public String constructRequestUrl(String uri, String hostName) {
+        String constructUri;
+        if(hostName.contains(":")) {
+            hostName = hostName.substring(0, hostName.indexOf(":"));
+        }
+        constructUri =  ApplicationContext.getCurrentApplicationContext().getApplicationFromUrlMapping(hostName) + uri;
+        return constructUri;
+    }
+    
+    public void setRequestUrl(String uri) {
+        this.requestUrl = uri;
     }
 }

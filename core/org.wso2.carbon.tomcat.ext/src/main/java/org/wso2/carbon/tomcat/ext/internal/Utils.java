@@ -18,9 +18,7 @@
 package org.wso2.carbon.tomcat.ext.internal;
 
 import org.apache.catalina.connector.Request;
-import org.apache.catalina.core.StandardContext;
 import org.wso2.carbon.context.ApplicationContext;
-import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,8 +49,7 @@ public class Utils {
 		return domain;
 	}
 
-	public static String getServiceName(HttpServletRequest request) {
-		String requestURI = request.getRequestURI();
+	public static String getServiceName(String requestURI) {
 		String serviceName = "";
 		if (requestURI.contains("/services/")) {
 			String temp = requestURI.substring(requestURI.indexOf("/services/") + 9);
@@ -78,23 +75,34 @@ public class Utils {
     
     public static String getAppNameFromRequest(Request request) {
         String appName = null;
-        String defaultHost = CarbonTomcatServiceHolder.getCarbonTomcatService().getTomcat().getEngine().getDefaultHost();
-        StandardContext standardContext = (StandardContext) request.getContext();
-        String appPath = standardContext.getDocBase();
+        String hostName = request.getHost().getName();
+        String appContext = ApplicationContext.getCurrentApplicationContext().getApplicationFromUrlMapping(hostName);
         if (request.getRequestURI().contains("/services/")) {
             //setting the application id for services
-            return Utils.getServiceName(request);
+            return Utils.getServiceName(request.getRequestURI());
         } else if(!request.getContext().getName().equals("/")) {
-            //checking for ST in order to get original doc base
-            if(!appPath.contains(CarbonUtils.getCarbonTenantsDirPath())) {
-                appPath = standardContext.getOriginalDocBase();
-            }
-            appName = ApplicationContext.getCurrentApplicationContext().getApplicationNameFromRequest(appPath);
-        } else if(!defaultHost.equalsIgnoreCase(request.getHost().getName())) {
+            //setting application id for webapps
+            return getWebappName(request.getRequestURI());
+        } else if(appContext != null) {
             //setting application id for the webapps which has deployed in a virtual host
-            appPath = request.getHost().getAppBase() + appPath;
-            appName = ApplicationContext.getCurrentApplicationContext().getApplicationNameFromRequest(appPath);
-
+            if(appContext.contains("services")) {
+                appName = getServiceName(appContext + request.getRequestURI());
+            } else {
+                appName = getWebappName(appContext + request.getRequestURI());
+            }
+        }
+        return appName;
+    }
+    
+    public static String getWebappName(String uri) {
+        String appName;
+        String temp;
+        if(uri.contains("/t/")) {
+            temp = uri.substring(uri.indexOf("/webapps/") + 9, uri.length());
+            appName = temp.substring(0, temp.indexOf("/"));
+        } else {
+            temp = uri.substring(1, uri.length());
+            appName = temp.substring(0, temp.indexOf("/"));
         }
         return appName;
     }
