@@ -23,12 +23,18 @@ import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.CarbonApplicationContextHolder;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ApplicationContext {
     // The reason to why we decided to have a ApplicationContext is to follow the same flow of CarbonContext and
     // to keep the deployed application name and application specific information through out the whole carbon platform.
 
     private CarbonApplicationContextHolder carbonApplicationContextHolder = null;
+    
+    private static Map<String, String> urlMappingOfTenant = new HashMap<String, String>();
+
+    private static Map<String, String> urlMappingOfApplication = new HashMap<String, String>();
 
     /**
      * Creates a ApplicationContext using the given ApplicationContext holder as its backing instance.
@@ -110,6 +116,24 @@ public class ApplicationContext {
 
         }
         return appName;
+    }
+    
+    public static void putUrlMappingForTenant(String urlMapping, String tenantDomain) {
+        urlMappingOfTenant.put(urlMapping, tenantDomain);
+    }
+    
+    public static String getTenantDomainFromUrlMapping(String urlMapping) {
+        return urlMappingOfTenant.get(urlMapping);
+        
+    }
+
+    public static void putUrlMappingForApplication(String urlMapping, String tenantDomain) {
+        urlMappingOfApplication.put(urlMapping, tenantDomain);
+    }
+
+    public static String getApplicationFromUrlMapping(String urlMapping) {
+        return urlMappingOfApplication.get(urlMapping);
+
     }
 
 }
