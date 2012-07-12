@@ -23,8 +23,7 @@ import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.CarbonApplicationContextHolder;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ApplicationContext {
     // The reason to why we decided to have a ApplicationContext is to follow the same flow of CarbonContext and
@@ -118,7 +117,7 @@ public class ApplicationContext {
      * Method to put url mapping with application to the map
      *
      * @param urlMapping  url mapping for an application
-     * @param application
+     * @param application  application which has url mapping
      */
     public void putUrlMappingForApplication(String urlMapping, String application) {
         urlMappingOfApplication.put(urlMapping, application);
@@ -128,9 +127,55 @@ public class ApplicationContext {
      * Method to obtain url application of url mapping from the map.
      *
      * @param urlMapping url mapping for an application
-     * @return
+     * @return  application which has url mapping
      */
     public String getApplicationFromUrlMapping(String urlMapping) {
         return urlMappingOfApplication.get(urlMapping);
+    }
+
+    /**
+     * Method to remove url mapping from the map.
+     *
+     * @param urlMapping url mapping for an application
+     */
+    public void removeUrlMappingMap(String urlMapping) {
+        urlMappingOfApplication.remove(urlMapping);
+        
+    }
+
+    /**
+     *  Method to check whether the mapping exists or not.
+     *
+     * @param urlMapping  url mapping for an application
+     * @return  if mapping exists
+     */
+    public boolean isUrlMappingExists(String urlMapping) {
+        return urlMappingOfApplication.containsKey(urlMapping);
+    }
+
+    /**
+     * Method to get url mappings per application
+     *
+     * @param applicationContext the application to get the url mappings
+     * @return  list of url mappings for an application
+     */
+    public List<String> getUrlMappingsPerApplication(String applicationContext) {
+        List<String> urlMapping = new ArrayList<String>();
+        
+        for(String key: urlMappingOfApplication.keySet()) {
+            if(urlMappingOfApplication.get(key).equalsIgnoreCase(applicationContext)) {
+                urlMapping.add(key);
+            }
+        }
+        return urlMapping;
+    }
+
+    /**
+     * Method to get the whole url mapping.
+     *
+     * @return the map of url mapping
+     */
+    public Map<String, String> getUrlMappingOfApplication() {
+        return urlMappingOfApplication;
     }
 }
