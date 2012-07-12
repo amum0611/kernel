@@ -395,6 +395,21 @@ public class CarbonUIUtil {
         return CarbonConstants.CARBON_UI_DEFAULT_HOME_PAGE;
 
     }
+    
+    public static String removeTenantSpecificStringsFromURL(String requestURL) {
+		if (requestURL.contains("/" + MultitenantConstants.TENANT_AWARE_URL_PREFIX + "/")) {
+			int tenantPrefixIndex = requestURL.lastIndexOf("/" +
+			                                               MultitenantConstants.TENANT_AWARE_URL_PREFIX +
+			                                               "/");
+			requestURL = requestURL.substring(tenantPrefixIndex +
+			                                  MultitenantConstants.TENANT_AWARE_URL_PREFIX.length() +
+			                                  2);
+			// bypassing tenantDomain part
+			int pageUrlIndex = requestURL.indexOf('/');
+			requestURL = requestURL.substring(pageUrlIndex);
+		}
+		return requestURL;
+	}
 
     private static Object getDefaultHomePageProductParam() {
         return getProductParam(CarbonConstants.PRODUCT_XML_WSO2CARBON + CarbonConstants.DEFAULT_HOME_PAGE);

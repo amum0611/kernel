@@ -46,7 +46,7 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
     private static final Log log = LogFactory.getLog(CarbonSecuredHttpContext.class);
     private Bundle bundle = null;
     private Pattern tenantEnabledUriPattern;
-    private static final String TENANT_ENABLED_URI_PATTERN = "/"
+    private static final String TENANT_ENABLED_URI_PATTERN = "(/.*/|/)"
             + MultitenantConstants.TENANT_AWARE_URL_PREFIX + "/[^/]*($|/.*)";
 
     public CarbonSecuredHttpContext(Bundle bundle, String s, UIResourceRegistry uiResourceRegistry,
@@ -93,26 +93,6 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
            ssoSessionManager.removeInvalidSession(request.getSession().getId());
         }
 
-
-        // we eliminate the /tenant/{tenant-domain} from authentications
-        Matcher matcher = tenantEnabledUriPattern.matcher(requestedURI);
-        if (matcher.matches()) {
-            // Tenant webapp requests should never reach Carbon. It can happen
-            // if Carbon is
-            // deployed at / context and requests for non-existent tenant
-            // webapps is made.
-            if (requestedURI.contains("/webapps/")) {
-                response.sendError(404, "Web application not found. Request URI: " + requestedURI);
-                return false;
-            }
-            return true;
-        }
-        // when filtered from a servlet filter the request uri always contains 2
-        // //, this is a temporary fix
-        if (requestedURI.indexOf("//") == 0) {
-            requestedURI = requestedURI.substring(1);
-        }
-
         HttpSession session;
         String sessionId;
         boolean authenticated = false;
@@ -128,8 +108,33 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
         }
 
         String context = request.getContextPath();
-        if ("".equals(context)) {
-            context = "/";
+        if ("/".equals(context)) {
+            context = "";
+        }
+
+        // we eliminate the /tenant/{tenant-domain} from authentications
+        Matcher matcher = tenantEnabledUriPattern.matcher(requestedURI);
+        if (matcher.matches()) {
+            // Tenant webapp requests should never reach Carbon. It can happen
+            // if Carbon is
+            // deployed at / context and requests for non-existent tenant
+            // webapps is made.
+            if (requestedURI.contains("/webapps/")) {
+                response.sendError(404, "Web application not found. Request URI: " + requestedURI);
+                return false;
+            } else if (requestedURI.contains("/carbon/admin/login.jsp") && !authenticated) {	
+            	//a tenant requesting login.jsp while not being authenticated
+            	//redirecting the tenant login page request to the root /carbon/admin/login.jsp 
+            	//instead of tenant-aware login page
+            	response.sendRedirect(context + "/carbon/admin/login.jsp");
+            	return false;
+            }
+            return true;
+        }
+        // when filtered from a servlet filter the request uri always contains 2
+        // //, this is a temporary fix
+        if (requestedURI.indexOf("//") == 0) {
+            requestedURI = requestedURI.substring(1);
         }
 
         HashMap<String, String> httpUrlsToBeByPassed = new HashMap<String, String>();
@@ -315,6 +320,10 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
                         indexPageURL = cookie.getValue();
                     }
                 }
+                //removing any tenant specific strings from the cookie value for the indexPageURL
+                if(tenantEnabledUriPattern.matcher(indexPageURL).matches()){
+                	 indexPageURL = CarbonUIUtil.removeTenantSpecificStringsFromURL(indexPageURL);
+                }
             }
         }
 
@@ -358,7 +367,15 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
             if ((requestedURI.indexOf("login.jsp") > -1 || requestedURI
                     .indexOf("login_ajaxprocessor.jsp") > -1 || requestedURI.indexOf("login_action.jsp") > -1) && authenticated) {
                 // User has typed the login page url, while being logged in
-                response.sendRedirect(indexPageURL);
+            	if (request.getSession().getAttribute(MultitenantConstants.TENANT_DOMAIN) != null) {
+					String tenantDomain = (String) request.getSession()
+					                                      .getAttribute(MultitenantConstants.TENANT_DOMAIN);
+					if (tenantDomain != null &&
+					    !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
+						context += "/" + MultitenantConstants.TENANT_AWARE_URL_PREFIX + "/" + tenantDomain;
+					}
+				}
+				response.sendRedirect(context + indexPageURL);
                 return false;
             } else if (requestedURI.indexOf("login_action.jsp") > -1 && !authenticated) {
             	// User is not yet authenticated and now trying to get authenticated
@@ -570,7 +587,7 @@ public class CarbonSecuredHttpContext extends SecuredComponentEntryHttpContext {
             rmeCookie.setSecure(true);
             rmeCookie.setMaxAge(0);
             response.addCookie(rmeCookie);
-            response.sendRedirect("../.." + indexPageURL);
+            response.sendRedirect(contextPath + indexPageURL);
             return false;
         }
 
