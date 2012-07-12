@@ -170,6 +170,10 @@ public class RequestInfo {
         TransportStatisticsEntry entry = new TransportStatisticsEntry(request.getBytesRead(),
                 request.getResponse().getContentWritten(),
                 request.requestURI().toString());
+        String constructedUri = entry.constructRequestUrl(request.requestURI().toString(), request.getHeader("HOST"));
+        if(!constructedUri.equalsIgnoreCase(request.requestURI().toString())) {
+            entry.setRequestUrl(constructedUri);
+        }
         if (entry.getContext() != null && (entry.getContext().equals("services") || entry.getContext().equals("webapps"))) {
             TransportStatisticsContainer.addTransportStatisticsEntry(entry);
         }
