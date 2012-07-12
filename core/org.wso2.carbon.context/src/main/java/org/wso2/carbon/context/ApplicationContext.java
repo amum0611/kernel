@@ -117,23 +117,45 @@ public class ApplicationContext {
         }
         return appName;
     }
-    
-    public static void putUrlMappingForTenant(String urlMapping, String tenantDomain) {
+
+    /**
+     *  Method to put url mapping with tenant domain to the map.
+     *
+     * @param urlMapping url mapping for an application
+     * @param tenantDomain
+     */
+    public void putUrlMappingForTenant(String urlMapping, String tenantDomain) {
         urlMappingOfTenant.put(urlMapping, tenantDomain);
     }
-    
-    public static String getTenantDomainFromUrlMapping(String urlMapping) {
+
+    /**
+     * Method to obtain tenant domain of a url mapping from map.
+     *
+     * @param urlMapping  url mapping for an application
+     * @return
+     */
+    public String getTenantDomainFromUrlMapping(String urlMapping) {
         return urlMappingOfTenant.get(urlMapping);
-        
     }
 
-    public static void putUrlMappingForApplication(String urlMapping, String tenantDomain) {
-        urlMappingOfApplication.put(urlMapping, tenantDomain);
+    /**
+     * Method to put url mapping with application to the map
+     *
+     * @param urlMapping  url mapping for an application
+     * @param application
+     */
+    public void putUrlMappingForApplication(String urlMapping, String application) {
+        urlMappingOfApplication.put(urlMapping, application);
     }
 
-    public static String getApplicationFromUrlMapping(String urlMapping) {
+    /**
+     * Method to obtain url application of url mapping from the map.
+     *
+     * @param urlMapping url mapping for an application
+     * @return
+     */
+    public String getApplicationFromUrlMapping(String urlMapping) {
         return urlMappingOfApplication.get(urlMapping);
-
     }
 
 }
