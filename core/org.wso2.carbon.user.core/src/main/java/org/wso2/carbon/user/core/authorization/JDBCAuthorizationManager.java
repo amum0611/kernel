@@ -116,10 +116,23 @@ public class JDBCAuthorizationManager implements AuthorizationManager {
         }
 
         try {
-            return authorizationCache.isUserAuthorized(tenantId, userName, resourceId, action);
+            boolean userAllowed = authorizationCache.isUserAuthorized(tenantId, userName,
+                                                                                resourceId, action);
+            if(log.isDebugEnabled()){
+                if(!userAllowed) {
+                    log.debug(userName + " user is not Authorized to perform "+ action +
+                                                                               " on " + resourceId);
+                }
+            }
+            return userAllowed;
         } catch (AuthorizationCacheException e) {
             // Entry not found in the cache. Just continue.
         }
+
+        if(log.isDebugEnabled()){
+            log.debug("Authorization cache entry is not found for username : " + userName);                         
+        }
+
         permissionTree.updatePermissionTree();
 
         //following is related with user permission, and it is not hit in the current flow.
