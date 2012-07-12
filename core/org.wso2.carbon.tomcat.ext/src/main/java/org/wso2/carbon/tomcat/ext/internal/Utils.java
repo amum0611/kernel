@@ -97,7 +97,7 @@ public class Utils {
     public static String getWebappName(String uri) {
         String appName;
         String temp;
-        if(uri.contains("/t/")) {
+        if(uri.contains("/webapps/")) {
             temp = uri.substring(uri.indexOf("/webapps/") + 9, uri.length());
             appName = temp.substring(0, temp.indexOf("/"));
         } else {
