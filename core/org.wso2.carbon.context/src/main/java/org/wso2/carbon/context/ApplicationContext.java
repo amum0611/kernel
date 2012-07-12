@@ -32,8 +32,6 @@ public class ApplicationContext {
 
     private CarbonApplicationContextHolder carbonApplicationContextHolder = null;
     
-    private static Map<String, String> urlMappingOfTenant = new HashMap<String, String>();
-
     private static Map<String, String> urlMappingOfApplication = new HashMap<String, String>();
 
     /**
@@ -85,7 +83,7 @@ public class ApplicationContext {
      * docbase of / context and filter out the application name from that.
      *
      * @param appPath doc base of the context
-     * @return
+     * @return  appName
      */
     public String getApplicationNameFromRequest(String appPath) {
         File file = new File(appPath);
@@ -95,7 +93,7 @@ public class ApplicationContext {
         if(appPath.contains(CarbonUtils.getCarbonTenantsDirPath())) {
             //removing tenant repository path
             contextName = appPath.substring(CarbonUtils.getCarbonTenantsDirPath().length(), appPath.length());
-            String[] elements = null;
+            String[] elements;
             elements = contextName.split("/");
             if(file.isDirectory()) {
                 appName = elements[elements.length - 1];
@@ -105,37 +103,15 @@ public class ApplicationContext {
         } else if(appPath.contains(CarbonUtils.getCarbonRepository())) {
             //removing carbon repository path
             contextName = appPath.substring(CarbonUtils.getCarbonRepository().length(), appPath.length());
-            String[] elements = null;
+            String[] elements;
             elements = contextName.split("/");
             if(file.isDirectory()) {
                 appName = elements[elements.length - 1];
             } else if(appPath.contains(".war")){
                 appName = elements[elements.length - 1].substring(0, elements[elements.length - 1].indexOf(".war"));
             }
-        } else {
-
         }
         return appName;
-    }
-
-    /**
-     *  Method to put url mapping with tenant domain to the map.
-     *
-     * @param urlMapping url mapping for an application
-     * @param tenantDomain
-     */
-    public void putUrlMappingForTenant(String urlMapping, String tenantDomain) {
-        urlMappingOfTenant.put(urlMapping, tenantDomain);
-    }
-
-    /**
-     * Method to obtain tenant domain of a url mapping from map.
-     *
-     * @param urlMapping  url mapping for an application
-     * @return
-     */
-    public String getTenantDomainFromUrlMapping(String urlMapping) {
-        return urlMappingOfTenant.get(urlMapping);
     }
 
     /**
@@ -157,5 +133,4 @@ public class ApplicationContext {
     public String getApplicationFromUrlMapping(String urlMapping) {
         return urlMappingOfApplication.get(urlMapping);
     }
-
 }
