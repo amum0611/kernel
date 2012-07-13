@@ -240,6 +240,7 @@
                             <excludes>
                                 <exclude>org/apache/axiom/util/stax/dialect/**/*</exclude>
                             </excludes>
+			    <skip>false</skip>
                         </configuration>
                     </execution>
                 </executions>
