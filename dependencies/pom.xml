@@ -38,7 +38,7 @@
                 <module>axis2/1.6.1-wso2v5</module>
                 <module>jsr107cache</module>
                 <module>neethi/2.0.4-wso2v2</module>
-                <module>wss4j/1.5.11-wso2v3</module>
+                <module>wss4j/1.5.11-wso2v4</module>
                 <module>wsdl4j</module>
                 <module>carbon-p2-plugin</module>
                 <module>commons/securevault</module>
