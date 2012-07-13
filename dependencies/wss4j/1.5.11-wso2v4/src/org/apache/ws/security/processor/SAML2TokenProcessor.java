@@ -63,6 +63,8 @@ public class SAML2TokenProcessor implements Processor {
         // validate the signature of the SAML token
         if(assertion.getSignature() != null){
             SAML2Util.validateSignature(assertion, crypto);
+        } else {
+            throw new WSSecurityException(WSSecurityException.FAILURE, "SAMLTokenUnsigned");
         }
 
         id = assertion.getID();

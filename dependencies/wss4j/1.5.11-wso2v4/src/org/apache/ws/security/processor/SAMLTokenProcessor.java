@@ -55,6 +55,8 @@ public class SAMLTokenProcessor implements Processor {
         // validate the signature of the token against the Signature Crypto
         if(assertion.isSigned()){
             SAMLUtil.validateSignature(assertion, crypto);
+        } else {
+            throw new WSSecurityException(WSSecurityException.FAILURE, "SAMLTokenUnsigned");
         }
 
         this.id = assertion.getId();
