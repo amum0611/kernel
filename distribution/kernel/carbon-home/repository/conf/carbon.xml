@@ -47,12 +47,13 @@
         will be used by the clients in the front end server.
         This is required only for the Front-end server. This is used when seperating BE server from FE server
        -->
-    <ServerURL>https://${carbon.local.ip}:${carbon.management.port}${carbon.context}/services/</ServerURL>
+    <ServerURL>https://${carbon.local.ip}:${carbon.management.port}${carbon.context}/services/
+    </ServerURL>
 
-     <!--
-     The URL of the index page. This is where the user will be redirected after signing in to the
-     carbon server.
-     -->
+    <!--
+    The URL of the index page. This is where the user will be redirected after signing in to the
+    carbon server.
+    -->
     <!-- IndexPageURL>/carbon/admin/index.jsp</IndexPageURL-->
 
     <!--
@@ -119,12 +120,12 @@
             <!-- Port which KDC (Kerberos Key Distribution Center) server runs -->
             <KDCServerPort>8000</KDCServerPort>
         </EmbeddedLDAP>
-	
-	    <!-- Embedded Qpid broker ports -->
+
+        <!-- Embedded Qpid broker ports -->
         <EmbeddedQpid>
-	    <!-- Broker TCP Port -->
+            <!-- Broker TCP Port -->
             <BrokerPort>5672</BrokerPort>
-	    <!-- SSL Port -->
+            <!-- SSL Port -->
             <BrokerSSLPort>8672</BrokerSSLPort>
         </EmbeddedQpid>
 
@@ -133,13 +134,13 @@
             <HTTPS>9443</HTTPS>
             <HTTP>9763</HTTP>
         </ServletTransports>
-	
-	<!-- 
-             Override datasources JNDIproviderPort defined in bps.xml and datasources.properties files
-	-->
-	<!--<JNDIProviderPort>2199</JNDIProviderPort>-->
-	<!--Override receive port of thrift based entitlement service.-->
-	<ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
+
+        <!--
+               Override datasources JNDIproviderPort defined in bps.xml and datasources.properties files
+      -->
+        <!--<JNDIProviderPort>2199</JNDIProviderPort>-->
+        <!--Override receive port of thrift based entitlement service.-->
+        <ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
 
     </Ports>
 
@@ -150,7 +151,8 @@
         <!-- 
              The fully qualified name of the default initial context factory
         -->
-        <DefaultInitialContextFactory>org.apache.naming.java.javaURLContextFactory</DefaultInitialContextFactory>
+        <DefaultInitialContextFactory>org.apache.naming.java.javaURLContextFactory
+        </DefaultInitialContextFactory>
         <!-- 
              The restrictions that are done to various JNDI Contexts in a Multi-tenant environment 
         -->
@@ -252,10 +254,12 @@
           This repository location is used to crete the client side configuration
           context used by the server when calling admin services.
         -->
-        <ClientRepositoryLocation>${carbon.home}/repository/deployment/client/</ClientRepositoryLocation>
+        <ClientRepositoryLocation>${carbon.home}/repository/deployment/client/
+        </ClientRepositoryLocation>
         <!-- This axis2 xml is used in createing the configuration context by the FE server
          calling to BE server -->
-        <clientAxis2XmlLocation>${carbon.home}/repository/conf/axis2/axis2_client.xml</clientAxis2XmlLocation>
+        <clientAxis2XmlLocation>${carbon.home}/repository/conf/axis2/axis2_client.xml
+        </clientAxis2XmlLocation>
         <!-- If this parameter is set, the ?wsdl on an admin service will not give the admin service wsdl. -->
         <HideAdminServiceWSDLs>true</HideAdminServiceWSDLs>
     </Axis2Config>
@@ -321,21 +325,21 @@
                 exceptions at runtime.
             -->
             <!-- <Credential> -->
-                <!-- 
-                    the pattern that would match a subset of URLs for which this authenticator
-                    would be used
-                -->
-                <!-- <Pattern>regularExpression</Pattern> -->
-                <!-- 
-                    the type of this authenticator. Allowed values are:
-                    1. server
-                    2. proxy
-                -->
-                <!-- <Type>proxy</Type> -->
-                <!-- the username used to log in to server/proxy -->
-                <!-- <Username>username</Username> -->
-                <!-- the password used to log in to server/proxy -->
-                <!-- <Password>password</Password> -->
+            <!--
+                the pattern that would match a subset of URLs for which this authenticator
+                would be used
+            -->
+            <!-- <Pattern>regularExpression</Pattern> -->
+            <!--
+                the type of this authenticator. Allowed values are:
+                1. server
+                2. proxy
+            -->
+            <!-- <Type>proxy</Type> -->
+            <!-- the username used to log in to server/proxy -->
+            <!-- <Username>username</Username> -->
+            <!-- the password used to log in to server/proxy -->
+            <!-- <Password>password</Password> -->
             <!-- </Credential> -->
         </NetworkAuthenticatorConfig>
 
@@ -350,26 +354,26 @@
         -->
         <TomcatRealm>UserManager</TomcatRealm>
 
-	<!--Option to disable storing of tokens issued by STS-->
-	<DisableTokenStore>false</DisableTokenStore>
-	<!--
-	Token Persister configuration for non-volatile storage of SAML tokens issued by STS:
-	1. TokenPersister class
-	2. TokenStorage path
-	3. Maximum number of tokens in volatile storage
-	4. Any other custom properties
-	-->
-	<TokenPersister>
-		<Class>org.apache.rahas.impl.FSBasedRetiredTokenPersister</Class>
-		<StoragePath>${carbon.home}/repository/resources/security/tokenstore</StoragePath>
-		<InMemoryThreshold>500</InMemoryThreshold>
-		<!--Properties> 
-			<Property>
-				<Name>propName</Name>
-				<Value>propValue</Value>
-			</Property>
-		</Properties-->
-	</TokenPersister>
+        <!--Option to disable storing of tokens issued by STS-->
+        <DisableTokenStore>false</DisableTokenStore>
+        <!--
+      Token Persister configuration for non-volatile storage of SAML tokens issued by STS:
+      1. TokenPersister class
+      2. TokenStorage path
+      3. Maximum number of tokens in volatile storage
+      4. Any other custom properties
+      -->
+        <TokenPersister>
+            <Class>org.apache.rahas.impl.FSBasedRetiredTokenPersister</Class>
+            <StoragePath>${carbon.home}/repository/resources/security/tokenstore</StoragePath>
+            <InMemoryThreshold>500</InMemoryThreshold>
+            <!--Properties>
+               <Property>
+                   <Name>propName</Name>
+                   <Value>propValue</Value>
+               </Property>
+           </Properties-->
+        </TokenPersister>
     </Security>
 
     <!--
@@ -496,7 +500,7 @@
     <ServerInitializers>
         <!--<Initializer></Initializer>-->
     </ServerInitializers>
-    
+
     <!--
     Indicates whether the Carbon Servlet is required by the system, and whether it should be
     registered
