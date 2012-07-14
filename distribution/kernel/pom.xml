@@ -53,6 +53,7 @@
             <groupId>org.apache.axis2</groupId>
             <artifactId>addressing</artifactId>
             <type>mar</type>
+            <version>${version.axis2}</version>
         </dependency>
         <dependency>
 	    <groupId>commons-lang.wso2</groupId>
