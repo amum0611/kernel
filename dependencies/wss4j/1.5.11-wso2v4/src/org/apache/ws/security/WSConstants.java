@@ -462,6 +462,11 @@ public class WSConstants {
     public static final String SAML_VERSION = "samlVersion";
 
     /**
+     * SAML Assertion was signed or not
+     */
+    public static final String SAML_TOKEN_SIGNED = "samlTokenSigned";
+
+    /**
      * WS-Trust namespace
      */
     public static final String WST_NS = "http://schemas.xmlsoap.org/ws/2005/02/trust";

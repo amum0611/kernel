@@ -55,8 +55,6 @@ public class SAMLTokenProcessor implements Processor {
         // validate the signature of the token against the Signature Crypto
         if(assertion.isSigned()){
             SAMLUtil.validateSignature(assertion, crypto);
-        } else {
-            throw new WSSecurityException(WSSecurityException.FAILURE, "SAMLTokenUnsigned");
         }
 
         this.id = assertion.getId();
@@ -72,6 +70,8 @@ public class SAMLTokenProcessor implements Processor {
         wsSecurityEngineResult.put(WSConstants.SAML_ISSUER_NAME, assertion.getIssuer());
         // Adding the set of attributes included in a SAML assertion
         wsSecurityEngineResult.put(WSConstants.SAML_CLAIM_SET, SAMLUtil.getClaims(assertion));
+        // set whether the SAML assertion is signed or not
+        wsSecurityEngineResult.put(WSConstants.SAML_TOKEN_SIGNED, Boolean.valueOf(assertion.isSigned()));
 
         this.samlTokenElement = elem;
 

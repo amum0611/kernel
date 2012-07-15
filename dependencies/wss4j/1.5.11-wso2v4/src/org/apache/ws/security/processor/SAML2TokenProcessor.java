@@ -63,8 +63,6 @@ public class SAML2TokenProcessor implements Processor {
         // validate the signature of the SAML token
         if(assertion.getSignature() != null){
             SAML2Util.validateSignature(assertion, crypto);
-        } else {
-            throw new WSSecurityException(WSSecurityException.FAILURE, "SAMLTokenUnsigned");
         }
 
         id = assertion.getID();
@@ -83,6 +81,8 @@ public class SAML2TokenProcessor implements Processor {
         securityEngineResult.put(WSConstants.SAML_ISSUER_NAME, assertion.getIssuer());
         // Adding the set of attributes included in a SAML assertion
         securityEngineResult.put(WSConstants.SAML_CLAIM_SET, SAML2Util.getClaims(assertion));
+        // set whether the SAML assertion is signed or not
+        securityEngineResult.put(WSConstants.SAML_TOKEN_SIGNED, Boolean.valueOf(assertion.isSigned()));
     }
 
 
