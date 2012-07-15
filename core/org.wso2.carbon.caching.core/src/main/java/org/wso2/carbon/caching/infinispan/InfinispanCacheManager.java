@@ -134,6 +134,8 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
                         addProperty("configurationFile", configurationFile);
             }
             cacheManager = new DefaultCacheManager(builder.build());
+            Configuration dcc = cacheManager.getDefaultCacheConfiguration();
+			configBuilder = new ConfigurationBuilder().read(dcc);
             configBuilder.clustering().cacheMode(cacheMode);
             if (isSync) {
                 configBuilder.clustering().sync();
