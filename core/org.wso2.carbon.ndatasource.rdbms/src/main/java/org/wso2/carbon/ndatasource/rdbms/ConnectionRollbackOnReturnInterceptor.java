@@ -15,11 +15,11 @@
  */
 package org.wso2.carbon.ndatasource.rdbms;
 
-import java.lang.reflect.Method;
-
 import org.apache.tomcat.jdbc.pool.ConnectionPool;
 import org.apache.tomcat.jdbc.pool.JdbcInterceptor;
 import org.apache.tomcat.jdbc.pool.PooledConnection;
+
+import java.lang.reflect.Method;
 
 /**
  * This class represents a JDBC-Pool JDBC interceptor class which rollbacks the connections when
@@ -41,7 +41,7 @@ public class ConnectionRollbackOnReturnInterceptor extends JdbcInterceptor {
         try {
             if (compare(CLOSE_VAL, method)) {
                 this.connection = null;
-                if (pc != null && !pc.getConnection().getAutoCommit()) {
+                if (pc != null && pc.getXAConnection() == null && !pc.getConnection().getAutoCommit() ) {
                     pc.getConnection().rollback();
                 }
             }
