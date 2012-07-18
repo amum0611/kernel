@@ -367,7 +367,7 @@ public class Repository {
         // get the original details
         ((ResourceImpl) resource).setCreatedTime(new Date(oldResourceDO.getCreatedOn()));
         ((ResourceImpl) resource).setAuthorUserName(oldResourceDO.getAuthor());
-        ((ResourceImpl) resource).setUUID(oldResourceDO.getUUID());
+//        ((ResourceImpl) resource).setUUID(oldResourceDO.getUUID());
 
 
         // we are always creating versions for resources (files), if the resource has changed.
