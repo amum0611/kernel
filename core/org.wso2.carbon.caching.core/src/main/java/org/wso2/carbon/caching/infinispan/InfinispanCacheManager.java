@@ -51,11 +51,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("unused")
 public class InfinispanCacheManager extends CacheManager implements CarbonCacheManager {
     private EmbeddedCacheManager cacheManager;
+    private EmbeddedCacheManager localCacheManager;
     private static final long DEFAULT_EXPIRATION = 900000L;     // 15 mins
     private static final long DEFAULT_EXPIRATION_L1 = 600000L;      // 10 mins
     private static final String DEFAULT_CLUSTER_NAME = "wso2carbon-cache";
+    private static final String CARBON_DEFAULT_CACHE = "carbon_cache";
     
 	private ConfigurationBuilder configBuilder = null;
+	private ConfigurationBuilder localConfigBuilder = null;
+    private  CacheMode cacheMode;
     
     private final Map<String, Cache> caches = Collections.synchronizedMap(new HashMap<String, Cache>());
 
@@ -69,7 +73,7 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
         log.debug("Starting Cache Manager initialization");
 
         String clusterName = DEFAULT_CLUSTER_NAME;
-        CacheMode cacheMode = CacheMode.LOCAL;
+        cacheMode = CacheMode.LOCAL;
         boolean isSync = true;
         long maxExpirationMillis = DEFAULT_EXPIRATION;
         long maxIdleExpirationMillis = DEFAULT_EXPIRATION;
@@ -81,13 +85,13 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
         CacheConfiguration cacheConfiguration = CacheConfiguration.getInstance();
         String cacheModeString = cacheConfiguration.getProperty("configuration.cacheMode") == null ? CacheConfiguration.CACHE_MODE_LOCAL :
                 cacheConfiguration.getProperty("configuration.cacheMode");
-        maxExpirationMillis = cacheConfiguration.getProperty("configuration.maxExpirationMillis") == null ? DEFAULT_EXPIRATION :
+        maxExpirationMillis = cacheConfiguration.getProperty("maxExpirationMillis") == null ? DEFAULT_EXPIRATION :
                  Long.parseLong(cacheConfiguration.
-                        getProperty("configuration.maxExpirationMillis"));
+                        getProperty("maxExpirationMillis"));
         maxIdleExpirationMillis = cacheConfiguration.
-                 getProperty("configuration.maxIdleExpirationMillis") == null ? DEFAULT_EXPIRATION :
+                 getProperty("maxIdleExpirationMillis") == null ? DEFAULT_EXPIRATION :
                  Long.parseLong(cacheConfiguration.
-                        getProperty("configuration.maxIdleExpirationMillis"));
+                        getProperty("maxIdleExpirationMillis"));
 
 		if (cacheConfiguration.getProperty("configuration.file") != null) {
 			String path = cacheConfiguration.getProperty("configuration.file");
@@ -143,14 +147,15 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
             if (l1Enabled) {
                 configBuilder.clustering().l1().lifespan(l1LifeSpan);
             }
-        } else {
-            GlobalConfigurationBuilder builder = new GlobalConfigurationBuilder();
-            cacheManager = new DefaultCacheManager(builder.nonClusteredDefault().build());
-            Configuration dcc = cacheManager.getDefaultCacheConfiguration();
-            configBuilder = new ConfigurationBuilder().read(dcc);
-            configBuilder.expiration().lifespan(maxExpirationMillis);
-            configBuilder.expiration().maxIdle(maxIdleExpirationMillis);
         }
+		
+        GlobalConfigurationBuilder builder = new GlobalConfigurationBuilder();
+        localCacheManager = new DefaultCacheManager(builder.nonClusteredDefault().build());
+        Configuration dcc = localCacheManager.getDefaultCacheConfiguration();
+        localConfigBuilder = new ConfigurationBuilder().read(dcc);
+        localConfigBuilder.expiration().lifespan(maxExpirationMillis);
+        localConfigBuilder.expiration().maxIdle(maxIdleExpirationMillis);
+        
         
         log.debug("Successfully Initialized Infinispan Cache Manager");
     }
@@ -168,8 +173,8 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
     public Cache getCache(String cacheName) {
         Cache cache = null;
         if (cacheName == null || cacheName.equals(DefaultCacheManager.DEFAULT_CACHE_NAME)) {
-            org.infinispan.Cache infinispanCache = cacheManager.getCache(DefaultCacheManager.DEFAULT_CACHE_NAME);
-            cache = new InfinispanJCacheWrapper(infinispanCache);
+            System.out.println("New bambi *********** ");
+            cache = this.getCacheFromDefaultConfig(CARBON_DEFAULT_CACHE);
             return cache;
         }
         cache = caches.get(cacheName);
@@ -179,9 +184,7 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
             ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(InfinispanCacheManager.class.getClassLoader());
-                cacheManager.defineConfiguration(cacheName, configBuilder.build());
-                org.infinispan.Cache infinispanCache = cacheManager.getCache(cacheName);
-                cache = new InfinispanJCacheWrapper(infinispanCache);
+                cache = this.getCacheFromDefaultConfig(cacheName);
                 registerCache(cacheName, cache);
                 
             } finally {
@@ -191,6 +194,37 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
         return cache;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+	public Cache getLocalCache(String cacheName) {
+		Cache cache = null;
+		if (cacheName == null || cacheName.equals(DefaultCacheManager.DEFAULT_CACHE_NAME)) {
+			org.infinispan.Cache infinispanCache =
+			                                       cacheManager.getCache(DefaultCacheManager.DEFAULT_CACHE_NAME);
+			cache = new InfinispanJCacheWrapper(infinispanCache);
+			return cache;
+		}
+		cache = caches.get(cacheName);
+		if (cache == null) {
+			// We wrap each Infinispan Cache, so that it can be used via the
+			// standard JSR107
+			// JCache API.
+			ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+			try {
+				Thread.currentThread()
+				      .setContextClassLoader(InfinispanCacheManager.class.getClassLoader());
+				localCacheManager.defineConfiguration(cacheName, localConfigBuilder.build());
+				org.infinispan.Cache infinispanCache = localCacheManager.getCache(cacheName);
+				cache = new InfinispanJCacheWrapper(infinispanCache);
+				registerCache(cacheName, cache);
+			} finally {
+				Thread.currentThread().setContextClassLoader(tccl);
+			}
+		}
+		return cache;
+	}
+    
     /**
      * {@inheritDoc}
      */
@@ -212,6 +246,21 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
             }
         }
     }
+    
+    private Cache getCacheFromDefaultConfig(String cacheName) {
+        Cache cache;
+        if (cacheMode.equals(CacheMode.LOCAL)) {
+            localCacheManager.defineConfiguration(cacheName, localConfigBuilder.build());
+            org.infinispan.Cache infinispanCache = localCacheManager.getCache(cacheName);
+            cache = new InfinispanJCacheWrapper(infinispanCache);
+        } else {
+            cacheManager.defineConfiguration(cacheName, configBuilder.build());
+            org.infinispan.Cache infinispanCache = cacheManager.getCache(cacheName);
+            cache = new InfinispanJCacheWrapper(infinispanCache);
+        }
+        return cache;
+    }
+    
 
     /**
      * {@inheritDoc}

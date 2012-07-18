@@ -734,7 +734,7 @@ public final class CarbonContextHolder {
     }
 
     // A tenant-aware cache manager implementation.
-    private static class MultitenantCarbonCacheManager extends CacheManager {
+    private static class MultitenantCarbonCacheManager extends CacheManager implements CarbonCacheManager {
 
         private String getNameForTenant(String name) {
             int tenantId = getCurrentCarbonContextHolder().getTenantId();
@@ -770,6 +770,18 @@ public final class CarbonContextHolder {
             return cache;
         }
 
+        public Cache getLocalCache(String cacheName) {
+            Cache cache = carbonCacheManager.getLocalCache(getNameForTenant(cacheName));
+            if (cache != null) {
+                cacheCleanupTask.register(getCurrentCarbonContextHolder().getTenantId(),
+                        getNameForTenant(cacheName));
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieving named cache: " + cacheName);
+            }
+            return cache;
+        }
+        
         public void registerCache(String cacheName, Cache cache) {
             if (log.isDebugEnabled()) {
                 log.debug("Registering named cache: " + getNameForTenant(cacheName));
@@ -811,6 +823,18 @@ public final class CarbonContextHolder {
                     list.clear();
                 }
             }
+        }
+
+        @Override
+        public void initialize(String carbonHome) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public String getDefaultCacheName() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 

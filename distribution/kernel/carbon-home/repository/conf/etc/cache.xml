@@ -31,14 +31,8 @@
          l1:         The L1 cache (near-cache) configuration for distributed caches.
     -->
 
-    <!-- The configuration below is used for the local cache. Please comment the following
-         before using distributed caching. -->
-
-    <configuration>
-        <cacheMode>local</cacheMode>
-        <maxExpirationMillis>900000</maxExpirationMillis>
-        <!--maxIdleExpirationMillis>900000</maxIdleExpirationMillis-->
-    </configuration>
+    <maxExpirationMillis>900000</maxExpirationMillis>
+    <maxIdleExpirationMillis>900000</maxIdleExpirationMillis>
 
     <!-- Un-comment the configuration below to use a replicated cache in a cluster. -->
 

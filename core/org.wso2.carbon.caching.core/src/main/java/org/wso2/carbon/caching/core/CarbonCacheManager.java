@@ -52,6 +52,15 @@ public interface CarbonCacheManager {
     Cache getCache(String cacheName);
     
     /**
+     * Method to obtain a named local cache instance
+     * 
+     * @param cacheName the name of the cache
+     * 
+     * @return
+     */
+    Cache getLocalCache(String cacheName);
+    
+    /**
      * Registers the given cache instance by the given name.
      *
      * @param cacheName the name of the cache.

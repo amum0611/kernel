@@ -26,7 +26,7 @@ public class RealmCache extends BaseCache {
     private static RealmCache tenantCache = null;
 
     private RealmCache() {
-        super(CUSTOM_TENANT_CACHE);
+        super(CUSTOM_TENANT_CACHE, true);
     }
 
     /**

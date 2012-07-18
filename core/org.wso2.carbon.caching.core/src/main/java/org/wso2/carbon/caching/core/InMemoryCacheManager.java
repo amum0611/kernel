@@ -59,6 +59,11 @@ public class InMemoryCacheManager implements CarbonCacheManager {
         return cache;
     }
 
+
+    public Cache getLocalCache(String cacheName) {
+        return getCache(cacheName);
+    }
+
     public void registerCache(String cacheName, Cache cache) {
         if (cache == null) {
             caches.remove(cacheName);
