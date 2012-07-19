@@ -145,15 +145,25 @@ public class JDBCAuthorizationManager implements AuthorizationManager {
         }
 
         String[] userRoles = userRealm.getUserStoreManager().getRoleListOfUser(userName);
+
+        if(log.isDebugEnabled()){
+            if(userRoles == null || userRoles.length < 1){
+                log.debug("No roles are assigned to user : " + userName);
+            }
+        }
+
         boolean userAllowed = false;
         List<String> allowedRoles = Arrays.asList(getAllowedRolesForResource(resourceId, action));
 
-        for (String role : userRoles) {
-            if (allowedRoles.contains(role)) {
-                userAllowed = true;
-                break;
+        if(userRoles != null){
+            for (String role : userRoles) {
+                if (allowedRoles.contains(role)) {
+                    userAllowed = true;
+                    break;
+                }
             }
         }
+        
         //need to add the authorization decision taken by role based permission
         authorizationCache.addToCache(this.tenantId, userName, resourceId, action, userAllowed);
         
