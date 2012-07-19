@@ -206,6 +206,17 @@ public class DefaultCarbonAuthenticator extends AbstractCarbonUIAuthenticator {
             ServiceClient client = stub._getServiceClient();
 
             CarbonUtils.setBasicAccessSecurityHeaders(userName, password, rememberMe, client);
+            
+            if(CarbonUtils.isRunningOnLocalTransportMode()){
+                //call AuthenticationAdmin, since BasicAuth are not validated for LocalTransport
+                AuthenticationAdminClient authClient = getAuthenticationAdminCient(request);
+                try {
+                    authClient.login(userName, password, "127.0.0.1");
+                } catch (AuthenticationException e) {
+                    throw new AxisFault(e.getMessage(), e);
+                }
+                
+            }
 
             // Make the actual call and store results
             setUserAuthorizationInfo(stub, session);

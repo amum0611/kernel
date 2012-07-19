@@ -42,6 +42,7 @@ import org.wso2.carbon.ui.UIAuthenticationExtender;
 import org.wso2.carbon.ui.internal.CarbonUIServiceComponent;
 import org.wso2.carbon.core.commons.stub.loggeduserinfo.LoggedUserInfoAdminStub;
 
+import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.ServerConstants;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
@@ -78,7 +79,8 @@ public class CarbonUIAuthenticationUtil {
             CarbonUIUtil.getServerURL(CarbonUIServiceComponent.getServerConfiguration());
         String cookie = (String)session.getAttribute(ServerConstants.ADMIN_SERVICE_COOKIE);
         
-        if (serverURL == null || cookie == null) {
+        //For local transport, cookie might be null. 
+        if ((serverURL == null || cookie == null) && (!CarbonUtils.isRunningOnLocalTransportMode())){
             throw new Exception("Cannot proceed logging in. The server URL and/or Cookie is null");
         }
         
