@@ -173,7 +173,6 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
     public Cache getCache(String cacheName) {
         Cache cache = null;
         if (cacheName == null || cacheName.equals(DefaultCacheManager.DEFAULT_CACHE_NAME)) {
-            System.out.println("New bambi *********** ");
             cache = this.getCacheFromDefaultConfig(CARBON_DEFAULT_CACHE);
             return cache;
         }

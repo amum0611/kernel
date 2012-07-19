@@ -38,18 +38,8 @@ public abstract class BaseCache {
         if (isLocal) {
             CarbonCacheManager cacheManager = (CarbonCacheManager) CacheManager.getInstance();
             this.cache = cacheManager.getLocalCache(cacheName);
-            if (cache == null) {
-                System.out.println("crazyy 8888888888888888");
-            } else {
-                System.out.println("Not crazy");
-            }
         } else {
             this.cache = CacheManager.getInstance().getCache(cacheName);
-            if (cache == null) {
-                System.out.println("crazyy 111111111111");
-            } else {
-                System.out.println("Not crazy 1111111111");
-            }
         }
     }
 
