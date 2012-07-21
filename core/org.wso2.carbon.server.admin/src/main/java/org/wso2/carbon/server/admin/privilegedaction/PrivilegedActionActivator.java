@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 
 import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * In order to write a PrivilegedActionExtension this class needs to be extended and the <code>@scr.component</code>
@@ -56,5 +57,13 @@ public abstract class PrivilegedActionActivator {
          */
     public abstract PrivilegedAction getServiceInstance();
 
-
+    /**
+         * <code>Comparator</code> that orders <code>PrivilegedAction</code> objects in descending order of their priority
+         */
+    private static class PrivilegedActionComparator implements Comparator<PrivilegedAction> {
+        @Override
+        public int compare(PrivilegedAction ex1, PrivilegedAction ex2) {
+            return ex2.getPriority()-ex1.getPriority();
+        }
+    }
 }
