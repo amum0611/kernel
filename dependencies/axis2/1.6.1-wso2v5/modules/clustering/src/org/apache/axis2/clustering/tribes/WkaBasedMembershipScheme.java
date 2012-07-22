@@ -123,29 +123,6 @@ public class WkaBasedMembershipScheme implements MembershipScheme {
         // ------------ START: Configure and add the local member ---------------------
         Parameter localMemberHost = getParameter(TribesConstants.LOCAL_MEMBER_HOST);
         Parameter localMemberBindAddress = getParameter(TribesConstants.LOCAL_MEMBER_BIND_ADDRESS);
-        /*if(localMemberBindAddress == null){
-            localMemberBindAddress = localMemberHost;
-        }*/
-        /*String host;
-        if (localMemberBindAddress != null) {
-            host = ((String) localMemberBindAddress.getValue()).trim();
-        } else { // In cases where the localhost needs to be automatically figured out
-            try {
-                try {
-                    host = Utils.getIpAddress();
-                } catch (SocketException e) {
-                    String msg = "Could not get local IP address";
-                    log.error(msg, e);
-                    throw new ClusteringFault(msg, e);
-                }
-            } catch (Exception e) {
-                String msg = "Could not get the localhost name";
-                log.error(msg, e);
-                throw new ClusteringFault(msg, e);
-            }
-        }
-        receiver.setAddress(host);
-        receiver.setBind(InetAddress.getByAddress());*/
         String host = null;
         String bindAddress = null;
         if (localMemberHost == null && localMemberBindAddress == null) {
@@ -273,7 +250,7 @@ public class WkaBasedMembershipScheme implements MembershipScheme {
                 return true;
             } catch (IOException e) {
                 String msg = e.getMessage();
-                if (msg.indexOf("Connection refused") == -1 && msg.indexOf("connect timed out") == -1) {
+                if (!msg.contains("Connection refused") && !msg.contains("connect timed out")) {
                     log.error("Cannot connect to member " +
                               member.getHostName() + ":" + member.getPort(), e);
                 }
