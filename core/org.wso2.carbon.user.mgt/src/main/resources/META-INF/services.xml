@@ -46,7 +46,7 @@
 	    </operation>
         <operation name="addUser">
             <parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/users</parameter>
-            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="org.wso2.carbon.server.admin.privilegedaction.extension.PrivilegedActionExtensionMessageReceiver"/>
+            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver"/>
 	    </operation>
 	    <operation name="changePassword">
 	        <parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/passwords</parameter>
