@@ -356,7 +356,11 @@ public class RemoteRegistry implements Registry {
         if (mediaType != null) {
             resource.setMediaType(mediaType);
         }
-
+        //Set the UUDI when generating the resource from entry.
+        //If UUDI not present RemoteRegistry executeQuery() will failed.
+        if (entry.getId() != null) {
+            resource.setUUID(entry.getId().toString().replace("urn:uuid:", ""));
+        }
         org.wso2.carbon.registry.app.Properties properties =
                 entry.getExtension(PropertyExtensionFactory.PROPERTIES);
         createPropertiesFromExtensionElement(properties, resource);
