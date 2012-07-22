@@ -602,18 +602,37 @@
            The IP address of the network interface to which the multicasting has to be bound to.
            Multicasting would be done using this interface.
         -->
-	<!--
-        <parameter name="mcastBindAddress">127.0.0.1</parameter>
-	-->
-        <!-- The host name or IP address of this member -->
         <!--
-	<parameter name="localMemberHost">127.0.0.1</parameter>
-	-->
+            <parameter name="mcastBindAddress">127.0.0.1</parameter>
+        -->
+            <!-- The host name or IP address of this member -->
+        <!--
+        <parameter name="localMemberHost">127.0.0.1</parameter>
+        -->
+
+        <!--
+            The bind adress of this member. The difference between localMemberHost & localMemberBindAddress
+            is that localMemberHost is the one that is advertised by this member, while localMemberBindAddress
+            is the address to which this member is bound to.
+        -->
+        <!--
+        <parameter name="localMemberBindAddress">127.0.0.1</parameter>
+        -->
+
         <!--
         The TCP port used by this member. This is the port through which other nodes will
         contact this member
          -->
         <parameter name="localMemberPort">4000</parameter>
+
+        <!--
+            The bind port of this member. The difference between localMemberPort & localMemberBindPort
+            is that localMemberPort is the one that is advertised by this member, while localMemberBindPort
+            is the port to which this member is bound to.
+        -->
+        <!--
+        <parameter name="localMemberBindPort">4001</parameter>
+        -->
 
         <!--
         Preserve message ordering. This will be done according to sender order.
