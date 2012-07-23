@@ -68,25 +68,6 @@ public class TomcatValveContainer {
     }
 
     /**
-     * Add CarbonTomcatValve to the container.
-     *
-     * @param valve The valve to be added
-     */
-    public static void addValve(CarbonTomcatValve valve) {
-        TomcatValveContainer.addValve(valve);
-    }
-
-    /**
-     * Add CarbonTomcatValve to the container with the index
-     *
-     * @param index The index where the valve need to be added in the list
-     * @param valve The valve to be added
-     */
-    public static void addValve(int index, CarbonTomcatValve valve) {
-        TomcatValveContainer.addValve(index, valve);
-    }
-
-    /**
      * Check before for a valve whether it exists or not.
      *
      * @param carbonTomcatValve the valve to be checked
