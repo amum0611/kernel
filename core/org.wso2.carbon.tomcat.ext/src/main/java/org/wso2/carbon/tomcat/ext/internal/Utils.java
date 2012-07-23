@@ -32,6 +32,14 @@ public class Utils {
 	public static String getTenantDomain(HttpServletRequest request) {
 		String requestURI = request.getRequestURI();
 		String domain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
+		//if the request is from a url mapping(https://apptest.wso2.com/),
+        // need to get the tenant domain from the map
+        String serverName = request.getServerName();
+        String appContext = ApplicationContext.getCurrentApplicationContext().
+                getApplicationFromUrlMapping(serverName);
+        if(appContext != null) {
+            requestURI = appContext;
+        }
 		if (!requestURI.contains("/t/")) {
 			// check for admin services - tenant admin services are deployed in
 			// super tenant flow
