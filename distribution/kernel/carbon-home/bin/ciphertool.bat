@@ -71,12 +71,8 @@ setlocal EnableDelayedExpansion
 rem loop through the libs and add them to the class path
 cd "%CARBON_HOME%"
 set CARBON_CLASSPATH=.\conf
-FOR %%C in ("%CARBON_HOME%\lib\org.wso2.ciphertool-*.jar") DO set CARBON_CLASSPATH=!CARBON_CLASSPATH!;".\lib\%%~nC%%~xC"
-FOR %%C in ("%CARBON_HOME%\repository\components\plugins\org.wso2.carbon.logging_*.jar") DO set CARBON_CLASSPATH=!CARBON_CLASSPATH!;".\repository\components\plugins\%%~nC%%~xC"
-FOR %%C in ("%CARBON_HOME%\lib\org.wso2.carbon.logging-*.jar") DO set CARBON_CLASSPATH=!CARBON_CLASSPATH!;".\lib\%%~nC%%~xC"
-FOR %%C in ("%CARBON_HOME%\repository\components\plugins\axiom_*.jar") DO set CARBON_CLASSPATH=!CARBON_CLASSPATH!;".\repository\components\plugins\%%~nC%%~xC"
-
-
+FOR %%C in ("%CARBON_HOME%\lib\org.wso2.ciphertool*.jar") DO set CARBON_CLASSPATH=!CARBON_CLASSPATH!;".\lib\%%~nC%%~xC"
+FOR %%D in ("%CARBON_HOME%\lib\endorsed\*.jar") DO set CARBON_CLASSPATH=!CARBON_CLASSPATH!;".\lib\endorsed\%%~nD%%~xD"
 
 rem ----- Execute The Requested Command ---------------------------------------
 echo Using CARBON_HOME:   %CARBON_HOME%

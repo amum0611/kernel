@@ -80,21 +80,13 @@ fi
 
 # update classpath
 CARBON_CLASSPATH=""
-for f in "$CARBON_HOME"/lib/org.wso2.ciphertool-*.jar
+for f in "$CARBON_HOME"/lib/org.wso2.ciphertool*.jar
 do
   CARBON_CLASSPATH=$CARBON_CLASSPATH:$f
 done
-for f in "$CARBON_HOME"/repository/components/plugins/org.wso2.carbon.logging_*.jar
+for g in "$CARBON_HOME"/lib/endorsed/*.jar
 do
-  CARBON_CLASSPATH=$CARBON_CLASSPATH:$f
-done
-for f in "$CARBON_HOME"/lib/org.wso2.carbon.logging-*.jar
-do
-  CARBON_CLASSPATH=$CARBON_CLASSPATH:$f
-done
-for f in "$CARBON_HOME"/repository/components/plugins/axiom_*.jar
-do
-  CARBON_CLASSPATH=$CARBON_CLASSPATH:$f
+  CARBON_CLASSPATH=$CARBON_CLASSPATH:$g
 done
 CARBON_CLASSPATH=$CARBON_CLASSPATH:$CLASSPATH
 
