@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is used for registering {@link CarbonTomcatValve} instances & invoking them. 
+ * This class is used for registering {@link CarbonTomcatValve} instances & invoking them.
  * These valves correspond to Tomcat Valves.
- *
+ * <p/>
  * Generally, when a request comes in, the Tomcat valves will notify all the registered
  * CarbonTomcatValves
- *
+ * <p/>
  * To read more on Tomcat 5.5 valves, see
  * <a href="http://tomcat.apache.org/tomcat-5.5-doc/config/host.html>
  * http://tomcat.apache.org/tomcat-5.5-doc/config/host.html</a>. Search for valves in that document.
@@ -39,8 +39,8 @@ public class TomcatValveContainer {
     /**
      * This is the method used by the Tomcat valves to notify the {@link CarbonTomcatValve}s
      *
-     * @param request The HTTP Request
-     * @param response  The HTTP Response
+     * @param request  The HTTP Request
+     * @param response The HTTP Response
      */
     public static void invokeValves(Request request, Response response) {
         for (CarbonTomcatValve valve : valves) {
@@ -55,5 +55,44 @@ public class TomcatValveContainer {
      */
     public static void addValves(List<CarbonTomcatValve> valves) {
         TomcatValveContainer.valves.addAll(valves);
+    }
+
+    /**
+     * Set the index of the valve based on it priority when invoking it.
+     *
+     * @param index  the index where the valve need to be added in the list
+     * @param valves valves to be added
+     */
+    public static void addValves(int index, List<CarbonTomcatValve> valves) {
+        TomcatValveContainer.valves.addAll(index, valves);
+    }
+
+    /**
+     * Add CarbonTomcatValve to the container.
+     *
+     * @param valve The valve to be added
+     */
+    public static void addValve(CarbonTomcatValve valve) {
+        TomcatValveContainer.addValve(valve);
+    }
+
+    /**
+     * Add CarbonTomcatValve to the container with the index
+     *
+     * @param index The index where the valve need to be added in the list
+     * @param valve The valve to be added
+     */
+    public static void addValve(int index, CarbonTomcatValve valve) {
+        TomcatValveContainer.addValve(index, valve);
+    }
+
+    /**
+     * Check before for a valve whether it exists or not.
+     *
+     * @param carbonTomcatValve the valve to be checked
+     * @return if valve exists
+     */
+    public static boolean isValveExits(CarbonTomcatValve carbonTomcatValve) {
+        return valves.contains(carbonTomcatValve);
     }
 }
