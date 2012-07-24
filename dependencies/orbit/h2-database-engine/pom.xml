@@ -29,14 +29,14 @@
     <packaging>bundle</packaging>
     <groupId>com.h2database.wso2</groupId>
     <artifactId>h2-database-engine</artifactId>
-    <version>1.2.140.wso2v2</version>
+    <version>1.2.140.wso2v3</version>
     <name>WSO2 Carbon Orbit - H2 Osgi Console Service</name>
 
     <dependencies>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.2.140-wso2v2</version>
+            <version>1.2.140-wso2v3</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -74,7 +74,7 @@
 				org.wso2.carbon.h2.osgi.*,
 				org.h2.server.web.*,
 			</Export-Package>
-                        <_exportcontents>org.h2.*;version=1.2.140.wso2v2</_exportcontents> 
+                        <_exportcontents>org.h2.*;version=1.2.140.wso2v3</_exportcontents> 
                         <Bundle-Activator>org.wso2.carbon.h2.osgi.H2ConsoleServiceActivator</Bundle-Activator>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Import-Package>

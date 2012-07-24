@@ -46,7 +46,7 @@
 		<module>commons/ciphertool</module>
                 <module>transports/1.1.0-wso2v6</module>
                 <module>eclipse-p2/org.eclipse.equinox.p2.touchpoint.eclipse</module>
-                <module>h2-database-engine/1.2.140-wso2v2</module>
+                <module>h2-database-engine/1.2.140-wso2v3</module>
                 <module>axiom/1.2.11-wso2v2</module>
 		
 		<!-- orbit/modules -->

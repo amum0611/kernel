@@ -5,7 +5,7 @@
     <groupId>com.h2database</groupId>
     <artifactId>h2</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.140-wso2v2</version>
+    <version>1.2.140-wso2v3</version>
     <name>H2 Database Engine</name>
 
     <licenses>
