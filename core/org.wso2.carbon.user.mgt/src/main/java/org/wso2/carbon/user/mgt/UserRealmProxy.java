@@ -56,6 +56,16 @@ public class UserRealmProxy {
 
     public String[] listUsers(String filter) throws UserAdminException {
         try {
+            // we need to expose a different API or add additional parameter to this.
+            // But here we are using same API to do this. so that using some special
+            // character to separate the claim value and uri. 
+            if(filter.contains("|")){
+                ClaimValue claimValue = new ClaimValue();
+                claimValue.setValue(filter.substring(0, filter.indexOf("|")));
+                claimValue.setClaimURI(filter.substring(filter.indexOf("|")+1));
+                return getUserList(claimValue, "default");
+            }
+
             return realm.getUserStoreManager().listUsers(filter, -1);
         } catch (UserStoreException e) {
             // previously logged so logging not needed
@@ -674,6 +684,24 @@ public class UserRealmProxy {
             HttpSession httpSession = request.getSession(false);
             String userName = (String) httpSession.getAttribute(ServerConstants.USER_LOGGED_IN);
             userStore.updateCredential(userName, newPassword, oldPassword);
+        } catch (UserStoreException e) {
+            // previously logged so logging not needed
+            throw new UserAdminException(e.getMessage(), e);
+        }
+    }
+
+    public String[] getUserList(ClaimValue claimValue, String profile) throws UserAdminException {
+        try {
+
+            String[] users = null;
+
+            if(claimValue.getClaimURI() != null && claimValue.getValue() != null){
+                users = realm.getUserStoreManager().getUserList(claimValue.getClaimURI(),
+                                                                    claimValue.getValue(), profile);
+            }
+
+            return users;
+
         } catch (UserStoreException e) {
             // previously logged so logging not needed
             throw new UserAdminException(e.getMessage(), e);
