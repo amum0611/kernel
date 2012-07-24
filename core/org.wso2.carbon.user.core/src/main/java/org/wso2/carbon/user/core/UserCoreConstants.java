@@ -103,6 +103,8 @@ public class UserCoreConstants {
         /*configuration to enable or disable user role caching*/
         public static final String PROPERTY_ROLES_CACHE_ENABLED = "UserRolesCacheEnabled";
 
+        public static final String PROPERTY_AUTHORIZATION_CACHE_ENABLED = "AuthorizationCacheEnabled";
+
         /*configuration to replace escape characters in user name at user login*/
         public static final String PROPERTY_REPLACE_ESCAPE_CHARACTERS_AT_USER_LOGIN = "ReplaceEscapeCharactersAtUserLogin";
 

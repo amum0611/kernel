@@ -61,7 +61,11 @@ public class JDBCAuthorizationManager implements AuthorizationManager {
             Integer tenantId) throws UserStoreException {
 
         authorizationCache = AuthorizationCache.getInstance();
-                
+        if(!"true".equals(realmConfig.getAuthorizationManagerProperty(UserCoreConstants.
+                                        RealmConfig.PROPERTY_AUTHORIZATION_CACHE_ENABLED))){
+            authorizationCache.disableCache();
+        }
+
         dataSource = (DataSource) properties.get(UserCoreConstants.DATA_SOURCE);
         if (dataSource == null) {
             dataSource = DatabaseUtil.getRealmDataSource(realmConfig);

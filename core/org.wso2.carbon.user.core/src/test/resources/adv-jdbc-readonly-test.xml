@@ -53,7 +53,9 @@
             <Property name="PasswordDigest">MD5</Property>           
         </UserStoreManager>
         <AuthorizationManager
-            class="org.wso2.carbon.user.core.authorization.JDBCAuthorizationManager"></AuthorizationManager>
+            class="org.wso2.carbon.user.core.authorization.JDBCAuthorizationManager">
+            <Property name="AuthorizationCacheEnabled">true</Property>
+            </AuthorizationManager>
     </Realm>
 </UserManager>
 
