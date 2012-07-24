@@ -104,7 +104,7 @@ public class GhostDeployer extends AbstractDeployer {
         }
 
         // First extract out the file extension and the deployment folder
-        String fileExtension = getFileExtension(deploymentFileData.getName());
+        String fileExtension = getFileExtension(deploymentFileData.getFile());
 
         // Now we can decide what is the correct deployer
         Deployer deployer = getDeployer(directoryName, fileExtension);
@@ -354,9 +354,14 @@ public class GhostDeployer extends AbstractDeployer {
         return dirName;
     }
 
-    private String getFileExtension(String fileName) {
+    private String getFileExtension(File deploymentFile) {
+        String fileName = deploymentFile.getName();
         int index = fileName.lastIndexOf('.');
-        return (index != -1) ? fileName.substring(index + 1) : null;
+        String fileExtension = null;
+        if (index != -1 && !deploymentFile.isDirectory()) {
+            fileExtension = fileName.substring(index + 1);
+        }
+        return fileExtension;
     }
 
 }
