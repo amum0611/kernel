@@ -127,12 +127,6 @@
 	    <!-- SSL Port -->
             <BrokerSSLPort>8672</BrokerSSLPort>
         </EmbeddedQpid>
-
-        <!-- Override the ports defined in mgt-transports.xml -->
-        <ServletTransports>
-            <HTTPS>9443</HTTPS>
-            <HTTP>9763</HTTP>
-        </ServletTransports>
 	
 	<!-- 
              Override datasources JNDIproviderPort defined in bps.xml and datasources.properties files
