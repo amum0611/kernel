@@ -58,7 +58,7 @@ public class AuthenticationFailureException extends Exception {
         }
 
         if (authenticationFailureReason == AuthenticationFailureReason.INVALID_PASSWORD) {
-            return "Authentication failed - Invalid password provided.";
+            return "Authentication failed - Invalid credentials provided.";
         }
 
         if (authenticationFailureReason == AuthenticationFailureReason.SYSTEM_ERROR) {
