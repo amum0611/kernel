@@ -212,8 +212,8 @@ public class SystemValidator extends ConfigurationValidator {
     private long getRAM() throws MalformedObjectNameException, AttributeNotFoundException,
                                  InstanceNotFoundException, MBeanException, ReflectionException {
         ObjectName osBean = new ObjectName(ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME);
-        String ramValue = mBeanServer.getAttribute(osBean, "TotalPhysicalMemorySize").toString();
-        return Long.parseLong(ramValue) / MB_BASE;
+        Long ramValue = (Long) mBeanServer.getAttribute(osBean, "TotalPhysicalMemorySize");
+        return ramValue / MB_BASE;
     }
 
     /**
@@ -228,8 +228,8 @@ public class SystemValidator extends ConfigurationValidator {
     private long getSwap() throws MalformedObjectNameException, AttributeNotFoundException,
                                   InstanceNotFoundException, MBeanException, ReflectionException {
         ObjectName osBean = new ObjectName(ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME);
-        String swapValue = mBeanServer.getAttribute(osBean, "TotalSwapSpaceSize").toString();
-        return Long.parseLong(swapValue) / MB_BASE;
+        Long swapValue = (Long) mBeanServer.getAttribute(osBean, "TotalSwapSpaceSize");
+        return swapValue / MB_BASE;
     }
 
     /**
@@ -247,8 +247,8 @@ public class SystemValidator extends ConfigurationValidator {
                                             AttributeNotFoundException, InstanceNotFoundException,
                                             MBeanException, ReflectionException {
         ObjectName osBean = new ObjectName(ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME);
-        String maxFDValue = mBeanServer.getAttribute(osBean, "MaxFileDescriptorCount").toString();
-        return Long.parseLong(maxFDValue);
+        Long maxFDValue = (Long) mBeanServer.getAttribute(osBean, "MaxFileDescriptorCount");
+        return maxFDValue;
     }
 
     /**
