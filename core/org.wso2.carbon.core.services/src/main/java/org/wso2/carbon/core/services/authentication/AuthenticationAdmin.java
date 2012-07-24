@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.base.ServerConfiguration;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.core.AbstractAdmin;
@@ -193,6 +194,7 @@ public class AuthenticationAdmin implements CarbonServerAuthenticator {
     public void logout() throws AuthenticationException {
         String loggedInUser;
         String delegatedBy;
+        String tenantDomain;
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSS']'");
         HttpSession session = getHttpSession();
@@ -200,10 +202,11 @@ public class AuthenticationAdmin implements CarbonServerAuthenticator {
         if (session != null) {
             loggedInUser = (String) session.getAttribute(ServerConstants.USER_LOGGED_IN);
             delegatedBy = (String) session.getAttribute("DELEGATED_BY");
+            tenantDomain = (String) session.getAttribute(MultitenantConstants.TENANT_DOMAIN);
             if (delegatedBy == null && loggedInUser != null) {
-                log.info("'" + loggedInUser + "' logged out at " + date.format(currentTime));
+                log.info("'" + loggedInUser + "@" + tenantDomain + "' logged out at " + date.format(currentTime));
             } else if (loggedInUser != null) {
-                log.info("'" + loggedInUser + "' logged out at " + date.format(currentTime)
+                log.info("'" + loggedInUser + "@" + tenantDomain + "' logged out at " + date.format(currentTime)
                         + " delegated by " + delegatedBy);
             }
             //We should not invalidate the session if the system is running on local transport
