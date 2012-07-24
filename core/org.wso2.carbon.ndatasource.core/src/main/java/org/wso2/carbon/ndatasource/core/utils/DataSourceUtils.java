@@ -153,23 +153,14 @@ public class DataSourceUtils {
 		return result;
 	}
 	
-	private static synchronized String loadFromSecureVault(String alias) {
-		if (secretResolver == null) {
-		    secretResolver = SecretResolverFactory.create((OMElement) null, false);
-		    secretResolver.init(DataSourceServiceComponent.
-		    		getSecretCallbackHandlerService().getSecretCallbackHandler());
-		}
-		return secretResolver.resolve(alias);
-	}
-	
-	private static void secureLoadElement(Element element, boolean checkSecureVault) 
+	private static void secureLoadElement(Element element, String name, boolean checkSecureVault)
 			throws CryptoException {
 		if (checkSecureVault) {
-			String secretAlias = element.getAttributeNS(DataSourceConstants.SECURE_VAULT_NS, 
-					DataSourceConstants.SECRET_ALIAS_ATTR_NAME);
-			if (secretAlias != null && secretAlias.length() > 0) {
-				element.setTextContent(loadFromSecureVault(secretAlias));
-			} 
+            if(secretResolver.isInitialized() && secretResolver.isTokenProtected("datasource." + name +
+                    ".configuration." + element.getNodeName())){
+                element.setTextContent(secretResolver.resolve("datasource." + name +
+                                                        ".configuration." + element.getNodeName()));                
+            }
 		} else {
 		    String encryptedStr = element.getAttribute(DataSourceConstants.ENCRYPTED_ATTR_NAME);
 		    if (encryptedStr != null) {
@@ -188,7 +179,7 @@ public class DataSourceUtils {
 		for (int i = 0; i < count; i++) {
 			tmpNode = childNodes.item(i);
 			if (tmpNode instanceof Element) {
-				secureLoadElement((Element) tmpNode, checkSecureVault);
+				secureLoadElement((Element) tmpNode, name, checkSecureVault);
 			}
 		}
 	}
@@ -235,8 +226,9 @@ public class DataSourceUtils {
 		DataSourceMetaInfo loadInfo = copyDSMInfo(dsmInfo);
 		Element element = (Element) loadInfo.getDefinition().getDsXMLConfiguration();
 		if (element != null) {
+            secretResolver = SecretResolverFactory.create(element, false);
 			try {
-				secureLoadElement(element, checkSecureVault);
+				secureLoadElement(element, dsmInfo.getName(), checkSecureVault);
 			} catch (CryptoException e) {
 				throw new DataSourceException("Error in secure load of data source meta info: " +
 			            e.getMessage(), e);
