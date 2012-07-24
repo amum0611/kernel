@@ -13,7 +13,7 @@ pluggable Carbon components and installed into this base Carbon platform.
 What's New In This Release
 ----------------------------
 1. Enhancements to the Feature Manager UI
-2. Various bug fixes (https://wso2.org/jira/browse/CARBON/fixforversion/10342) and
+2. Various bug fixes (https://wso2.org/jira/browse/CARBON/fixforversion/10343) and
    enhancements including stabilizing WSO2 Carbon.
 
 Key Features
@@ -61,53 +61,71 @@ All known issues have been recorded at https://wso2.org/jira/browse/CARBON
 Carbon Binary Distribution Directory Structure
 --------------------------------------------
 
-    CARBON_HOME
-        |- bin <folder>
-        |- dbscripts <folder>
-        |- lib <folder>
-        |- repository <folder>
-        |--- conf <folder>
-        |--- database <folder>
-        |--- logs <folder>
-        |- resources <folder>
-        |- tmp <folder>
+     CARBON_HOME
+        |-- bin <directory>
+        |-- dbscripts <directory>
+        |-- lib <directory>
+        |-- repository <directory>
+        |   |-- components <directory>
+        |   |-- conf <directory>
+        |   |-- data <directory>
+        |   |-- database <directory>
+        |   |-- deployment <directory>
+        |   |-- logs <directory>
+        |   |-- resources <directory>
+        |   |   |-- security <directory>
+        |   |-- tenants <directory>
+        |-- tmp <directory>
         |-- LICENSE.txt <file>
         |-- README.txt <file>
         |-- INSTALL.txt <file>
         |-- release-notes.html <file>
 
     - bin
-      Contains various scripts .sh & .bat scripts
-
-    - conf
-      Contains configuration files
-
-    - database
-      Contains the WSO2 Registry & User Manager database
+      Contains various scripts .sh & .bat scripts.
 
     - dbscripts
       Contains the database creation & seed data population SQL scripts for
-      various supported databases
+      various supported databases.
 
     - lib
-      Contains the basic set of libraries required to startup Carbon
-      in standalone mode
-
-    - logs
-      Contains all log files created during execution
+      Contains the basic set of libraries required to startup Carbon.
 
     - repository
-      The repository where Carbon artifacts &
-      Axis2 services and modules deployed in WSO2 Carbon
-      are stored. In addition to this other custom deployers such as
+      The repository where Carbon artifacts & Axis2 services and 
+      modules deployed in WSO2 Carbon are stored. 
+      In addition to this other custom deployers such as
       dataservices and axis1services are also stored.
 
-    - resources
-      Contains additional resources that may be required
+    	- components
+          Contains all OSGi related libraries and configurations.
+
+        - conf
+          Contains server configuration files. Ex: axis2.xml, carbon.xml
+
+        - data
+          Contains internal LDAP related data.
+
+        - database
+          Contains the WSO2 Registry & User Manager database.
+
+        - deployment
+          Contains server side and client side Axis2 repositories. 
+	  All deployment artifacts should go into this directory.
+
+        - logs
+          Contains all log files created during execution.
+
+        - resources
+          Contains additional resources that may be required.
+
+	- tenants
+	  Directory will contain relevant tenant artifacts 
+	  in the case of a multitenant deployment.
 
     - tmp
       Used for storing temporary files, and is pointed to by the
-      java.io.tmpdir System property
+      java.io.tmpdir System property.
 
     - LICENSE.txt
       Apache License 2.0 under which WSO2 Carbon is distributed.
@@ -116,10 +134,10 @@ Carbon Binary Distribution Directory Structure
       This document.
 
     - INSTALL.txt
-          This document will contain information on installing WSO2 Carbon
+      This document will contain information on installing WSO2 Carbon.
 
     - release-notes.html
-      Release information for WSO2 Carbon 3.2.0
+      Release information for this WSO2 Carbon version.
 
 Support
 -------
@@ -157,10 +175,10 @@ code and source code.
 The following provides more details on the included cryptographic
 software:
 
-Apacge Rampart   : http://ws.apache.org/rampart/
+Apache Rampart   : http://ws.apache.org/rampart/
 Apache WSS4J     : http://ws.apache.org/wss4j/
 Apache Santuario : http://santuario.apache.org/
 Bouncycastle     : http://www.bouncycastle.org/
 
 ---------------------------------------------------------------------------
-(c) Copyright 2010 WSO2 Inc.
+(c) Copyright 2012 WSO2 Inc.

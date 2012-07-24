@@ -85,10 +85,6 @@ this directory.
                 --version       The version of the product you are running.
 
             system-properties:
-                -DhttpPort      Overrides the HTTP port defined in the
-                                transports.xml file.
-                -DhttpsPort     Overrides the HTTPS port defined in the
-                                transports.xml file.
 
                 -DosgiConsole=[port]
                                 Start Carbon with Equinox OSGi console.
@@ -108,19 +104,21 @@ this directory.
                                 The root of the Registry used by
                                 this Carbon instance.
 
-                -Dwso2.transports.xml
-                                Location of the mgt-transports.xml file.
-
+     
                 -Dweb.location  The directory into which the UI artifacts
                                 included in an Axis2 AAR file are extracted to.
-		-Dcarbon.config.dire.path=[path]
+
+		-Dcarbon.config.dir.path=[path]
 				Overwrite the conf directory path where we keep all 
 				configuration files like carbon.xml, axis2.xml etc.
+
 		-Dcarbon.logs.path=[path]
 				Define the path to keep Log files.
+
 		-Daxis2.repository=[path]
 				Overwrite the default location we keep axis2 client/service
 				artifacts.
+
 		-Dcomponents.repository=[path]
 				Overwrite the default location we keep all the OSGi bundles. 
 
