@@ -26,10 +26,10 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.rpc.receivers.RPCMessageReceiver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.server.admin.internal.PrivilegedActionServiceComponent;
 
 public class PrivilegedActionMessageReceiver extends RPCMessageReceiver {
 
-    static List<PrivilegedAction> privilegedActions = new ArrayList<PrivilegedAction>();
 	private static final Log log = LogFactory.getLog(PrivilegedActionMessageReceiver.class);
 	private static boolean SKIP_SERVICE_INVOCATION = false;
 	private static boolean SKIP_LOWER_PRIORITY_EXTENSIONS = false;
@@ -96,7 +96,7 @@ public class PrivilegedActionMessageReceiver extends RPCMessageReceiver {
          */
     private List<PrivilegedAction> getPrivilegedActionExtensions(MessageContext messageContext){
         ArrayList<PrivilegedAction> returnList = new ArrayList<PrivilegedAction>();
-        for (PrivilegedAction privilegedAction : privilegedActions) {
+        for (PrivilegedAction privilegedAction : PrivilegedActionServiceComponent.privilegedActions) {
             if(!privilegedAction.isDisabled() && privilegedAction.doesHandle(messageContext)){
                 returnList.add(privilegedAction);
             }
