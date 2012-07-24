@@ -231,4 +231,11 @@ public class AuthorizationCache {
         }
     }
 
+    /**
+     * Disable cache completely. Can not enable the cache again.
+     */
+    public void disableCache(){
+        this.cache = null;                                                         
+    }
+
 }
