@@ -813,25 +813,29 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
             }
 
             // add user to role.
-            String sqlStmt2 = null;
-            String type = DatabaseCreator.getDatabaseType(dbConnection);
-            sqlStmt2 = realmConfig.getUserStoreProperty(JDBCRealmConstants.ADD_ROLE_TO_USER
-                    + "-" + type);
-            if (sqlStmt2 == null) {
-                sqlStmt2 = realmConfig
-                        .getUserStoreProperty(JDBCRealmConstants.ADD_ROLE_TO_USER);
-            }
-            if (sqlStmt2.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
-                if(UserCoreConstants.OPENEDGE_TYPE.equals(type)) {
-                    DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
-                            tenantId, roles, tenantId, userName, tenantId);
+            if (useOnlyInternalRoles) {
+                hybridRoleManager.updateHybridRoleListOfUser(userName,null,roleList);
+            } else {
+                String sqlStmt2 = null;
+                String type = DatabaseCreator.getDatabaseType(dbConnection);
+                sqlStmt2 = realmConfig.getUserStoreProperty(JDBCRealmConstants.ADD_ROLE_TO_USER
+                                                            + "-" + type);
+                if (sqlStmt2 == null) {
+                    sqlStmt2 = realmConfig
+                            .getUserStoreProperty(JDBCRealmConstants.ADD_ROLE_TO_USER);
+                }
+                if (sqlStmt2.contains(UserCoreConstants.UM_TENANT_COLUMN)) {
+                    if(UserCoreConstants.OPENEDGE_TYPE.equals(type)) {
+                        DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2,
+                                                                      tenantId, roles, tenantId, userName, tenantId);
+                    } else {
+                        DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2, roles,
+                                                                      tenantId, userName, tenantId, tenantId);
+                    }
                 } else {
                     DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2, roles,
-                            tenantId, userName, tenantId, tenantId);
+                                                                  tenantId, userName);
                 }
-            } else {
-                DatabaseUtil.udpateUserRoleMappingInBatchMode(dbConnection, sqlStmt2, roles,
-                        tenantId, userName);
             }
 
 
