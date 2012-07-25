@@ -139,6 +139,43 @@ Carbon Binary Distribution Directory Structure
     - release-notes.html
       Release information for this WSO2 Carbon version.
 
+
+Secure sensitive information in carbon configuration files
+----------------------------------------------------------
+
+There are sensitive information such as passwords in the carbon configuration. 
+You can secure them by using secure vault. Please go through following steps to 
+secure them with default mode. 
+
+1. Configure secure vault with default configurations by running ciphertool 
+	script from bin directory.  
+
+> ciphertool.sh -Dconfigure   (in UNIX)  
+
+This script would do following configurations that you need to do by manually 
+
+(i) Replaces sensitive elements in configuration files,  that have been defined in
+		 cipher-tool.properties, with alias token values.  
+(ii) Encrypts plain text password which is defined in cipher-text.properties file.
+(iii) Updates secret-conf.properties file with default keystore and callback class. 
+
+cipher-tool.properties, cipher-text.properties and secret-conf.properties files 
+			can be found at repository/conf/security directory. 
+
+2. Start server by running wso2server sciprt from bin directory
+
+> wso2server.sh   (in UNIX)
+
+By default mode, it would ask you to enter the master password 
+(By default, master password is the password of carbon keystore and private key) 
+
+3. Change any password by running ciphertool script from bin directory.  
+
+> ciphertool -Dchanage  (in UNIX)
+
+For more details see
+http://wso2.org/project/carbon/${carbon.version}/docs/secure_vault.html
+
 Support
 -------
 
