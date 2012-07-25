@@ -195,6 +195,7 @@ public class AuthenticationAdmin implements CarbonServerAuthenticator {
         String loggedInUser;
         String delegatedBy;
         String tenantDomain;
+        int tenantId;
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat date = new SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSS']'");
         HttpSession session = getHttpSession();
@@ -203,10 +204,18 @@ public class AuthenticationAdmin implements CarbonServerAuthenticator {
             loggedInUser = (String) session.getAttribute(ServerConstants.USER_LOGGED_IN);
             delegatedBy = (String) session.getAttribute("DELEGATED_BY");
             tenantDomain = (String) session.getAttribute(MultitenantConstants.TENANT_DOMAIN);
+            try {
+                tenantId = CarbonServicesServiceComponent.getRealmService().getTenantManager().getTenantId(tenantDomain);
+            } catch (Exception e) {
+                //setting to invalid tenant id because we couldn't get the tenant id
+                tenantId = MultitenantConstants.INVALID_TENANT_ID;
+                log.error(e.getMessage(), e);
+                throw new AuthenticationException(e);
+            }
             if (delegatedBy == null && loggedInUser != null) {
-                log.info("'" + loggedInUser + "@" + tenantDomain + "' logged out at " + date.format(currentTime));
+                log.info("'" + loggedInUser + "@" + tenantDomain + " [" + tenantId + "]' logged out at " + date.format(currentTime));
             } else if (loggedInUser != null) {
-                log.info("'" + loggedInUser + "@" + tenantDomain + "' logged out at " + date.format(currentTime)
+                log.info("'" + loggedInUser + "@" + tenantDomain + " [" + tenantId + "]' logged out at " + date.format(currentTime)
                         + " delegated by " + delegatedBy);
             }
             //We should not invalidate the session if the system is running on local transport
