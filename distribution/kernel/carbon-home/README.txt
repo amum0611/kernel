@@ -171,7 +171,7 @@ By default mode, it would ask you to enter the master password
 
 3. Change any password by running ciphertool script from bin directory.  
 
-> ciphertool -Dchanage  (in UNIX)
+> ciphertool -Dchange  (in UNIX)
 
 For more details see
 http://wso2.org/project/carbon/${carbon.version}/docs/secure_vault.html
