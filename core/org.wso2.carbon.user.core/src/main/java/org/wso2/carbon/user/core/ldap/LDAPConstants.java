@@ -64,7 +64,6 @@ public class LDAPConstants {
     public static final String ACTIVE_DIRECTORY_MSDS_USER_ACCOUNT_DISSABLED = "msDS-UserAccountDisabled";
     public static final String ACTIVE_DIRECTORY_UNICODE_PASSWORD_ATTRIBUTE = "unicodePwd";
     public static final String ACTIVE_DIRECTORY_DISABLED_NORMAL_ACCOUNT = Integer.toString(514);
-    public static final String ACTIVE_DIRECTORY_ENABLED_NORMAL_ACCOUNT = Integer.toString(512);
     
     
 }

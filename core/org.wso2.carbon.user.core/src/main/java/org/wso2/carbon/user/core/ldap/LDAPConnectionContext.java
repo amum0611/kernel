@@ -33,11 +33,13 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 public class LDAPConnectionContext {
 
-	private Hashtable environment;
+	@SuppressWarnings("rawtypes")
+    private Hashtable environment;
 
 	private static Log log = LogFactory.getLog(LDAPConnectionContext.class);
 
-	public LDAPConnectionContext(RealmConfiguration realmConfig) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+    public LDAPConnectionContext(RealmConfiguration realmConfig) {
 		String rawConnectionURL = realmConfig.getUserStoreProperty(LDAPConstants.CONNECTION_URL);
 		String portInfo = rawConnectionURL.split(":")[2];
 
@@ -119,7 +121,8 @@ public class LDAPConnectionContext {
 
 	}
 
-	public void updateCredential(String connectionPassword) {
+	@SuppressWarnings("unchecked")
+    public void updateCredential(String connectionPassword) {
 		/*
 		 * update the password otherwise it is not possible to connect
 		 * again if admin password changed

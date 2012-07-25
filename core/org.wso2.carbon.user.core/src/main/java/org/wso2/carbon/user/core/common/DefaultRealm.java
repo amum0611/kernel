@@ -165,6 +165,7 @@ public class DefaultRealm implements UserRealm {
 
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private Object createObjectWithOptions(String className) throws UserStoreException {
 
         Class[] initClassOpt1 = new Class[] { RealmConfiguration.class, Map.class,
@@ -231,7 +232,7 @@ public class DefaultRealm implements UserRealm {
             }
 
         } catch (Throwable e) {
-            log.error("Cannot create " + className + " . Error is : " + e.getMessage(), e);
+            log.error("Cannot create " + className, e);
             throw new UserStoreException(e.getMessage() + "Type " + e.getClass(), e);
         }
 

@@ -49,6 +49,7 @@ public class ActiveDirectoryUserStoreManager extends ReadWriteLDAPUserStoreManag
 	private static Log logger = LogFactory.getLog(ActiveDirectoryUserStoreManager.class);
 	private boolean isADLDSRole = false;
 	private boolean isSSLConnection = false;
+	private String userAccountControl = "512";
 
 	public ActiveDirectoryUserStoreManager(RealmConfiguration realmConfig,
 	                                       Map<String, Object> properties,
@@ -69,14 +70,16 @@ public class ActiveDirectoryUserStoreManager extends ReadWriteLDAPUserStoreManag
 		checkRequiredUserStoreConfigurations();
 	}
 
-	public void addUser(String userName, Object credential, String[] roleList,
-	                    Map<String, String> claims, String profileName) throws UserStoreException {
+	public void doAddUser(String userName, Object credential, String[] roleList,
+	                      Map<String, String> claims, String profileName) throws UserStoreException {
 		this.addUser(userName, credential, roleList, claims, profileName, false);
 	}
 
-	public void addUser(String userName, Object credential, String[] roleList,
-	                    Map<String, String> claims, String profileName,
-	                    boolean requirePasswordChange) throws UserStoreException {
+	public void doAddUser(String userName, Object credential, String[] roleList,
+	                      Map<String, String> claims, String profileName,
+	                      boolean requirePasswordChange) throws UserStoreException {
+
+		boolean isUserBinded = false;
 
 		/* validity checks */
 		doAddUserValidityChecks(userName, credential);
@@ -88,24 +91,27 @@ public class ActiveDirectoryUserStoreManager extends ReadWriteLDAPUserStoreManag
 		BasicAttributes basicAttributes = getAddUserBasicAttributes(userName);
 
 		if (!isADLDSRole) {
-			// creating a disabled user account in AD DS 
-			BasicAttribute userAccountControl = new BasicAttribute("userAccountControl");
-			userAccountControl.add("514");
+			// creating a disabled user account in AD DS
+			BasicAttribute userAccountControl =
+			                                    new BasicAttribute(
+			                                                       LDAPConstants.ACTIVE_DIRECTORY_USER_ACCOUNT_CONTROL);
+			userAccountControl.add(LDAPConstants.ACTIVE_DIRECTORY_DISABLED_NORMAL_ACCOUNT);
 			basicAttributes.put(userAccountControl);
 		}
 
 		/* setting claims */
 		setUserClaims(claims, basicAttributes);
 
+		Name compoundName = null;
 		try {
 			NameParser ldapParser = dirContext.getNameParser("");
-			Name compoundName =
-			                    ldapParser.parse(realmConfig.getUserStoreProperty(LDAPConstants.USER_NAME_ATTRIBUTE) +
-			                                     "=" + userName);
+			compoundName =
+			               ldapParser.parse(realmConfig.getUserStoreProperty(LDAPConstants.USER_NAME_ATTRIBUTE) +
+			                                "=" + userName);
 
 			/* bind the user. A disabled user account with no password */
 			dirContext.bind(compoundName, null, basicAttributes);
-			logger.info("User " + userName + "added successfully");
+			isUserBinded = true;
 
 			/* update the user roles */
 			updateUserRoles(userName, roleList);
@@ -135,14 +141,23 @@ public class ActiveDirectoryUserStoreManager extends ReadWriteLDAPUserStoreManag
 				                               DirContext.REPLACE_ATTRIBUTE,
 				                               new BasicAttribute(
 				                                                  LDAPConstants.ACTIVE_DIRECTORY_USER_ACCOUNT_CONTROL,
-				                                                  LDAPConstants.ACTIVE_DIRECTORY_ENABLED_NORMAL_ACCOUNT));
+				                                                  userAccountControl));
 			}
 			dirContext.modifyAttributes(compoundName, mods);
 
 		} catch (NamingException e) {
-			String errorMessage =
-			                      "Can not access the directory context or"
-			                              + " user already exists in the system";
+			String errorMessage = "Error while adding the user to the Active Directory";
+			if (isUserBinded) {
+				try {
+					dirContext.unbind(compoundName);
+				} catch (NamingException e1) {
+					errorMessage = "Error while accessing the Active Directory";
+					logger.error(errorMessage, e);
+					throw new UserStoreException(errorMessage, e);
+				}
+				errorMessage =
+				               "Error while enabling the user account. Please check password policy at DC";
+			}
 			logger.error(errorMessage, e);
 			throw new UserStoreException(errorMessage, e);
 		}
@@ -269,18 +284,24 @@ public class ActiveDirectoryUserStoreManager extends ReadWriteLDAPUserStoreManag
 
 		String is_ADLDSRole =
 		                      realmConfig.getUserStoreProperty(LDAPConstants.ACTIVE_DIRECTORY_LDS_ROLE);
-		if (is_ADLDSRole == null || is_ADLDSRole.equals("")) {
-			throw new UserStoreException(
-			                             "Required PasswordHashMethod property is not set at the LDAP configurations");
-		}
 		isADLDSRole = Boolean.parseBoolean(is_ADLDSRole);
+
+		if (!isADLDSRole) {
+			userAccountControl =
+			                     realmConfig.getUserStoreProperty(LDAPConstants.ACTIVE_DIRECTORY_USER_ACCOUNT_CONTROL);
+			try {
+				Integer.parseInt(userAccountControl);
+			} catch (NumberFormatException e) {
+				userAccountControl = "512";
+			}
+		}
 
 		String connectionURL = realmConfig.getUserStoreProperty(LDAPConstants.CONNECTION_URL);
 		String[] array = connectionURL.split(":");
-		if (!array[0].equals("ldaps")) {
-			logger.warn("Connection to the Active Directory is not secure. Passowrd involved operations such as update credentials and adduser operations will fail");
-		} else {
+		if (array[0].equals("ldaps")) {
 			this.isSSLConnection = true;
+		} else {
+			logger.warn("Connection to the Active Directory is not secure. Passowrd involved operations such as update credentials and adduser operations will fail");
 		}
 	}
 

@@ -334,7 +334,7 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
 
         String regularExpression = realmConfig.getUserStoreProperty(UserCoreConstants.RealmConfig.
                 PROPERTY_USER_NAME_JAVA_REG_EX);
-        return regularExpression == null || isFormatCorrect(regularExpression, userName);
+        return regularExpression == null || regularExpression.equals("") || isFormatCorrect(regularExpression, userName);
 
     }
 
