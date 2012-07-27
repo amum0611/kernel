@@ -443,7 +443,10 @@ public class CarbonAxisConfigurator extends DeploymentEngine implements AxisConf
 
     @Override
     public void cleanup() {
-        scheduler.shutdown();
+        //NULL check for if hot deployment/update is turned off
+        if (scheduler != null) {
+            scheduler.shutdown();
+        }
         super.cleanup();
     }
 
