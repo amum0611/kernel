@@ -88,7 +88,8 @@ public class Axis2DeployerRegistry implements BundleListener {
                  * component.xml because we can't keep the cApp hot dir inside the axis2 repo.
                  * Please see https://wso2.org/jira/browse/CARBON-13598 for more details..
                  */
-                DeployerConfig[] newDepConfigs = CarbonUtils.addCappDeployer(deployerConfigs);
+                DeployerConfig[] newDepConfigs = CarbonUtils.addCappDeployer(deployerConfigs,
+                        deploymentEngine.getAxisConfig());
 
                 for (DeployerConfig deployerConfig : newDepConfigs) {
                     

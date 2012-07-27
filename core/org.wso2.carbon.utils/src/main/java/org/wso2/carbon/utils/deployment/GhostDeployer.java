@@ -340,15 +340,23 @@ public class GhostDeployer extends AbstractDeployer {
     }
 
     private String calculateDirectoryName(String servicePath) {
+        if (servicePath == null) {
+            return null;
+        }
         String repoPath = axisConfig.getRepository().getPath();
         String dirName = null;
-        if (servicePath != null && servicePath.startsWith(repoPath)) {
+        if (servicePath.startsWith(repoPath)) {
             dirName = servicePath.substring(repoPath.length());
-            if(dirName.startsWith(File.separator)) {
+            if (dirName.startsWith(File.separator)) {
                 dirName = dirName.substring(1);
             }
             if (dirName.indexOf(File.separator) != -1) {
                 dirName = dirName.substring(0, dirName.indexOf(File.separator));
+            }
+        } else {
+            // These are the deployers which are not in the Axis2 repository
+            if (servicePath.lastIndexOf(File.separator) != -1) {
+                dirName = servicePath.substring(0, servicePath.lastIndexOf(File.separator));
             }
         }
         return dirName;

@@ -408,9 +408,12 @@ public class CarbonUtils {
                         .getCurrentCarbonContextHolder(axisConfig);
                 if (carbonCtxHolder != null) {
                 	int tempTenantId = carbonCtxHolder.getTenantId();
-                	if (tempTenantId != MultitenantConstants.SUPER_TENANT_ID) {
-                		tmpPath += File.separator + carbonCtxHolder.getTenantId();
+                    // use 0 for super tenant
+                	if (tempTenantId == -1 ||
+                            tempTenantId == MultitenantConstants.SUPER_TENANT_ID) {
+                        tempTenantId = 0;
                 	}
+                    tmpPath += File.separator + tempTenantId;
                     if (createDir(tmpPath)) {
                         tenantTmpDirPath = tmpPath;
                     }
@@ -947,17 +950,19 @@ public class CarbonUtils {
      * This is to fix : https://wso2.org/jira/browse/CARBON-13598
      *
      * @param originalConfigs - original DeployerConfig array
+     * @param axisConfig - AxisConfiguration instance to get tenant id
      * @return - new array which includes cApp deployer
      */
-    public static DeployerConfig[] addCappDeployer(DeployerConfig[] originalConfigs) {
+    public static DeployerConfig[] addCappDeployer(DeployerConfig[] originalConfigs,
+                                                   AxisConfiguration axisConfig) {
         // create a new deployer config for cApps
         DeployerConfig appDeployerConfig = new DeployerConfig();
         // set cApp deployer class, car extension
         appDeployerConfig.setClassStr("org.wso2.carbon.application.deployer.CappAxis2Deployer");
         appDeployerConfig.setExtension("car");
-        // setting the deployment direcotry as CARBON_HOME/repository/carbonapps
-        String appsRepo = System.getProperty(CarbonBaseConstants.CARBON_HOME) + File.separator +
-                REPOSITORY + File.separator + "carbonapps";
+        // setting the deployment direcotry as <Tenant Temp Dir>/carbonapps
+        String appsRepo = CarbonUtils.getTenantTmpDirPath(axisConfig) +
+                File.separator + "carbonapps";
         appDeployerConfig.setDirectory(appsRepo);
 
         // create a new configs array by including the dep deployer cofig
