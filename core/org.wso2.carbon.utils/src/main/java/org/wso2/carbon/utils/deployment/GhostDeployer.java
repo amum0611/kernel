@@ -363,10 +363,13 @@ public class GhostDeployer extends AbstractDeployer {
     }
 
     private String getFileExtension(File deploymentFile) {
+        if (deploymentFile.isDirectory()) {
+            return null;
+        }
         String fileName = deploymentFile.getName();
         int index = fileName.lastIndexOf('.');
         String fileExtension = null;
-        if (index != -1 && !deploymentFile.isDirectory()) {
+        if (index != -1) {
             fileExtension = fileName.substring(index + 1);
         }
         return fileExtension;
