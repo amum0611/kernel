@@ -214,11 +214,6 @@
             <version>1.6.2.wso2v2</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.ws.commons.axiom.wso2</groupId>
-            <artifactId>axiom</artifactId>
-            <version>1.2.11.wso2v2</version>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.securevault</groupId>
             <artifactId>org.wso2.securevault</artifactId>
             <version>${securevault.version}</version>
