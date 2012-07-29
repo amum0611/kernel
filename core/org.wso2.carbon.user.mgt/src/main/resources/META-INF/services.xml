@@ -42,69 +42,51 @@
 		<operation name="updateUsersOfRole">
 			<parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security
 			</parameter>
-			<messageReceivers>
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
-			</messageReceivers>
 		</operation>
 		<operation name="addUser">
 			<parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/users
 			</parameter>
-			<messageReceivers>
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
-			</messageReceivers>
 		</operation>
 		<operation name="changePassword">
 			<parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/passwords
 			</parameter>
-			<messageReceivers>
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
-			</messageReceivers>
 		</operation>
 		<operation name="deleteUser">
 			<parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/users
 			</parameter>
-			<messageReceivers>
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
-			</messageReceivers>
 		</operation>
 		<operation name="listUsers">
 			<parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/users,/permission/admin/configure/security/usermgt/passwords,/permission/admin/configure/security/usermgt/profiles
 			</parameter>
 		</operation>
 		<operation name="addRole">
-			<messageReceivers>
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
-			</messageReceivers>
 		</operation>
 		<operation name="deleteRole">
-			<messageReceivers>
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
-			</messageReceivers>
 		</operation>
 		<operation name="updateRoleName">
-			<messageReceivers>
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
-			</messageReceivers>
 		</operation>
 		<operation name="getRolesOfUser" />
 		<operation name="updateRolesOfUser">
-			<messageReceivers>
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
-			</messageReceivers>
 		</operation>
 		<operation name="bulkImportUsers">
-			<messageReceivers>
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
-			</messageReceivers>
 		</operation>
 	</service>
 
@@ -112,4 +94,3 @@
 	<parameter name="hiddenService" locked="false">true</parameter>
 
 </serviceGroup>
-
