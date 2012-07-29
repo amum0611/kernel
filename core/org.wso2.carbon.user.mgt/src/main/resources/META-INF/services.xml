@@ -24,6 +24,9 @@
         <parameter name="ServiceClass" locked="false">
             org.wso2.carbon.user.mgt.UserAdmin
         </parameter>
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver"/>
+        </messageReceivers>
         
         <parameter name="AuthorizationAction" locked="false">/permission/admin/configure/security</parameter>
 	    <operation name="changePasswordByUser">
@@ -56,12 +59,16 @@
 	    <operation name="listUsers">
 	        <parameter name="AuthorizationAction" locked="true">/permission/admin/configure/security/usermgt/users,/permission/admin/configure/security/usermgt/passwords,/permission/admin/configure/security/usermgt/profiles</parameter>
 	    </operation>
-        <messageReceivers>
-            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver"/>
-        </messageReceivers>
+        <operation name="addRole"/>
+        <operation name="deleteRole"/>
+        <operation name="updateRoleName"/>
+        <operation name="getRolesOfUser"/>
+        <operation name="updateRolesOfUser"/>
+        <operation name="bulkImportUsers"/>
     </service>
     
     <parameter name="adminService" locked="false">true</parameter>
     <parameter name="hiddenService" locked="false">true</parameter>
     
 </serviceGroup>
+
