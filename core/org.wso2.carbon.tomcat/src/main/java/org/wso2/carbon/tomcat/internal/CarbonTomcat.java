@@ -36,7 +36,6 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -213,6 +212,7 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
         JarFile webappJarFile = null;
         JarEntry contextXmlFileEntry;
         Context ctx = null;
+        boolean removeContext = false;
         try {
             ctx = new StandardContext();
             ctx.setName(contextPath);
@@ -258,18 +258,20 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
             if (ctx.getState().equals(LifecycleState.STOPPED)) {
                 ctx.setRealm(null);
                 ctx.destroy();
-                log.error("Webapp" + ctx + "failed to deploy");
+                removeContext = true;
             }
             if (log.isDebugEnabled()) {
                 log.debug("Webapp context: " + ctx);
             }
-        } catch (MalformedURLException e) {
-            throw new CarbonTomcatException("Webapp failed to deploy", e);
-        } catch (LifecycleException e) {
-            throw new CarbonTomcatException("Webapp failed to deploy", e);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            //since any exception can be thrown from Lifecycles, "Exception" is been caught.
+            removeContext = true;
             throw new CarbonTomcatException("Webapp failed to deploy", e);
         } finally {
+            if(removeContext && ctx != null && host != null) {
+                host.removeChild(ctx);
+                log.error("Webapp" + ctx + "failed to deploy");
+            }
             if (webappJarFile != null) {
                 try {
                     webappJarFile.close();
