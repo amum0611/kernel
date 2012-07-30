@@ -165,7 +165,6 @@ public class GhostDeployer extends AbstractDeployer {
     }
 
     public void undeploy(String fileName) throws DeploymentException {
-        log.info("Undeploying file : " + fileName);
         if (fileName == null) {
             return;
         }
@@ -176,12 +175,12 @@ public class GhostDeployer extends AbstractDeployer {
         }
         removeFileData(fileName);
         // Find the correct deployer and call the undeploy method
-        if (fileName.lastIndexOf('.') != -1) {
-            String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
-            Deployer deployer = getDeployer(calculateDirectoryName(fileName), extension);
-            if (deployer != null) {
-                deployer.undeploy(fileName);
-            }
+        File deployementFile = new File(fileName);
+        String extension = getFileExtension(deployementFile);
+        Deployer deployer = getDeployer(calculateDirectoryName(fileName), extension);
+        if (deployer != null) {
+            log.info("Undeploying file : " + fileName);
+            deployer.undeploy(fileName);
         }
     }
 
