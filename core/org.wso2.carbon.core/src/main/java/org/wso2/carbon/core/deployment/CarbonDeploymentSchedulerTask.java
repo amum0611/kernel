@@ -155,7 +155,8 @@ public class CarbonDeploymentSchedulerTask extends SchedulerTask {
             int numberOfRetries = 0;
             while (numberOfRetries < 60) {
                 try {
-                    clusteringAgent.sendMessage(new SynchronizeRepositoryRequest(tenantId), true);
+                    clusteringAgent.sendMessage(new SynchronizeRepositoryRequest(tenantId, tenantDomain),
+                                                true);
                     break;
                 } catch (ClusteringFault e) {
                     numberOfRetries++;

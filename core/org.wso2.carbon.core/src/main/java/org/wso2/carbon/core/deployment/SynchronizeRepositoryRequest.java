@@ -30,6 +30,8 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.wso2.carbon.core.CarbonAxisConfigurator;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 import org.wso2.carbon.core.multitenancy.TenantAxisConfigurator;
+import org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 /**
  * ClusterMessage for sending a deployment repository synchronization request
@@ -37,14 +39,16 @@ import org.wso2.carbon.core.multitenancy.TenantAxisConfigurator;
 public class SynchronizeRepositoryRequest extends ClusteringMessage {
 
     private int tenantId;
+    private String  tenantDomain;
     private transient static final Log log = LogFactory.getLog(SynchronizeRepositoryRequest.class);
 
 
     public SynchronizeRepositoryRequest() {
     }
 
-    public SynchronizeRepositoryRequest(int tenantId) {
+    public SynchronizeRepositoryRequest(int tenantId, String tenantDomain) {
         this.tenantId = tenantId;
+        this.tenantDomain = tenantDomain;
     }
 
     public void setTenantId(int tenantId) {
@@ -52,8 +56,12 @@ public class SynchronizeRepositoryRequest extends ClusteringMessage {
     }
 
     public void execute(ConfigurationContext configContext) throws ClusteringFault{
-        updateDeploymentRepository(configContext);
-        doDeployment(configContext);
+        // Run only if the tenant is loaded
+        if (tenantId == MultitenantConstants.SUPER_TENANT_ID ||
+                TenantAxisUtils.getTenantConfigurationContexts(configContext).get(tenantDomain) != null) {
+            updateDeploymentRepository(configContext);
+            doDeployment(configContext);
+        }
     }
 
     private void doDeployment(ConfigurationContext configContext) {
