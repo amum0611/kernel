@@ -22,6 +22,8 @@
 		<operation name="changePasswordByUser">
 			<parameter name="AuthorizationAction" locked="true">/permission/admin/login
 			</parameter>
+            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
+					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
 		</operation>
 		<operation name="getRolesOfCurrentUser">
 			<parameter name="AuthorizationAction" locked="true">/permission/admin/login
@@ -79,7 +81,6 @@
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
 		</operation>
-		<operation name="getRolesOfUser" />
 		<operation name="updateRolesOfUser">
 				<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
 					class="org.wso2.carbon.server.admin.privilegedaction.PrivilegedActionMessageReceiver" />
