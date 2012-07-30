@@ -78,7 +78,8 @@
 	
 	<!-- If product is using an external LDAP as the user store in READ ONLY mode, use following user manager -->
         <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadOnlyLDAPUserStoreManager">
-            <Property name="MaxUserNameListLength">100</Property>
+            <Property name="ReadOnly">true</Property>
+	    <Property name="MaxUserNameListLength">100</Property>
             <Property name="ConnectionURL">ldap://localhost:10389</Property>
             <Property name="ConnectionName">uid=admin,ou=system</Property>
             <Property name="ConnectionPassword">admin</Property>
