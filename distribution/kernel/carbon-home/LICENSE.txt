@@ -14,6 +14,7 @@ below is and where the actual text of the license can be found.
 Name                                                                            Type           License
 ---------------------------------------------------------------------------------------------------------
 abdera_1.0.0.wso2v3.jar								bundle         apache2
+addressing-1.6.1-wso2v5.mar							jar	       apache2
 ajaxtags_1.3.0.beta-rc7-wso2v1.jar						bundle         apache2
 annogen_0.1.0.wso2v1.jar							bundle         apache2
 ant_1.7.0.wso2v1.jar								bundle         apache2
@@ -39,7 +40,6 @@ commons-lang_2.6.0.wso2v1.jar							bundle         apache2
 commons-lang-2.6.0.wso2v1.jar							bundle         apache2
 commons-pool_1.5.6.wso2v1.jar							bundle         apache2
 compass_2.0.1.wso2v2.jar							bundle         apache2
-director-ant.jar								bundle         apache2
 ehcache_1.5.0.wso2v1.jar							bundle         apache2
 geronimo-jaxws_2.2_spec-1.0.jar							bundle         apache2
 geronimo-jms_1.1_spec-1.1.0.wso2v1.jar						bundle         apache2
@@ -49,7 +49,6 @@ h2-1.2.140-wso2v3.jar								bundle         apache2
 h2-database-engine_1.2.140.wso2v3.jar						bundle         apache2
 httpcore_4.1.0.wso2v1.jar							bundle         apache2
 infinispan-core_5.1.2.wso2v1.jar						bundle         lgpl2
-jarprocessor-ant.jar								bundle         apache2
 javasysmon_0.3.3.wso2v1.jar							bundle         netbsd
 javax.servlet_3.0.0.wso2v1.jar							bundle         apache2
 javax.servlet.jsp_2.0.0.v200806031607.jar					bundle         sunbinary
@@ -125,8 +124,8 @@ org.wso2.carbon.application.deployer_4.0.0.jar					bundle         apache2
 org.wso2.carbon.authenticator.proxy_4.0.0.jar					bundle         apache2
 org.wso2.carbon.authenticator.stub_4.0.0.jar					bundle         apache2
 org.wso2.carbon.base_4.0.0.jar							bundle         apache2
-org.wso2.carbon.bootstrap-4.0.0.jar						bundle         apache2
-org.wso2.carbon.bridge-4.0.0.jar						bundle         apache2
+org.wso2.carbon.bootstrap-4.0.0.jar						jar            apache2
+org.wso2.carbon.bridge-4.0.0.jar						jar            apache2
 org.wso2.carbon.caching.core_4.0.0.jar						bundle         apache2
 org.wso2.carbon.cluster.mgt.core_4.0.0.jar					bundle         apache2
 org.wso2.carbon.context_4.0.0.jar						bundle         apache2
@@ -157,7 +156,7 @@ org.wso2.carbon.roles.mgt_4.0.0.jar						bundle         apache2
 org.wso2.carbon.roles.mgt.stub_4.0.0.jar					bundle         apache2
 org.wso2.carbon.roles.mgt.ui_4.0.0.jar						bundle         apache2
 org.wso2.carbon.securevault_4.0.0.jar						bundle         apache2
-org.wso2.carbon.server-4.0.0.jar						bundle         apache2
+org.wso2.carbon.server-4.0.0.jar						jar            apache2
 org.wso2.carbon.server.admin_4.0.0.jar						bundle         apache2
 org.wso2.carbon.server.admin.common_4.0.0.jar					bundle         apache2
 org.wso2.carbon.server.admin.stub_4.0.0.jar					bundle         apache2
@@ -184,7 +183,6 @@ pdepublishing.jar								jar            epl1
 poi_3.5.0.wso2v1.jar								bundle         apache2
 poi-ooxml_3.5.0.wso2v1.jar							bundle         apache2
 poi-scratchpad_3.5.0.wso2v1.jar							bundle         apache2
-repository-tools-ant.jar							bundle         apache2
 taglibs.standard_1.1.2.wso2v1.jar						bundle         apache2
 tcpmon-1.0.jar									jar            apache2
 tiles-jsp_2.0.5.wso2v1.jar							bundle         apache2
