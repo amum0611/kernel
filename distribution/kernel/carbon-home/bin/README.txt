@@ -9,57 +9,79 @@ this directory.
       database
 
 	This script is designed to be used with any databases. Tested with H2,MSSQL and Derby. H2 database is embedded with CARBON. 
-	Open a console/shell and run the script from "home/wso2/bin" directory.
+	Open a console/shell and run the script from "$CARBON_HOME/bin" directory.
 
 	Usage:
-	# chpasswd.bat/sh --db-url jdbc:h2:/home/wso2/repository/database/WSO2CARBON_DB
+	# chpasswd.bat/sh --db-url jdbc:h2:/$CARBON_HOME/repository/database/WSO2CARBON_DB
 
-	If administrator wants to use other databases, he should configure the "registry.xml" and "user-mgt.xml", which are in "/home/wso2/repository/conf" directory and 
-	he needs to keep the drivers of the database inside the "home/wso2/lib" directory or in the "home/wso2/repository/lib" directory.
+	If the administrator wants to use other databases, he should configure the datasource in the "master-datasources.xml", which is in 
+	"$CARBON_HOME/repository/conf/datasources" directory. This datasource is lookedup in "registry.xml" and "user-mgt.xml" as a JNDI resource.
+  	He also needs to keep the drivers of the database inside the "$CARBON_HOME/repository/components/lib" directory.
 
 	For eg,
-	If user uses MSSQL as his DB,
-	a. Put the MSSQL driver inside the "/home/wso2/repository/lib" directory.
-	b. Edit the registry.xml file with  your database's  url,username,password and drivername details. 
+	If you need to use MSSQL as your DB,
+	a. Put the MSSQL driver inside the "$CARBON_HOME/repository/components/lib" directory.
+	b. Edit the datasource in master-datasources.xml file with your database's url, username, password and drivername details. 
 
-	eg.
-        <dbConfig name="wso2registry">
-                <url>jdbc:jtds:sqlserver://10.100.1.68:1433/USERDB</url>
-                <userName>USER</userName>
-                <password>USER</password>        
-                <driverName>net.sourceforge.jtds.jdbc.Driver</driverName>
-                <maxActive>80</maxActive>
-                <maxWait>60000</maxWait>
-                <minIdle>5</minIdle>
-         </dbConfig>
+	eg:
+	<datasource>
+            <name>WSO2_CARBON_DB</name>
+            <description>The datasource used for registry and user manager</description>
+            <jndiConfig>
+                <name>jdbc/WSO2CarbonDB</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
+                    <url>jdbc:jtds:sqlserver://10.100.1.68:1433/USERDB</url>
+                    <username>USER</username>
+                    <password>USER</password>
+                    <driverClassName>net.sourceforge.jtds.jdbc.Driver</driverClassName>
+                    <maxActive>50</maxActive>
+                    <maxWait>60000</maxWait>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                </configuration>
+            </definition>
+        </datasource>
 
-	c. Edit the "user-mgt.xml" file with your database's  url,username,password and drivername details. 
+	c. The above datasource is looked up using JNDI in "registry.xml" and "usr-mgt.xml" as below.
+	
+	In registry.xml;
+	
+	eg:
+	<dbConfig name="wso2registry">
+        	<dataSource>jdbc/WSO2CarbonDB</dataSource>
+    	</dbConfig>
 
-	eg.
-        <Configuration>
-            <Property name="url">jdbc:jtds:sqlserver://10.100.1.68:1433/USERDB</Property>
-            <Property name="userName">USER</Property>
-            <Property name="password">USER</Property>
-            <Property name="driverName">net.sourceforge.jtds.jdbc.Driver</Property>
-            <Property name="maxActive">30</Property>
-            <Property name="maxWait">60000</Property>
-            <Property name="minIdle">5</Property>
+	In usr-mgt.xml;
+
+	eg:
+	<Configuration>
+                <AdminRole>admin</AdminRole>
+                <AdminUser>
+                     <UserName>admin</UserName>
+                     <Password>admin</Password>
+                </AdminUser>
+            <EveryOneRoleName>everyone</EveryOneRoleName>
+            <Property name="dataSource">jdbc/WSO2CarbonDB</Property>
+            <Property name="MultiTenantRealmConfigBuilder">org.wso2.carbon.user.core.config.multitenancy.SimpleRealmConfigBuilder</Property>
         </Configuration>
 
-	d. Open a console/shell and run the script from "home/wso2/bin" directory having shutdown the server.
+	d. Open a console/shell and run the script from "$CARBON_HOME/bin" directory having shutdown the server.
 	
 	Usage:
 	# chpasswd.bat/sh --db-url jdbc:jtds:sqlserver://10.100.1.68:1433/USERDB --db-driver net.sourceforge.jtds.jdbc.Driver --db-username USER --db-password USER
 
 	e. Now you can access the admin console with your new password.
 
-	NOTE:- To create your own database, you need to put the driver into the "home/wso2/repository/components/extensions" directory.
+	NOTE:- To create your own database, you need to put the driver into the "$CARBON_HOME/repository/components/extensions" directory.
         Then, start the server with "-Dsetup" option.
 
 	Usage:
 	# wso2server.bat/sh -Dsetup
 	It will create the tables. Thereafter shutdown the server and open a console/shell and run the script as enumerated above.
-	You may delete the driver, which is inside the "home/wso2/repository/components/extensions" directory, as it is no more required.
+	You may delete the driver, which is inside the "$CARBON_HOME/repository/components/extensions" directory, as it is no more required.
 
 2. README.txt
     - This file
