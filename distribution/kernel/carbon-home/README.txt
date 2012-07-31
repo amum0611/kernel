@@ -38,7 +38,7 @@ Installation & Running
 
 Hardware Requirements
 -------------------
-1. Minimum memory - 256MB
+1. Minimum memory - 1GB
 2. Processor      - Pentium 800MHz or equivalent at minimum
 
 Software Requirements
@@ -51,7 +51,7 @@ Software Requirements
      level in Internet Explorer 6.x.
 
 For more details see
-http://wso2.org/wiki/display/carbon/System+Requirements
+http://docs.wso2.org/wiki/display/Carbon400/Installation+Prerequisites
 
 Known Issues
 ------------
@@ -139,7 +139,6 @@ Carbon Binary Distribution Directory Structure
     - release-notes.html
       Release information for this WSO2 Carbon version.
 
-
 Secure sensitive information in carbon configuration files
 ----------------------------------------------------------
 
@@ -185,7 +184,7 @@ hours, to premium 24x7 phone support.
 
 For additional support information please refer to http://wso2.com/support/
 
-For more information on WSO2 Carbon, visit the WSO2 Oxygen Tank (http://wso2.org)
+For more information on WSO2 Carbon, visit WSO2 Carbon Home Page (http://wso2.com/products/carbon)
 
 Crypto Notice
 -------------
