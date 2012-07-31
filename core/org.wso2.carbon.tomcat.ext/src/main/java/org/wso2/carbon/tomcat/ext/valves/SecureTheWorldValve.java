@@ -82,17 +82,18 @@ public class SecureTheWorldValve extends ValveBase {
             String usernpass = decode(authhead.substring(6));
             //*****Split the username from the password*****
             String userName = usernpass.substring(0, usernpass.indexOf(":"));
-            String tenantLessUserName;
+            String password = usernpass.substring(usernpass.indexOf(":") + 1);
+
+            String tenantlessUserName;
             if (userName.lastIndexOf('@') > -1) {
-                tenantLessUserName = userName.substring(0, userName.lastIndexOf('@'));
+                tenantlessUserName = userName.substring(0, userName.lastIndexOf('@'));
             } else {
-                tenantLessUserName = userName;
+                tenantlessUserName = userName;
             }
-            String tenantFromUserName = "";
+            String tenantFromUserName = null;
             if (userName.lastIndexOf('@') > -1) {
                 tenantFromUserName = userName.substring(userName.indexOf('@') + 1);
             }
-            String password = usernpass.substring(usernpass.indexOf(":") + 1);
 
             String requestTenantDomain =
                     CarbonContextHolder.getCurrentCarbonContextHolder().getTenantDomain();
@@ -103,21 +104,21 @@ public class SecureTheWorldValve extends ValveBase {
                     (!(tenantFromUserName.equals("") && (tenantDomain == null)) &&
                             !tenantFromUserName.equals(requestTenantDomain))) {
                 if (requestTenantDomain == null || requestTenantDomain.trim().length() == 0) {
-                    requestTenantDomain = "0";
+                    requestTenantDomain = "super-tenant";
                 }
                 log.warn("Illegal access attempt by " + userName +
-                         " to secured resource hosted by tenant " + requestTenantDomain);
+                         " to secured resource hosted by tenant [" + requestTenantDomain + "]");
                 return false;
             }
             RealmService realmService = CarbonRealmServiceHolder.getRealmService();
             try {
-                int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
-                if(tenantId == MultitenantConstants.INVALID_TENANT_ID){
+                int tenantId = realmService.getTenantManager().getTenantId(tenantFromUserName);
+                if(tenantId == -1){  // tenant does not exist?
                     return false;
                 }
                 UserRealm userRealm = realmService.getTenantUserRealm(tenantId);
                 if (realmService.getTenantUserRealm(tenantId).getUserStoreManager().
-                        authenticate(tenantLessUserName, password)) {
+                        authenticate(tenantlessUserName, password)) {
                     return true;
                 }
             } catch (UserStoreException e) {

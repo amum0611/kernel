@@ -143,7 +143,7 @@ public class CarbonUIUtil {
         // Hostname
         String hostName = "localhost";
         try {
-            hostName = NetworkUtils.getLocalHostname();
+            hostName = NetworkUtils.getMgtHostName();
         } catch (Exception ignored) {
         }
 
@@ -179,7 +179,7 @@ public class CarbonUIUtil {
         // Hostname
         String hostName = "localhost";
         try {
-            hostName = NetworkUtils.getLocalHostname();
+            hostName = NetworkUtils.getMgtHostName();
         } catch (Exception ignored) {
         }
 

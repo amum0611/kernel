@@ -37,16 +37,26 @@ public final class NetworkUtils {
     private static String hostName;
 
     /**
+     * Host name used for mgt console
+     */
+    private static String mgtHostName;
+
+    /**
      * keep this uninstantiable.
      */
     private NetworkUtils() {
     }
 
-    public static void init(String hostName) throws SocketException {
+    public static void init(String hostName, String mgtHostName) throws SocketException {
         if (hostName == null) {
             NetworkUtils.hostName = org.apache.axis2.util.Utils.getIpAddress();
         } else {
             NetworkUtils.hostName = hostName;
+        }
+        if (mgtHostName == null) {
+            NetworkUtils.mgtHostName = org.apache.axis2.util.Utils.getIpAddress();
+        } else {
+            NetworkUtils.mgtHostName = mgtHostName;
         }
     }
 
@@ -65,5 +75,13 @@ public final class NetworkUtils {
             hostName = org.apache.axis2.util.Utils.getIpAddress();
         }
         return hostName;
+    }
+
+    /**
+     * Returns the host name to be used by the Management Console
+     * @return host name to be used by the Management Console
+     */
+    public static String getMgtHostName(){
+        return mgtHostName;
     }
 }

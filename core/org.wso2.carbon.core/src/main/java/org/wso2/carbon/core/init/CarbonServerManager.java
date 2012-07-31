@@ -710,6 +710,7 @@ public final class CarbonServerManager implements Controllable {
     private void initNetworkUtils(AxisConfiguration axisConfiguration)
             throws AxisFault, SocketException {
         String hostName = serverConfig.getFirstProperty("HostName");
+        String mgtHostName = serverConfig.getFirstProperty("MgtHostName");
         if (hostName != null) {
             Parameter param = axisConfiguration.getParameter(HOST_ADDRESS);
             if (param != null) {
@@ -726,7 +727,7 @@ public final class CarbonServerManager implements Controllable {
                 log.info(HOST_ADDRESS + " has been selected from Axis2.xml.");
             }
         }
-        NetworkUtils.init(hostName);
+        NetworkUtils.init(hostName, mgtHostName);
     }
 
     public void restart() {
