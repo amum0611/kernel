@@ -176,37 +176,39 @@ public class ActiveDirectoryUserStoreManager extends ReadWriteLDAPUserStoreManag
 	 */
 	protected void setUserClaims(Map<String, String> claims, BasicAttributes basicAttributes)
 	                                                                                         throws UserStoreException {
-		BasicAttribute claim;
+		if (claims != null) {
+			BasicAttribute claim;
 
-		for (Map.Entry<String, String> entry : claims.entrySet()) {
-			// avoid attributes with empty values
-			if (EMPTY_ATTRIBUTE_STRING.equals(entry.getValue())) {
-				continue;
-			}
-			// needs to get attribute name from claim mapping
-			String claimURI = entry.getKey();
-			ClaimMapping claimMapping = null;
+			for (Map.Entry<String, String> entry : claims.entrySet()) {
+				// avoid attributes with empty values
+				if (EMPTY_ATTRIBUTE_STRING.equals(entry.getValue())) {
+					continue;
+				}
+				// needs to get attribute name from claim mapping
+				String claimURI = entry.getKey();
+				ClaimMapping claimMapping = null;
 
-			try {
-				claimMapping = (ClaimMapping) claimManager.getClaimMapping(claimURI);
-			} catch (org.wso2.carbon.user.api.UserStoreException e) {
-				String errorMessage = "Error in obtaining claim mapping.";
-				logger.error(errorMessage, e);
-				throw new UserStoreException(errorMessage, e);
+				try {
+					claimMapping = (ClaimMapping) claimManager.getClaimMapping(claimURI);
+				} catch (org.wso2.carbon.user.api.UserStoreException e) {
+					String errorMessage = "Error in obtaining claim mapping.";
+					logger.error(errorMessage, e);
+					throw new UserStoreException(errorMessage, e);
+				}
+				// skipping profile configuration attribute
+				if (claimURI.equals(UserCoreConstants.PROFILE_CONFIGURATION)) {
+					continue;
+				}
+				String attributeName;
+				if (claimMapping != null) {
+					attributeName = claimMapping.getMappedAttribute();
+				} else {
+					attributeName = claimURI;
+				}
+				claim = new BasicAttribute(attributeName);
+				claim.add(claims.get(entry.getKey()));
+				basicAttributes.put(claim);
 			}
-			// skipping profile configuration attribute
-			if (claimURI.equals(UserCoreConstants.PROFILE_CONFIGURATION)) {
-				continue;
-			}
-			String attributeName;
-			if (claimMapping != null) {
-				attributeName = claimMapping.getMappedAttribute();
-			} else {
-				attributeName = claimURI;
-			}
-			claim = new BasicAttribute(attributeName);
-			claim.add(claims.get(entry.getKey()));
-			basicAttributes.put(claim);
 		}
 	}
 
