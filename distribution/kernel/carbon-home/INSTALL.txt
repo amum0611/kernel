@@ -32,33 +32,27 @@ Standalone Mode
 
 
             system-properties:
-                -DhttpPort		Overrides the HTTP port defined in the
-                                transports.xml file
-                -DhttpsPort		Overrides the HTTPS port defined in the
-                                transports.xml file
                 -DosgiConsole=[port]	Start Carbon with Equinox OSGi console.
-                            If the optional 'port' parameter is provided, a
-                            telnet port will be opened
-                -DosgiDebugOptions=[options-file]
-                            Start Carbon with OSGi debugging enabled.
-                            If the optional 'options-file is provided, the OSGi
-                            debug options will be loaded from it.
+                            		If the optional 'port' parameter is provided, a
+                            		telnet port will be opened
+                -DosgiDebugOptions=[options-file]	Start Carbon with OSGi debugging enabled.
+			                            	If the optional 'options-file is provided, the OSGi
+                            				debug options will be loaded from it.
                 -Dsetup			Clean the Registry & other configuration,
-                                recreate DB, re-populate the configuration,
-                                and start Carbon
+                     	           	recreate DB, re-populate the configuration,
+                                	and start Carbon
                 -Dcarbon.registry.root	The root of the Registry used by
                                         this Carbon instance
-                -Dwso2.transports.xml=<transportXmlPath>	Location of the transports.xml file.
-                -DserverRoles=<roles>		A comma separated list of roles. Used in deploying cApps
+                -DserverRoles=<roles>	A comma separated list of roles. Used in deploying cApps
                 -Dcarbon.use.registry.repo	Use registry based repository.
                 -Dweb.location		The directory into which UI artifacts
-                                    included in an Axis2 AAR file are extracted to
+                                    	included in an Axis2 AAR file are extracted to
 
 
 
 Hardware Requirements
 -------------------
-1. Minimum memory - 256MB
+1. Minimum memory - 1GB
 2. Processor      - Pentium 800MHz or equivalent at minimum
 
 Software Requirements
@@ -71,7 +65,7 @@ Software Requirements
      level in Internet Explorer 6.x.
 
 For more details see
-http://wso2.org/wiki/display/carbon/System+Requirements
+http://docs.wso2.org/wiki/display/Carbon400/Installation+Prerequisites
 
 
 
