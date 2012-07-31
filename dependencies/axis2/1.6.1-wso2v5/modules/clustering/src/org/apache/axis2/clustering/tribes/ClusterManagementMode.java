@@ -39,12 +39,16 @@ public class ClusterManagementMode implements OperationMode {
     private static final Log log = LogFactory.getLog(ClusterManagementMode.class);
 
     private final byte[] clusterManagerDomain;
-    private final Map<String, GroupManagementAgent> groupManagementAgents;
+
+    /**
+     * Map[key, value=Map[key, value]] = [domain, [subDomain, GroupManagementAgent]]
+     */
+    private final Map<String, Map<String, GroupManagementAgent>> groupManagementAgents;
     private final List<MembershipManager> membershipManagers = new ArrayList<MembershipManager>();
     private final MembershipManager primaryMembershipManager;
 
     public ClusterManagementMode(byte[] clusterManagerDomain,
-                            Map<String, GroupManagementAgent> groupManagementAgents,
+                            Map<String, Map<String, GroupManagementAgent>> groupManagementAgents,
                             MembershipManager primaryMembershipManager) {
         this.clusterManagerDomain = clusterManagerDomain;
         this.groupManagementAgents = groupManagementAgents;
@@ -64,27 +68,27 @@ public class ClusterManagementMode implements OperationMode {
     public void init(Channel channel) {
         // Have multiple RPC channels with multiple RPC request handlers for each domain
         // This is needed only when this member is running as a load balancer
-        for (Object o : groupManagementAgents.keySet()) {
-            String domain = (String) o;
-            final MembershipManager membershipManager = new MembershipManager();
-            membershipManager.setDomain(domain.getBytes());
-            GroupManagementAgent groupMgtAgent = groupManagementAgents.get(domain);
-            membershipManager.setGroupManagementAgent(groupMgtAgent);
-            if(groupMgtAgent instanceof DefaultGroupManagementAgent) {
-                ((DefaultGroupManagementAgent) groupMgtAgent).setMembershipManager(membershipManager);
+        for (String domain : groupManagementAgents.keySet()) {
+            Map<String, GroupManagementAgent> groupMgtAgents = groupManagementAgents.get(domain);
+            for (GroupManagementAgent groupMgtAgent : groupMgtAgents.values()) {
+                final MembershipManager membershipManager = new MembershipManager();
+                membershipManager.setDomain(domain.getBytes());
+                membershipManager.setGroupManagementAgent(groupMgtAgent);
+                if(groupMgtAgent instanceof DefaultGroupManagementAgent) {
+                    ((DefaultGroupManagementAgent) groupMgtAgent).setMembershipManager(membershipManager);
+                }
+                MembershipListener membershipListener = new MembershipListener() {
+                    public void memberAdded(org.apache.catalina.tribes.Member member) {
+                        membershipManager.memberAdded(member);
+                    }
+
+                    public void memberDisappeared(org.apache.catalina.tribes.Member member) {
+                        membershipManager.memberDisappeared(member);
+                    }
+                };
+                channel.addMembershipListener(membershipListener);
+                membershipManagers.add(membershipManager);
             }
-
-            MembershipListener membershipListener = new MembershipListener() {
-                public void memberAdded(org.apache.catalina.tribes.Member member) {
-                    membershipManager.memberAdded(member);
-                }
-
-                public void memberDisappeared(org.apache.catalina.tribes.Member member) {
-                    membershipManager.memberDisappeared(member);
-                }
-            };
-            channel.addMembershipListener(membershipListener);
-            membershipManagers.add(membershipManager);
         }
     }
 

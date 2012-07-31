@@ -64,6 +64,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -77,6 +78,7 @@ import java.util.Set;
 public class TribesClusteringAgent implements ClusteringAgent {
 
     private static final Log log = LogFactory.getLog(TribesClusteringAgent.class);
+    public static final String DEFAULT_SUB_DOMAIN = "__$default";
 
     private DefaultNodeManager configurationManager;
     private DefaultStateManager contextManager;
@@ -110,8 +112,11 @@ public class TribesClusteringAgent implements ClusteringAgent {
      */
     private List<org.apache.axis2.clustering.Member> members;
 
-    private final Map<String, GroupManagementAgent> groupManagementAgents =
-            new HashMap<String, GroupManagementAgent>();
+    /**
+     * Map[key, value=Map[key, value]] = [domain, [subDomain, GroupManagementAgent]]
+     */
+    private final Map<String, Map<String, GroupManagementAgent>> groupManagementAgents =
+            new HashMap<String, Map<String, GroupManagementAgent>>();
     private boolean clusterManagementMode;
     private RpcMessagingHandler rpcMessagingHandler;
 
@@ -126,21 +131,43 @@ public class TribesClusteringAgent implements ClusteringAgent {
     public List<org.apache.axis2.clustering.Member> getMembers() {
         return members;
     }
-    
+
     public int getAliveMemberCount() {
         return primaryMembershipManager.getMembers().length;
     }
 
-    public void addGroupManagementAgent(GroupManagementAgent agent,
-                                        String applicationDomain) {
-        log.info("Managing group application domain " + applicationDomain +
-                 " using agent " + agent.getClass());
-        groupManagementAgents.put(applicationDomain, agent);
+    public void addGroupManagementAgent(GroupManagementAgent agent, String applicationDomain) {
+        addGroupManagementAgent(agent, applicationDomain, null);
+    }
+
+    public void addGroupManagementAgent(GroupManagementAgent agent, String applicationDomain,
+                                        String applicationSubDomain) {
+        if (applicationSubDomain == null) {
+            applicationSubDomain = DEFAULT_SUB_DOMAIN; // default sub-domain since a sub-domain is not specified
+        }
+        log.info("Managing group application domain:" + applicationDomain + ", sub-domain:" + 
+                 applicationSubDomain + " using agent " + agent.getClass());
+        if(!groupManagementAgents.containsKey(applicationDomain)){
+            groupManagementAgents.put(applicationDomain, new HashMap<String, GroupManagementAgent>());
+        }
+        groupManagementAgents.get(applicationDomain).put(applicationSubDomain, agent); 
         clusterManagementMode = true;
     }
 
     public GroupManagementAgent getGroupManagementAgent(String applicationDomain) {
-        return groupManagementAgents.get(applicationDomain);
+        return getGroupManagementAgent(applicationDomain, null);
+    }
+
+    public GroupManagementAgent getGroupManagementAgent(String applicationDomain,
+                                                        String applicationSubDomain) {
+        if (applicationSubDomain == null) {
+            applicationSubDomain = DEFAULT_SUB_DOMAIN; // default sub-domain since a sub-domain is not specified
+        }
+        Map<String, GroupManagementAgent> groupManagementAgentMap = groupManagementAgents.get(applicationDomain);
+        if (groupManagementAgentMap != null) {
+            return groupManagementAgentMap.get(applicationSubDomain);
+        }
+        return null;
     }
 
     public Set<String> getDomains() {
@@ -213,7 +240,7 @@ public class TribesClusteringAgent implements ClusteringAgent {
             String localHost = TribesUtil.getLocalHost(channel);
             if (localHost.startsWith("127.0.")) {
                 log.warn("Local member advertising its IP address as 127.0.0.1. " +
-                           "Remote members will not be able to connect to this member.");
+                         "Remote members will not be able to connect to this member.");
             }
         } catch (ChannelException e) {
             String msg = "Error starting Tribes channel";
@@ -304,11 +331,15 @@ public class TribesClusteringAgent implements ClusteringAgent {
     }
 
     private void setMemberInfo() throws ClusteringFault {
+        System.out.println("####################");
+        System.out.println("####################");
+        System.out.println("####################");
+        System.out.println("####################");
+        System.out.println("####################");
         Properties memberInfo = new Properties();
         AxisConfiguration axisConfig = configurationContext.getAxisConfiguration();
         TransportInDescription httpTransport = axisConfig.getTransportIn("http");
         int portOffset = 0;
-
         Parameter param = getParameter(ClusteringConstants.Parameters.AVOID_INITIATION);
         if(param != null && !JavaUtils.isTrueExplicitly(param.getValue())){
             //AvoidInitialization = false, Hence we set the portOffset
@@ -383,7 +414,7 @@ public class TribesClusteringAgent implements ClusteringAgent {
         // and are assumed to be System properties
         while (indexOfStartingChars < text.indexOf("${") &&
                (indexOfStartingChars = text.indexOf("${")) != -1 &&
-            (indexOfClosingBrace = text.indexOf("}")) != -1) { // Is a property used?
+               (indexOfClosingBrace = text.indexOf("}")) != -1) { // Is a property used?
             String sysProp = text.substring(indexOfStartingChars + 2,
                                             indexOfClosingBrace);
             String propValue = props.getProperty(sysProp);
@@ -507,10 +538,11 @@ public class TribesClusteringAgent implements ClusteringAgent {
     private void configureMode(byte[] domain) {
         if (clusterManagementMode) {
             mode = new ClusterManagementMode(domain, groupManagementAgents, primaryMembershipManager);
-            for (GroupManagementAgent agent : groupManagementAgents.values()) {
-
-                if (agent instanceof DefaultGroupManagementAgent) {
-                    ((DefaultGroupManagementAgent) agent).setSender(channelSender);
+            for (Map<String, GroupManagementAgent> agents : groupManagementAgents.values()) {
+                for (GroupManagementAgent agent : agents.values()) {
+                    if (agent instanceof DefaultGroupManagementAgent) {
+                        ((DefaultGroupManagementAgent) agent).setSender(channelSender);
+                    }
                 }
             }
         } else {
@@ -849,3 +881,4 @@ public class TribesClusteringAgent implements ClusteringAgent {
         return syncAllParam == null || Boolean.parseBoolean((String) syncAllParam.getValue());
     }
 }
+    

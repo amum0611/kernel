@@ -62,9 +62,11 @@ public class DefaultGroupManagementAgent implements GroupManagementAgent {
     }
 
     public void applicationMemberAdded(Member member) {
-        Thread th = new Thread(new MemberAdder(member));
-        th.setPriority(Thread.MAX_PRIORITY);
-        th.start();
+        if (!members.contains(member)) {
+            Thread th = new Thread(new MemberAdder(member));
+            th.setPriority(Thread.MAX_PRIORITY);
+            th.start();
+        }
     }
 
     public void applicationMemberRemoved(Member member) {
