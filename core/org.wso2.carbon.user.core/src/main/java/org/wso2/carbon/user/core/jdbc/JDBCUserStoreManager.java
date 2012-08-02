@@ -82,6 +82,17 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
      */
     public JDBCUserStoreManager(DataSource ds, RealmConfiguration realmConfig, int tenantId,
             boolean addInitData) throws UserStoreException {
+    	/* 
+    	 * To accommodate PasswordUpdater called from chpasswd script
+    	 */
+    	this(ds, realmConfig, tenantId, addInitData, false);
+    }
+
+	/* 
+	 * To accommodate PasswordUpdater called from chpasswd script
+	 */
+    public JDBCUserStoreManager(DataSource ds, RealmConfiguration realmConfig, int tenantId,
+            boolean addInitData, boolean isChpasswd) throws UserStoreException {
         this(realmConfig, tenantId);
         if (log.isDebugEnabled()) {
             log.debug("Started " + System.currentTimeMillis());
@@ -96,7 +107,14 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
         this.jdbcDataSource = ds;
 
         if (dataSource == null) {
-			dataSource = DatabaseUtil.getRealmDataSource(realmConfig);
+        	/*
+        	 * To accommodate PasswordUpdater called from chpasswd script
+        	 */
+        	if (isChpasswd) {
+        		dataSource = DatabaseUtil.getRealmDataSourceForChpasswd(realmConfig);
+        	} else {
+        		dataSource = DatabaseUtil.getRealmDataSource(realmConfig);
+        	}
 		}
 		if (dataSource == null) {
 			throw new UserStoreException("User Management Data Source is null");
@@ -110,7 +128,7 @@ public class JDBCUserStoreManager extends AbstractUserStoreManager{
 
         if (log.isDebugEnabled()) {
             log.debug("Ended " + System.currentTimeMillis());
-        }
+        }    	
     }
 
     public JDBCUserStoreManager(RealmConfiguration realmConfig, Map<String, Object> properties,

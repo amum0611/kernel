@@ -67,9 +67,19 @@ public class DatabaseUtil {
      * @return A database pool.
      */
     public static synchronized DataSource getRealmDataSource(RealmConfiguration realmConfig){
-
         if (dataSource == null) {
             return createRealmDataSource(realmConfig);
+        } else {
+            return dataSource;
+        }
+    }
+    
+	/*
+	 * Accommodate PasswordUpdater called from chpasswd script
+	 */
+    public static synchronized DataSource getRealmDataSourceForChpasswd(RealmConfiguration realmConfig){
+        if (dataSource == null) {     
+            return createRealmDataSourceForChpasswd(realmConfig);
         } else {
             return dataSource;
         }
@@ -172,11 +182,31 @@ public class DatabaseUtil {
 		}
     }
     
-    private static DataSource createRealmDataSource(RealmConfiguration realmConfig) {
+    private static DataSource createRealmDataSource(RealmConfiguration realmConfig) {    	
         String dataSourceName = realmConfig.getRealmProperty(JDBCRealmConstants.DATASOURCE);
     	if (dataSourceName != null) {
     		return lookupDataSource(dataSourceName);
     	}
+    	
+    	/* moved the code from here to following method to share the same logic with 
+    	 * createRealmDataSourceForChpasswd method
+    	 */
+    	return createRealmDataSourceFromRDBMSDataSource(realmConfig);
+    }
+    
+    private static DataSource createRealmDataSourceForChpasswd(RealmConfiguration realmConfig) {
+        String dataSourceName = realmConfig.getRealmProperty(JDBCRealmConstants.DATASOURCE);
+    	if (dataSourceName != null) {
+    		try {
+    			return lookupDataSource(dataSourceName);
+    		} catch (RuntimeException e) {
+    		}
+    	}
+    	return createRealmDataSourceFromRDBMSDataSource(realmConfig);
+    }
+    
+    private static DataSource createRealmDataSourceFromRDBMSDataSource(RealmConfiguration realmConfig) 
+    		throws RuntimeException {
 		RDBMSConfiguration dsConfig = new RDBMSConfiguration();
 		dsConfig.setDriverClassName(realmConfig.getRealmProperty(JDBCRealmConstants.DRIVER_NAME));
 		dsConfig.setUrl(realmConfig.getRealmProperty(JDBCRealmConstants.URL));

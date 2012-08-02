@@ -24,6 +24,7 @@ import org.wso2.carbon.user.core.config.RealmConfigXMLProcessor;
 import org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager;
 import org.wso2.carbon.utils.InputReader;
 import org.wso2.carbon.utils.ServerConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -157,7 +158,8 @@ public class PasswordUpdater {
         try {
             RealmConfiguration realmConfig = new RealmConfigXMLProcessor()
                     .buildRealmConfigurationFromFile();
-            UserStoreManager userStore = new JDBCUserStoreManager(ds, realmConfig, 0, true);
+            UserStoreManager userStore = new JDBCUserStoreManager(ds, realmConfig, 
+            		MultitenantConstants.SUPER_TENANT_ID, true, true);
             userStore.updateCredentialByAdmin(username, password);
             System.out.println("Password updated successfully.");
         } catch (UserStoreException ex) {

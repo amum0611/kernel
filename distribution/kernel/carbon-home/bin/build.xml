@@ -49,6 +49,8 @@
 
         <copy todir="${lib}" overwrite="false">
             <fileset dir="${carbon.home}/repository/components/plugins/">
+                <include name="org.wso2.carbon.ndatasource*.jar"/>
+                <include name="jdbc-pool*.jar"/>
                 <include name="axis2*.jar"/>
                 <include name="axiom*.jar"/>
                 <include name="woden*.jar"/>
