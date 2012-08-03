@@ -19,10 +19,12 @@ package org.wso2.carbon.tomcat.ext.internal;
 
 import org.apache.catalina.connector.Request;
 import org.wso2.carbon.context.ApplicationContext;
+import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 
 /**
  * A collection of useful utility methods
@@ -113,5 +115,14 @@ public class Utils {
             appName = temp.substring(0, temp.indexOf("/"));
         }
         return appName;
+    }
+
+    public static File createDummyTenantContextDir() {
+        File dummyCtxFile = new File(CarbonUtils.getTmpDir() + File.separator + "t");
+        if (!dummyCtxFile.exists() && !dummyCtxFile.mkdir()) {
+            return null;
+        } else {
+            return dummyCtxFile;
+        }
     }
 }

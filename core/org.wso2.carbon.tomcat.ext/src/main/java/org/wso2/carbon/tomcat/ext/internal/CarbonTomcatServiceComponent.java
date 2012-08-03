@@ -2,7 +2,6 @@ package org.wso2.carbon.tomcat.ext.internal;
 
 
 import org.apache.catalina.Context;
-import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,7 +9,6 @@ import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.tomcat.CarbonTomcatException;
 import org.wso2.carbon.tomcat.api.CarbonTomcatService;
-import org.wso2.carbon.tomcat.ext.servlet.DelegationServlet;
 import org.wso2.carbon.tomcat.ext.transport.ServletTransportManager;
 
 import java.io.File;
@@ -55,6 +53,17 @@ public class CarbonTomcatServiceComponent {
             this.carbonContext = carbonTomcatService.addWebApp(webContextRoot,carbonWebAppDir);
         } catch (CarbonTomcatException exception) {
             log.error("Error while adding the carbon web-app", exception);
+        }
+
+        // Add a dummy context "/t" to dispatch requests to tenant webapps when the tenant is not
+        // loaded yet. This is needed in a situation where the webContextRoot is set.
+        File tenantDummyCtxDir = Utils.createDummyTenantContextDir();
+        if (tenantDummyCtxDir.exists()) {
+            try {
+                carbonTomcatService.addWebApp("/t", tenantDummyCtxDir.getPath());
+            } catch (CarbonTomcatException exception) {
+                log.error("Error while adding the dummy tenant context web-app", exception);
+            }
         }
     }
 
