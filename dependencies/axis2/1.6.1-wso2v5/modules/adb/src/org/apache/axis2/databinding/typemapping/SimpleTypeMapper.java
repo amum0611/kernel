@@ -29,6 +29,7 @@ import org.apache.axis2.description.AxisService;
 
 import javax.activation.DataHandler;
 import javax.xml.namespace.QName;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.net.URI;
@@ -316,6 +317,8 @@ public class SimpleTypeMapper {
             return zulu.format(obj);
         } else if (obj instanceof URI){
             return obj.toString();
+        } else if (obj instanceof BigDecimal) {
+            return ((BigDecimal) obj).toPlainString();
         }
         return obj.toString();
     }

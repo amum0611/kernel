@@ -327,7 +327,14 @@ public class ConverterUtil {
     }
 
     public static String convertToString(Object o) {
+	if (o instanceof BigDecimal) {
+            return ((BigDecimal) o).toPlainString();
+        }
         return o.toString();
+    }
+
+    public static String convertToString(BigDecimal o) {
+        return o.toPlainString();
     }
 
     public static String convertToString(Double o) {
