@@ -46,4 +46,10 @@ public class RDBMSDataSourceConstants {
 	public static final String[] CLASS_RETURN_TYPES = {"String", "Byte", "Character", 
 		"Short", "Integer", "Float", "Double", "Character", "Boolean"};
 	
+	public static final String INITIAL_SIZE = "0";
+	
+	public static final String MAX_IDLE = "8";
+	
+	public static final String MIN_IDLE = "0";
+	
 }

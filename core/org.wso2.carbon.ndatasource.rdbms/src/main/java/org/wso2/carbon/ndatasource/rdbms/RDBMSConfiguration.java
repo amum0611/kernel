@@ -48,11 +48,11 @@ public class RDBMSConfiguration {
 	
 	private Integer maxActive;
 	
-	private Integer maxIdle;
+	private Integer maxIdle = Integer.valueOf(RDBMSDataSourceConstants.MAX_IDLE);
 	
-	private Integer minIdle;
+	private Integer minIdle = Integer.valueOf(RDBMSDataSourceConstants.MIN_IDLE);
 	
-	private Integer initialSize;
+	private Integer initialSize = Integer.valueOf(RDBMSDataSourceConstants.INITIAL_SIZE);
 	
 	private Integer maxWait;
 	
@@ -195,6 +195,7 @@ public class RDBMSConfiguration {
 		this.maxActive = maxActive;
 	}
 
+	@XmlElement(defaultValue = RDBMSDataSourceConstants.MAX_IDLE)
 	public Integer getMaxIdle() {
 		return maxIdle;
 	}
@@ -202,7 +203,8 @@ public class RDBMSConfiguration {
 	public void setMaxIdle(Integer maxIdle) {
 		this.maxIdle = maxIdle;
 	}
-
+	
+	@XmlElement(defaultValue = RDBMSDataSourceConstants.MIN_IDLE)
 	public Integer getMinIdle() {
 		return minIdle;
 	}
@@ -210,7 +212,8 @@ public class RDBMSConfiguration {
 	public void setMinIdle(Integer minIdle) {
 		this.minIdle = minIdle;
 	}
-
+	
+	@XmlElement(defaultValue = RDBMSDataSourceConstants.INITIAL_SIZE)
 	public Integer getInitialSize() {
 		return initialSize;
 	}
