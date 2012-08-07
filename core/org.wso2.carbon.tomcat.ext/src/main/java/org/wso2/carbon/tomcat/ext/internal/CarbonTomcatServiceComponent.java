@@ -56,13 +56,15 @@ public class CarbonTomcatServiceComponent {
         }
 
         // Add a dummy context "/t" to dispatch requests to tenant webapps when the tenant is not
-        // loaded yet. This is needed in a situation where the webContextRoot is set.
-        File tenantDummyCtxDir = Utils.createDummyTenantContextDir();
-        if (tenantDummyCtxDir.exists()) {
-            try {
-                carbonTomcatService.addWebApp("/t", tenantDummyCtxDir.getPath());
-            } catch (CarbonTomcatException exception) {
-                log.error("Error while adding the dummy tenant context web-app", exception);
+        // loaded yet. This is needed in a situation where the webContextRoot is set other than "/".
+        if (!"/".equals(webContextRoot)) {
+            File tenantDummyCtxDir = Utils.createDummyTenantContextDir();
+            if (tenantDummyCtxDir.exists()) {
+                try {
+                    carbonTomcatService.addWebApp("/t", tenantDummyCtxDir.getPath());
+                } catch (CarbonTomcatException exception) {
+                    log.error("Error while adding the dummy tenant context web-app", exception);
+                }
             }
         }
     }
