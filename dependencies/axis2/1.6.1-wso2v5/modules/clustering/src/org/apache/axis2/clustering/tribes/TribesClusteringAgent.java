@@ -331,11 +331,6 @@ public class TribesClusteringAgent implements ClusteringAgent {
     }
 
     private void setMemberInfo() throws ClusteringFault {
-        System.out.println("####################");
-        System.out.println("####################");
-        System.out.println("####################");
-        System.out.println("####################");
-        System.out.println("####################");
         Properties memberInfo = new Properties();
         AxisConfiguration axisConfig = configurationContext.getAxisConfiguration();
         TransportInDescription httpTransport = axisConfig.getTransportIn("http");
