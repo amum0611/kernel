@@ -6,8 +6,18 @@ import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.RegistryType;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.registry.core.ghostregistry.GhostRegistry;
+import org.wso2.carbon.tomcat.ext.internal.CarbonRealmServiceHolder;
+import org.wso2.carbon.tomcat.ext.internal.CarbonTomcatServiceHolder;
+import org.wso2.carbon.tomcat.ext.internal.Utils;
 import org.wso2.carbon.tomcat.ext.realms.CarbonTomcatRealm;
 import org.wso2.carbon.tomcat.ext.saas.TenantSaaSRules;
+import org.wso2.carbon.user.api.TenantManager;
+import org.wso2.carbon.user.api.UserRealmService;
+import org.wso2.carbon.utils.multitenancy.CarbonApplicationContextHolder;
+import org.wso2.carbon.utils.multitenancy.CarbonContextHolder;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -127,6 +137,40 @@ public class CompositeValve extends ValveBase {
             }
 
             TomcatValveContainer.invokeValves(request, response);
+            //setting the tenant and Realm in CarbonContext in case url mapping request
+            // got loaded with tenants and Mappings Map in TenantLazyLoaderValve.
+            String requestedHostName = request.getHost().getName();
+            String defaultHost = CarbonTomcatServiceHolder.
+                    getCarbonTomcatService().getTomcat().getEngine().getDefaultHost();
+            if(!requestedHostName.equalsIgnoreCase(defaultHost)) {
+                String tenantDomain = Utils.getTenantDomain(request);
+                CarbonContextHolder carbonContextHolder = CarbonContextHolder.
+                        getThreadLocalCarbonContextHolder();
+                if(!tenantDomain.equalsIgnoreCase(carbonContextHolder.getTenantDomain()))
+                carbonContextHolder.setTenantDomain(tenantDomain);
+                CarbonApplicationContextHolder.getCurrentCarbonAppContextHolder().
+                        setApplicationName(Utils.getAppNameFromRequest(request));
+                if (tenantDomain != null) {
+                    UserRealmService userRealmService = CarbonRealmServiceHolder.getRealmService();
+                    TenantManager tenantManager = userRealmService.getTenantManager();
+                    int tenantId = tenantManager.getTenantId(tenantDomain);
+                    carbonContextHolder.setTenantId(tenantId);
+                    carbonContextHolder.setProperty(CarbonContextHolder.USER_REALM,
+                            userRealmService.getTenantUserRealm(tenantId));
+
+                    RegistryService registryService = CarbonRealmServiceHolder.getRegistryService();
+                    carbonContextHolder.setProperty(
+                            CarbonContextHolder.CONFIG_SYSTEM_REGISTRY_INSTANCE,
+                            new GhostRegistry(registryService, tenantId,
+                                    RegistryType.SYSTEM_CONFIGURATION));
+                    carbonContextHolder.setProperty(
+                            CarbonContextHolder.GOVERNANCE_SYSTEM_REGISTRY_INSTANCE,
+                            new GhostRegistry(registryService, tenantId,
+                                    RegistryType.SYSTEM_GOVERNANCE));
+                }
+
+            }
+
             int status = response.getStatus();
             if (status != Response.SC_MOVED_TEMPORARILY && status != Response.SC_FORBIDDEN) {
                 // See  http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
