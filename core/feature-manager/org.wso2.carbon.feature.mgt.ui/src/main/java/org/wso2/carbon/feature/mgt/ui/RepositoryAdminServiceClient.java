@@ -77,6 +77,8 @@ public class RepositoryAdminServiceClient {
 
         if (repoURL == null || repoURL.length() == 0) {
             throw new Exception(bundle.getString("missing.repo.location"));
+        } else {
+        	repoURL = repoURL.trim();
         }
 
         URI uri = null;

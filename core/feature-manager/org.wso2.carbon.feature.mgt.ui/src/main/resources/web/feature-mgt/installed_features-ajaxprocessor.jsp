@@ -335,7 +335,7 @@ if("FRONT_END".equals(filterType)){
                                                 
                                                     <input class="checkbox-select" type="checkbox"
                                                            name="chkSelectFeaturesToUninstall"
-                                                           <%=(height != 0)?"disabled='disabled'":""%>
+                                                           <%=(height != 0 || ("org.wso2.carbon.core.feature.group").equals(feature.getFeatureID()))?"disabled='disabled'":""%>
                                                            value="<%=feature.getFeatureID()%>::<%=feature.getFeatureVersion()%>"
                                                            onclick="checkBoxSelectedUninstall(this);"/>
                                      <%
