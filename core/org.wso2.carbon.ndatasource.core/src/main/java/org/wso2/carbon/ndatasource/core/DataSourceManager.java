@@ -15,14 +15,7 @@
  */
 package org.wso2.carbon.ndatasource.core;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.JAXBContext;
-
+import org.w3c.dom.Document;
 import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 import org.wso2.carbon.ndatasource.common.DataSourceConstants;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
@@ -30,6 +23,13 @@ import org.wso2.carbon.ndatasource.common.spi.DataSourceReader;
 import org.wso2.carbon.ndatasource.core.utils.DataSourceUtils;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+
+import javax.xml.bind.JAXBContext;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class contains the functionality in managing the data sources.
@@ -146,14 +146,16 @@ public class DataSourceManager {
 	private void initSystemDataSource(File sysDSFile) throws DataSourceException {
 		try {
 		    JAXBContext ctx = JAXBContext.newInstance(SystemDataSourcesConfiguration.class);
+            Document doc = DataSourceUtils.convertToDocument(sysDSFile);
+            DataSourceUtils.secureResolveDocument(doc, true);
 		    SystemDataSourcesConfiguration sysDS = (SystemDataSourcesConfiguration) ctx.createUnmarshaller().
-		    		unmarshal(sysDSFile);
+		    		unmarshal(doc);
 		    this.addDataSourceProviders(sysDS.getProviders());
 		    DataSourceRepository dsRepo = this.getDataSourceRepository(
 		    		MultitenantConstants.SUPER_TENANT_ID);
 		    for (DataSourceMetaInfo dsmInfo : sysDS.getDataSources()) {
 		    	dsmInfo.setSystem(true);
-		    	dsRepo.addDataSource(DataSourceUtils.secureLoadDSMInfo(dsmInfo, true));
+		    	dsRepo.addDataSource(dsmInfo);
 		    }
 		} catch (Exception e) {
 			throw new DataSourceException("Error in initializing system data sources at '" +

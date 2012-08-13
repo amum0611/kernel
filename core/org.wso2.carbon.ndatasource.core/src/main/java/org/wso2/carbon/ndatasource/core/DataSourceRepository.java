@@ -15,11 +15,26 @@
  */
 package org.wso2.carbon.ndatasource.core;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.wso2.carbon.coordination.common.CoordinationException;
+import org.wso2.carbon.coordination.common.CoordinationException.ExceptionCode;
+import org.wso2.carbon.coordination.core.sync.Group;
+import org.wso2.carbon.coordination.core.sync.GroupEventListener;
+import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
+import org.wso2.carbon.ndatasource.common.DataSourceConstants;
+import org.wso2.carbon.ndatasource.common.DataSourceConstants.DataSourceStatusModes;
+import org.wso2.carbon.ndatasource.common.DataSourceException;
+import org.wso2.carbon.ndatasource.common.spi.DataSourceReader;
+import org.wso2.carbon.ndatasource.core.internal.DataSourceServiceComponent;
+import org.wso2.carbon.ndatasource.core.utils.DataSourceUtils;
+import org.wso2.carbon.registry.api.Collection;
+import org.wso2.carbon.registry.api.Resource;
+import org.wso2.carbon.registry.core.Registry;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
+import org.wso2.carbon.registry.core.exceptions.ResourceNotFoundException;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -29,25 +44,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Element;
-import org.wso2.carbon.coordination.common.CoordinationException;
-import org.wso2.carbon.coordination.common.CoordinationException.ExceptionCode;
-import org.wso2.carbon.coordination.core.sync.Group;
-import org.wso2.carbon.coordination.core.sync.GroupEventListener;
-import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
-import org.wso2.carbon.ndatasource.common.DataSourceConstants;
-import org.wso2.carbon.ndatasource.common.DataSourceConstants.DataSourceStatusModes;
-import org.wso2.carbon.ndatasource.common.spi.DataSourceReader;
-import org.wso2.carbon.ndatasource.common.DataSourceException;
-import org.wso2.carbon.ndatasource.core.internal.DataSourceServiceComponent;
-import org.wso2.carbon.ndatasource.core.utils.DataSourceUtils;
-import org.wso2.carbon.registry.api.Collection;
-import org.wso2.carbon.registry.api.Resource;
-import org.wso2.carbon.registry.core.Registry;
-import org.wso2.carbon.registry.core.exceptions.RegistryException;
-import org.wso2.carbon.registry.core.exceptions.ResourceNotFoundException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class represents the repository which is used to hold the data sources.
@@ -321,12 +320,12 @@ public class DataSourceRepository implements GroupEventListener {
 	
 	private void persistDataSource(DataSourceMetaInfo dsmInfo) throws DataSourceException {
 		try {
-			dsmInfo = DataSourceUtils.secureSaveDSMInfo(dsmInfo);
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			this.getDSMMarshaller().marshal(dsmInfo, out);
-			ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+			Element element = DataSourceUtils.
+					convertDataSourceMetaInfoToElement(dsmInfo, this.getDSMMarshaller());
+			DataSourceUtils.secureSaveElement(element);
+			
 			Resource resource = this.getRegistry().newResource();
-			resource.setContentStream(in);
+			resource.setContentStream(DataSourceUtils.elementToInputStream(element));
 			DataSourceServiceComponent.getDsAvailabilityManager().setDSAvailable(
 					this.getTenantId(), true);
 			this.getRegistry().put(DataSourceConstants.DATASOURCES_REPOSITORY_BASE_PATH + "/" +
@@ -414,9 +413,10 @@ public class DataSourceRepository implements GroupEventListener {
 	
 	private DataSourceMetaInfo getDataSourceMetaInfoFromRegistryPath(String path)
 			throws DataSourceException, Exception {
+        InputStream in = null;
 		try {
 		    this.getRegistry().beginTransaction();
-		    if (this.getRegistry().resourceExists(path)) {
+            if (this.getRegistry().resourceExists(path)) {
 			    Resource resource;
 			    try {
 			    	resource = this.getRegistry().get(path);
@@ -425,21 +425,24 @@ public class DataSourceRepository implements GroupEventListener {
 			    	 * resource is deleted, "resourceExists" returns true */
 					return null;
 				}
-			    InputStream in = resource.getContentStream();
-			    DataSourceMetaInfo dsmInfo = (DataSourceMetaInfo) this.getDSMUnmarshaller().unmarshal(in);
-			    in.close();
-			    this.getRegistry().commitTransaction();
-			    /* only super tenant will lookup secure vault information for system data sources, 
+			    in = resource.getContentStream();
+                Document doc = DataSourceUtils.convertToDocument(in);
+                /* only super tenant will lookup secure vault information for system data sources,
 			     * others are not allowed to */
-			    return DataSourceUtils.secureLoadDSMInfo(dsmInfo, false);
+                DataSourceUtils.secureResolveDocument(doc, false);
+                this.getRegistry().commitTransaction();
+			    return (DataSourceMetaInfo) this.getDSMUnmarshaller().unmarshal(doc);
 		    } else {
 			    return null;
 		    }
 		} catch (Exception e) {
 			this.getRegistry().rollbackTransaction();
 			throw e;
-		}
-		
+		} finally {
+            if (in != null) {
+                in.close();
+            }
+        }
 	}
 	
 	private Unmarshaller getDSMUnmarshaller() {

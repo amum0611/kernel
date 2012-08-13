@@ -15,10 +15,24 @@
  */
 package org.wso2.carbon.ndatasource.core.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.axiom.om.OMElement;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.*;
+import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
+import org.wso2.carbon.core.util.CryptoException;
+import org.wso2.carbon.core.util.CryptoUtil;
+import org.wso2.carbon.ndatasource.common.DataSourceConstants;
+import org.wso2.carbon.ndatasource.common.DataSourceException;
+import org.wso2.carbon.ndatasource.core.internal.DataSourceServiceComponent;
+import org.wso2.carbon.ndatasource.core.DataSourceMetaInfo;
+import org.wso2.carbon.registry.core.Registry;
+import org.wso2.carbon.registry.core.exceptions.RegistryException;
+import org.wso2.carbon.user.api.Tenant;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.securevault.SecretResolver;
+import org.wso2.securevault.SecretResolverFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,29 +41,15 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
-import org.wso2.carbon.core.util.CryptoException;
-import org.wso2.carbon.core.util.CryptoUtil;
-import org.wso2.carbon.ndatasource.common.DataSourceConstants;
-import org.wso2.carbon.ndatasource.common.DataSourceException;
-import org.wso2.carbon.ndatasource.core.DataSourceMetaInfo;
-import org.wso2.carbon.ndatasource.core.JNDIConfig;
-import org.wso2.carbon.ndatasource.core.DataSourceMetaInfo.DataSourceDefinition;
-import org.wso2.carbon.ndatasource.core.internal.DataSourceServiceComponent;
-import org.wso2.carbon.registry.core.Registry;
-import org.wso2.carbon.registry.core.exceptions.RegistryException;
-import org.wso2.carbon.user.api.Tenant;
-import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
-import org.wso2.securevault.SecretResolver;
-import org.wso2.securevault.SecretResolverFactory;
+import javax.xml.bind.Marshaller;
+import java.io.File;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Data Sources utility class.
@@ -133,34 +133,24 @@ public class DataSourceUtils {
 		}
 	}
 	
-	private static DataSourceMetaInfo copyDSMInfo(DataSourceMetaInfo dsmInfo) {
-		DataSourceMetaInfo result = new DataSourceMetaInfo();
-		result.setDescription(dsmInfo.getDescription());
-		JNDIConfig jndiConfig = dsmInfo.getJndiConfig();
-	    if (jndiConfig != null) {
-	    	result.setJndiConfig(dsmInfo.getJndiConfig().copy());
-	    }
-		result.setName(dsmInfo.getName());
-		result.setSystem(dsmInfo.isSystem());
-		DataSourceDefinition dsDef = new DataSourceDefinition();
-		dsDef.setType(dsmInfo.getDefinition().getType());
-		Element confEl = (Element) dsmInfo.getDefinition().getDsXMLConfiguration();
-		if (confEl != null) {
-		    dsDef.setDsXMLConfiguration(DataSourceUtils.stringToElement(
-		    		DataSourceUtils.elementToString(confEl)));
+	private static synchronized String loadFromSecureVault(String alias) {
+		if (secretResolver == null) {
+		    secretResolver = SecretResolverFactory.create((OMElement) null, false);
+		    secretResolver.init(DataSourceServiceComponent.
+		    		getSecretCallbackHandlerService().getSecretCallbackHandler());
 		}
-		result.setDefinition(dsDef);
-		return result;
+		return secretResolver.resolve(alias);
 	}
-	
-	private static void secureLoadElement(Element element, String name, boolean checkSecureVault)
+
+    private static void secureLoadElement(Element element, boolean checkSecureVault) 
 			throws CryptoException {
 		if (checkSecureVault) {
-            if(secretResolver.isInitialized() && secretResolver.isTokenProtected("datasource." + name +
-                    ".configuration." + element.getNodeName())){
-                element.setTextContent(secretResolver.resolve("datasource." + name +
-                                                        ".configuration." + element.getNodeName()));                
-            }
+			Attr secureAttr = element.getAttributeNodeNS(DataSourceConstants.SECURE_VAULT_NS,
+					DataSourceConstants.SECRET_ALIAS_ATTR_NAME);
+			if (secureAttr != null) {
+				element.setTextContent(loadFromSecureVault(secureAttr.getValue()));
+                element.removeAttributeNode(secureAttr);
+			} 
 		} else {
 		    String encryptedStr = element.getAttribute(DataSourceConstants.ENCRYPTED_ATTR_NAME);
 		    if (encryptedStr != null) {
@@ -179,12 +169,12 @@ public class DataSourceUtils {
 		for (int i = 0; i < count; i++) {
 			tmpNode = childNodes.item(i);
 			if (tmpNode instanceof Element) {
-				secureLoadElement((Element) tmpNode, name, checkSecureVault);
+				secureLoadElement((Element) tmpNode, checkSecureVault);
 			}
 		}
 	}
 	
-	private static void secureSaveElement(Element element) throws CryptoException {
+	public static void secureSaveElement(Element element) throws CryptoException {
 		String encryptedStr = element.getAttribute(DataSourceConstants.ENCRYPTED_ATTR_NAME);
 		if (encryptedStr != null) {
 		    boolean encrypted = Boolean.parseBoolean(encryptedStr);
@@ -206,36 +196,18 @@ public class DataSourceUtils {
 		}
 	}
 	
-	public static DataSourceMetaInfo secureSaveDSMInfo(DataSourceMetaInfo dsmInfo) 
-			throws DataSourceException {
-		DataSourceMetaInfo saveInfo = copyDSMInfo(dsmInfo);
-		Element element = (Element) saveInfo.getDefinition().getDsXMLConfiguration();
+	public static void secureResolveDocument(Document doc, boolean checkSecureVault)
+            throws DataSourceException {
+        Element element = doc.getDocumentElement();
 		if (element != null) {
 			try {
-				secureSaveElement(element);
-			} catch (CryptoException e) {
-				throw new DataSourceException("Error in secure save of data source meta info: " +
-			            e.getMessage(), e);
-			}
-		}
-		return saveInfo;
-	}
-	
-	public static DataSourceMetaInfo secureLoadDSMInfo(DataSourceMetaInfo dsmInfo, 
-			boolean checkSecureVault) throws DataSourceException {
-		DataSourceMetaInfo loadInfo = copyDSMInfo(dsmInfo);
-		Element element = (Element) loadInfo.getDefinition().getDsXMLConfiguration();
-		if (element != null) {
-            secretResolver = SecretResolverFactory.create(element, false);
-			try {
-				secureLoadElement(element, dsmInfo.getName(), checkSecureVault);
+				secureLoadElement(element, checkSecureVault);
 			} catch (CryptoException e) {
 				throw new DataSourceException("Error in secure load of data source meta info: " +
 			            e.getMessage(), e);
 			}
 		}
-		return loadInfo;
-	}
+    }
 	
 	public static List<Integer> getAllTenantIds() throws DataSourceException {
 		try {
@@ -252,5 +224,59 @@ public class DataSourceUtils {
 		            e.getMessage(), e);
 		}
 	}
-	
+
+    public static Document convertToDocument(File file) throws DataSourceException {
+        DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+        fac.setNamespaceAware(true);
+        try {
+            return fac.newDocumentBuilder().parse(file);
+        } catch (Exception e) {
+            throw new DataSourceException("Error in creating an XML document from file: " +
+                    e.getMessage(), e);
+        }
+    }
+
+    public static Document convertToDocument(InputStream in) throws DataSourceException {
+        DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+        fac.setNamespaceAware(true);
+        try {
+            return fac.newDocumentBuilder().parse(in);
+        } catch (Exception e) {
+            throw new DataSourceException("Error in creating an XML document from stream: " +
+                    e.getMessage(), e);
+        }
+    }
+    
+    public static InputStream elementToInputStream(Element element) {
+		try {
+			if (element == null) {
+				return null;
+			}
+		    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		    ByteArrayOutputStream out = new ByteArrayOutputStream();
+		    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		    transformer.transform(new DOMSource(element), new StreamResult(out));
+		    ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+		    return in;
+		} catch (Exception e) {
+			log.error("Error while convering element to InputStream: " + e.getMessage(), e);
+			return null;
+		}
+	}
+    
+    public static Element convertDataSourceMetaInfoToElement(DataSourceMetaInfo dsmInfo, 
+    		Marshaller dsmMarshaller) throws DataSourceException{
+    	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    	Element element;
+		try {
+			Document document = factory.newDocumentBuilder().newDocument();
+			dsmMarshaller.marshal(dsmInfo, document);
+			element = document.getDocumentElement();
+		} catch (Exception e) {
+			throw new DataSourceException("Error in creating an XML document from stream: " +
+                    e.getMessage(), e);
+		} 
+		return element;
+    }
+
 }
