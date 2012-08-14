@@ -28,6 +28,7 @@
             <icon>../feature-mgt/images/comp-manager.gif</icon>
 			<style-class>manage</style-class>
             <require-permission>/permission/protected/configure/components</require-permission>
+                        <require-super-tenant>true</require-super-tenant>
 		</menu>
 	</menus>
 </component>
