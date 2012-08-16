@@ -707,23 +707,25 @@ public class AxisService2WSDL20 implements WSDL2Constants {
                                 Object next = iterator.next();
                                 if (!(next instanceof XmlSchemaElement)) {
                                     isRPC = false;
+                                } else {
+                                	XmlSchemaElement innerElement = (XmlSchemaElement) next;
+                                	QName schemaTypeName = innerElement.getSchemaTypeName();
+                                	String name = innerElement.getName();
+                                
+	                                if (innerElement.getRefName() != null) {
+	                                    isRPC = false;
+	                                }
+	                                if (outMessageElementDetails.get(name) != null) {
+	                                    isRPC = false;
+	                                }
+	                                QName inMessageElementType =
+	                                        (QName) inMessageElementDetails.get(name);
+	                                if (inMessageElementType != null &&
+	                                        inMessageElementType != schemaTypeName) {
+	                                    isRPC = false;
+	                                }
+	                                outMessageElementDetails.put(name, schemaTypeName);
                                 }
-                                XmlSchemaElement innerElement = (XmlSchemaElement) next;
-                                QName schemaTypeName = innerElement.getSchemaTypeName();
-                                String name = innerElement.getName();
-                                if (innerElement.getRefName() != null) {
-                                    isRPC = false;
-                                }
-                                if (outMessageElementDetails.get(name) != null) {
-                                    isRPC = false;
-                                }
-                                QName inMessageElementType =
-                                        (QName) inMessageElementDetails.get(name);
-                                if (inMessageElementType != null &&
-                                        inMessageElementType != schemaTypeName) {
-                                    isRPC = false;
-                                }
-                                outMessageElementDetails.put(name, schemaTypeName);
                             }
                         }
                     } else {
