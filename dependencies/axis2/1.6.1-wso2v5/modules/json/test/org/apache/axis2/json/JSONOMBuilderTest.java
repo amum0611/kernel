@@ -18,7 +18,7 @@
  */
 
 
-/*package org.apache.axis2.json;
+package org.apache.axis2.json;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,19 +28,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 
 import junit.framework.TestCase;
-
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMOutputFormat;
-import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.transport.TransportUtils;
-import org.apache.axis2.transport.http.SOAPMessageFormatter;
 import org.codehaus.jettison.json.JSONException;
 import org.xml.sax.SAXException;
 
 public class JSONOMBuilderTest extends TestCase {
 
-    public void testBadgerfishOMSerialization1() throws IOException {
+/*    public void testBadgerfishOMSerialization1() throws IOException {
 
         String jsonString = getBadgerfishJSONString();
         ByteArrayInputStream inStream = new ByteArrayInputStream(jsonString.getBytes());
@@ -66,9 +62,9 @@ public class JSONOMBuilderTest extends TestCase {
 
         outStream.flush();
         outStream.close();
-    }
+    }*/
 
-    public void testBadgerfishOMSerialization2() throws XMLStreamException, JSONException,
+/*    public void testBadgerfishOMSerialization2() throws XMLStreamException, JSONException,
             IOException, ParserConfigurationException, SAXException {
         String jsonString = getBadgerfishJSONString();
         ByteArrayInputStream inStream = new ByteArrayInputStream(jsonString.getBytes());
@@ -84,11 +80,28 @@ public class JSONOMBuilderTest extends TestCase {
         outStream.flush();
         outStream.close();
 
+    }*/
+
+    public void testMalformedJSONBuilding() throws  XMLStreamException, JSONException,
+            IOException, ParserConfigurationException, SAXException {
+        String jsonString = getMalformedJSONString();
+        ByteArrayInputStream inStream = new ByteArrayInputStream(jsonString.getBytes());
+        JSONOMBuilder omBuilder = new JSONOMBuilder();
+        try{
+            OMElement elem = omBuilder.processDocument(inStream,
+                    JSONTestConstants.CONTENT_TYPE_BADGERFISH, new MessageContext());
+        } catch (AxisFault e) {
+            String faultMessage = e.getMessage();
+            assertTrue(faultMessage.contains("Malformed JSON message"));
+        }
     }
 
-    private String getBadgerfishJSONString() {
+/*    private String getBadgerfishJSONString() {
         return "{\"p\":{\"@xmlns\":{\"bb\":\"http://other.nsb\",\"aa\":\"http://other.ns\",\"$\":\"http://def.ns\"},\"sam\":{\"$\":\"555\", \"@att\":\"lets\"}}}";
+    }*/
+
+    private String getMalformedJSONString() {
+        return "{\"a\" {}}";
     }
 
 }
-*/

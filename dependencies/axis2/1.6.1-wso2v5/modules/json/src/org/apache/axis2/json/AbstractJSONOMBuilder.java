@@ -116,12 +116,18 @@ public abstract class AbstractJSONOMBuilder implements Builder {
          */
         try {
             //read the stream until we find a : symbol
-            char temp = (char)reader.read();
+            int charInt = reader.read();
+            char temp = (char) charInt;
             while (temp != ':') {
+                if (charInt == -1) {
+                    throw new AxisFault("Malformed JSON message, End of request found but cannot" +
+                            " find first element");
+                }
                 if (temp != ' ' && temp != '{' && temp != '\n' && temp != '\r' && temp != '\t') {
                     localName += temp;
                 }
-                temp = (char)reader.read();
+                charInt = reader.read();
+                temp = (char) charInt;
             }
 
             //if the part we read ends with ", there is no prefix, otherwise it has a prefix
@@ -132,12 +138,18 @@ public abstract class AbstractJSONOMBuilder implements Builder {
                     prefix = localName.substring(1, localName.length()) + ":";
                     localName = "";
                     //so far we have read only the prefix, now lets read the localname
-                    temp = (char)reader.read();
+                    charInt = reader.read();
+                    temp = (char) charInt;
                     while (temp != ':') {
+                        if (charInt == -1) {
+                            throw new AxisFault("Malformed JSON message, End of request found but cannot" +
+                                    " find first element");
+                        }
                         if (temp != ' ') {
                             localName += temp;
                         }
-                        temp = (char)reader.read();
+                        charInt = reader.read();
+                        temp = (char) charInt;
                     }
                     localName = localName.substring(0, localName.length() - 1);
                 }
