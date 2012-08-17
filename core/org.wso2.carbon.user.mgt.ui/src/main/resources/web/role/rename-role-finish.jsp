@@ -51,7 +51,7 @@
         String message = MessageFormat.format(resourceBundle.getString("role.cannot.add"),
                 new Object[] { newRoleName, e.getMessage() });
         CarbonUIMessage.sendCarbonUIMessage(message, CarbonUIMessage.ERROR, request);
-        forwardTo = "rename-role.jsp?ordinal=2";
+        forwardTo = "role-mgt.jsp?ordinal=1";
     }
 %>
 
