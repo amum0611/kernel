@@ -1438,7 +1438,7 @@ public class AxisConfiguration extends AxisDescription {
             configurator.cleanup();
         }
         if (clusteringAgent != null) {
-            clusteringAgent.finalize();
+            clusteringAgent.stop();
         }
         this.policySupportedModules.clear();
         this.moduleConfigmap.clear();

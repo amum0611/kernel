@@ -276,7 +276,7 @@ public class TribesClusteringAgent implements ClusteringAgent {
         log.info("Cluster initialization completed.");
     }
 
-    public void finalize(){
+    public void stop(){
         if (channel != null){
             log.info("Stopping Tribes channel...");
             try {

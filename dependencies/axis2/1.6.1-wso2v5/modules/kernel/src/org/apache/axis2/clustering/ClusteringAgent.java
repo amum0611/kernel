@@ -75,7 +75,7 @@ public interface ClusteringAgent extends ParameterInclude {
     /**
      * Do cleanup & leave the cluster 
      */
-    void finalize();
+    void stop();
 
     /**
      * @return The StateManager
