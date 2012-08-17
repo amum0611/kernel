@@ -209,7 +209,7 @@ YAHOO.util.Event.onAvailable('menu-panel-button_dummy',
 	        document.getElementById('vertical-menu-container').style.display = "none";
 	        return;
 	    }
-             
+
             
             document.getElementById('vertical-menu-container').style.display = "";
             var menuSliderTxt1 = "<span>Main</span>";
@@ -451,3 +451,12 @@ function selectTab(tab){
     }
     YAHOO.util.Dom.addClass(tab, 'selected');            
 }
+jQuery(document).ready(
+  function() {
+      if (jQuery('#menu-table li').length <= 1) {
+          document.getElementById('vertical-menu-container').style.display = "none";
+          document.getElementById('menu-panel').style.display = "none";
+      }
+
+  }
+);

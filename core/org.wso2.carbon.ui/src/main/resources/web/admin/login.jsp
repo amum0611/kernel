@@ -105,7 +105,7 @@ if(issuetrackerURL == null){
         String backendURL = CharacterEncoder.getSafeText(CarbonUIUtil.getServerURL(config.getServletContext(), session));
     %>
      <script type="text/javascript">
-    	function getSafeText(var text){
+    	function getSafeText(text){
     		text = text.replace(/</g,'&lt;');
     		return text.replace(/>/g,'&gt');
     	}
