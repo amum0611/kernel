@@ -776,7 +776,7 @@ public final class CarbonServerManager implements Controllable {
             ClusteringAgent clusteringAgent =
                     serverConfigContext.getAxisConfiguration().getClusteringAgent();
             if (clusteringAgent != null) {
-                clusteringAgent.finalize();
+                clusteringAgent.stop();
             }
             if (!CarbonUtils.isRunningInStandaloneMode()) {
                 long waitFor = 5;

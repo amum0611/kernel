@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This MessageReceiver will try to locate the tenant specific AxisConfiguration and dispatch the
@@ -216,6 +217,13 @@ public class MultitenantMessageReceiver implements MessageReceiver {
             tenantInMsgCtx.setProperty(Constants.OUT_TRANSPORT_INFO,
                     mainInMsgContext.getProperty(Constants.OUT_TRANSPORT_INFO));
             tenantInMsgCtx.setIncomingTransportName(mainInMsgContext.getIncomingTransportName());
+            tenantInMsgCtx.setProperty(Constants.Configuration.CONTENT_TYPE,
+                    mainInMsgContext.getProperty(Constants.Configuration.CONTENT_TYPE));
+
+            Map<String, Object> props =  mainInMsgContext.getProperties();
+            for (String propertyName : props.keySet()) {
+                tenantInMsgCtx.setProperty(propertyName, props.get(propertyName));
+            }
 
             // inject the message to the tenant inflow handlers
             AxisEngine.receive(tenantInMsgCtx);
