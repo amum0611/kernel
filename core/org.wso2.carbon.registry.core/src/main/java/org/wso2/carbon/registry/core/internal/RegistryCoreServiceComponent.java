@@ -149,14 +149,6 @@ public class RegistryCoreServiceComponent {
         }
     }
 
-    // Cleans up the queue for the log writer
-    private void stopLogWriter(RegistryService registryService) throws RegistryException {
-        Registry registry = registryService.getRegistry(
-                CarbonConstants.REGISTRY_SYSTEM_USERNAME);
-        RegistryContext registryContext = registry.getRegistryContext();
-        registryContext.getLogWriter().getLogQueue().clear();
-    }
-
     /**
      * Deactivates the Registry Kernel bundle.
      *
@@ -164,11 +156,6 @@ public class RegistryCoreServiceComponent {
      */
     @SuppressWarnings("unused")
     protected void deactivate(ComponentContext context) {
-        try {
-            stopLogWriter(registryService);
-        } catch (RegistryException e) {
-            log.error("An error occurred while cleaning up the log queue.", e);
-        }
         while (!registrations.empty()) {
             registrations.pop().unregister();
         }
