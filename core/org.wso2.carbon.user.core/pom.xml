@@ -147,7 +147,6 @@
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
-                        <ListenerManager-RequiredServices>org.wso2.carbon.ndatasource.core.DataSourceService</ListenerManager-RequiredServices>
                     </instructions>
                 </configuration>
             </plugin>
