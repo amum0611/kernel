@@ -372,10 +372,14 @@ public class DataSourceRepository implements GroupEventListener {
 		this.dataSources.remove(dsName);
 	}
 	
-	private synchronized void registerDataSource(DataSourceMetaInfo dsmInfo) {
+	private synchronized void registerDataSource(DataSourceMetaInfo dsmInfo) throws DataSourceException {
 		/* if a data source is already registered with the given name, unregister it first */
 		CarbonDataSource currentCDS = this.getDataSource(dsmInfo.getName());
 		if (currentCDS != null) {
+			/* if the data source is a system data source, throw exception */
+			if (dsmInfo.isSystem()) {
+				throw new DataSourceException("System datasource " + dsmInfo.getName() + "can not be updated.");
+			}
 			this.unregisterDataSource(currentCDS.getDSMInfo().getName());
 		}
 		if (log.isDebugEnabled()) {
