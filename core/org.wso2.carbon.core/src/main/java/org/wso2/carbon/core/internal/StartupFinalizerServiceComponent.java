@@ -31,6 +31,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.core.ServerStatus;
+import org.wso2.carbon.core.init.CarbonStartupListener;
 import org.wso2.carbon.core.init.JMXServerManager;
 import org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
 import org.wso2.carbon.core.util.ClusteringUtil;
@@ -77,6 +78,11 @@ public class StartupFinalizerServiceComponent implements ServiceListener {
     private Timer pendingServicesObservationTimer = new Timer();
     private CarbonCoreDataHolder dataHolder = CarbonCoreDataHolder.getInstance();
     private ServiceRegistration listerManagerServiceRegistration;
+    
+    private static List<CarbonStartupListener> startupListeners = 
+    	new ArrayList<CarbonStartupListener>();
+    
+    private static boolean startupFinished;
    
     protected void activate(ComponentContext ctxt) {
         try {
@@ -116,9 +122,21 @@ public class StartupFinalizerServiceComponent implements ServiceListener {
             log.fatal("Cannot activate StartupFinalizerServiceComponent", e);
         }
     }
+    
+    public synchronized static void addCarbonStartupListener(CarbonStartupListener listener) {
+        if (startupFinished) {
+        	listener.serverInitialized();
+        } else {
+            startupListeners.add(listener);
+        }
+    }
 
     protected void deactivate(ComponentContext ctxt) {
-      listerManagerServiceRegistration.unregister();
+        listerManagerServiceRegistration.unregister();
+        synchronized (this.getClass()) {
+			startupListeners.clear();
+			startupFinished = false;
+		}
     }
 
     private void populateRequiredServices() {
@@ -198,10 +216,23 @@ public class StartupFinalizerServiceComponent implements ServiceListener {
         if (log.isDebugEnabled()) {
             log.debug("Started Transport Listener Manager");
         }
+        /* notify the listeners that the Carbon server is fully initialized */
+        handleStartupListenerFinish();
         setServerStartTimeParam();
         printInfo();
-      }
+    }
 
+    private synchronized static void handleStartupListenerFinish() {
+    	for (CarbonStartupListener listener : startupListeners) {
+			listener.serverInitialized();
+		}
+		if (log.isDebugEnabled()) {
+			log.debug(startupListeners.size() + 
+					" Carbon startup listeners notified at handleStartupListenerFinish");
+		}
+		startupListeners.clear();
+		startupFinished = true;	
+    }
     
     private void setServerStartTimeParam() {
         Parameter startTimeParam = new Parameter();

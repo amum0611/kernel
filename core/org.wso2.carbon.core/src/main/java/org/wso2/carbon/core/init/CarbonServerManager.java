@@ -60,6 +60,7 @@ import org.wso2.carbon.core.deployment.OSGiAxis2ServiceDeployer;
 import org.wso2.carbon.core.deployment.RegistryBasedRepositoryUpdater;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 import org.wso2.carbon.core.internal.CarbonCoreServiceComponent;
+import org.wso2.carbon.core.internal.StartupFinalizerServiceComponent;
 import org.wso2.carbon.core.multitenancy.GenericArtifactUnloader;
 import org.wso2.carbon.core.internal.HTTPGetProcessorListener;
 import org.wso2.carbon.core.multitenancy.MultitenantServerManager;
@@ -932,7 +933,9 @@ public final class CarbonServerManager implements Controllable {
         artifactsCleanupExec.shutdownNow();
     }
 
-
+    public static void addCarbonStartupListener(CarbonStartupListener listener) {
+        StartupFinalizerServiceComponent.addCarbonStartupListener(listener);
+    }
 
 }
 
