@@ -129,6 +129,12 @@ public class DataSourceMetaInfo {
 			return true;
 		}
 		
+		@Override
+		public int hashCode() {
+			assert false : "hashCode() not implemented";
+		    return -1;
+		}
+		
 	}
 	
 	@Override
@@ -150,6 +156,12 @@ public class DataSourceMetaInfo {
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		assert false : "hashCode() not implemented";
+	    return -1;
 	}
 	
 }

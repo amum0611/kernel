@@ -108,6 +108,12 @@ public class JNDIConfig {
 		return true;
 	}
 	
+	@Override
+	public int hashCode() {
+		assert false : "hashCode() not implemented";
+	    return -1;
+	}
+	
 	@XmlRootElement (name = "property")
 	public static class EnvEntry {
 		
