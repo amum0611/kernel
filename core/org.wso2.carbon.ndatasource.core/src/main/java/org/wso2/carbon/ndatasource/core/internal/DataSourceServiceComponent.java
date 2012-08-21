@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.base.api.ServerConfigurationService;
-import org.wso2.carbon.coordination.core.services.CoordinationService;
 import org.wso2.carbon.ndatasource.core.DataSourceAxis2ConfigurationContextObserver;
 import org.wso2.carbon.ndatasource.core.DataSourceManager;
 import org.wso2.carbon.ndatasource.core.DataSourceService;
@@ -29,6 +28,7 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.securevault.SecretCallbackHandlerService;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
+import org.wso2.carbon.utils.ConfigurationContextService;
 
 /**
 * @scr.component name="org.wso2.carbon.ndatasource" immediate="true"
@@ -42,10 +42,10 @@ import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
 * @scr.reference name="user.realmservice.default"
 * interface="org.wso2.carbon.user.core.service.RealmService" cardinality="0..1" policy="dynamic"
 * bind="setRealmService" unbind="unsetRealmService"
-* @scr.reference name="coordination.service" interface="org.wso2.carbon.coordination.core.services.CoordinationService"
-* cardinality="1..1" policy="dynamic"  bind="setCoordinationService" unbind="unsetCoordinationService"
 * @scr.reference name="server.configuration.service" interface="org.wso2.carbon.base.api.ServerConfigurationService"
 * cardinality="0..1" policy="dynamic"  bind="setServerConfigurationService" unbind="unsetServerConfigurationService"
+* @scr.reference name="config.context.service" interface="org.wso2.carbon.utils.ConfigurationContextService"
+* cardinality="0..1" policy="dynamic"  bind="setConfigurationContextService" unbind="unsetConfigurationContextService" 
 */
 public class DataSourceServiceComponent {
 	
@@ -54,9 +54,7 @@ public class DataSourceServiceComponent {
 	private static RegistryService registryService;
 	
 	private static RealmService realmService;
-	
-	private static CoordinationService coodinationService;
-	
+		
 	private static SecretCallbackHandlerService secretCallbackHandlerService;
 	
 	private static ServerConfigurationService serverConfigurationService;
@@ -69,6 +67,8 @@ public class DataSourceServiceComponent {
 	
 	private static RegistryDSAvailabilityManager dsAvailabilityManager;
 	
+	private static ConfigurationContextService configContextService;
+
 	protected synchronized void activate(ComponentContext ctx) {
 		this.ctx = ctx;
 		if (log.isDebugEnabled()) {
@@ -177,7 +177,6 @@ public class DataSourceServiceComponent {
     private synchronized void checkInitTenantUserDataSources() {
     	if (DataSourceServiceComponent.getRealmService() != null && 
     			DataSourceServiceComponent.getRegistryService() != null &&
-    			DataSourceServiceComponent.getCoordinationService() != null &&
     			DataSourceServiceComponent.getSecretCallbackHandlerService() != null && 
     			DataSourceServiceComponent.getServerConfigurationService() != null) {
     		this.initAllTenantUserDataSources();
@@ -210,22 +209,6 @@ public class DataSourceServiceComponent {
 	public static RegistryDSAvailabilityManager getDsAvailabilityManager() {
 		return dsAvailabilityManager;
 	}
-
-	protected void setCoordinationService(CoordinationService coordinationService) {
-    	if (log.isDebugEnabled()) {
-    		log.debug("CoordinationService acquired");
-    	}
-    	DataSourceServiceComponent.coodinationService = coordinationService;
-    	this.checkInitTenantUserDataSources();
-    }
-    
-    protected void unsetCoordinationService(CoordinationService coordinationService) {
-    	DataSourceServiceComponent.coodinationService = null;
-    }
-    
-    public static CoordinationService getCoordinationService() {
-    	return DataSourceServiceComponent.coodinationService;
-    }
     
     public static ServerConfigurationService getServerConfigurationService() {
     	return DataSourceServiceComponent.serverConfigurationService;
@@ -242,5 +225,17 @@ public class DataSourceServiceComponent {
     	DataSourceServiceComponent.serverConfigurationService = serverConfigurationService;
     	this.checkInitTenantUserDataSources();
     }
+    
+    protected void setConfigurationContextService(ConfigurationContextService configContextService) {
+    	DataSourceServiceComponent.configContextService = configContextService;
+    }
+
+    protected void unsetConfigurationContextService(ConfigurationContextService configContextService) {
+    	DataSourceServiceComponent.configContextService = null;
+    }
+    
+	public static ConfigurationContextService getConfigContextService() {
+		return configContextService;
+	}
 	
 }

@@ -15,14 +15,13 @@
  */
 package org.wso2.carbon.ndatasource.core;
 
+import org.apache.axis2.clustering.ClusteringAgent;
+import org.apache.axis2.clustering.ClusteringFault;
+import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.wso2.carbon.coordination.common.CoordinationException;
-import org.wso2.carbon.coordination.common.CoordinationException.ExceptionCode;
-import org.wso2.carbon.coordination.core.sync.Group;
-import org.wso2.carbon.coordination.core.sync.GroupEventListener;
 import org.wso2.carbon.core.multitenancy.SuperTenantCarbonContext;
 import org.wso2.carbon.ndatasource.common.DataSourceConstants;
 import org.wso2.carbon.ndatasource.common.DataSourceConstants.DataSourceStatusModes;
@@ -35,6 +34,7 @@ import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.exceptions.ResourceNotFoundException;
+import org.wso2.carbon.utils.ConfigurationContextService;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -51,7 +51,7 @@ import java.util.Map;
 /**
  * This class represents the repository which is used to hold the data sources.
  */
-public class DataSourceRepository implements GroupEventListener {
+public class DataSourceRepository {
 	
 	private static Log log = LogFactory.getLog(DataSourceRepository.class);
 	
@@ -64,9 +64,7 @@ public class DataSourceRepository implements GroupEventListener {
 	private Marshaller dsmMarshaller;
 	
 	private Unmarshaller dsmUnmarshaller;
-	
-	private Group syncGroup;
-	
+		
 	public DataSourceRepository(int tenantId) throws DataSourceException {
 		this.tenantId = tenantId;
 		this.dataSources = new HashMap<String, CarbonDataSource>();
@@ -91,30 +89,7 @@ public class DataSourceRepository implements GroupEventListener {
 	 * @throws DataSourceException
 	 */
 	public void initRepository() throws DataSourceException {
-		this.initSyncGroup();
 		this.refreshAllUserDataSources();
-	}
-	
-	private Group getSyncGroup() {
-		return syncGroup;
-	}
-	
-	private void initSyncGroup() throws DataSourceException {
-		if (!DataSourceServiceComponent.getCoordinationService().isEnabled()) {
-			return;
-		}
-		try {
-			SuperTenantCarbonContext.startTenantFlow();
-			SuperTenantCarbonContext.getCurrentContext().setTenantId(this.getTenantId());
-			this.syncGroup = DataSourceServiceComponent.getCoordinationService().createGroup(
-		    		DataSourceConstants.DATASOURCES_SYNC_GROUP_NAME);
-			this.syncGroup.setGroupEventListener(this);
-		} catch (Exception e) {
-			throw new DataSourceException("Error in creating data source sync group: " + 
-		            e.getMessage(), e);
-		} finally {
-			SuperTenantCarbonContext.endTenantFlow();
-		}
 	}
 	
 	private synchronized Registry getRegistry() throws DataSourceException {
@@ -401,17 +376,32 @@ public class DataSourceRepository implements GroupEventListener {
 		this.dataSources.put(cds.getDSMInfo().getName(), cds);
 	}
 	
+
 	private void notifyClusterDSChange(String dsName) throws DataSourceException {
-		try {
-			if (log.isDebugEnabled()) {
-				log.debug("Notifying cluster ds change: " + dsName + " - " + this.getSyncGroup());
+		if (log.isDebugEnabled()) {
+			log.debug("Notifying cluster DS change: " + dsName);
+		}
+		ConfigurationContextService configCtxService = DataSourceServiceComponent.
+		        getConfigContextService();
+		if (configCtxService == null) {
+			throw new DataSourceException("ConfigurationContextService not available " +
+					"for notifying the cluster");
+		}
+		ConfigurationContext configCtx = configCtxService.getServerConfigContext();
+		ClusteringAgent agent = configCtx.getAxisConfiguration().getClusteringAgent();
+		if (log.isDebugEnabled()) {
+			log.debug("Clustering Agent: " + agent);
+		}
+		if (agent != null) {
+			DataSourceStatMessage msg = new DataSourceStatMessage();
+			msg.setTenantId(this.getTenantId());
+			msg.setDsName(dsName);
+			try {
+				agent.sendMessage(msg, true);
+			} catch (ClusteringFault e) {
+				throw new DataSourceException("Error in sending out cluster message: " + 
+						e.getMessage(), e);
 			}
-			if (this.getSyncGroup() != null) {
-			    this.getSyncGroup().broadcast(dsName.getBytes());
-			}
-		} catch (CoordinationException e) {
-			throw new DataSourceException(
-					"Error in sending data source sync message to cluster: " + e.getMessage(), e);
 		}
 	}
 	
@@ -528,36 +518,6 @@ public class DataSourceRepository implements GroupEventListener {
 			throw e;
 		}
 		
-	}
-	@Override
-	public void onGroupMessage(byte[] msg) {
-		try {
-			if (log.isDebugEnabled()) {
-				log.debug("Group message received: " + new String(msg));
-			}
-		    this.refreshUserDataSource(new String(msg));
-		} catch (Exception e) {
-			log.error("Error in processing received data source sync message: " +
-		            e.getMessage(), e);
-		}
-	}
-
-	@Override
-	public void onLeaderChange(String leaderId) {
-	}
-
-	@Override
-	public void onMemberArrival(String memberId) {
-	}
-
-	@Override
-	public void onMemberDeparture(String memberId) {
-	}
-
-	@Override
-	public byte[] onPeerMessage(byte[] arg0) throws CoordinationException {
-		throw new CoordinationException("Data sources does not handle group RPC",
-				ExceptionCode.GENERIC_ERROR);
 	}
 
 }
