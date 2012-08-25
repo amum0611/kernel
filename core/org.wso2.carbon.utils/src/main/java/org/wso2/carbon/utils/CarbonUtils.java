@@ -960,9 +960,8 @@ public class CarbonUtils {
         // set cApp deployer class, car extension
         appDeployerConfig.setClassStr("org.wso2.carbon.application.deployer.CappAxis2Deployer");
         appDeployerConfig.setExtension("car");
-        // setting the deployment direcotry as <Tenant Temp Dir>/carbonapps
-        String appsRepo = CarbonUtils.getTenantTmpDirPath(axisConfig) +
-                File.separator + "carbonapps";
+        // setting the deployment direcotry as CARBON_HOME/repository/carbonapps/<tenant>
+        String appsRepo = CarbonUtils.getCAppDeploymentDirPath(axisConfig);
         appDeployerConfig.setDirectory(appsRepo);
 
         // create a new configs array by including the dep deployer cofig
@@ -970,5 +969,31 @@ public class CarbonUtils {
         System.arraycopy(originalConfigs, 0, newDepConfigs, 0, originalConfigs.length);
         newDepConfigs[newDepConfigs.length - 1] = appDeployerConfig;
         return newDepConfigs;
+    }
+
+    /**
+     * This is method returns deployment dir for carbon apps for current tenant.
+     *
+     * @param axisConfig - AxisConfiguration instance of the current tenant
+     * @return - absolute path to tenant capp deployment space
+     */
+    public static String getCAppDeploymentDirPath(AxisConfiguration axisConfig) {
+        String tenantCAppDirPath = null;
+        String cAppDirPath = System.getProperty("carbon.home") + File.separator +
+                             "repository" + File.separator + "carbonapps";
+        CarbonContextHolder carbonCtxHolder = CarbonContextHolder
+                .getCurrentCarbonContextHolder(axisConfig);
+        if (carbonCtxHolder != null) {
+            int tenantId = carbonCtxHolder.getTenantId();
+            // use 0 for super tenant
+            if (tenantId == -1 || tenantId == MultitenantConstants.SUPER_TENANT_ID) {
+                tenantId = 0;
+            }
+            String tmpPath = cAppDirPath +  File.separator + tenantId;
+            if (createDir(tmpPath)) {
+                tenantCAppDirPath = tmpPath;
+            }
+        }
+        return tenantCAppDirPath;
     }
 }
