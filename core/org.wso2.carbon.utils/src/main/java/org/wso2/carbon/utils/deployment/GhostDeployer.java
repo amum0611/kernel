@@ -179,6 +179,10 @@ public class GhostDeployer extends AbstractDeployer {
         String extension = getFileExtension(deployementFile);
         Deployer deployer = getDeployer(calculateDirectoryName(fileName), extension);
         if (deployer != null) {
+            if((fileName.contains("servicemetafiles") || fileName.contains("modulemetafiles") &&
+                log.isDebugEnabled())){
+                log.debug("Undeploying file : " + fileName);
+            }
             log.info("Undeploying file : " + fileName);
             deployer.undeploy(fileName);
         }
