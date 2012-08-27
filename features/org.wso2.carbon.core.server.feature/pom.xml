@@ -61,8 +61,6 @@
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.feature.mgt.services</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.cluster.mgt.core</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.coordination.common</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.coordination.core</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.ndatasource.common</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.ndatasource.core</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.ndatasource.rdbms</bundleDef>
