@@ -10,6 +10,7 @@ import org.apache.axis2.description.AxisModule;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.AxisServiceGroup;
 import org.apache.axis2.engine.AxisConfiguration;
+import org.apache.axis2.engine.AxisEvent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.Resources;
@@ -84,11 +85,16 @@ public class PersistenceMetaDataDeployer extends AbstractDeployer {
 
             try {
                 serviceGroupPM.handleExistingServiceGroupInit(serviceGroup);
+                AxisEvent serviceGroupUpdateEvent = new AxisEvent(AxisEvent.SERVICE_DEPLOY, serviceGroup);
+                axisConfig.notifyObservers(serviceGroupUpdateEvent, serviceGroup);
                 for (Iterator itr = serviceGroup.getServices(); itr.hasNext(); ) {
                     AxisService axisService = (AxisService) itr.next();
                     OMElement serviceEle = persistenceFactory.getServicePM().getService(axisService);
                     if (serviceEle != null) {
                         servicePM.handleExistingServiceInit(axisService);
+                        AxisEvent serviceUpdateEvent = new AxisEvent(AxisEvent.SERVICE_DEPLOY,
+                                                             axisService);
+                        axisConfig.notifyObservers(serviceUpdateEvent ,axisService);
                     }
                 }
 
@@ -127,6 +133,8 @@ public class PersistenceMetaDataDeployer extends AbstractDeployer {
                     return;
                 }
                 mpm.handleExistingModuleInit(moduleEle, module);
+                AxisEvent moduleUpdateEvent = new AxisEvent(AxisEvent.MODULE_DEPLOY, null);
+                axisConfig.notifyObservers(moduleUpdateEvent, module);
             } catch (PersistenceDataNotFoundException e) {
                 log.error(e.getMessage(), e);
             } catch (Exception e) {
