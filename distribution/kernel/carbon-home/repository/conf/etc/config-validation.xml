@@ -29,7 +29,8 @@
 		<Parameter id="os7">Windows 7</Parameter>
 		<Parameter id="os8">Mac OS X</Parameter>
 		<Parameter id="os9">Windows Server 2008</Parameter>
-		<Parameter id="os10">AIX</Parameter>
+		<Parameter id="os10">Windows Server 2008 R2</Parameter>
+		<Parameter id="os11">AIX</Parameter>
 	</Validator>
 </Configuration>
 
