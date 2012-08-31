@@ -45,6 +45,8 @@ import java.util.List;
  * cardinality="0..n" policy="dynamic"  bind="addServerShutdownHandler" unbind="removeServerShutdownHandler"
  * @scr.reference name="serverRestartHandler" interface="org.wso2.carbon.core.ServerRestartHandler"
  * cardinality="0..n" policy="dynamic"  bind="addServerRestartHandler" unbind="removeServerRestartHandler"
+ * @scr.reference name="serverStartupHandler" interface="org.wso2.carbon.core.ServerStartupHandler"
+ * cardinality="0..n" policy="dynamic"  bind="addServerStartupHandler" unbind="removeServerStartupHandler" 
  * @scr.reference name="discoveryService" interface="org.wso2.carbon.base.DiscoveryService"
   * cardinality="0..1" policy="dynamic"  bind="setDiscoveryService" unbind="unsetDiscoveryService"
   */
@@ -55,7 +57,13 @@ public class CarbonCoreServiceComponent {
     private CarbonCoreDataHolder dataHolder = CarbonCoreDataHolder.getInstance();
     
     private static List<ServerShutdownHandler> shutdownHandlers = new ArrayList<ServerShutdownHandler>();
+    
     private static List<ServerRestartHandler> restartHandlers = new ArrayList<ServerRestartHandler>();
+    
+    private static List<ServerStartupHandler> startupHandlers = new ArrayList<ServerStartupHandler>();
+    
+    private static boolean serverStarted;
+    
     private CarbonServerManager carbonServerManager;
 
     protected void activate(ComponentContext ctxt) {
@@ -81,6 +89,7 @@ public class CarbonCoreServiceComponent {
         } catch (Exception e) {
             log.debug("Error while retrieving serverConfiguration instance", e);
         }
+        serverStarted = false;
         log.debug("Carbon Core bundle is deactivated ");
     }
 
@@ -125,7 +134,7 @@ public class CarbonCoreServiceComponent {
     }
 
     protected void addServerShutdownHandler(ServerShutdownHandler shutdownHandler) {
-        shutdownHandlers.add(shutdownHandler);
+    	shutdownHandlers.add(shutdownHandler);
     }
 
     protected void removeServerShutdownHandler(ServerShutdownHandler shutdownHandler) {
@@ -139,6 +148,20 @@ public class CarbonCoreServiceComponent {
     protected void removeServerRestartHandler(ServerRestartHandler restartHandler) {
         restartHandlers.remove(restartHandler);
     }
+    
+    protected void addServerStartupHandler(ServerStartupHandler startupHandler) {
+    	synchronized (this.getClass()) {
+    		if (serverStarted) {
+    		    startupHandler.invoke();
+    		} else {
+    			startupHandlers.add(startupHandler);
+    		}
+		}        
+    }
+
+    protected void removeServerStartupHandler(ServerStartupHandler startupHandler) {
+    	startupHandlers.remove(startupHandler);
+    }
 
     public static void shutdown() {
         for (ServerShutdownHandler shutdownHandler : shutdownHandlers) {
@@ -150,5 +173,13 @@ public class CarbonCoreServiceComponent {
         for (ServerRestartHandler restartHandler : restartHandlers) {
             restartHandler.invoke();
         }
+    }
+    
+    public static synchronized void startup() {
+        for (ServerStartupHandler startupHandler : startupHandlers) {
+        	startupHandler.invoke();
+        }
+        startupHandlers.clear();
+        serverStarted = true;
     }
 }

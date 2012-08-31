@@ -933,9 +933,5 @@ public final class CarbonServerManager implements Controllable {
         artifactsCleanupExec.shutdownNow();
     }
 
-    public static void addCarbonStartupListener(CarbonStartupListener listener) {
-        StartupFinalizerServiceComponent.addCarbonStartupListener(listener);
-    }
-
 }
 
