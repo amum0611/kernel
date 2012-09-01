@@ -1653,18 +1653,17 @@ function validateEmpty(fldname) {
 
 function isEmpty(fldname) {
     var fld = document.getElementsByName(fldname)[0];
-    var value = fld.value;
-    if (value.length == 0) {
+    if (fld.value.length == 0) {
         return true;
     }
-
-    value = value.replace(/^\s+/, "");
-    if (value.length == 0) {
+    fld.value = fld.value.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    if (fld.value.length == 0) {
         return true;
     }
 
     return false;
 }
+
 
 function validateText(e) {
     var key = String.fromCharCode(getkey(e));
