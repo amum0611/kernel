@@ -113,6 +113,7 @@ public class GhostDeployer extends AbstractDeployer {
                     absoluteFilePath);
             return;
         }
+        deployer.setDirectory(directoryName);
         deploymentFileData.setDeployer(deployer);
 
         // Check the ghost file
@@ -175,6 +176,7 @@ public class GhostDeployer extends AbstractDeployer {
         }
         removeFileData(fileName);
         // Find the correct deployer and call the undeploy method
+
         File deployementFile = new File(fileName);
         String extension = getFileExtension(deployementFile);
         Deployer deployer = getDeployer(calculateDirectoryName(fileName), extension);
