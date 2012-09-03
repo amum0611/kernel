@@ -955,4 +955,12 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
     public abstract void doUpdateRoleListOfUser(String userName, String[] deletedRoles,
                                                 String[] newRoles) throws UserStoreException;
 
+    /**
+     * Getter method for claim manager property specifically to be used in the implementations of
+     * UserOperationEventListener implementations
+     * @return
+     */
+    public ClaimManager getClaimManager() {
+        return claimManager;
+    }
 }

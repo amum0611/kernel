@@ -19,6 +19,7 @@
 
 package org.wso2.carbon.user.core.common;
 
+import org.wso2.carbon.user.core.Permission;
 import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.UserStoreManager;
 import org.wso2.carbon.user.core.listener.UserOperationEventListener;
@@ -141,6 +142,128 @@ public class AbstractUserOperationEventListener implements UserOperationEventLis
     @Override
     public boolean doPostDeleteUserClaimValue(String userName, UserStoreManager userStoreManager)
                                                                     throws UserStoreException {
+        return true;
+    }
+
+    /**
+     * Defines any additional actions before adding a role.
+     *
+     * @param roleName
+     * @param userList
+     * @param permissions
+     * @param userStoreManager
+     * @return
+     * @throws org.wso2.carbon.user.core.UserStoreException
+     *
+     */
+    public boolean doPreAddRole(String roleName, String[] userList, Permission[] permissions,
+                                UserStoreManager userStoreManager) throws UserStoreException {
+        return true;
+    }
+
+    /**
+     * Defines any additional actions after adding a role.
+     *
+     * @param roleName
+     * @param userList
+     * @param permissions
+     * @param userStoreManager
+     * @return
+     * @throws org.wso2.carbon.user.core.UserStoreException
+     *
+     */
+    public boolean doPostAddRole(String roleName, String[] userList, Permission[] permissions,
+                                 UserStoreManager userStoreManager) throws UserStoreException {
+        return true;
+    }
+
+    /**
+     * Defines any additional actions before deleting a role.
+     *
+     * @param roleName
+     * @param userStoreManager
+     * @return
+     * @throws org.wso2.carbon.user.core.UserStoreException
+     *
+     */
+    public boolean doPreDeleteRole(String roleName, UserStoreManager userStoreManager)
+            throws UserStoreException {
+        return true;
+    }
+
+    /**
+     * Defines any additional actions before deleting a role.
+     *
+     * @param roleName
+     * @param userStoreManager
+     * @return
+     * @throws org.wso2.carbon.user.core.UserStoreException
+     *
+     */
+    public boolean doPostDeleteRole(String roleName, UserStoreManager userStoreManager)
+            throws UserStoreException {
+        return true;
+    }
+
+    /**
+     * Defines any additional actions before updating a role name.
+     *
+     * @param roleName
+     * @param newRoleName
+     * @return
+     * @throws org.wso2.carbon.user.core.UserStoreException
+     *
+     */
+    public boolean doPreUpdateRoleName(String roleName, String newRoleName,
+                                       UserStoreManager userStoreManager)
+            throws UserStoreException {
+        return true;
+    }
+
+    /**
+     * Defines any additional actions after updating a role name.
+     *
+     * @param roleName
+     * @param newRoleName
+     * @return
+     * @throws org.wso2.carbon.user.core.UserStoreException
+     *
+     */
+    public boolean doPostUpdateRoleName(String roleName, String newRoleName,
+                                        UserStoreManager userStoreManager)
+            throws UserStoreException {
+        return true;
+    }
+
+    /**
+     * Defines any additional actions before updating a role.
+     *
+     * @param roleName
+     * @param deletedUsers
+     * @param newUsers
+     * @return
+     * @throws org.wso2.carbon.user.core.UserStoreException
+     *
+     */
+    public boolean doPreUpdateUserListOfRole(String roleName, String[] deletedUsers,
+                                             String[] newUsers, UserStoreManager userStoreManager)
+            throws UserStoreException {
+        return true;
+    }
+
+    /**
+     * Defines any additional actions after updating a role.
+     *
+     * @param roleName
+     * @param deletedUsers
+     * @param newUsers
+     * @return
+     * @throws org.wso2.carbon.user.core.UserStoreException
+     *
+     */
+    public boolean doPostUpdateUserListOfRole(String roleName, String[] deletedUsers,
+                                              String[] newUsers, UserStoreManager userStoreManager)
+            throws UserStoreException {
         return true;
     }
 }
