@@ -183,7 +183,10 @@ public class DataSourceRepository {
 		JNDIConfig jndiConfig = dsmInfo.getJndiConfig();
 		if (jndiConfig != null) {
 			isDataSourceFactoryReference = dsmInfo.getJndiConfig().isUseDataSourceFactory();
-		} 
+		}
+		/* sets the current data source's (tenantId + ":" + name) as a thread local value 
+		 * so it can be read by data source readers */
+		DataSourceUtils.setCurrentDataSourceId(this.getTenantId() + ":" + dsmInfo.getName());
 		return dsReader.createDataSource(DataSourceUtils.elementToString(
 					(Element) dsmInfo.getDefinition().getDsXMLConfiguration()), isDataSourceFactoryReference);
 	}

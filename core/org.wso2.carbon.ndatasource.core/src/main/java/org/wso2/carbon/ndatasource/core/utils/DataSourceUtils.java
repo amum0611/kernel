@@ -60,6 +60,20 @@ public class DataSourceUtils {
 	
 	private static SecretResolver secretResolver;
 	
+	private static ThreadLocal<String> dataSourceId = new ThreadLocal<String>() {
+        protected synchronized String initialValue() {
+            return null;
+        }
+    };
+    
+    public static void setCurrentDataSourceId(String dsId) {
+    	dataSourceId.set(dsId);
+    }
+    
+    public static String getCurrentDataSourceId() {
+    	return dataSourceId.get();
+    }
+	
 	public static Registry getConfRegistryForTenant(int tenantId) throws DataSourceException {
 		try {
 			/* be super tenant to retrieve the registry of a given tenant id */
