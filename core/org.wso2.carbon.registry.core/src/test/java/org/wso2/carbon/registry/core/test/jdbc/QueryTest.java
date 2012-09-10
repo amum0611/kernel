@@ -288,4 +288,59 @@ public class QueryTest extends BaseTestCase {
         String[] paths = (String[])result.getContent();
         assertTrue("Should return all the resources", paths.length >=3);
     }
+
+    public void testSQLInjection1() throws Exception{
+        String sql1 = "DROP TABLE REG_RESOURCE";
+        Resource q1 = systemRegistry.newResource();
+        q1.setContent(sql1);
+        q1.setMediaType(RegistryConstants.SQL_QUERY_MEDIA_TYPE);
+        q1.addProperty(RegistryConstants.RESULT_TYPE_PROPERTY_NAME,
+                RegistryConstants.RESOURCES_RESULT_TYPE);
+        systemRegistry.put("/qs/q1", q1);
+
+        Map parameters = new HashMap();
+        try{
+            registry.executeQuery("/qs/q1", parameters);
+            fail("Invalid SQL query is passed to executeQuery.Query is : "+sql1);
+        }catch(RegistryException e){
+            assertNotNull(e.getMessage(),e);
+        }
+    }
+
+    public void testSQLInjection2() throws Exception{
+        String sql1 = "SELECT 1 as REG_PATH_ID, count(1) as REG_NAME FROM userstore.UM_USER t /* WHERE */ " +
+                "WHERE t.UM_USER_NAME = 'admin' AND NOT 'a' = CONCAT('b', ?)";
+        Resource q1 = systemRegistry.newResource();
+        q1.setContent(sql1);
+        q1.setMediaType(RegistryConstants.SQL_QUERY_MEDIA_TYPE);
+        q1.addProperty(RegistryConstants.RESULT_TYPE_PROPERTY_NAME,
+                RegistryConstants.RESOURCES_RESULT_TYPE);
+        systemRegistry.put("/qs/q2", q1);
+
+        Map parameters = new HashMap();
+        try{
+            registry.executeQuery("/qs/q2", parameters);
+            fail("Invalid SQL query is passed to executeQuery.Query is : "+sql1);
+        }catch(RegistryException e){
+            assertNotNull(e.getMessage(),e);
+        }
+    }
+
+    public void testSQLInjection3() throws Exception{
+        String sql1 = "SELECT * FROM REG_RESOURCE WHERE id = 10; DROP REG_RESOURCE--";
+        Resource q1 = systemRegistry.newResource();
+        q1.setContent(sql1);
+        q1.setMediaType(RegistryConstants.SQL_QUERY_MEDIA_TYPE);
+        q1.addProperty(RegistryConstants.RESULT_TYPE_PROPERTY_NAME,
+                RegistryConstants.RESOURCES_RESULT_TYPE);
+        systemRegistry.put("/qs/q3", q1);
+
+        Map parameters = new HashMap();
+        try{
+            registry.executeQuery("/qs/q3", parameters);
+            fail("Invalid SQL query is passed to executeQuery.Query is : "+sql1);
+        }catch(RegistryException e){
+            assertNotNull(e.getMessage(),e);
+        }
+    }
 }

@@ -40,6 +40,14 @@ public class TenantAwareSQLTransformer {
      * @throws RegistryException throws if the transformation failed.
      */
     public TenantAwareSQLTransformer(String sqlQuery) throws RegistryException {
+        //parse SQL for possible injected SQLs
+        try{
+            sanityCheckSQL(sqlQuery);
+        }catch (RegistryException e){
+            throw new RegistryException("SQL query provided failed validity check. Reason for failure is : "+
+                    e.getMessage() + ".SQL Query received is : "+sqlQuery );
+        }
+
         String sqlQueryUCase = sqlQuery.toUpperCase();
         parameterCount = 0;
         int endOfFromIndex = sqlQueryUCase.indexOf("FROM");
@@ -156,6 +164,53 @@ public class TenantAwareSQLTransformer {
             int endOfWhereIndex = startOfWhereIndex + 5;
             transformedQuery = sqlQuery.substring(0, endOfWhereIndex) + " (" + additionalWherePart +
                     ") AND " + sqlQuery.substring(endOfWhereIndex);
+        }
+    }
+
+    /**
+     * Parse sqlQuery for possible malicious injections
+     * @param sqlQuery
+     * @return
+     */
+    private void sanityCheckSQL(String sqlQuery) throws RegistryException{
+        //size check
+        if(sqlQuery.trim().length() == 0){
+            throw new RegistryException("SQL String is empty");
+        }
+
+        String sqlQueryUCase = sqlQuery.toUpperCase();
+        //constants for search criteria
+        //M : MySQL
+        //S : SQL Server
+        //O : Oracle
+        //P : PostgreSQL
+        //G : Global (applies to app databases)
+
+        //comments
+        final String MS_COMMENT_START = "/*";
+        final String MS_COMMENT_END = "*/";
+        final String MS_COMMENT1_START = "--";
+
+        //riskier functions
+        final String MO_FUNC_LOAD_FILE = "LOAD_FILE";
+
+        //keywords and symbols
+        final String G_SQL_START = "SELECT";
+        final String G_SEMICOLON = ";";
+        final String G_DOUBLE_SLASH = "//";
+        final String G_HASH = "#";
+
+        //All queries should start with SELECT. We do not allow EXEC,CALL
+        if (! sqlQueryUCase.startsWith(G_SQL_START)){
+            throw new RegistryException("SQL query does not start with "+G_SQL_START);
+        }
+
+        for (String s : new String[] {MS_COMMENT_START, MS_COMMENT_END, MS_COMMENT1_START,
+                MO_FUNC_LOAD_FILE,G_SEMICOLON, G_DOUBLE_SLASH,G_HASH}) {
+            int index = sqlQueryUCase.indexOf(s);
+            if (index > 0 ){
+                throw new RegistryException("SQL query contains "+s);
+            }
         }
     }
 
