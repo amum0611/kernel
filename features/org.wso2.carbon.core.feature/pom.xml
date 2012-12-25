@@ -71,7 +71,7 @@
                             <includedFeatures>
                                 <includedFeatureDef>org.wso2.carbon:org.wso2.carbon.core.common.feature:5.0.0-SNAPSHOT</includedFeatureDef>
                                 <includedFeatureDef>org.wso2.carbon:org.wso2.carbon.core.server.feature:5.0.0-SNAPSHOT</includedFeatureDef>
-                                <includedFeatureDef>org.wso2.carbon:org.wso2.carbon.core.ui.feature:5.0.0-SNAPSHOT</includedFeatureDef>                                
+                                <includedFeatureDef>org.wso2.carbon:org.wso2.carbon.core.ui.feature:5.0.0-SNAPSHOT</includedFeatureDef>
                             </includedFeatures>
                         </configuration>
                     </execution>

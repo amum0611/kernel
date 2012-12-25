@@ -43,12 +43,23 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <!--module>dependencies</module-->
-                <!--module>service-stubs</module-->
-                <module>parent</module>
-                <module>core</module>
+                <module>bundles/admin/org.wso2.carbon.core.services</module>
+                <module>bundles/kernel</module>
+                <module>bundles/registry/org.wso2.carbon.registry.api</module>
+                <module>bundles/registry/org.wso2.carbon.registry.core</module>
+                <module>bundles/registry/org.wso2.carbon.registry.server</module>
+                <module>bundles/registry/org.wso2.carbon.registry.xboot</module>
+                <module>bundles/user-mgt/org.wso2.carbon.user.api</module>
+                <module>bundles/user-mgt/org.wso2.carbon.user.core</module>
+                <module>bundles/user-mgt/org.wso2.carbon.user.mgt</module>
+                <module>bundles/user-mgt/org.wso2.carbon.user.mgt.common</module>
+                <module>bundles/ui/org.wso2.carbon.authenticator.proxy</module>
+                <module>bundles/ui/org.wso2.carbon.i18n</module>
+                <module>bundles/ui/org.wso2.carbon.ui</module>
+                <module>bundles/ui/org.wso2.carbon.ui.menu</module>
+                <module>bundles/ui/org.wso2.carbon.user.mgt.ui</module>
                 <module>features</module>
-                <module>distribution</module>
+                <module>dist</module>
             </modules>
         </profile>
         <profile>

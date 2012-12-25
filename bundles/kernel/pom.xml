@@ -27,7 +27,8 @@
     </parent>
     
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>kernel</artifactId>
+    <groupId>org.wso2.carbon</groupId>
+    <artifactId>org.wso2.carbon.kernel</artifactId>
     
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - Kernel</name>
@@ -214,7 +215,8 @@
                 <configuration>
                     <instructions>
                         <Bundle-Vendor>WSO2 Inc</Bundle-Vendor>
-                        <Bundle-SymbolicName>org.wso2.carbon.core</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Bundle-Activator>org.wso2.carbon.internal.KernelActivator</Bundle-Activator>
                         <Private-Package>
                             org.wso2.carbon.core.internal,
@@ -237,18 +239,18 @@
                             !org.wso2.carbon.tomcat.jndi,
                             !org.wso2.carbon.tomcat.ext.internal,
                             !org.wso2.carbon.context.internal,
-                            org.wso2.carbon.base.*; version=4.0.4,
-                            org.wso2.carbon.caching.*; version=4.0.4,
-                            org.wso2.carbon.context.*; version=4.0.4,
-                            org.wso2.carbon.coordination.*; version=4.0.4,
-                            org.wso2.carbon.core.*; version=4.0.4,
-                            org.wso2.carbon.logging.*; version=4.0.4,
-                            org.wso2.carbon.ndatasource.*; version=4.0.4,
-                            org.wso2.carbon.osgi.*; version=4.0.4,
-                            org.wso2.carbon.queuing.*; version=4.0.4,
-                            org.wso2.carbon.securevault.*; version=4.0.4,
-                            org.wso2.carbon.tomcat.*; version=4.0.4,
-                            org.wso2.carbon.utils.*; version=4.0.4
+                            org.wso2.carbon.base.*; version=5.0.0,
+                            org.wso2.carbon.caching.*; version=5.0.0,
+                            org.wso2.carbon.context.*; version=5.0.0,
+                            org.wso2.carbon.coordination.*; version=5.0.0,
+                            org.wso2.carbon.core.*; version=5.0.0,
+                            org.wso2.carbon.logging.*; version=5.0.0,
+                            org.wso2.carbon.ndatasource.*; version=5.0.0,
+                            org.wso2.carbon.osgi.*; version=5.0.0,
+                            org.wso2.carbon.queuing.*; version=5.0.0,
+                            org.wso2.carbon.securevault.*; version=5.0.0,
+                            org.wso2.carbon.tomcat.*; version=5.0.0,
+                            org.wso2.carbon.utils.*; version=5.0.0
                         </Export-Package>
                         <Import-Package>
                             !javax.xml.namespace,

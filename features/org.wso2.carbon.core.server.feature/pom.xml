@@ -57,11 +57,7 @@
                             </adviceFile>                               
                             <bundles>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.core.services:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin:5.0.0-SNAPSHOT</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.server:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.feature.mgt.services:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.cluster.mgt.core:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt:5.0.0-SNAPSHOT</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt:5.0.0-SNAPSHOT</bundleDef>
                                 <bundleDef>org.apache.ws.security.wso2:wss4j:1.5.11.wso2v5:5.0.0-SNAPSHOT</bundleDef>
                                 <!--<bundleDef>org.apache.poi.wso2:poi-ooxml:${orbit.version.poi}</bundleDef>-->
