@@ -75,13 +75,13 @@
     <files>
         <!--Copy the version service-->
         <file>
-            <source>../../core/org.wso2.carbon.core/target/Version.aar</source>
+            <source>../../bundles/kernel/target/Version.aar</source>
             <outputDirectory>repository/deployment/server/axis2services</outputDirectory>
             <fileMode>644</fileMode>
         </file>
 	<!--Copy the echo service-->
         <file>
-            <source>../../core/org.wso2.carbon.core/target/Echo.aar</source>
+            <source>../../bundles/kernel/target/Echo.aar</source>
             <outputDirectory>repository/deployment/server/axis2services</outputDirectory>
             <fileMode>644</fileMode>
         </file>
