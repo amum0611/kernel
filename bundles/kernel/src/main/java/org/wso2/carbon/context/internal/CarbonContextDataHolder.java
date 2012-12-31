@@ -773,13 +773,11 @@ public final class CarbonContextDataHolder {
             }
         }
 
-        @Override
         public void initialize(String carbonHome) {
             // TODO Auto-generated method stub
 
         }
 
-        @Override
         public String getDefaultCacheName() {
             // TODO Auto-generated method stub
             return null;

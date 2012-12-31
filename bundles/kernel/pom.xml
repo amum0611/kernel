@@ -36,6 +36,14 @@
     <url>http://wso2.org</url>
 
     <dependencies>
+            <dependency>
+                <groupId>org.eclipse.equinox</groupId>
+                <artifactId>org.apache.log4j</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+            </dependency>
         <dependency>
             <groupId>org.eclipse.osgi</groupId>
             <artifactId>org.eclipse.osgi</artifactId>
@@ -180,6 +188,12 @@
             <version>1.5.0.wso2v2</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>addressing</artifactId>
+            <type>mar</type>
+            <version>1.6.1-wso2v6</version>
+        </dependency>
+        <dependency>
             <groupId>backport-util-concurrent.wso2</groupId>
             <artifactId>backport-util-concurrent</artifactId>
             <version>3.1.0.wso2v1</version>
@@ -219,6 +233,7 @@
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Bundle-Activator>org.wso2.carbon.internal.KernelActivator</Bundle-Activator>
                         <Private-Package>
+                            org.wso2.carbon.internal,
                             org.wso2.carbon.core.internal,
                             org.wso2.carbon.application.deployer.internal,
                             org.wso2.carbon.ndatasource.core.internal,
@@ -239,10 +254,15 @@
                             !org.wso2.carbon.tomcat.jndi,
                             !org.wso2.carbon.tomcat.ext.internal,
                             !org.wso2.carbon.context.internal,
+                            org.apache.log4j.*;-split-package:=merge-last,
+                            org.apache.commons.logging.*; version="1.1.1",
+                            org.apache.axis2.handlers.addressing.*,
+                            org.wso2.carbon,
+                            org.wso2.carbon.core,
+                            org.wso2.carbon.application.deployer.*,
                             org.wso2.carbon.base.*; version=5.0.0,
                             org.wso2.carbon.caching.*; version=5.0.0,
                             org.wso2.carbon.context.*; version=5.0.0,
-                            org.wso2.carbon.coordination.*; version=5.0.0,
                             org.wso2.carbon.core.*; version=5.0.0,
                             org.wso2.carbon.logging.*; version=5.0.0,
                             org.wso2.carbon.ndatasource.*; version=5.0.0,
@@ -253,51 +273,16 @@
                             org.wso2.carbon.utils.*; version=5.0.0
                         </Export-Package>
                         <Import-Package>
-                            !javax.xml.namespace,
-                            !org.apache.log4j.*,
-                            !org.apache.commons.logging.*,
-                            !org.wso2.carbon.logging.*,
                             !org.apache.axis2.handlers.addressing.*,
-                            !org.wso2.carbon.caching.core,
-                            !org.wso2.carbon.utils.*,
-                            !org.wso2.carbon.context,
-                            !org.wso2.carbon,
-                            javax.servlet.*,
-                            javax.xml.namespace; version=0.0.0,
-                            javax.servlet; version=2.4.0,
-                            javax.servlet.http; version=2.4.0,
-                            javax.xml.stream.*; version="1.0.1",
-                            javax.activation.*;version="[0.0.0, 1.0.0)",
-                            org.apache.axis2.*; version="${imp.pkg.version.axis2}",
-                            org.apache.axiom.*; version="${imp.pkg.version.axiom}",
-                            org.apache.axiom.om.*,
-                            org.apache.neethi.*; version="${neethi.osgi.version.range}",
-                            javax.xml.namespace; version=0.0.0,
-                            org.wso2.carbon.registry.core.service,
-                            org.wso2.carbon.user.core.*; version=0.0.0,
-                            org.apache.commons.logging.*,
-                            org.osgi.framework.*,
-                            org.wso2.securevault.*,
-                            org.wso2.carbon.securevault.*,
-                            org.wso2.carbon.logging.*,
-                            javax.xml.stream.*; version="1.0.1",
-                            org.infinispan.*; version="1.0.0",
-                            org.wso2.carbon.registry.core.service,
-                            org.wso2.carbon.user.core.*; version=0.0.0,
-                            !org.wso2.carbon.core.common.*,
-                            org.apache.tomcat.*;version="[1.7.0,2.0.0)",
-                            org.apache.catalina.*;version="[1.7.0,2.0.0)",
-                            org.apache.naming.*;version="[1.7.0,2.0.0)",
-                            org.wso2.carbon.tomcat.ext.*,
-                            org.apache.tomcat.*,
                             *;resolution:=optional
                         </Import-Package>
                         <Embed-Dependency>
-                            bcprov-jdk15|naming-factory|naming-resources|commons-collections;scope=compile|runtime;inline=false
+                            bcprov-jdk15|naming-factory|naming-resources|commons-collections;scope=compile|runtime;inline=false,addressing;inline=true
                         </Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Axis2Deployer>PersistenceMetaDataDeployer</Axis2Deployer>
+                        <Axis2Module>${project.artifactId}-${project.version}</Axis2Module>
                     </instructions>
                 </configuration>
             </plugin>
