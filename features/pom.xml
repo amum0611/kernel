@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-parent</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
 	<relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -31,8 +31,13 @@
     <packaging>pom</packaging>
     <name>WSO2 Carbon - Features Parent</name>
     <url>http://wso2.org</url>
-
+    <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.kernel</artifactId>
+                <version>5.0.0-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.core.services</artifactId>
@@ -113,10 +118,6 @@
                 <artifactId>org.wso2.carbon.cluster.mgt.core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-	    <dependency>
-                <groupId>antlr.wso2</groupId>
-                <artifactId>antlr</artifactId>
-            </dependency>
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.user.core</artifactId>
@@ -187,26 +188,6 @@
                 <artifactId>org.wso2.carbon.user.api</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>net.sf.jsr107cache.wso2</groupId>
-                <artifactId>jsr107cache</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.infinispan.wso2</groupId>
-                <artifactId>infinispan-core</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.marshalling.wso2</groupId>
-                <artifactId>marshalling</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.logging.wso2</groupId>
-                <artifactId>jboss-logging</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.jgroups.wso2</groupId>
-                <artifactId>jgroups</artifactId>
-            </dependency>
 	    <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.feature.mgt.ui</artifactId>
@@ -231,18 +212,6 @@
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.addressing</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.axis2.wso2</groupId>
-                <artifactId>axis2-json</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jettison.wso2</groupId>
-                <artifactId>jettison</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>javax.servlet</artifactId>
             </dependency>
             <dependency>
                 <groupId>org.apache.tomcat.wso2</groupId>
@@ -276,6 +245,16 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.coordination.common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.coordination.core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.ndatasource.common</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -300,6 +279,7 @@
                 <version>${jdbc-pool.version}</version>
             </dependency>
         </dependencies>
+    </dependencyManagement>
 
     <modules>
         <module>org.wso2.carbon.core.common.feature</module>

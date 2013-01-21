@@ -1,5 +1,0 @@
-<featureSets>
-    <featureSet artifactType="service/dataservice">
-        <feature id="org.wso2.carbon.dataservices.server.feature.group" version="[4.0.0, 4.1.0)"/>
-    </featureSet>
-</featureSets>

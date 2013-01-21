@@ -15,14 +15,15 @@
  ~ limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/5.0.0-SNAPSHOT"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/5.0.0-SNAPSHOT http://maven.apache.org/maven-v5.0.0-SNAPSHOT.xsd">
 
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-kernel-features</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
+	<relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -47,7 +48,7 @@
                         </goals>
                         <configuration>
                             <id>org.wso2.carbon.core.server</id>
-                            <propertiesFile>../etc/feature.properties</propertiesFile>
+                            <propertiesFile>../../etc/feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
                                     <propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>
@@ -55,19 +56,11 @@
                                 </properties>
                             </adviceFile>                               
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.core.services</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.server</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.feature.mgt.services</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.cluster.mgt.core</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.ndatasource.common</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.ndatasource.core</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.ndatasource.rdbms</bundleDef>
-                                <bundleDef>org.apache.ws.security.wso2:wss4j</bundleDef>
-                                <bundleDef>org.apache.poi.wso2:poi-ooxml</bundleDef>
-                                <bundleDef>org.apache.zookeeper.wso2:apache-zookeeper</bundleDef>
-                                <bundleDef>org.apache.tomcat.wso2:jdbc-pool</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.core.services:5.0.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.server:5.0.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt:5.0.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.apache.ws.security.wso2:wss4j:1.5.11.wso2v5:5.0.0-SNAPSHOT</bundleDef>
+                                <!--<bundleDef>org.apache.poi.wso2:poi-ooxml:${orbit.version.poi}</bundleDef>-->
                             </bundles>
                         </configuration>
                     </execution>
