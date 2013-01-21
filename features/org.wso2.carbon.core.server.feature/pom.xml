@@ -15,14 +15,14 @@
  ~ limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/5.0.0-SNAPSHOT"
+<project xmlns="http://maven.apache.org/POM/4.1.0-SNAPSHOT"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/5.0.0-SNAPSHOT http://maven.apache.org/maven-v5.0.0-SNAPSHOT.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.1.0-SNAPSHOT http://maven.apache.org/maven-v4.1.0.SNAPSHOT.xsd">
 
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-kernel-features</artifactId>
-        <version>5.0.0-SNAPSHOT</version>
+        <version>4.1.0-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -56,10 +56,10 @@
                                 </properties>
                             </adviceFile>                               
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.core.services:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.server:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.apache.ws.security.wso2:wss4j:1.5.11.wso2v5:5.0.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.core.services:4.1.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.server:4.1.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt:4.1.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.apache.ws.security.wso2:wss4j:1.5.11.wso2v5:4.1.0-SNAPSHOT</bundleDef>
                                 <!--<bundleDef>org.apache.poi.wso2:poi-ooxml:${orbit.version.poi}</bundleDef>-->
                             </bundles>
                         </configuration>

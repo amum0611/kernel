@@ -15,21 +15,21 @@
  ~ limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/5.0.0-SNAPSHOT"
+<project xmlns="http://maven.apache.org/POM/4.1.0-SNAPSHOT"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/5.0.0-SNAPSHOT http://maven.apache.org/maven-v5.0.0-SNAPSHOT.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.1.0-SNAPSHOT http://maven.apache.org/maven-v4.1.0.SNAPSHOT.xsd">
 
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-kernel-features</artifactId>
-        <version>5.0.0-SNAPSHOT</version>
+        <version>4.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.core.common.feature</artifactId>
     <packaging>pom</packaging>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
     <name>WSO2 Carbon - Carbon Common Feature</name>
     <url>http://wso2.org</url>
     <description>This feature contains the carbon core common features</description>
@@ -59,7 +59,7 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.kernel:5.0.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.kernel:4.1.0-SNAPSHOT</bundleDef>
                                 <bundleDef>org.eclipse.equinox:org.eclipse.equinox.http.servlet:1.0.200.v20090520-1800-wso2v1</bundleDef>
                                 <bundleDef>org.eclipse.equinox:org.eclipse.equinox.http.helper:1.0.0</bundleDef>
                                 <bundleDef>org.eclipse.equinox:javax.servlet.jsp:2.0.0.v200806031607</bundleDef>
@@ -67,14 +67,14 @@
                                 <bundleDef>org.wso2.carbon:javax.servlet:3.0.0.wso2v1</bundleDef>
                                 <bundleDef>org.apache.tomcat.wso2:tomcat:7.0.28.wso2v1</bundleDef>
                                 <bundleDef>org.apache.tomcat.ha.wso2:tomcat-ha:7.0.28.wso2v1</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt.common:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.core:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.core:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.authenticator.proxy:5.0.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt.common:4.1.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.core:4.1.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt:4.1.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.core:4.1.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.authenticator.proxy:4.1.0-SNAPSHOT</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.authenticator.stub:4.0.0</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.api:5.0.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.api:5.0.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.api:4.1.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.api:4.1.0-SNAPSHOT</bundleDef>
                                 <bundleDef>net.sf.jsr107cache.wso2:jsr107cache:1.1.0.wso2v3</bundleDef>
                                 <bundleDef>org.jboss.marshalling.wso2:marshalling:1.3.6.wso2v1</bundleDef>
                                 <bundleDef>org.infinispan.wso2:infinispan-core:5.1.2.wso2v1</bundleDef>
@@ -108,8 +108,8 @@
                                 <bundleDef>com.sun.xml.bind.wso2:jaxb:2.2.5.wso2v1</bundleDef>
                                 <bundleDef>org.apache.tomcat.wso2:jdbc-pool:7.0.28.wso2v1</bundleDef>
                                 <bundleDef>org.eclipse.equinox:org.apache.jasper:5.5.17.v200806031609</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.framework.exporter:5.0.0-SNAPSHOT</bundleDef>
-                                <!--<bundleDef>org.wso2.carbon:org.wso2.carbon.core.bootup.validator:5.0.0-SNAPSHOT</bundleDef>-->
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.framework.exporter:4.1.0-SNAPSHOT</bundleDef>
+                                <!--<bundleDef>org.wso2.carbon:org.wso2.carbon.core.bootup.validator:4.1.0-SNAPSHOT</bundleDef>-->
                                 <!--<bundleDef>com.jezhumble.wso2:javasysmon:0.3.3.wso2v1</bundleDef>-->
                                 <!--<bundleDef>org.apache.poi.wso2:poi:3.5.0.wso2v1</bundleDef>-->
                                 <!--<bundleDef>org.apache.poi.wso2:poi-scratchpad:3.5.0.wso2v1</bundleDef>-->
