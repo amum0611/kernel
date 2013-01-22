@@ -424,18 +424,7 @@
             <artifactId>org.wso2.carbon.registry.api</artifactId>
             <version>4.1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.utils</artifactId>
-            <version>4.1.0-SNAPSHOT</version>
-            
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.registry.xboot</artifactId>
-            <version>4.1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
+       <dependency>
             <groupId>org.wso2.securevault</groupId>
             <artifactId>org.wso2.securevault</artifactId>
             <exclusions>
@@ -447,13 +436,7 @@
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.user.core</artifactId>
-            <version>4.1.0-SNAPSHOT</version>
-            
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.caching.core</artifactId>
+            <artifactId>org.wso2.carbon.user.api</artifactId>
             <version>4.1.0-SNAPSHOT</version>
             
         </dependency>
@@ -465,23 +448,7 @@
             <groupId>org.apache.abdera.wso2</groupId>
             <artifactId>abdera</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.logging</artifactId>
-            <version>4.1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.ndatasource.rdbms</artifactId>
-            <version>4.1.0-SNAPSHOT</version>
-        </dependency>
-        <!--
-          <dependency>
-              <groupId>org.wso2.pwprovider</groupId>
-              <artifactId>org.wso2.pwprovider</artifactId>
-              <version>1.6.4</version>
-          </dependency>
-          -->
+        
         <dependency>
             <groupId>org.apache.poi.wso2</groupId>
             <artifactId>poi-scratchpad</artifactId>
