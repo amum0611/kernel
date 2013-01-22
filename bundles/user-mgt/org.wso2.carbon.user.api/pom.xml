@@ -34,13 +34,13 @@
     <name>WSO2 Carbon - User Manager API</name>
     <description>OSGi Bundle for WSO2 UserManager API</description>
  
- 	<dependencies>
+ 	<!--dependencies>
  		<dependency>
  			<groupId>org.wso2.carbon</groupId>
- 			<artifactId>org.wso2.carbon.base</artifactId>
+ 			<artifactId>org.wso2.carbon.kernel</artifactId>
  			   <version>${project.parent.version}</version>
  		</dependency>
- 	</dependencies>   
+ 	</dependencies-->   
  
     <build>
         <plugins>
@@ -56,9 +56,6 @@
                         <Export-Package>
                             org.wso2.carbon.user.api.*;version=1.0.1,
                         </Export-Package>
-                        <Import-Package>
-                        	org.wso2.carbon.base.*
-                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
