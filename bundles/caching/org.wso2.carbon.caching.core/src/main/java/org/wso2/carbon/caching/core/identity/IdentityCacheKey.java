@@ -18,8 +18,8 @@
 
 package org.wso2.carbon.caching.core.identity;
 
-import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.caching.core.CacheKey;
+import org.wso2.carbon.caching.core.MultitenantConstants;
 
 /**
  * Identity Cache key which wraps the identity related cache key values
@@ -57,7 +57,7 @@ public class IdentityCacheKey extends CacheKey {
 
     @Override
     public int hashCode() {
-        int hash = Integer.valueOf( (tenantId == MultitenantConstants.SUPER_TENANT_ID) 
+        int hash = Integer.valueOf( (tenantId == MultitenantConstants.SUPER_TENANT_ID)
         		? 0 : tenantId).hashCode();
         hash += hash + key.hashCode();
         return hash;

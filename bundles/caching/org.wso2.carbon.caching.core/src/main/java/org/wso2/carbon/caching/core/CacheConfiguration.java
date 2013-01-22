@@ -23,7 +23,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.base.CarbonBaseUtils;
+import org.wso2.carbon.caching.Utils;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.*;
@@ -60,7 +60,7 @@ public final class CacheConfiguration {
      * @return the cache configuration object instance.
      */
     public static CacheConfiguration getInstance() {
-        CarbonBaseUtils.checkSecurity();
+        Utils.checkSecurity();
         return instance;
     }
 

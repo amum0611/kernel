@@ -17,8 +17,8 @@
 */
 package org.wso2.carbon.caching.core.rolesofuser;
 
-import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.caching.core.CacheKey;
+import org.wso2.carbon.caching.core.MultitenantConstants;
 
 import java.io.Serializable;
 

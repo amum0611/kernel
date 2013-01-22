@@ -18,8 +18,8 @@ package org.wso2.carbon.caching.core.realm;
 
 import java.io.Serializable;
 
-import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.caching.core.CacheKey;
+import org.wso2.carbon.caching.core.MultitenantConstants;
 
 public class RealmCacheKey extends CacheKey implements Serializable {
 

@@ -36,7 +36,7 @@ import org.infinispan.lifecycle.ComponentStatus;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.stats.Stats;
-import org.wso2.carbon.base.CarbonBaseUtils;
+import org.wso2.carbon.caching.Utils;
 import org.wso2.carbon.caching.core.CacheConfiguration;
 import org.wso2.carbon.caching.core.CarbonCacheManager;
 
@@ -67,7 +67,7 @@ public class InfinispanCacheManager extends CacheManager implements CarbonCacheM
      * {@inheritDoc}
      */
     public void initialize(String carbonHome) {
-        CarbonBaseUtils.checkSecurity();
+        Utils.checkSecurity();
         log.debug("Starting Cache Manager initialization");
 
         String clusterName = DEFAULT_CLUSTER_NAME;

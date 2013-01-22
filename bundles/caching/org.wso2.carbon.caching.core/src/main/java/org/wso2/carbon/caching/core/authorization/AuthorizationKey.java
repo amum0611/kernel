@@ -16,12 +16,13 @@
 
 package org.wso2.carbon.caching.core.authorization;
 
+import org.wso2.carbon.caching.core.MultitenantConstants;
+
 import java.io.Serializable;
 /**
  * Date: Oct 7, 2010 Time: 11:13:54 AM
  */
 
-import org.wso2.carbon.base.MultitenantConstants;
 
 /**
  * A key class which wraps a cache key used by Authorization manager.
