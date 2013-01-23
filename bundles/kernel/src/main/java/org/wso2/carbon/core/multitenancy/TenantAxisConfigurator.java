@@ -45,7 +45,7 @@ import org.wso2.carbon.core.deployment.RegistryBasedRepositoryUpdater;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 import org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
 import org.wso2.carbon.core.util.ParameterUtil;
-import org.wso2.carbon.registry.core.session.UserRegistry;
+import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.PreAxisConfigurationPopulationObserver;
 import org.wso2.carbon.utils.WSO2Constants;
@@ -85,7 +85,7 @@ public class TenantAxisConfigurator extends DeploymentEngine implements AxisConf
     private final String tenantDomain;
     private final int tenantId;
     private final String repoLocation;
-    private final UserRegistry registry;
+    private final Registry registry;
     private final BundleContext bundleContext;
     private final Bundle[] moduleBundles;
     private final Bundle[] deployerBundles;
@@ -98,7 +98,7 @@ public class TenantAxisConfigurator extends DeploymentEngine implements AxisConf
     public TenantAxisConfigurator(AxisConfiguration mainAxisConfig,
                                   String tenantDomain,
                                   int tenantId,
-                                  UserRegistry registry) throws AxisFault {
+                                  Registry registry) throws AxisFault {
         this.tenantDomain = tenantDomain;
         this.tenantId = tenantId;
         this.mainAxisConfig = mainAxisConfig;
@@ -133,8 +133,8 @@ public class TenantAxisConfigurator extends DeploymentEngine implements AxisConf
     public TenantAxisConfigurator(AxisConfiguration mainAxisConfig,
                                   String tenantDomain,
                                   int tenantId,
-                                  UserRegistry configRegistry,
-                                  UserRegistry localRegistry) throws AxisFault {
+                                  Registry configRegistry,
+                                  Registry localRegistry) throws AxisFault {
         this.tenantDomain = tenantDomain;
         this.tenantId = tenantId;
         this.mainAxisConfig = mainAxisConfig;
@@ -529,12 +529,14 @@ public class TenantAxisConfigurator extends DeploymentEngine implements AxisConf
     }
 
     private void setUserRealm() throws DeploymentException {
-        Parameter param = new Parameter(WSO2Constants.USER_REALM_INSTANCE, registry.getUserRealm());
+        /*Parameter param = new Parameter(WSO2Constants.USER_REALM_INSTANCE, registry.getUserRealm());
         try {
             axisConfig.addParameter(param);
         } catch (AxisFault axisFault) {
             throw new DeploymentException(axisFault.getMessage(), axisFault);
-        }
+        }*/     //TODO : kernel-merge
+
+        throw new DeploymentException("kernel  merge error ");
     }
 
     private static void setHostName(AxisConfiguration axisConfig) throws DeploymentException {

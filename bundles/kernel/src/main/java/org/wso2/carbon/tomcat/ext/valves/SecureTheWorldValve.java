@@ -26,10 +26,9 @@ import org.wso2.carbon.base.ServerConfiguration;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.tomcat.ext.internal.CarbonRealmServiceHolder;
 import org.wso2.carbon.tomcat.ext.internal.Utils;
+import org.wso2.carbon.user.api.RealmService;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.user.core.service.RealmService;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

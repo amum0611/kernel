@@ -28,7 +28,7 @@ import org.wso2.carbon.application.deployer.service.ApplicationManagerService;
 import org.wso2.carbon.application.deployer.AppDeployerConstants;
 import org.wso2.carbon.application.deployer.Feature;
 import org.wso2.carbon.application.deployer.AppDeployerUtils;
-import org.wso2.carbon.registry.core.service.RegistryService;
+import org.wso2.carbon.registry.api.RegistryService;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ import java.net.URL;
 
 /**
  * @scr.component name="application.deployer.dscomponent" immediate="true"
- * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
+ * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.api.RegistryService"
  * cardinality="1..1" policy="dynamic" bind="setRegistryService" unbind="unsetRegistryService"
  * @scr.reference name="app.handler" interface="org.wso2.carbon.application.deployer.handler.AppDeploymentHandler"
  * cardinality="0..n" policy="dynamic" bind="setAppHandler" unbind="unsetAppHandler"

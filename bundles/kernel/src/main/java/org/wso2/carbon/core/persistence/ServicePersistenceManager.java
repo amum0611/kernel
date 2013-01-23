@@ -39,7 +39,7 @@ import org.wso2.carbon.CarbonException;
 import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.Resources;
 import org.wso2.carbon.core.transports.TransportPersistenceManager;
-import org.wso2.carbon.registry.core.Resource;
+import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.utils.deployment.GhostDeployerUtils;
 
 import javax.xml.namespace.QName;
@@ -229,7 +229,7 @@ public class ServicePersistenceManager extends AbstractPersistenceManager {
 
                 //write the policy to registry as well if it's a proxy service
                 if (isProxyService && servicePolicies != null && !servicePolicies.isEmpty()) {
-                    org.wso2.carbon.registry.core.Resource serviceResource = configRegistry.newCollection();
+                    Resource serviceResource = configRegistry.newCollection();
                     String serviceResourcePath = PersistenceUtils.getRegistryResourcePath(axisService);
                     configRegistry.put(serviceResourcePath, serviceResource);
 

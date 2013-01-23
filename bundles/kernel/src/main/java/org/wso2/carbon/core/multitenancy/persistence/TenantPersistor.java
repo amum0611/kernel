@@ -16,7 +16,8 @@
 
 package org.wso2.carbon.core.multitenancy.persistence;
 
-import org.wso2.carbon.user.core.tenant.Tenant;
+
+import org.wso2.carbon.user.api.Tenant;
 
 /**
  * The tenant persisting code must implement this interface.

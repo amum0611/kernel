@@ -19,11 +19,9 @@ package org.wso2.carbon.core.deployment;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.registry.core.Resource;
-import org.wso2.carbon.registry.core.exceptions.RegistryException;
-import org.wso2.carbon.registry.core.session.UserRegistry;
-import org.wso2.carbon.registry.synchronization.RegistrySynchronizer;
-import org.wso2.carbon.registry.synchronization.SynchronizationException;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.api.Resource;
 
 import java.io.InputStream;
 
@@ -36,7 +34,7 @@ public class RegistryBasedRepository {
 
     private static Log log = LogFactory.getLog(RegistryBasedRepository.class);
 
-    private UserRegistry configSystemRegistry;
+    private Registry configSystemRegistry;
 
     /**
      * path of the repository in registry
@@ -48,7 +46,7 @@ public class RegistryBasedRepository {
      */
     private String fileSystemRepo;
 
-    public RegistryBasedRepository(UserRegistry configSystemRegistry,
+    public RegistryBasedRepository(Registry configSystemRegistry,
                                    String registryPath,
                                    String fileSystemRepo) {
         this.configSystemRegistry = configSystemRegistry;
@@ -67,7 +65,7 @@ public class RegistryBasedRepository {
      * Copies the repository in the given path to the local file system and returns the path.
      */
     public void updateFileSystemFromRegistry() {
-        try {
+        /*try {
             if (RegistrySynchronizer.isCheckedOut(fileSystemRepo)) {
                 // Get changes from Registry to local file system
                 RegistrySynchronizer.update(configSystemRegistry, fileSystemRepo, true);
@@ -82,7 +80,7 @@ public class RegistryBasedRepository {
             }
         } catch (Exception e) {
             log.error("Error dumping repository from registry.", e);
-        }
+        }*/          // TODO : kernel-merge
     }
 
     /**

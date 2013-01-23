@@ -17,7 +17,7 @@ package org.wso2.carbon.core.deployment;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.registry.core.session.UserRegistry;
+import org.wso2.carbon.registry.api.Registry;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,7 +54,7 @@ public class RegistryBasedRepositoryUpdater {
      * @param startSecs      Starting time of the task in seconds
      * @param periodSecs     Period of the task in seconds
      */
-    public static void scheduleAtFixedRate(UserRegistry userRegistry,
+    public static void scheduleAtFixedRate(Registry userRegistry,
                                            String registryPath,
                                            String fileSystemRepo,
                                            long startSecs,
@@ -93,7 +93,7 @@ public class RegistryBasedRepositoryUpdater {
     private static class UpdaterTask implements Runnable {
         private RegistryBasedRepository registryBasedRepository;
 
-        public UpdaterTask(UserRegistry userRegistry,
+        public UpdaterTask(Registry userRegistry,
                            String registryPath,
                            String fileSystemRepo) {
             registryBasedRepository = new RegistryBasedRepository(userRegistry,

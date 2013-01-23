@@ -34,8 +34,8 @@ import org.wso2.carbon.core.ServerStatus;
 import org.wso2.carbon.core.init.JMXServerManager;
 import org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
 import org.wso2.carbon.core.util.ClusteringUtil;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.user.api.RealmService;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.ConfigurationContextService;
 import org.wso2.carbon.utils.ServerException;
@@ -60,9 +60,9 @@ import java.util.TimerTask;
  * @scr.reference name="org.wso2.carbon.configCtx"
  * interface="org.wso2.carbon.utils.ConfigurationContextService" cardinality="1..1"
  * policy="dynamic" bind="setConfigurationContext" unbind="unsetConfigurationContext"
- * @scr.reference name="user.realmservice.default" interface="org.wso2.carbon.user.core.service.RealmService"
+ * @scr.reference name="user.realmservice.default" interface="org.wso2.carbon.user.api.RealmService"
  * cardinality="1..1" policy="dynamic" bind="setRealmService"  unbind="unsetRealmService"
- * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
+ * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.api.RegistryService"
  * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
  **/
 public class StartupFinalizerServiceComponent implements ServiceListener {

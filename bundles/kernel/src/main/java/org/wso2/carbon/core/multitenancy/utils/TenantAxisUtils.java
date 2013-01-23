@@ -55,9 +55,9 @@ import org.wso2.carbon.core.multitenancy.transports.DummyTransportListener;
 import org.wso2.carbon.core.multitenancy.transports.TenantTransportInDescription;
 import org.wso2.carbon.core.multitenancy.transports.TenantTransportSender;
 import org.wso2.carbon.core.transports.TransportPersistenceManager;
-import org.wso2.carbon.registry.core.session.UserRegistry;
-import org.wso2.carbon.user.core.tenant.Tenant;
-import org.wso2.carbon.user.core.tenant.TenantManager;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.user.api.Tenant;
+import org.wso2.carbon.user.api.TenantManager;
 import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.ServerConstants;
@@ -271,9 +271,9 @@ public final class TenantAxisUtils {
             AxisConfiguration mainAxisConfig = mainConfigCtx.getAxisConfiguration();
 
             try {
-                UserRegistry tenantConfigRegistry =
+                Registry tenantConfigRegistry =
                         dataHolder.getRegistryService().getConfigSystemRegistry(tenantId);
-                UserRegistry tenantLocalUserRegistry =
+                Registry tenantLocalUserRegistry =
                         dataHolder.getRegistryService().getLocalRepository(tenantId);
                 TenantAxisConfigurator tenantAxisConfigurator =
                         new TenantAxisConfigurator(mainAxisConfig, tenantDomain, tenantId,

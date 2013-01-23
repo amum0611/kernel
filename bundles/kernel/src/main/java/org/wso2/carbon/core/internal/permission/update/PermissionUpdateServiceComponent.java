@@ -19,8 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.user.core.UserCoreConstants;
+import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
 import org.wso2.carbon.utils.ConfigurationContextService;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
@@ -33,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @scr.component name="org.wso2.stratos.permission.update.PermissionUpdateServiceComponent"
  * immediate="true"
  * @scr.reference name="registry.service"
- * interface="org.wso2.carbon.registry.core.service.RegistryService"
+ * interface="org.wso2.carbon.registry.api.RegistryService"
  * cardinality="1..1" policy="dynamic" bind="setRegistryService"
  * unbind="unsetRegistryService"
  * @scr.reference name="config.context.service"
@@ -71,7 +70,7 @@ public class PermissionUpdateServiceComponent {
         try {
             if ("true".equals(dataHolder.getRealmService().getBootstrapRealmConfiguration().
                     getAuthorizationPropertyValue(
-                            UserCoreConstants.RealmConfig.PROPERTY_UPDATE_PERM_TREE_PERIODICALLY))) {
+                            "UpdatePermissionTreePeriodically"))) {              //TODO : kernel-merge
                 permUpdater.scheduleAtFixedRate(new PermissionUpdateTask(), JOB_INTERVAL_SECS,
                                                 JOB_INTERVAL_SECS, TimeUnit.SECONDS);
             }

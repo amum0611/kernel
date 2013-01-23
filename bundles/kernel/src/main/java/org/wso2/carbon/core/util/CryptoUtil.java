@@ -22,7 +22,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.base.api.ServerConfigurationService;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
-import org.wso2.carbon.registry.core.service.RegistryService;
+import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.utils.i18n.Messages;
 
 import javax.crypto.Cipher;

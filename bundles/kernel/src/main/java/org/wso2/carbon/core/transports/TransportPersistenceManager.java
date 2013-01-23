@@ -34,9 +34,9 @@ import org.wso2.carbon.CarbonException;
 import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.persistence.AbstractPersistenceManager;
 import org.wso2.carbon.core.persistence.PersistenceFactory;
-import org.wso2.carbon.registry.core.Collection;
-import org.wso2.carbon.registry.core.Registry;
-import org.wso2.carbon.registry.core.Resource;
+import org.wso2.carbon.registry.api.Collection;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.Resource;
 
 import javax.xml.namespace.QName;
 import java.io.ByteArrayInputStream;

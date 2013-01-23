@@ -43,7 +43,7 @@ import org.wso2.carbon.core.deployment.CarbonDeploymentSchedulerTask;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.core.transports.TransportPersistenceManager;
-import org.wso2.carbon.registry.core.service.RegistryService;
+import org.wso2.carbon.registry.api.RegistryService;
 import org.wso2.carbon.utils.Axis2ConfigItemHolder;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.ServerException;

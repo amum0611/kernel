@@ -21,17 +21,17 @@ package org.wso2.carbon.tomcat.ext.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.user.api.RealmService;
 
 /**
  * @scr.component name="tomcat.ext.service.comp" immediate="true"
  * @scr.reference name="user.realm.provider"
- * interface="org.wso2.carbon.user.core.service.RealmService"
+ * interface="org.wso2.carbon.user.api.RealmService"
  * cardinality="1..1" policy="dynamic" bind="setRealmService"
  * unbind="unsetRealmService"
  * @scr.reference name="registry.service.provider"
- * interface="org.wso2.carbon.registry.core.service.RegistryService"
+ * interface="org.wso2.carbon.registry.api.RegistryService"
  * cardinality="1..1" policy="dynamic" bind="setRegistryService"
  * unbind="unsetRegistryService"
  */

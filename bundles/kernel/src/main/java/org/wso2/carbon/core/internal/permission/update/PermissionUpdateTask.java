@@ -20,7 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
 import org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
-import org.wso2.carbon.user.core.tenant.Tenant;
+import org.wso2.carbon.user.api.Tenant;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import java.util.List;

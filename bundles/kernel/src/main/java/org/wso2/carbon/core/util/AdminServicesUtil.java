@@ -22,8 +22,8 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonException;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.RegistryType;
-import org.wso2.carbon.registry.core.session.UserRegistry;
-import org.wso2.carbon.user.core.UserRealm;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 /**
@@ -41,16 +41,16 @@ public class AdminServicesUtil {
     /**
      * @deprecated
      */
-    public static UserRegistry getSystemRegistry() throws CarbonException {
-        return (UserRegistry) CarbonContext.getCurrentContext().getRegistry(
+    public static Registry getSystemRegistry() throws CarbonException {
+        return (Registry) CarbonContext.getCurrentContext().getRegistry(
                 RegistryType.SYSTEM_CONFIGURATION);
     }
 
     /**
      * @deprecated
      */
-    public static UserRegistry getUserRegistry() throws CarbonException {
-        return (UserRegistry) CarbonContext.getCurrentContext().getRegistry(
+    public static Registry getUserRegistry() throws CarbonException {
+        return (Registry) CarbonContext.getCurrentContext().getRegistry(
                 RegistryType.USER_CONFIGURATION);
     }
 

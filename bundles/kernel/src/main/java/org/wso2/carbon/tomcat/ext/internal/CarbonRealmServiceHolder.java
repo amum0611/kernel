@@ -18,8 +18,8 @@
 package org.wso2.carbon.tomcat.ext.internal;
 
 
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.user.api.RealmService;
 
 /**
  * Holder class for services, captured using declarative service component

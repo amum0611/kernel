@@ -20,6 +20,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Locale;
 
 /**
@@ -28,6 +29,8 @@ import java.util.Locale;
  * the number of bytes transferred. The getWrittenSize() method returns the size of the response
  * in bytes after the response is processed and written to the response object. 
  * @see MeteringOutputStream
+ *
+ * TODO: kernel-merge made this class abstract
  */
 public class MeteredServletResponse implements HttpServletResponse {
 	HttpServletResponse wrappedHttpServletResponse;
@@ -101,7 +104,23 @@ public class MeteredServletResponse implements HttpServletResponse {
 		wrappedHttpServletResponse.setStatus(arg0, arg1);
 	}
 
-	public void setStatus(int arg0) {
+    public int getStatus() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getHeader(String s) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<String> getHeaders(String s) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<String> getHeaderNames() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setStatus(int arg0) {
 		wrappedHttpServletResponse.setStatus(arg0);
 	}
 

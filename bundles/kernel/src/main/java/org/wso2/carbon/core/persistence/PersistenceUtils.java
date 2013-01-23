@@ -32,9 +32,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.neethi.Policy;
 import org.wso2.carbon.core.RegistryResources;
 import org.wso2.carbon.core.Resources;
-import org.wso2.carbon.registry.core.Registry;
-import org.wso2.carbon.registry.core.Resource;
-import org.wso2.carbon.registry.core.exceptions.RegistryException;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.api.Resource;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;

@@ -20,14 +20,12 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 import org.wso2.carbon.core.internal.CarbonCoreDataHolder;
-import org.wso2.carbon.registry.core.Resource;
-import org.wso2.carbon.registry.core.exceptions.RegistryException;
-import org.wso2.carbon.registry.core.jdbc.realm.RegistryRealm;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.registry.core.session.UserRegistry;
-import org.wso2.carbon.user.core.AuthorizationManager;
-import org.wso2.carbon.user.core.UserStoreException;
-import org.wso2.carbon.user.core.authorization.JDBCAuthorizationManager;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.registry.api.Resource;
+import org.wso2.carbon.user.api.AuthorizationManager;
+import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.utils.AuthenticationObserver;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,13 +56,13 @@ public class PermissionUpdater {
             initializeRegistry(tenantId);
             RegistryService registryService = dataHolder.getRegistryService();
             AuthorizationManager authzManager = getAuthzManager(tenantId, registryService);
-            if (authzManager instanceof JDBCAuthorizationManager) {
+           /* if (authzManager instanceof JDBCAuthorizationManager) {
                 if (log.isDebugEnabled()) {
                     log.debug("Updating  permission cache for tenant: " + tenantId);
                 }
                 ((JDBCAuthorizationManager) authzManager).populatePermissionTreeFromDB();
-            }
-            UserRegistry registry = registryService.getGovernanceSystemRegistry(tenantId);
+            }*/     // TODO : kernel-merge
+            Registry registry = registryService.getGovernanceSystemRegistry(tenantId);
             Long lastModifiedTime = System.currentTimeMillis();
             if (registry.resourceExists(PERM_TREE_TIMESTAMP_LOC)) {
                 Resource resource = registry.get(PERM_TREE_TIMESTAMP_LOC);
@@ -87,22 +85,24 @@ public class PermissionUpdater {
     private static AuthorizationManager getAuthzManager(int tenantId,
                                                         RegistryService registryService)
             throws UserStoreException, RegistryException {
-        AuthorizationManager authznManager =
+       /* AuthorizationManager authznManager =
                 ((RegistryRealm) registryService.getUserRealm(tenantId)).
                         getRealm().getAuthorizationManager();
-        return authznManager;
+        return authznManager;*/    // TODO : kernel-merge
+
+        throw new RegistryException("Kernel-merge exception");
     }
 
     public static void remove(int tenantId) {
         try {
             RegistryService registryService = dataHolder.getRegistryService();
             AuthorizationManager authzManager = getAuthzManager(tenantId, registryService);
-            if (authzManager instanceof JDBCAuthorizationManager) {
+            /*if (authzManager instanceof JDBCAuthorizationManager) {
                 if (log.isDebugEnabled()) {
                     log.debug("Updating  permission cache for tenant: " + tenantId);
                 }
                 ((JDBCAuthorizationManager) authzManager).clearPermissionTree();
-            }
+            }*/       // TODO : kernel-merge usage of implementation classes in kernel
             permTreeModifiedTimeStampMap.remove(tenantId);
         } catch (Exception e) {
             log.error("Error when clearing the permission cache for tenant : " + tenantId, e);
@@ -118,7 +118,7 @@ public class PermissionUpdater {
      */
     public static boolean needsUpdating(int tenantId) throws Exception {
         RegistryService registryService = dataHolder.getRegistryService();
-        UserRegistry registry = registryService.getGovernanceSystemRegistry(tenantId);
+        Registry registry = registryService.getGovernanceSystemRegistry(tenantId);
 
         if (!registry.resourceExists(PERM_TREE_TIMESTAMP_LOC)) {
             return false;

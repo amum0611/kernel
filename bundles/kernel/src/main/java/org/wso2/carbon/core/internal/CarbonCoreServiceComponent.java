@@ -24,17 +24,17 @@ import org.wso2.carbon.core.ServerRestartHandler;
 import org.wso2.carbon.core.ServerShutdownHandler;
 import org.wso2.carbon.core.ServerStartupHandler;
 import org.wso2.carbon.core.init.CarbonServerManager;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.user.api.RealmService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @scr.component name="carbon.core.dscomponent"" immediate="true"
- * @scr.reference name="user.realmservice.default" interface="org.wso2.carbon.user.core.service.RealmService"
+ * @scr.reference name="user.realmservice.default" interface="org.wso2.carbon.user.api.RealmService"
  * cardinality="1..1" policy="dynamic" bind="setRealmService"  unbind="unsetRealmService"
- * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.core.service.RegistryService"
+ * @scr.reference name="registry.service" interface="org.wso2.carbon.registry.api.RegistryService"
  * cardinality="1..1" policy="dynamic"  bind="setRegistryService" unbind="unsetRegistryService"
  * @scr.reference name="server.configuration.service" interface="org.wso2.carbon.base.api.ServerConfigurationService"
  * cardinality="1..1" policy="dynamic"  bind="setServerConfigurationService" unbind="unsetServerConfigurationService"

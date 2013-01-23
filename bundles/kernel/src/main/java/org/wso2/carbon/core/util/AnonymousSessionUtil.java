@@ -20,13 +20,12 @@ package org.wso2.carbon.core.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.CarbonException;
-import org.wso2.carbon.registry.core.exceptions.RegistryException;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.registry.core.session.UserRegistry;
-import org.wso2.carbon.user.core.UserRealm;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.user.api.RealmService;
+import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.user.core.service.RealmService;
-import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
@@ -43,7 +42,7 @@ public class AnonymousSessionUtil {
     /**
      * @deprecated 
      */
-    public static UserRegistry getSystemRegistryByUserName(RegistryService registryService,
+    public static Registry getSystemRegistryByUserName(RegistryService registryService,
             RealmService realmService, String userName) throws CarbonException {
         try {
             String tenantDomain = MultitenantUtils.getTenantDomain(userName);
@@ -57,21 +56,22 @@ public class AnonymousSessionUtil {
     /**
      * @deprecated 
      */
-    public static UserRegistry getUserRegistryByUserName(RegistryService registryService,
+    public static Registry getUserRegistryByUserName(RegistryService registryService,
             RealmService realmService, String userName) throws CarbonException {
-        try {
+        throw new RuntimeException("kernel-merge unable to get user-registry");
+        /*try {
             return registryService.getUserRegistry(userName);
         } catch (RegistryException e) {
             log.error(e.getMessage(), e);
-            throw new CarbonException(e.getMessage(), e);
-        }
+            throw new CarbonException(e.getMessage(), e); // TODO : kernel-merge
+        }*/
     
     }
 
     /**
      * @deprecated 
      */
-    public static UserRegistry getSystemRegistryByDomainName(RegistryService registryService,
+    public static Registry getSystemRegistryByDomainName(RegistryService registryService,
             RealmService realmService, String domainName) throws CarbonException {
         try {
             int tenantId = realmService.getTenantManager().getTenantId(domainName);
@@ -94,14 +94,15 @@ public class AnonymousSessionUtil {
     /**
      * @deprecated 
      */
-    public static UserRegistry getUserRegistry(RegistryService registryService, String userName)
+    public static Registry getUserRegistry(RegistryService registryService, String userName)
             throws CarbonException {
-        try {
+        throw new RuntimeException("kernel-merge unable to get user-registry");
+        /*try {
             return registryService.getUserRegistry(userName);
         } catch (RegistryException e) {
             log.error(e.getMessage(), e);
-            throw new CarbonException(e.getMessage(), e);
-        }
+            throw new CarbonException(e.getMessage(), e); //TODO kernel-merge
+        }*/
     }
 
     public static UserRealm getRealmByUserName(RegistryService registryService,
@@ -130,14 +131,14 @@ public class AnonymousSessionUtil {
                 log.warn("Failed to retrieve Realm for the inactive tenant : " + tenantDomain);
                 return null;
             }
-            return registryService.getUserRealm(tenantId);
+            throw new RuntimeException("kernel-merge unable to get user-registry");
         } catch (UserStoreException e) {
             log.error(e.getMessage(), e);
             throw new CarbonException(e.getMessage(), e);
-        } catch (RegistryException e) {
+        } /*catch (RegistryException e) {
             log.error(e.getMessage(), e);
-            throw new CarbonException(e.getMessage(), e);
-        }
+            throw new CarbonException(e.getMessage(), e);     //TODO : kernel-merge
+        }*/
     }
 
 }

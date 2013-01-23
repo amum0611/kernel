@@ -16,7 +16,7 @@
 
 package org.wso2.carbon.core.util;
 
-import org.apache.commons.dbcp.BasicDataSource;
+/*import org.apache.commons.dbcp.BasicDataSource;
 import org.wso2.carbon.user.api.RealmConfiguration;
 import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.UserStoreManager;
@@ -29,13 +29,16 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.SQLException;*/
 
 /**
  * A tool for updating the password of a user
  */
 public class PasswordUpdater {
-    private static final String USAGE_MSG_INDENT_SPACES = "         ";
+
+    //TODO : kernel-merge
+
+    /*private static final String USAGE_MSG_INDENT_SPACES = "         ";
 	public static final String DB_URL = "--db-url";
     public static final String DB_DRIVER = "--db-driver";
     public static final String DB_USERNAME = "--db-username";
@@ -165,13 +168,13 @@ public class PasswordUpdater {
         }
     }
 
-    /**
+    *//**
      * This will check the given parameter in the array and will return, if available
      *
      * @param param
      * @param args
      * @return the parameter
-     */
+     *//*
     private String getParam(String param, String[] args) {
         if (param == null || "".equals(param)) {
             return null;
@@ -200,5 +203,5 @@ public class PasswordUpdater {
         System.out.println(USAGE_MSG_INDENT_SPACES + NEW_PASSWORD + " : The new password of the user " +
                            "whose password is to be changed. If this is not given, " +
                            "you will be prompted for this field later.");
-    }
+    }*/
 }

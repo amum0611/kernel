@@ -36,7 +36,7 @@ import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.core.persistence.PersistenceFactory;
 import org.wso2.carbon.core.persistence.PersistenceUtils;
 import org.wso2.carbon.core.util.SystemFilter;
-import org.wso2.carbon.registry.core.Registry;
+import org.wso2.carbon.registry.api.Registry;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.deployment.GhostDeployerUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;

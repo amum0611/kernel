@@ -15,10 +15,10 @@
  */
 package org.wso2.carbon.utils;
 
-import org.apache.tools.ant.BuildException;
+/*import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.ProjectHelper;
+import org.apache.tools.ant.ProjectHelper;*/
 
 import java.io.File;
 
@@ -27,48 +27,48 @@ import java.io.File;
  * invoke <code>ANT</code> targets of a given build file.
  */
 public class AntBuildInvoker {
-    // The ANT build file
+    /*// The ANT build file
     private File buildFile;
 
-    /**
+    *//**
      * The constructor
      * @param buildFile the <code>ANT</code> build file
-     */
+     *//*
     public AntBuildInvoker(File buildFile) {
         this.buildFile = buildFile;
     }
 
 
-    /**
+    *//**
      * Invokes the default target of the build file. Runs in silent mode
      * @throws AntBuildException if invoking the target failed
-     */
+     *//*
     public void invokeDefaultTarget() throws AntBuildException {
         invokeTarget(null, false);
     }
 
-    /**
+    *//**
      * Invokes the default target of the build file. Runs in verbose mode
      * @throws AntBuildException if invoking the target failed
-     */
+     *//*
     public void invokeDefaultTarget(boolean showOutput) throws AntBuildException {
         invokeTarget(null, showOutput);
     }
 
-    /**
+    *//**
      * Invokes the given target of the build file. Runs in silent mode
      * @param target the target to be executed
      * @throws AntBuildException if invoking the target failed
-     */
+     *//*
     public void invokeTarget(String target) throws AntBuildException {
         invokeTarget(target, false);
     }
 
-    /**
+    *//**
      * Invokes the given target of the build file under the given mode (silent/verbose)
      * @param target the target to be executed
      * @throws AntBuildException if invoking the target failed
-     */
+     *//*
     public void invokeTarget(String target, boolean showOutput) throws AntBuildException {
         Project p = new Project();
         p.setUserProperty("ant.file", buildFile.getAbsolutePath());
@@ -96,5 +96,7 @@ public class AntBuildInvoker {
             p.fireBuildFinished(e);
             throw new AntBuildException(e);
         }
-    }
+    }*/
+
+    // TODO: kernel-merge
 }

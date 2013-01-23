@@ -33,7 +33,7 @@ import org.wso2.carbon.application.deployer.AppDeployerUtils;
 import org.wso2.carbon.application.deployer.config.ApplicationConfiguration;
 import org.wso2.carbon.application.deployer.config.Artifact;
 import org.wso2.carbon.application.deployer.config.RegistryConfig;
-import org.wso2.carbon.registry.core.Collection;
+/*import org.wso2.carbon.registry.core.Collection;
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.session.UserRegistry;
@@ -41,7 +41,11 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.utils.MediaTypesUtils;
 import org.wso2.carbon.registry.synchronization.RegistrySynchronizer;
 import org.wso2.carbon.roles.mgt.ServerRoleConstants;
-import org.wso2.carbon.roles.mgt.ServerRoleUtils;
+import org.wso2.carbon.roles.mgt.ServerRoleUtils;*/
+import org.wso2.carbon.registry.api.Collection;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.api.Resource;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.*;
@@ -350,8 +354,8 @@ public class CarbonAppPersistenceManager {
                 continue;
             }
             if (reg != null) {
-                RegistrySynchronizer.checkIn((UserRegistry) reg, dirPath,
-                        col.getPath(), true, true);
+                /*RegistrySynchronizer.checkIn((UserRegistry) reg, dirPath,
+                        col.getPath(), true, true);*/ // TODO : kernel-merge
             }
         }
 
@@ -435,7 +439,7 @@ public class CarbonAppPersistenceManager {
             return;
         }
 
-        try {
+       /* try {
             reg.beginTransaction();
             Resource resource = reg.newResource();
             resource.setContent(content);
@@ -453,7 +457,7 @@ public class CarbonAppPersistenceManager {
             }
             log.error("Error while checking in resource to path: " + registryPath +
                     " from file: " + file.getAbsolutePath(), e);
-        }
+        }*/         // TODO : kernel-merge
     }
 
     /**
@@ -543,7 +547,7 @@ public class CarbonAppPersistenceManager {
      * @return - true if modified, else false
      */
     public boolean areRolesOverridden() {
-        String defaultPath = ServerRoleUtils.getRegistryPath(ServerRoleConstants.DEFAULT_ROLES_ID);
+        /*String defaultPath = ServerRoleUtils.getRegistryPath(ServerRoleConstants.DEFAULT_ROLES_ID);
 
         try {
             if (configRegistry.resourceExists(defaultPath)) {
@@ -555,7 +559,7 @@ public class CarbonAppPersistenceManager {
             }
         } catch (RegistryException e) {
             log.error("Error while reading server role resources", e);
-        }
+        }*/        //TODO : kernel-merge
         return false;
     }
 
@@ -565,10 +569,10 @@ public class CarbonAppPersistenceManager {
      * @return - list of roles
      */
     public List<String> readServerRoles(String roleType) {
-        String rolesPath = ServerRoleUtils.getRegistryPath(roleType);
+        //String rolesPath = ServerRoleUtils.getRegistryPath(roleType);
         List<String> roles = new ArrayList<String>();
 
-        try {
+        /*try {
             if (configRegistry.resourceExists(rolesPath)) {
                 Resource resource = configRegistry.get(rolesPath);
                 List<String> rolesRead = resource.getPropertyValues(roleType);
@@ -578,7 +582,7 @@ public class CarbonAppPersistenceManager {
             }
         } catch (RegistryException e) {
             log.error("Error while reading server role resources", e);
-        }
+        }*/
         return roles;
     }
 

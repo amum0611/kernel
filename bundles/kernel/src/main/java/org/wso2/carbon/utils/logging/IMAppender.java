@@ -33,7 +33,7 @@
 
 package org.wso2.carbon.utils.logging;
 
-import org.apache.log4j.AppenderSkeleton;
+/*import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.LogLog;
@@ -46,8 +46,10 @@ import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Message;*/
 
+
+import org.apache.log4j.AppenderSkeleton;
 
 /**
  * IMAppender appends tracing requests through instant
@@ -57,8 +59,11 @@ import org.jivesoftware.smack.packet.Message;
  * @version $Revision: 1.2 $
  */
 
-public class IMAppender extends AppenderSkeleton {
+public abstract class IMAppender extends AppenderSkeleton {
+    //TODO : kernel-merge
+    // commented out the whole class
 
+/*
     // ----------------------------------------------- Variables
 
     private static final int BUFFER_SIZE = 16;
@@ -81,11 +86,11 @@ public class IMAppender extends AppenderSkeleton {
 
     // -------------------------------------------- Constructors
 
-    /**
+    *//**
      * The default constructor will instantiate the appender with a
      * default TriggeringEventEvaluator that will trigger on events
      * with level ERROR or higher.
-     */
+     *//*
     public IMAppender() {
         this(new DefaultEvaluator());
     }
@@ -168,13 +173,13 @@ public class IMAppender extends AppenderSkeleton {
         this.bufferSize = bufferSize;
     }
 
-    /**
+    *//**
      * The <b>EvaluatorClass</b> option takes a string value
      * representing the name of the class implementing the {@link
      * TriggeringEventEvaluator} interface. A corresponding object will
      * be instantiated and assigned as the triggering event evaluator
      * for the SMTPAppender.
-     */
+     *//*
     public void setEvaluatorClass(String value) {
         evaluator = (TriggeringEventEvaluator)
                 OptionConverter.instantiateByClassName(value,
@@ -187,10 +192,10 @@ public class IMAppender extends AppenderSkeleton {
 
     // ---------------------------------- Log4j callback methods
 
-    /**
+    *//**
      * Options are activated and become effective only after calling
      * this method.
-     */
+     *//*
     public void activateOptions() {
         try {
             cb = new CyclicBuffer(bufferSize);
@@ -230,10 +235,10 @@ public class IMAppender extends AppenderSkeleton {
     }
 
 
-    /**
+    *//**
      * Close this IMAppender. Closing all resources used by the
      * appender. A closed appender cannot be re-opened.
-     */
+     *//*
     public synchronized void close() {
         if (this.closed) {
             return;
@@ -255,11 +260,11 @@ public class IMAppender extends AppenderSkeleton {
     }
 
 
-    /**
+    *//**
      * This method called by {@link AppenderSkeleton#doAppend} method
      * does most of the real appending work. Adds the event to a buffer
      * and checks if the event triggers a message to be sent.
-     */
+     *//*
     public void append(LoggingEvent event) {
 
         // check pre-conditions
@@ -274,9 +279,9 @@ public class IMAppender extends AppenderSkeleton {
     }
 
 
-    /**
+    *//**
      * Send the contents of the cyclic buffer as an IM message.
-     */
+     *//*
     protected void sendBuffer() {
         try {
             StringBuffer buf = new StringBuffer();
@@ -310,13 +315,13 @@ public class IMAppender extends AppenderSkeleton {
     }
 
 
-    /**
+    *//**
      * This method determines if there is a sense in attempting to append.
      * <p/>
      * <p>It checks whether there is an output chat available  and also if
      * there is a set layout. If these checks fail, then the boolean
      * value <code>false</code> is returned.
-     */
+     *//*
     protected boolean checkEntryConditions() {
         if ((this.chat == null) && (this.groupchat == null)) {
             errorHandler.error("Chat object not configured");
@@ -331,11 +336,11 @@ public class IMAppender extends AppenderSkeleton {
     }
 
 
-    /**
+    *//**
      * The IMAppender requires a layout. Hence, this method returns
      * <code>true</code>.
-     */
+     *//*
     public boolean requiresLayout() {
         return true;
-    }
+    }*/
 }

@@ -22,8 +22,8 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpService;
 import org.wso2.carbon.base.api.ServerConfigurationService;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.user.api.RealmService;
 
 /**
  * This singleton data holder contains all the data required by the Carbon core OSGi bundle
@@ -33,8 +33,8 @@ public class CarbonCoreDataHolder {
     private  Log log = LogFactory.getLog(CarbonCoreDataHolder.class);
 
     private  BundleContext bundleContext;
-    private  RealmService realmService;
-    private  RegistryService registryService;
+    private RealmService realmService;
+    private RegistryService registryService;
     private  HttpService httpService;
     private  ListenerManager listenerManager;
     private  ConfigurationContext mainServerConfigContext;

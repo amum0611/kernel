@@ -30,10 +30,10 @@ import org.wso2.carbon.core.transports.CarbonHttpResponse;
 import org.wso2.carbon.core.transports.HttpGetRequestProcessor;
 import org.wso2.carbon.core.util.KeyStoreManager;
 import org.wso2.carbon.core.util.KeyStoreUtil;
-import org.wso2.carbon.registry.core.Association;
-import org.wso2.carbon.registry.core.Registry;
-import org.wso2.carbon.registry.core.Resource;
-import org.wso2.carbon.registry.core.service.RegistryService;
+import org.wso2.carbon.registry.api.Association;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.registry.api.Resource;
 
 import java.io.IOException;
 import java.io.OutputStream;

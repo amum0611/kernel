@@ -36,8 +36,6 @@ import org.wso2.carbon.application.deployer.internal.ApplicationManager;
 import org.wso2.carbon.application.deployer.persistence.CarbonAppPersistenceManager;
 import org.wso2.carbon.base.ServerConfiguration;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.feature.mgt.core.util.ProvisioningUtils;
-import org.wso2.carbon.roles.mgt.ServerRoleConstants;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
@@ -353,9 +351,9 @@ public final class AppDeployerUtils {
      * @return server roles array
      */
     public static String[] readServerRoles(CarbonAppPersistenceManager capm) {
-        String[] serverRoles;
+        String[] serverRoles = new String[0];
         // read the system property
-        String temp = System.getProperty(AppDeployerConstants.SERVER_ROLES_CMD_OPTION);
+        /*String temp = System.getProperty(AppDeployerConstants.SERVER_ROLES_CMD_OPTION);
         if (temp != null) {
             serverRoles = temp.split(",");
         } else if(capm.areRolesOverridden()) {
@@ -368,7 +366,7 @@ public final class AppDeployerUtils {
             // now try to read from carbon.xml
             ServerConfiguration serverConfig = ServerConfiguration.getInstance();
             serverRoles = serverConfig.getProperties(AppDeployerConstants.CARBON_SERVER_ROLE);
-        }
+        }*/     //TODO : kernel-merge
         return serverRoles;
     }
 
@@ -540,14 +538,14 @@ public final class AppDeployerUtils {
      * @return - true if all are installed, else false
      */
     public static boolean areAllFeaturesInstalled(List<Feature> features) {
-        for (Feature feature : features) {
+        /*for (Feature feature : features) {
 
         IQuery<IInstallableUnit> query = QueryUtil.createIUQuery(feature.getId(), feature.getVersionRange());
         IInstallableUnit[] installableUnits = ProvisioningUtils.getProfile().query(query, null).toArray(IInstallableUnit.class);
             if (installableUnits == null || installableUnits.length == 0) {
                 return false;
             }
-        }
+        }*/    // TODO: kernel-merge
         return true;
     }
 

@@ -39,9 +39,9 @@ import org.wso2.carbon.core.persistence.file.AbstractFilePersistenceManager;
 import org.wso2.carbon.core.persistence.file.ModuleFilePersistenceManager;
 import org.wso2.carbon.core.persistence.file.ServiceGroupFilePersistenceManager;
 import org.wso2.carbon.core.util.ParameterUtil;
-import org.wso2.carbon.registry.core.Registry;
-import org.wso2.carbon.registry.core.Resource;
-import org.wso2.carbon.registry.core.exceptions.RegistryException;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryException;
+import org.wso2.carbon.registry.api.Resource;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -422,7 +422,7 @@ public abstract class AbstractPersistenceManager {
      * @param resourceXPath  - resource path of the AxisDescription
      * @throws PersistenceDataNotFoundException
      *          error in persisting data
-     * @throws org.wso2.carbon.registry.core.exceptions.RegistryException
+     * @throws RegistryException
      *          reg ex
      */
     protected void loadDocumentation(String serviceGroupId, AxisDescription ad, String resourceXPath)
@@ -677,7 +677,7 @@ public abstract class AbstractPersistenceManager {
         } catch (Exception e) {
             String msg = "Error persisting caching policy in the configRegistry.";
             log.error(msg, e);
-            configRegistry.rollbackTransaction();
+            //configRegistry.rollbackTransaction();    // TODO : kernel-merge
             throw new RegistryException(e.getMessage(), e);
         }
     }

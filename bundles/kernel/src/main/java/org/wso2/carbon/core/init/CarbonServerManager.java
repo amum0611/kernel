@@ -73,12 +73,11 @@ import org.wso2.carbon.core.transports.TransportPersistenceManager;
 import org.wso2.carbon.core.util.HouseKeepingTask;
 import org.wso2.carbon.core.util.ParameterUtil;
 import org.wso2.carbon.core.util.Utils;
-import org.wso2.carbon.registry.core.Registry;
-import org.wso2.carbon.registry.core.Resource;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.registry.core.session.UserRegistry;
-import org.wso2.carbon.user.core.UserRealm;
-import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.registry.api.Registry;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.registry.api.Resource;
+import org.wso2.carbon.user.api.RealmService;
+import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.utils.Axis2ConfigItemHolder;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.ConfigurationContextService;
@@ -483,7 +482,7 @@ public final class CarbonServerManager implements Controllable {
 
             if (CarbonUtils.useRegistryBasedRepository()) {
                 log.info("Using registry based repository");
-                UserRegistry userRegistry =
+                Registry userRegistry =
                         CarbonCoreDataHolder.getInstance().getRegistryService().getLocalRepository();
                 RegistryBasedRepositoryUpdater.scheduleAtFixedRate(userRegistry,
                         "/repository/deployment/server",
