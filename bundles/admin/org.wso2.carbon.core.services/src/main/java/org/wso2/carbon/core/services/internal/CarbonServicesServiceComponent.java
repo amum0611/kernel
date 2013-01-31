@@ -28,18 +28,18 @@ import org.wso2.carbon.core.services.callback.LoginSubscriptionManagerService;
 import org.wso2.carbon.core.services.callback.LoginSubscriptionManagerServiceImpl;
 import org.wso2.carbon.core.services.filedownload.FileDownloadService;
 import org.wso2.carbon.core.services.fileupload.FileUploadService;
-import org.wso2.carbon.registry.core.service.RegistryService;
-import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.registry.api.RegistryService;
+import org.wso2.carbon.user.api.RealmService;
 import org.wso2.carbon.utils.ConfigurationContextService;
 
 /**
  * @scr.component name="core.services.dscomponent" immediate="true"
  * @scr.reference name="registry.service"
- *                interface="org.wso2.carbon.registry.core.service.RegistryService"
+ *                interface="org.wso2.carbon.registry.api.RegistryService"
  *                cardinality="1..1" policy="dynamic" bind="setRegistryService"
  *                unbind="unsetRegistryService"
  * @scr.reference name="user.realmservice.default"
- *                interface="org.wso2.carbon.user.core.service.RealmService"
+ *                interface="org.wso2.carbon.user.api.RealmService"
  *                cardinality="1..1" policy="dynamic" bind="setRealmService"
  *                unbind="unsetRealmService"
  * @scr.reference name="server.configuration"
