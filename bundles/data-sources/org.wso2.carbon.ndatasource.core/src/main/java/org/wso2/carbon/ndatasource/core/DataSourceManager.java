@@ -18,13 +18,10 @@ package org.wso2.carbon.ndatasource.core;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.ndatasource.common.DataSourceConstants;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.ndatasource.common.spi.DataSourceReader;
 import org.wso2.carbon.ndatasource.core.utils.DataSourceUtils;
-import org.wso2.carbon.utils.CarbonUtils;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 import javax.xml.bind.JAXBContext;
 import java.io.File;
@@ -59,12 +56,12 @@ public class DataSourceManager {
 		return instance;
 	}
 	
-	public DataSourceRepository getDataSourceRepository() throws DataSourceException {
+	/*public DataSourceRepository getDataSourceRepository() throws DataSourceException {
 		int tenantId = PrivilegedCarbonContext.getCurrentContext().getTenantId();
 		return this.getDataSourceRepository(tenantId);
-	}
+	}*/
 	
-	private synchronized DataSourceRepository getDataSourceRepository(int tenantId) 
+	private synchronized DataSourceRepository getDataSourceRepository(int tenantId)
 			throws DataSourceException {
 		DataSourceRepository dsRepo = this.dsRepoMap.get(tenantId);
 		if (dsRepo == null) {
@@ -87,12 +84,12 @@ public class DataSourceManager {
 	 * @param tenantId The tenant id of the tenant to be initialized
 	 * @throws DataSourceException
 	 */
-	public void initTenant(int tenantId) throws DataSourceException {
+	/*public void initTenant(int tenantId) throws DataSourceException {
 		if (!this.isDSRepoUserDSInitialized(tenantId)) {
 		    this.getDataSourceRepository(tenantId).initRepository();
 		    this.userDSRepoInitMap.put(tenantId, true);
 		}
-	}
+	}*/
 	
 	private synchronized boolean isDSRepoUserDSInitialized(int tenantId) {
 		Boolean result = this.userDSRepoInitMap.get(tenantId);
@@ -101,13 +98,12 @@ public class DataSourceManager {
 	
 	/**
 	 * Unloads the user data sources from a specific tenant.
-	 * @param tenantId The tenant id of the tenant to be unloaded
 	 * @throws DataSourceException
 	 */
-	public void unloadTenant(int tenantId) throws DataSourceException {
+	/*public void unloadTenant(int tenantId) throws DataSourceException {
 		this.getDataSourceRepository(tenantId).unregisterAllUserDataSources();
 		this.removeDataSourceRepository(tenantId);
-	}
+	}*/
 	
 	public List<String> getDataSourceTypes() throws DataSourceException {
 		if (this.dsReaders == null) {
@@ -145,7 +141,7 @@ public class DataSourceManager {
 	 */
 	public void initSystemDataSources() throws DataSourceException {
 		try {
-			String dataSourcesDir = CarbonUtils.getCarbonConfigDirPath() + File.separator + 
+			String dataSourcesDir = DataSourceUtils.getCarbonConfigDirPath() + File.separator +
 					DataSourceConstants.DATASOURCES_DIRECTORY_NAME;
 			File masterDSFile = new File(dataSourcesDir + File.separator + 
 					DataSourceConstants.MASTER_DS_FILE_NAME);
@@ -171,7 +167,7 @@ public class DataSourceManager {
 		try {
 		    JAXBContext ctx = JAXBContext.newInstance(SystemDataSourcesConfiguration.class);
             Document doc = DataSourceUtils.convertToDocument(sysDSFile);
-            DataSourceUtils.secureResolveDocument(doc, true);
+            //DataSourceUtils.secureResolveDocument(doc, true);
 		    SystemDataSourcesConfiguration sysDS = (SystemDataSourcesConfiguration) ctx.createUnmarshaller().
 		    		unmarshal(doc);
 		    this.addDataSourceProviders(sysDS.getProviders());

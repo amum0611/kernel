@@ -21,18 +21,20 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+/*
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.core.util.CryptoException;
 import org.wso2.carbon.core.util.CryptoUtil;
 import org.wso2.carbon.ndatasource.common.DataSourceConstants;
+*/
 import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.ndatasource.core.DataSourceMetaInfo;
-import org.wso2.carbon.ndatasource.core.internal.DataSourceServiceComponent;
+/*import org.wso2.carbon.ndatasource.core.internal.DataSourceServiceComponent;
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;*/
 import org.wso2.securevault.SecretResolver;
 import org.wso2.securevault.SecretResolverFactory;
 
@@ -72,10 +74,30 @@ public class DataSourceUtils {
     public static String getCurrentDataSourceId() {
     	return dataSourceId.get();
     }
-	
-	public static Registry getConfRegistryForTenant(int tenantId) throws DataSourceException {
+
+    public static String getCarbonConfigDirPath() {
+        String carbonConfigDirPath = System.getProperty("carbon.config.dir.path");
+        if (carbonConfigDirPath == null) {
+            carbonConfigDirPath = System.getenv("CARBON_CONFIG_DIR_PATH");
+            if (carbonConfigDirPath == null) {
+                return getCarbonHome() + File.separator + "repository" + File.separator + "conf";
+            }
+        }
+        return carbonConfigDirPath;
+    }
+
+    public static String getCarbonHome() {
+        String carbonHome = System.getProperty("carbon.home");
+        if (carbonHome == null) {
+            carbonHome = System.getenv("CARBON_HOME");
+            System.setProperty("carbon.home", carbonHome);
+        }
+        return carbonHome;
+    }
+
+	/*public static Registry getConfRegistryForTenant(int tenantId) throws DataSourceException {
 		try {
-			/* be super tenant to retrieve the registry of a given tenant id */
+			*//* be super tenant to retrieve the registry of a given tenant id *//*
 			PrivilegedCarbonContext.startTenantFlow();
 			PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(
 					MultitenantConstants.SUPER_TENANT_ID);
@@ -85,14 +107,14 @@ public class DataSourceUtils {
 			throw new DataSourceException("Error in retrieving conf registry instance: " + 
 		            e.getMessage(), e);
 		} finally {
-			/* go out of being super tenant */
+			*//* go out of being super tenant *//*
 			PrivilegedCarbonContext.endTenantFlow();
 		}
-	}
+	}*/
 	
-	public static Registry getGovRegistryForTenant(int tenantId) throws DataSourceException {
+	/*public static Registry getGovRegistryForTenant(int tenantId) throws DataSourceException {
 		try {
-			/* be super tenant to retrieve the registry of a given tenant id */
+			*//* be super tenant to retrieve the registry of a given tenant id *//*
 			PrivilegedCarbonContext.startTenantFlow();
 			PrivilegedCarbonContext.getCurrentContext().setTenantId(
 					MultitenantConstants.SUPER_TENANT_ID);
@@ -102,10 +124,10 @@ public class DataSourceUtils {
 			throw new DataSourceException("Error in retrieving gov registry instance: " + 
 		            e.getMessage(), e);
 		} finally {
-			/* go out of being super tenant */
+			*//* go out of being super tenant *//*
 			PrivilegedCarbonContext.endTenantFlow();
 		}
-	}
+	}*/
 	
 	public static boolean nullAllowEquals(Object lhs, Object rhs) {
 		if (lhs == null && rhs == null) {
@@ -146,16 +168,16 @@ public class DataSourceUtils {
 		}
 	}
 	
-	private static synchronized String loadFromSecureVault(String alias) {
+	/*private static synchronized String loadFromSecureVault(String alias) {
 		if (secretResolver == null) {
 		    secretResolver = SecretResolverFactory.create((OMElement) null, false);
 		    secretResolver.init(DataSourceServiceComponent.
 		    		getSecretCallbackHandlerService().getSecretCallbackHandler());
 		}
 		return secretResolver.resolve(alias);
-	}
+	}*/
 
-    private static void secureLoadElement(Element element, boolean checkSecureVault) 
+    /*private static void secureLoadElement(Element element, boolean checkSecureVault)
 			throws CryptoException {
 		if (checkSecureVault) {
 			Attr secureAttr = element.getAttributeNodeNS(DataSourceConstants.SECURE_VAULT_NS,
@@ -185,9 +207,9 @@ public class DataSourceUtils {
 				secureLoadElement((Element) tmpNode, checkSecureVault);
 			}
 		}
-	}
+	}*/
 	
-	public static void secureSaveElement(Element element) throws CryptoException {
+	/*public static void secureSaveElement(Element element) throws CryptoException {
 		String encryptedStr = element.getAttribute(DataSourceConstants.ENCRYPTED_ATTR_NAME);
 		if (encryptedStr != null) {
 		    boolean encrypted = Boolean.parseBoolean(encryptedStr);
@@ -207,9 +229,9 @@ public class DataSourceUtils {
 				secureSaveElement((Element) tmpNode);
 			}
 		}
-	}
+	}*/
 	
-	public static void secureResolveDocument(Document doc, boolean checkSecureVault)
+	/*public static void secureResolveDocument(Document doc, boolean checkSecureVault)
             throws DataSourceException {
         Element element = doc.getDocumentElement();
 		if (element != null) {
@@ -220,7 +242,7 @@ public class DataSourceUtils {
 			            e.getMessage(), e);
 			}
 		}
-    }
+    }*/
 
     public static Document convertToDocument(File file) throws DataSourceException {
         DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();

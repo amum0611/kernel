@@ -15,18 +15,18 @@
  */
 package org.wso2.carbon.ndatasource.core.services;
 
-import org.w3c.dom.Element;
+/*import org.w3c.dom.Element;
 import org.wso2.carbon.ndatasource.core.DataSourceMetaInfo;
 import org.wso2.carbon.ndatasource.core.JNDIConfig;
 import org.wso2.carbon.ndatasource.core.DataSourceMetaInfo.DataSourceDefinition;
-import org.wso2.carbon.ndatasource.core.utils.DataSourceUtils;
+import org.wso2.carbon.ndatasource.core.utils.DataSourceUtils;*/
 
 /**
  * This is a bean class to contain the DataSourceMetaInfo in a web services context.
  */
-public class WSDataSourceMetaInfo {
+public class WSDataSourceMetaInfo { }
 
-	private String name;
+	/*private String name;
 	
 	private String description;
 	
@@ -97,9 +97,9 @@ public class WSDataSourceMetaInfo {
 		this.definition = definition;
 	}
 
-	/**
+	*//**
 	 * This is a bean class to contain the DataSourceDefinition in a web services context.
-	 */
+	 *//*
 	public static class WSDataSourceDefinition {
 		
         private String type;
@@ -141,4 +141,4 @@ public class WSDataSourceMetaInfo {
 		
 	}
 	
-}
+}*/

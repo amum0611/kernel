@@ -15,14 +15,28 @@
  */
 package org.wso2.carbon.ndatasource.rdbms.utils;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tomcat.jdbc.pool.PoolConfiguration;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.ndatasource.rdbms.RDBMSConfiguration;
 import org.wso2.carbon.ndatasource.rdbms.RDBMSConfiguration.DataSourceProperty;
 import org.wso2.carbon.ndatasource.rdbms.RDBMSDataSourceConstants;
 import org.wso2.carbon.ndatasource.rdbms.RDBMSDataSourceConstants.TX_ISOLATION_LEVELS;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
@@ -56,7 +70,103 @@ public class RDBMSDataSourceUtils {
 			}
 		}
 	}
-	
+
+    public static String replaceSystemVariablesInXml(String xmlConfiguration) throws Exception {
+        InputStream in = replaceSystemVariablesInXml(new ByteArrayInputStream(xmlConfiguration.getBytes()));
+        try {
+            xmlConfiguration = IOUtils.toString(in);
+        } catch (IOException e) {
+            throw new Exception("Error in converting InputStream to String");
+        }
+        return xmlConfiguration;
+    }
+
+    /**
+     *
+     * @param xmlConfiguration InputStream that carries xml configuration
+     * @return returns a InputStream that has evaluated system variables in input
+     */
+    public static InputStream replaceSystemVariablesInXml(InputStream xmlConfiguration) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        Document doc;
+        try {
+            builder = factory.newDocumentBuilder();
+            doc = builder.parse(xmlConfiguration);
+        } catch (Exception e) {
+            throw new Exception("Error in building Document", e);
+        }
+        NodeList nodeList = null;
+        if (doc != null) {
+            nodeList = doc.getElementsByTagName("*");
+        }
+        if (nodeList != null) {
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                resolveLeafNodeValue(nodeList.item(i));
+            }
+        }
+        return toInputStream(doc);
+    }
+
+    public static InputStream toInputStream(Document doc) throws Exception {
+        InputStream in;
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Source xmlSource = new DOMSource(doc);
+            Result result = new StreamResult(outputStream);
+            TransformerFactory.newInstance().newTransformer().transform(xmlSource, result);
+            in = new ByteArrayInputStream(outputStream.toByteArray());
+        } catch (TransformerException e) {
+            throw new Exception("Error in transforming DOM to InputStream", e);
+        }
+        return in;
+    }
+
+    public static void resolveLeafNodeValue(Node node) {
+        if (node != null) {
+            Element element = (Element) node;
+            NodeList childNodeList = element.getChildNodes();
+            for (int j = 0; j < childNodeList.getLength(); j++) {
+                Node chileNode = childNodeList.item(j);
+                if (!chileNode.hasChildNodes()) {
+                    String nodeValue = resolveSystemProperty(chileNode.getTextContent());
+                    childNodeList.item(j).setTextContent(nodeValue);
+                } else {
+                    resolveLeafNodeValue(chileNode);
+                }
+            }
+        }
+    }
+
+    public static String resolveSystemProperty(String text) {
+        int indexOfStartingChars = -1;
+        int indexOfClosingBrace;
+
+        // The following condition deals with properties.
+        // Properties are specified as ${system.property},
+        // and are assumed to be System properties
+        while (indexOfStartingChars < text.indexOf("${")
+                && (indexOfStartingChars = text.indexOf("${")) != -1
+                && (indexOfClosingBrace = text.indexOf('}')) != -1) { // Is a
+            // property
+            // used?
+            String sysProp = text.substring(indexOfStartingChars + 2,
+                    indexOfClosingBrace);
+            String propValue = System.getProperty(sysProp);
+            if (propValue != null) {
+                text = text.substring(0, indexOfStartingChars) + propValue
+                        + text.substring(indexOfClosingBrace + 1);
+            }
+            if (sysProp.equals("carbon.home") && propValue != null
+                    && propValue.equals(".")) {
+
+                text = new File(".").getAbsolutePath() + File.separator + text;
+
+            }
+        }
+        return text;
+    }
+
 	private static Object convertStringToGivenType(Object value, Class<?> type) 
 			throws DataSourceException {
 		if (String.class.equals(type) || Properties.class.equals(type)) {

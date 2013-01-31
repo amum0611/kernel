@@ -15,26 +15,16 @@
  */
 package org.wso2.carbon.ndatasource.core;
 
-import org.apache.axis2.clustering.ClusteringAgent;
-import org.apache.axis2.clustering.ClusteringFault;
-import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.ndatasource.common.DataSourceConstants;
 import org.wso2.carbon.ndatasource.common.DataSourceConstants.DataSourceStatusModes;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.ndatasource.common.spi.DataSourceReader;
 import org.wso2.carbon.ndatasource.core.internal.DataSourceServiceComponent;
 import org.wso2.carbon.ndatasource.core.utils.DataSourceUtils;
-import org.wso2.carbon.registry.api.Collection;
-import org.wso2.carbon.registry.api.Resource;
-import org.wso2.carbon.registry.core.Registry;
-import org.wso2.carbon.registry.core.exceptions.RegistryException;
-import org.wso2.carbon.registry.core.exceptions.ResourceNotFoundException;
-import org.wso2.carbon.utils.ConfigurationContextService;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -56,9 +46,7 @@ public class DataSourceRepository {
 	private static Log log = LogFactory.getLog(DataSourceRepository.class);
 	
 	private int tenantId;
-	
-	private Registry registry;
-	
+
 	private Map<String, CarbonDataSource> dataSources;
 	
 	private Marshaller dsmMarshaller;
@@ -89,20 +77,10 @@ public class DataSourceRepository {
 	 * @throws DataSourceException
 	 */
 	public void initRepository() throws DataSourceException {
-		this.refreshAllUserDataSources();
+		//this.refreshAllUserDataSources();
 	}
 	
-	private synchronized Registry getRegistry() throws DataSourceException {
-		if (this.registry == null) {
-		    this.registry = DataSourceUtils.getConfRegistryForTenant(this.getTenantId());
-		    if (log.isDebugEnabled()) {
-		        log.debug("[datasources] Retrieving the governance registry for tenant: " +
-		                this.getTenantId());
-		    }
-		}
-		return registry;
-	}
-	
+
 	private String resourceNameFromPath(String path) {
 		return path.substring(path.lastIndexOf('/') + 1);
 	}
@@ -111,19 +89,19 @@ public class DataSourceRepository {
 	 * Reloads all the data sources from the repository.
 	 * @throws DataSourceException
 	 */
-	public void refreshAllUserDataSources() throws DataSourceException {
+	/*public void refreshAllUserDataSources() throws DataSourceException {
 		this.updateAllUserDataSource(false);
-	}
+	}*/
 	
 	/**
 	 * Unregisters all the data sources from the repository.
 	 * @throws DataSourceException
 	 */
-	public void unregisterAllUserDataSources() throws DataSourceException {
+	/*public void unregisterAllUserDataSources() throws DataSourceException {
 		this.updateAllUserDataSource(true);
-	}
+	}*/
 	
-	private void updateAllUserDataSource(boolean unregister) throws DataSourceException {
+	/*private void updateAllUserDataSource(boolean unregister) throws DataSourceException {
 		try {
 			if (this.getRegistry().resourceExists(
 					DataSourceConstants.DATASOURCES_REPOSITORY_BASE_PATH)) {
@@ -143,21 +121,20 @@ public class DataSourceRepository {
 			throw new DataSourceException(
 					"Error in getting all data sources from repository: " + e.getMessage(), e);
 		}
-	}
+	}*/
 	
 	/**
 	 * Reloads only a specific given data source.
-	 * @param dsName The name of the data source to be loaded.
 	 * @throws DataSourceException
 	 */
-	public void refreshUserDataSource(String dsName) throws DataSourceException {
+	/*public void refreshUserDataSource(String dsName) throws DataSourceException {
 		if (log.isDebugEnabled()) {
 			log.debug("Refreshing data source: " + dsName);
 		}
 		this.updateDataSource(dsName, false);
-	}
+	}*/
 	
-	private synchronized void updateDataSource(String dsName, 
+	/*private synchronized void updateDataSource(String dsName,
 			boolean unregister) throws DataSourceException {
 		String dsmPath = DataSourceConstants.DATASOURCES_REPOSITORY_BASE_PATH + "/" + dsName;
 		try {
@@ -186,7 +163,7 @@ public class DataSourceRepository {
 			throw new DataSourceException("Error in updating data source '" + dsName + 
 					"' from registry [remove:" + unregister +"]: " + e.getMessage(), e);
 		}
-	}
+	}*/
 	
 	private Object createDataSourceObject(DataSourceMetaInfo dsmInfo, boolean isUseDataSourceFactory) 
 			throws DataSourceException {
@@ -241,8 +218,8 @@ public class DataSourceRepository {
 	private void registerJNDI(DataSourceMetaInfo dsmInfo, Object dsObject) 
 			throws DataSourceException {
 		try {
-			PrivilegedCarbonContext.startTenantFlow();
-			PrivilegedCarbonContext.getCurrentContext().setTenantId(this.getTenantId());
+			/*PrivilegedCarbonContext.startTenantFlow();
+			PrivilegedCarbonContext.getCurrentContext().setTenantId(this.getTenantId());*/
 		    JNDIConfig jndiConfig = dsmInfo.getJndiConfig();
 		    if (jndiConfig == null) {
 			    return;
@@ -263,14 +240,14 @@ public class DataSourceRepository {
 		                jndiConfig.getName() + "' - " + e.getMessage(), e);
 			}
 		} finally {
-			PrivilegedCarbonContext.endTenantFlow();
+			/*PrivilegedCarbonContext.endTenantFlow();*/
 		}
 	}
 	
 	private void unregisterJNDI(DataSourceMetaInfo dsmInfo) {
 		try {
-			PrivilegedCarbonContext.startTenantFlow();
-			PrivilegedCarbonContext.getCurrentContext().setTenantId(this.getTenantId());
+			/*PrivilegedCarbonContext.startTenantFlow();
+			PrivilegedCarbonContext.getCurrentContext().setTenantId(this.getTenantId());*/
 			JNDIConfig jndiConfig = dsmInfo.getJndiConfig();
 		    if (jndiConfig == null) {
 			    return;
@@ -283,11 +260,11 @@ public class DataSourceRepository {
 		                jndiConfig.getName() + " - " + e.getMessage(), e);
 		    }
 		} finally {
-			PrivilegedCarbonContext.endTenantFlow();
+			/*PrivilegedCarbonContext.endTenantFlow();*/
 		}
 	}
 	
-	private void removePersistedDataSource(String dsName) throws DataSourceException {
+	/*private void removePersistedDataSource(String dsName) throws DataSourceException {
 		try {
 			this.getRegistry().beginTransaction();
 			String path = DataSourceConstants.DATASOURCES_REPOSITORY_BASE_PATH + "/" + dsName;
@@ -305,9 +282,9 @@ public class DataSourceRepository {
 			throw new DataSourceException("Error in removing data source: " + dsName + 
 					" - " + e.getMessage(), e);
 		}
-	}
+	}*/
 	
-	private void persistDataSource(DataSourceMetaInfo dsmInfo) throws DataSourceException {
+	/*private void persistDataSource(DataSourceMetaInfo dsmInfo) throws DataSourceException {
 		try {
 			Element element = DataSourceUtils.
 					convertDataSourceMetaInfoToElement(dsmInfo, this.getDSMMarshaller());
@@ -321,7 +298,7 @@ public class DataSourceRepository {
 			throw new DataSourceException("Error in persisting data source: " + 
 		            dsmInfo.getName() + " - " + e.getMessage(), e);
 		}
-	}
+	}*/
 	
 	private void unregisterDataSource(String dsName) {
 		CarbonDataSource cds = this.getDataSource(dsName);
@@ -373,7 +350,7 @@ public class DataSourceRepository {
 		this.dataSources.put(cds.getDSMInfo().getName(), cds);
 	}
 
-	private void notifyClusterDSChange(String dsName) throws DataSourceException {
+	/*private void notifyClusterDSChange(String dsName) throws DataSourceException {
 		if (log.isDebugEnabled()) {
 			log.debug("Notifying cluster DS change: " + dsName);
 		}
@@ -399,9 +376,9 @@ public class DataSourceRepository {
 						e.getMessage(), e);
 			}
 		}
-	}
+	}*/
 	
-	private DataSourceMetaInfo getDataSourceMetaInfoFromRegistryPath(String path)
+	/*private DataSourceMetaInfo getDataSourceMetaInfoFromRegistryPath(String path)
 			throws DataSourceException, Exception {
         InputStream in = null;
 		try {
@@ -411,14 +388,14 @@ public class DataSourceRepository {
 			    try {
 			    	resource = this.getRegistry().get(path);
 			    } catch (ResourceNotFoundException e) {
-			    	/* this step is as a precaution, because sometimes even though the
-			    	 * resource is deleted, "resourceExists" returns true */
+			    	*//* this step is as a precaution, because sometimes even though the
+			    	 * resource is deleted, "resourceExists" returns true *//*
 					return null;
 				}
 			    in = resource.getContentStream();
                 Document doc = DataSourceUtils.convertToDocument(in);
-                /* only super tenant will lookup secure vault information for system data sources,
-			     * others are not allowed to */
+                *//* only super tenant will lookup secure vault information for system data sources,
+			     * others are not allowed to *//*
                 DataSourceUtils.secureResolveDocument(doc, false);
                 this.getRegistry().commitTransaction();
 			    return (DataSourceMetaInfo) this.getDSMUnmarshaller().unmarshal(doc);
@@ -433,7 +410,7 @@ public class DataSourceRepository {
                 in.close();
             }
         }
-	}
+	}*/
 	
 	private Unmarshaller getDSMUnmarshaller() {
 		return dsmUnmarshaller;
@@ -468,13 +445,8 @@ public class DataSourceRepository {
 		if (log.isDebugEnabled()) {
 			log.debug("Adding data source: " + dsmInfo.getName());
 		}
-		if (!dsmInfo.isSystem()) {
-		    this.persistDataSource(dsmInfo);
-		}
 		this.registerDataSource(dsmInfo);
-		if (!dsmInfo.isSystem()) {
-		    this.notifyClusterDSChange(dsmInfo.getName());
-		}
+
 	}
 	
 	/**
@@ -492,9 +464,7 @@ public class DataSourceRepository {
 		if (cds.getDSMInfo().isSystem()) {
 			throw new DataSourceException("System data sources cannot be deleted: " + dsName);
 		}
-		this.removePersistedDataSource(dsName);
 		this.unregisterDataSource(dsName);
-		this.notifyClusterDSChange(dsName);
 	}
 	
 	/**

@@ -23,9 +23,9 @@ import org.wso2.carbon.ndatasource.common.DataSourceException;
 /**
  * This class represents the data source OSGi service.
  */
-public class DataSourceService {
+public class DataSourceService { }
 	
-	public List<CarbonDataSource> getAllDataSources() throws DataSourceException {
+	/*public List<CarbonDataSource> getAllDataSources() throws DataSourceException {
 		return new ArrayList<CarbonDataSource>(DataSourceManager.getInstance().
 				getDataSourceRepository().getAllDataSources());
 	}
@@ -66,4 +66,4 @@ public class DataSourceService {
 		DataSourceManager.getInstance().getDataSourceRepository().deleteDataSource(dsName);
 	}
 	
-}
+}*/

@@ -15,19 +15,21 @@
  */
 package org.wso2.carbon.ndatasource.core.services;
 
-import java.util.ArrayList;
+/*import java.util.ArrayList;
 import java.util.List;
 
 import org.wso2.carbon.core.AbstractAdmin;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.ndatasource.core.CarbonDataSource;
 import org.wso2.carbon.ndatasource.core.DataSourceInfo;
-import org.wso2.carbon.ndatasource.core.DataSourceManager;
+import org.wso2.carbon.ndatasource.core.DataSourceManager;*/
 
 /**
  * This class represents the admin service class for data sources.
  */
-public class NDataSourceAdminService extends AbstractAdmin {
+public class NDataSourceAdminService {} //TODO: kernel-merge
+
+        /*extends AbstractAdmin {
 
 	public WSDataSourceInfo[] getAllDataSources() throws DataSourceException {
 		List<WSDataSourceInfo> result = new ArrayList<WSDataSourceInfo>();
@@ -90,4 +92,4 @@ public class NDataSourceAdminService extends AbstractAdmin {
 				testDataSourceConnection(dsmInfo.extractDataSourceMetaInfo());
 	}
 	
-}
+}*/

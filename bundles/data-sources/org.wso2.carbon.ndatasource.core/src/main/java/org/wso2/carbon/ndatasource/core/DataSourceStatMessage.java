@@ -15,20 +15,22 @@
  */
 package org.wso2.carbon.ndatasource.core;
 
-import org.apache.axis2.clustering.ClusteringCommand;
+/*import org.apache.axis2.clustering.ClusteringCommand;
 import org.apache.axis2.clustering.ClusteringFault;
 import org.apache.axis2.clustering.ClusteringMessage;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.ndatasource.common.DataSourceException;
+import org.wso2.carbon.ndatasource.common.DataSourceException;*/
 
 /**
  * This class represents the cluster message used to notify the cluster nodes of
  * data source information changes.
  */
-public class DataSourceStatMessage extends ClusteringMessage {
+public class DataSourceStatMessage {} // TODO: kernel-merge
+
+        /*extends ClusteringMessage {
 
 	private static final long serialVersionUID = 8026941529427128824L;
 	
@@ -79,3 +81,4 @@ public class DataSourceStatMessage extends ClusteringMessage {
 	}
 	
 }
+*/

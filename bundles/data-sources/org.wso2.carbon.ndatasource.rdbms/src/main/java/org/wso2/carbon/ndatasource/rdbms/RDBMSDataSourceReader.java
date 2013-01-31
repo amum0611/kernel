@@ -17,7 +17,7 @@ package org.wso2.carbon.ndatasource.rdbms;
 
 import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.ndatasource.common.spi.DataSourceReader;
-import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.ndatasource.rdbms.utils.RDBMSDataSourceUtils;
 
 import javax.sql.DataSource;
 import javax.xml.bind.JAXBContext;
@@ -39,7 +39,7 @@ public class RDBMSDataSourceReader implements DataSourceReader {
 	public static RDBMSConfiguration loadConfig(String xmlConfiguration) 
 			throws DataSourceException {
 		try {
-            xmlConfiguration = CarbonUtils.replaceSystemVariablesInXml(xmlConfiguration);
+            xmlConfiguration = RDBMSDataSourceUtils.replaceSystemVariablesInXml(xmlConfiguration);
 		    JAXBContext ctx = JAXBContext.newInstance(RDBMSConfiguration.class);
 		    return (RDBMSConfiguration) ctx.createUnmarshaller().unmarshal(
 		    		new ByteArrayInputStream(xmlConfiguration.getBytes()));

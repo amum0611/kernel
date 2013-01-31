@@ -19,45 +19,28 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
-import org.wso2.carbon.base.MultitenantConstants;
+/*import org.wso2.carbon.base.MultitenantConstants;
 import org.wso2.carbon.base.api.ServerConfigurationService;
-import org.wso2.carbon.ndatasource.core.DataSourceAxis2ConfigurationContextObserver;
+import org.wso2.carbon.ndatasource.core.DataSourceAxis2ConfigurationContextObserver;*/
 import org.wso2.carbon.ndatasource.core.DataSourceManager;
 import org.wso2.carbon.ndatasource.core.DataSourceService;
-import org.wso2.carbon.registry.core.service.RegistryService;
+/*import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.securevault.SecretCallbackHandlerService;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.Axis2ConfigurationContextObserver;
-import org.wso2.carbon.utils.ConfigurationContextService;
+import org.wso2.carbon.utils.ConfigurationContextService;*/
 
-/**
-* @scr.component name="org.wso2.carbon.ndatasource" immediate="true"
-* @scr.reference name="registry.service"
-* interface="org.wso2.carbon.registry.core.service.RegistryService" cardinality="0..1"
-* policy="dynamic" bind="setRegistryService" unbind="unsetRegistryService"
-* @scr.reference name="secret.callback.handler.service"
-* interface="org.wso2.carbon.securevault.SecretCallbackHandlerService"
-* cardinality="1..1" policy="dynamic"
-* bind="setSecretCallbackHandlerService" unbind="unsetSecretCallbackHandlerService"
-* @scr.reference name="user.realmservice.default"
-* interface="org.wso2.carbon.user.core.service.RealmService" cardinality="0..1" policy="dynamic"
-* bind="setRealmService" unbind="unsetRealmService"
-* @scr.reference name="server.configuration.service" interface="org.wso2.carbon.base.api.ServerConfigurationService"
-* cardinality="0..1" policy="dynamic"  bind="setServerConfigurationService" unbind="unsetServerConfigurationService"
-* @scr.reference name="config.context.service" interface="org.wso2.carbon.utils.ConfigurationContextService"
-* cardinality="0..1" policy="dynamic"  bind="setConfigurationContextService" unbind="unsetConfigurationContextService" 
-*/
 public class DataSourceServiceComponent {
 	
 	private static final Log log = LogFactory.getLog(DataSourceServiceComponent.class);
 	
-	private static RegistryService registryService;
+	/*private static RegistryService registryService;
 	
 	private static RealmService realmService;
 		
 	private static SecretCallbackHandlerService secretCallbackHandlerService;
 	
-	private static ServerConfigurationService serverConfigurationService;
+	private static ServerConfigurationService serverConfigurationService;*/
 		
 	private DataSourceService dataSourceService;
 	
@@ -65,7 +48,7 @@ public class DataSourceServiceComponent {
 	
 	private boolean tenantUserDataSourcesInitialized;
 		
-	private static ConfigurationContextService configContextService;
+	//private static ConfigurationContextService configContextService;
 
 	protected synchronized void activate(ComponentContext ctx) {
 		this.ctx = ctx;
@@ -99,15 +82,15 @@ public class DataSourceServiceComponent {
 		BundleContext bundleContext = this.ctx.getBundleContext();
 		bundleContext.registerService(DataSourceService.class.getName(), 
 				this.getDataSourceService(), null);
-		bundleContext.registerService(Axis2ConfigurationContextObserver.class.getName(),
-                new DataSourceAxis2ConfigurationContextObserver(), null);
+		/*bundleContext.registerService(Axis2ConfigurationContextObserver.class.getName(),
+                new DataSourceAxis2ConfigurationCoJDBCTntextObserver(), null);*/
 	}
 	
 	public DataSourceService getDataSourceService() {
 		return dataSourceService;
 	}
 	
-    protected void setRealmService(RealmService realmService) {
+    /*protected void setRealmService(RealmService realmService) {
     	if (log.isDebugEnabled()) {
     		log.debug("RealmService acquired");
     	}
@@ -156,7 +139,7 @@ public class DataSourceServiceComponent {
     protected void unsetSecretCallbackHandlerService(
             SecretCallbackHandlerService secretCallbackHandlerService) {
     	DataSourceServiceComponent.secretCallbackHandlerService = null;
-    }
+    }*/
     
     private void initSystemDataSources() {
     	if (log.isDebugEnabled()) {
@@ -172,7 +155,7 @@ public class DataSourceServiceComponent {
 		}    	
     }
     
-    private synchronized void checkInitTenantUserDataSources() {
+    /*private synchronized void checkInitTenantUserDataSources() {
     	if (DataSourceServiceComponent.getRealmService() != null && 
     			DataSourceServiceComponent.getRegistryService() != null &&
     			DataSourceServiceComponent.getSecretCallbackHandlerService() != null && 
@@ -229,6 +212,6 @@ public class DataSourceServiceComponent {
     
 	public static ConfigurationContextService getConfigContextService() {
 		return configContextService;
-	}
+	}*/
 	
 }

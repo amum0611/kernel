@@ -15,15 +15,15 @@
  */
 package org.wso2.carbon.ndatasource.core.services;
 
-import org.wso2.carbon.ndatasource.core.DataSourceInfo;
-import org.wso2.carbon.ndatasource.core.DataSourceStatus;
+/*import org.wso2.carbon.ndatasource.core.DataSourceInfo;
+import org.wso2.carbon.ndatasource.core.DataSourceStatus;*/
 
 /**
  * This is a bean class to contain the DataSourceInfo in a web services context.
  */
-public class WSDataSourceInfo {
+public class WSDataSourceInfo {}
 
-	private DataSourceStatus dsStatus;
+	/*private DataSourceStatus dsStatus;
 	
 	private WSDataSourceMetaInfo dsMetaInfo;
 	
@@ -57,4 +57,4 @@ public class WSDataSourceInfo {
 		this.dsMetaInfo = dsMetaInfo;
 	}
 	
-}
+}*/

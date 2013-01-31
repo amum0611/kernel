@@ -15,18 +15,20 @@
  */
 package org.wso2.carbon.ndatasource.core;
 
-import org.apache.axis2.context.ConfigurationContext;
+/*import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
-import org.wso2.carbon.utils.AbstractAxis2ConfigurationContextObserver;
+import org.wso2.carbon.utils.AbstractAxis2ConfigurationContextObserver;*/
 
 /**
  * This class represents a configuration context observer, used to load the data sources, 
  * when a new tenant arrives.
  */
-public class DataSourceAxis2ConfigurationContextObserver extends
+public class DataSourceAxis2ConfigurationContextObserver {} // TODO: kernel-merge
+
+       /* extends
 		AbstractAxis2ConfigurationContextObserver {
 
 	private static final Log log = LogFactory.getLog(
@@ -53,4 +55,4 @@ public class DataSourceAxis2ConfigurationContextObserver extends
 		}
 	}
 	
-}
+}*/
