@@ -35,7 +35,7 @@ public class Log4jPropFileFragmentBundleCreator implements CarbonLaunchExtension
     private static String LOG4J_PROP_FILE_NAME = "log4j.properties";
     private static String FRAGMENT_BUNDLE_NAME = "org.wso2.carbon.logging.propfile";
     private static String FRAGMENT_BUNDLE_VERSION = "1.0.0";
-    private static String FRAGMENT_HOST_BUNDLE_NAME = "org.wso2.carbon.kernel";
+    private static String FRAGMENT_HOST_BUNDLE_NAME = "org.wso2.carbon.logging";
 
 
 
