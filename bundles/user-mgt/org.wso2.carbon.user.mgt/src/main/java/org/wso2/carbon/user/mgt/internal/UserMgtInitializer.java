@@ -19,7 +19,7 @@ package org.wso2.carbon.user.mgt.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
-import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.user.api.CarbonConstants;
 import org.wso2.carbon.registry.core.Collection;
 import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.service.RegistryService;

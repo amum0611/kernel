@@ -47,7 +47,7 @@ import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.config.RealmConfigXMLProcessor;
 import org.wso2.carbon.user.core.util.DatabaseUtil;
 import org.wso2.carbon.utils.DBUtils;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.user.api.MultitenantConstants;
 
 public class JDBCTenantManager implements TenantManager {
 	DataSource dataSource;

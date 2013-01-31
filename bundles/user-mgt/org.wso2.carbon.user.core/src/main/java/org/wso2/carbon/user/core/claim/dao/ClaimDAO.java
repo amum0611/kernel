@@ -24,7 +24,7 @@ import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.claim.Claim;
 import org.wso2.carbon.user.core.claim.ClaimMapping;
 import org.wso2.carbon.user.core.util.DatabaseUtil;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.user.api.MultitenantConstants;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

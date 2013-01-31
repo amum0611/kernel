@@ -21,7 +21,7 @@ import net.sf.jsr107cache.CacheException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.user.api.CarbonConstants;
 import org.wso2.carbon.caching.core.CacheInvalidator;
 import org.wso2.carbon.caching.core.permissiontree.PermissionTreeCache;
 import org.wso2.carbon.caching.core.permissiontree.PermissionTreeCacheKey;

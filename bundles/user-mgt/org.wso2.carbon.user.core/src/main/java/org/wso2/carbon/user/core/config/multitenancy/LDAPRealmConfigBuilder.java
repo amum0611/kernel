@@ -21,7 +21,7 @@ package org.wso2.carbon.user.core.config.multitenancy;
 import org.apache.axiom.util.UIDGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.user.api.CarbonConstants;
 import org.wso2.carbon.user.api.RealmConfiguration;
 import org.wso2.carbon.user.api.TenantMgtConfiguration;
 import org.wso2.carbon.user.core.UserCoreConstants;
@@ -43,6 +43,10 @@ public class LDAPRealmConfigBuilder implements MultiTenantRealmConfigBuilder {
             bootStrapConfig, RealmConfiguration persistedConfig, int tenantId)
             throws UserStoreException {
         return persistedConfig;
+    }
+
+    public RealmConfiguration getRealmConfigForTenantToPersist(RealmConfiguration bootStrapConfig, TenantMgtConfiguration tenantMgtConfiguration, org.wso2.carbon.user.api.Tenant tenantInfo, int tenantId) throws org.wso2.carbon.user.api.UserStoreException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.   TODO: kernel-merge
     }
 
     /**

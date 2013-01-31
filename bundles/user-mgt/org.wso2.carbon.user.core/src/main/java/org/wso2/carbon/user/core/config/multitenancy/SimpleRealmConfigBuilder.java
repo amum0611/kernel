@@ -47,6 +47,10 @@ public class SimpleRealmConfigBuilder implements MultiTenantRealmConfigBuilder {
         return realmConfig;
     }
 
+    public RealmConfiguration getRealmConfigForTenantToPersist(RealmConfiguration bootStrapConfig, TenantMgtConfiguration tenantMgtConfiguration, org.wso2.carbon.user.api.Tenant tenantInfo, int tenantId) throws org.wso2.carbon.user.api.UserStoreException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.  TODO: kernel-merge
+    }
+
     public RealmConfiguration getRealmConfigForTenantToCreateRealmOnTenantCreation(
             RealmConfiguration bootStrapConfig, RealmConfiguration persistedConfig, int tenantId)
             throws UserStoreException {

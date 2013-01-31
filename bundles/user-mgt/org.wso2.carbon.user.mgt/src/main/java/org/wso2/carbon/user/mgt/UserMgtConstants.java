@@ -17,7 +17,7 @@
 */
 package org.wso2.carbon.user.mgt;
 
-import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.user.api.CarbonConstants;
 
 public class UserMgtConstants {
 

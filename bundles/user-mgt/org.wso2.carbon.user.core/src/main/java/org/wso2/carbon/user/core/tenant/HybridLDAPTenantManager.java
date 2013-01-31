@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.wso2.carbon.user.core.UserStoreException;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.user.api.MultitenantConstants;
 
 import javax.sql.DataSource;
 import java.util.Map;

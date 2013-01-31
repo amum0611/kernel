@@ -19,9 +19,9 @@ package org.wso2.carbon.user.core.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.ndatasource.common.DataSourceException;
+/*import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.ndatasource.rdbms.RDBMSConfiguration;
-import org.wso2.carbon.ndatasource.rdbms.RDBMSDataSource;
+import org.wso2.carbon.ndatasource.rdbms.RDBMSDataSource;*/
 import org.wso2.carbon.user.api.RealmConfiguration;
 import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.jdbc.JDBCRealmConstants;
@@ -98,7 +98,10 @@ public class DatabaseUtil {
     	if (dataSourceName != null) {
     		return lookupDataSource(dataSourceName);
     	}
-		RDBMSConfiguration dsConfig = new RDBMSConfiguration();
+
+        throw new RuntimeException("could not create database");  // TODO: kernel-merge
+
+		/*RDBMSConfiguration dsConfig = new RDBMSConfiguration();
 		dsConfig.setDriverClassName(realmConfig.getUserStoreProperty(JDBCRealmConstants.DRIVER_NAME));
 		if (dsConfig.getDriverClassName() == null) {
 			return null;
@@ -169,7 +172,7 @@ public class DatabaseUtil {
 			return new RDBMSDataSource(dsConfig).getDataSource();
 		} catch (DataSourceException e) {
 			throw new RuntimeException("Error in creating data source: " + e.getMessage(), e);
-		}
+		}*/
     }
     
     private static DataSource createRealmDataSource(RealmConfiguration realmConfig) {
@@ -177,7 +180,9 @@ public class DatabaseUtil {
     	if (dataSourceName != null) {
     		return lookupDataSource(dataSourceName);
     	}
-		RDBMSConfiguration dsConfig = new RDBMSConfiguration();
+
+        throw new RuntimeException("could not create datasource..");
+		/*RDBMSConfiguration dsConfig = new RDBMSConfiguration();
 		dsConfig.setDriverClassName(realmConfig.getRealmProperty(JDBCRealmConstants.DRIVER_NAME));
 		dsConfig.setUrl(realmConfig.getRealmProperty(JDBCRealmConstants.URL));
 		dsConfig.setUsername(realmConfig.getRealmProperty(JDBCRealmConstants.USER_NAME));
@@ -246,7 +251,7 @@ public class DatabaseUtil {
 			return dataSource;
 		} catch (DataSourceException e) {
 			throw new RuntimeException("Error in creating data source: " + e.getMessage(), e);
-		}
+		}*/
     }
 
     public static String[] getStringValuesFromDatabase(Connection dbConnection, String sqlStmt, Object... params)

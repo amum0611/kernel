@@ -15,7 +15,7 @@
  */
 package org.wso2.carbon.user.mgt.listeners;
 
-import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.user.api.CarbonConstants;
 import org.wso2.carbon.registry.core.RegistryConstants;
 import org.wso2.carbon.registry.core.utils.RegistryUtils;
 import org.wso2.carbon.user.core.AuthorizationManager;

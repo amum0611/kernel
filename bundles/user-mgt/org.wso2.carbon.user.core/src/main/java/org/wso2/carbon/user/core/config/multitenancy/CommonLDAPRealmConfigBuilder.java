@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.user.api.CarbonConstants;
 import org.wso2.carbon.user.api.RealmConfiguration;
 import org.wso2.carbon.user.api.TenantMgtConfiguration;
 import org.wso2.carbon.user.core.UserCoreConstants;
@@ -80,6 +80,10 @@ public class CommonLDAPRealmConfigBuilder implements MultiTenantRealmConfigBuild
             throw new UserStoreException(errorMessage, e);
         }
         return realmConfig;
+    }
+
+    public RealmConfiguration getRealmConfigForTenantToPersist(RealmConfiguration bootStrapConfig, TenantMgtConfiguration tenantMgtConfiguration, org.wso2.carbon.user.api.Tenant tenantInfo, int tenantId) throws org.wso2.carbon.user.api.UserStoreException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.    TODO: kernel-merge
     }
 
     public RealmConfiguration getRealmConfigForTenantToPersist(RealmConfiguration bootStrapConfig,

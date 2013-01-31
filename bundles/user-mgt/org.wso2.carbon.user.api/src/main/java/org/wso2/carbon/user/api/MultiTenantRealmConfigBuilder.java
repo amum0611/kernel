@@ -15,22 +15,17 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package org.wso2.carbon.user.core.config.multitenancy;
-
-import org.wso2.carbon.user.api.RealmConfiguration;
-import org.wso2.carbon.user.api.TenantMgtConfiguration;
-import org.wso2.carbon.user.core.UserStoreException;
-import org.wso2.carbon.user.core.tenant.Tenant;
+package org.wso2.carbon.user.api;
 
 /**
  * An implementation of this class should take care of building the realm
  * configuration.
- * 
+ *
  */
-public interface MultiTenantRealmConfigBuilder  extends org.wso2.carbon.user.api.MultiTenantRealmConfigBuilder{
+public interface MultiTenantRealmConfigBuilder {
 
     RealmConfiguration getRealmConfigForTenantToCreateRealm(RealmConfiguration bootStrapConfig,
-            RealmConfiguration persistedConfig, int tenantId) throws UserStoreException;
+                                                            RealmConfiguration persistedConfig, int tenantId) throws UserStoreException;
 
     /**
      * Clone the user-mgt.xml and edit necessary parameters to make it tenant-specific.

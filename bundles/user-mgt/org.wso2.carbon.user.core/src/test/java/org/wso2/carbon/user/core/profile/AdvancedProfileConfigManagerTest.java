@@ -27,7 +27,7 @@ import org.wso2.carbon.user.core.claim.dao.ClaimDAO;
 import org.wso2.carbon.user.core.profile.builder.ProfileConfigurationBuilder;
 import org.wso2.carbon.user.core.profile.dao.ProfileConfigDAO;
 import org.wso2.carbon.utils.dbcreator.DatabaseCreator;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.user.api.MultitenantConstants;
 
 import java.io.File;
 import java.util.ArrayList;

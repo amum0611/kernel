@@ -16,15 +16,11 @@
  *  under the License.
  *
  */
-package org.wso2.carbon.user.core.service;
+package org.wso2.carbon.user.api;
 
 import org.wso2.carbon.user.api.RealmConfiguration;
-import org.wso2.carbon.user.core.UserRealm;
-import org.wso2.carbon.user.core.UserStoreException;
-import org.wso2.carbon.user.core.config.multitenancy.MultiTenantRealmConfigBuilder;
-import org.wso2.carbon.user.core.tenant.TenantManager;
 
-public interface RealmService extends org.wso2.carbon.user.api.UserRealmService,org.wso2.carbon.user.api.RealmService {
+public interface RealmService extends org.wso2.carbon.user.api.UserRealmService {
     /**
      * Get a user realm from a given configuration
      * @param tenantRealmConfig
@@ -45,9 +41,9 @@ public interface RealmService extends org.wso2.carbon.user.api.UserRealmService,
      * @throws UserStoreException
      */
     UserRealm getBootstrapRealm() throws UserStoreException;
- ////////////////////////      
+    ////////////////////////
     /**
-     * 
+     *
      * @param tenantManager
      * @throws UserStoreException
      */
@@ -58,21 +54,21 @@ public interface RealmService extends org.wso2.carbon.user.api.UserRealmService,
      * @return TenantManager
      */
     TenantManager getTenantManager();
-    
+
     /**
-     * 
+     *
      * @return
      * @throws Exception
      */
     MultiTenantRealmConfigBuilder getMultiTenantRealmConfigBuilder() throws UserStoreException;
-    
+
     /**
      * Only returns if available in cache.
-     * 
+     *
      * @param tenantId
      * @return
      * @throws UserStoreException
      */
     UserRealm getCachedUserRealm(int tenantId) throws UserStoreException;
-    
+
 }

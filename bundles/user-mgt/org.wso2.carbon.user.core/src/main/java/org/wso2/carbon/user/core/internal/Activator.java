@@ -65,8 +65,8 @@ public class Activator extends BundleCheckActivator {
 		}
 		try {
 			RealmService realmService = new DefaultRealmService(bundleContext);
-			bundleContext.registerService(new String[]{RealmService.class.getName(), UserRealmService.class.getName()} ,
-                                          realmService, null);
+			bundleContext.registerService(new String[]{RealmService.class.getName(), UserRealmService.class.getName(),org.wso2.carbon.user.api.RealmService.class.getName()} ,
+                                          realmService, null);//TODO : kernel-merge only use api.RealmService to register
 			DatabaseUtil.logDatabaseConnections();
 			UserCoreUtil.setRealmService(realmService);
 		} catch (Throwable e) {
