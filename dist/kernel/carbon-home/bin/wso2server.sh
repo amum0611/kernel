@@ -234,7 +234,7 @@ do
         CARBON_CLASSPATH="$CARBON_CLASSPATH":$f
     fi
 done
-for t in "$CARBON_HOME"/lib/*.jar
+for t in "$CARBON_HOME"/lib/commons-lang*.jar
 do
     CARBON_CLASSPATH="$CARBON_CLASSPATH":$t
 done
@@ -291,6 +291,6 @@ do
     -Dorg.terracotta.quartz.skipUpdateCheck=true \
     -Djava.security.egd=file:/dev/./urandom \
     -Dfile.encoding=UTF8 \
-    org.wso2.carbon.server.Main $*
+    org.wso2.carbon.bootstrap.Bootstrap $*
     status=$?
 done

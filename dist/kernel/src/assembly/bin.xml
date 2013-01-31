@@ -17,7 +17,7 @@
  -->
 <assembly>
     <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>wso2carbon-core-5.0.0-SNAPSHOT</baseDirectory>
+    <baseDirectory>wso2carbon-core-4.1.0-SNAPSHOT</baseDirectory>
     <formats>
         <format>zip</format>
     </formats>
