@@ -221,12 +221,12 @@
 
     <build>
         <resources>
-            <!--<resource>
+            <resource>
                 <directory>../kernel/src/main/java</directory>
                 <includes>
                     <include>**/mime-mappings.xml</include>
                 </includes>
-            </resource>-->
+            </resource>
             <resource>
                 <directory>../kernel/src/main/resources</directory>
                 <includes>
