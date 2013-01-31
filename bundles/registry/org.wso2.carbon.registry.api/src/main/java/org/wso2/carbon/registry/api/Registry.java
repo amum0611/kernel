@@ -25,7 +25,7 @@ import java.util.Map;
  * This is the "Full" Registry interface.  It contains not only the get/put behavior from
  * {@link CoreRegistry}, but also APIs which control tags, comments, ratings and versions.
  */
-public interface Registry extends CoreRegistry {
+public interface Registry extends CoreRegistry,TransactionManager {
 
     /**
      * Returns the meta data of the resource at a given path.

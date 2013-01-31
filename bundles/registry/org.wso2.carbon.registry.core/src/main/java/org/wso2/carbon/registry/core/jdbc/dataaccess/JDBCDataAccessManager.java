@@ -20,8 +20,8 @@ package org.wso2.carbon.registry.core.jdbc.dataaccess;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.ndatasource.rdbms.RDBMSConfiguration;
-import org.wso2.carbon.ndatasource.rdbms.RDBMSDataSource;
+/*import org.wso2.carbon.ndatasource.rdbms.RDBMSConfiguration;
+import org.wso2.carbon.ndatasource.rdbms.RDBMSDataSource;*/
 import org.wso2.carbon.registry.core.config.DataBaseConfiguration;
 import org.wso2.carbon.registry.core.dataaccess.*;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
@@ -178,7 +178,11 @@ public class JDBCDataAccessManager implements DataAccessManager {
 	 * @return the built data source.
 	 */
 	public static DataSource buildDataSource(DataBaseConfiguration config) {
-		RDBMSConfiguration dsConf = new RDBMSConfiguration();
+
+
+         throw new RuntimeException("could not build datasource...");
+    }
+		/*RDBMSConfiguration dsConf = new RDBMSConfiguration();
 		dsConf.setUrl(config.getDbUrl());
 		dsConf.setDriverClassName(config.getDriverName());
 		dsConf.setUsername(config.getUserName());
@@ -236,5 +240,63 @@ public class JDBCDataAccessManager implements DataAccessManager {
 			throw new RuntimeException("Error in creating data source for the registry: " +
 		            e.getMessage(), e);
 		}
-	}
+	}*/                                                                                                                          /*RDBMSConfiguration dsConf = new RDBMSConfiguration();
+		dsConf.setUrl(config.getDbUrl());
+		dsConf.setDriverClassName(config.getDriverName());
+		dsConf.setUsername(config.getUserName());
+		dsConf.setPassword(config.getResolvedPassword());
+
+		if (config.getTestWhileIdle() != null) {
+			dsConf.setTestWhileIdle(Boolean.parseBoolean(config
+					.getTestWhileIdle()));
+		}
+
+		if (config.getTimeBetweenEvictionRunsMillis() != null) {
+			dsConf.setTimeBetweenEvictionRunsMillis(Integer
+					.parseInt(config.getTimeBetweenEvictionRunsMillis()));
+		}
+
+		if (config.getMinEvictableIdleTimeMillis() != null) {
+			dsConf.setMinEvictableIdleTimeMillis(Integer.parseInt(config
+					.getMinEvictableIdleTimeMillis()));
+		}
+
+		if (config.getNumTestsPerEvictionRun() != null) {
+			dsConf.setNumTestsPerEvictionRun(Integer.parseInt(config
+					.getNumTestsPerEvictionRun()));
+		}
+
+		if (config.getMaxActive() != null) {
+			dsConf
+					.setMaxActive(Integer.parseInt(config.getMaxActive()));
+		} else {
+			dsConf.setMaxActive(DatabaseConstants.DEFAULT_MAX_ACTIVE);
+		}
+
+		if (config.getMaxWait() != null) {
+			dsConf.setMaxWait(Integer.parseInt(config.getMaxWait()));
+		} else {
+			dsConf.setMaxWait(DatabaseConstants.DEFAULT_MAX_WAIT);
+		}
+
+		if (config.getMaxIdle() != null) {
+			dsConf.setMaxIdle(Integer.parseInt(config.getMaxIdle()));
+		}
+
+		if (config.getMinIdle() != null) {
+			dsConf.setMinIdle(Integer.parseInt(config.getMinIdle()));
+		} else {
+			dsConf.setMinIdle(DatabaseConstants.DEFAULT_MIN_IDLE);
+		}
+
+		if (config.getValidationQuery() != null) {
+			dsConf.setValidationQuery(config.getValidationQuery());
+		}
+		try {
+		    return new RDBMSDataSource(dsConf).getDataSource();
+		} catch (Exception e) {
+			throw new RuntimeException("Error in creating data source for the registry: " +
+		            e.getMessage(), e);
+		}
+	}*/
 }
