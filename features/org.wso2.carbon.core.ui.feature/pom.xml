@@ -61,10 +61,10 @@
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.core.commons.stub:4.0.0</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.ui.menu.general:4.1.0-SNAPSHOT</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.i18n:4.1.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin.ui:4.1.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin.stub:4.0.0</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt.ui:4.1.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt.stub:4.0.5</bundleDef>
+                                <!--bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin.ui:4.1.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin.stub:4.0.0</bundleDef-->
+                                <!--bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt.ui:4.1.0-SNAPSHOT</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt.stub:4.0.5</bundleDef-->
                                 <bundleDef>org.ajaxtags.wso2:ajaxtags</bundleDef>
                                 <bundleDef>taglibs.wso2:taglibs.standard</bundleDef>
                             </bundles>

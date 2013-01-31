@@ -56,9 +56,9 @@
                                 </properties>
                             </adviceFile>                               
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.core.services:4.1.0-SNAPSHOT</bundleDef>
+                                <!--bundleDef>org.wso2.carbon:org.wso2.carbon.core.services:4.1.0-SNAPSHOT</bundleDef-->
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.server:4.1.0-SNAPSHOT</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt:4.1.0-SNAPSHOT</bundleDef>
+                                <!--bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt:4.1.0-SNAPSHOT</bundleDef-->
                                 <bundleDef>org.apache.ws.security.wso2:wss4j:1.5.11.wso2v5:4.1.0-SNAPSHOT</bundleDef>
                                 <!--<bundleDef>org.apache.poi.wso2:poi-ooxml:${orbit.version.poi}</bundleDef>-->
                             </bundles>
