@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-parent</artifactId>
-        <version>4.0.0</version>
+        <version>4.1.0-SNAPSHOT</version>
 	<relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
@@ -41,10 +41,10 @@
     </licenses>
 
     <modules>
-        <module>modules/styles/4.0.0</module>
-        <module>modules/features/org.wso2.carbon.styles.feature/4.0.0</module>
-        <module>modules/p2-profile-gen/4.0.0</module>
-	<module>modules/distribution/4.0.0</module>
+        <module>modules/styles</module>
+        <module>modules/features/org.wso2.carbon.styles.feature</module>
+        <module>modules/p2-profile-gen</module>
+	<module>modules/distribution</module>
     </modules>
 
     <dependencyManagement>

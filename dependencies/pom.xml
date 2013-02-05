@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-parent</artifactId>
-        <version>4.0.0</version>
+        <version>4.1.0-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -35,33 +35,14 @@
     </build>
 
             <modules>
-                <module>axis2/1.6.1-wso2v5</module>
-                <module>jsr107cache/1.1.0-wso2v2</module>
-                <module>neethi/2.0.4-wso2v4</module>
-                <module>wss4j/1.5.11-wso2v4</module>
-                <module>wsdl4j/1.6.2-wso2v4</module>
-                <module>securevault/1.0.0-wso2v2</module>
-                <module>xmlschema/1.4.7-wso2v2</module>
-		<module>ciphertool/1.0.0-wso2v2</module>
-                <module>transports/1.1.0-wso2v6</module>
-                <module>eclipse-p2/org.eclipse.equinox.p2.touchpoint.eclipse/2.1.0.v20110511-wso2v1</module>
-                <module>h2-database-engine/1.2.140-wso2v3</module>
-                <module>axiom/1.2.11-wso2v2</module>
+                <module>axis2/1.6.1-wso2v8</module>
 		
 		<!-- orbit/modules -->
-                <module>orbit/axis2/1.6.1.wso2v5</module>
-                <module>orbit/axiom/1.2.11.wso2v2</module>
-                <module>orbit/jsr107cache/1.1.0.wso2v2</module>
-                <module>orbit/neethi/2.0.4.wso2v4</module>
-                <module>orbit/wss4j/1.5.11.wso2v4</module>
-                <module>orbit/wsdl4j/1.6.2.wso2v4</module>
-                <module>orbit/xmlschema/1.4.7.wso2v2</module>
-                <module>orbit/axis2-json/1.6.1.wso2v5</module>
-		<module>orbit/axis2-client/1.6.1.wso2v5</module>
-		<module>orbit/axis2-jibx/1.6.1.wso2v5</module>
-		<module>orbit/axis2-jaxbri/1.6.1.wso2v5</module>
-		<module>orbit/xalan/2.7.1.wso2v1</module>
-                <module>orbit/h2-database-engine/1.2.140.wso2v3</module>
+                <module>orbit/axis2</module>
+                <module>orbit/axis2-json</module>
+		<module>orbit/axis2-client</module>
+		<module>orbit/axis2-jibx</module>
+		<module>orbit/axis2-jaxbri</module>
 	     </modules>
    <dependencyManagement>
 	<dependencies>
@@ -75,8 +56,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	<axis2.version>1.6.1-wso2v5</axis2.version>
-    <axiom.version>1.2.11-wso2v2</axiom.version>
+	<axis2.version>1.6.1-wso2v8</axis2.version>
     </properties>
 
 </project>

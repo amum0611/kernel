@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-parent</artifactId>
-        <version>4.0.0</version>
+        <version>4.1.0-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
@@ -31,12 +31,12 @@
     <url>http://wso2.org</url>
 
 			<modules>
-                               <module>org.wso2.carbon.authenticator.stub/4.0.0</module>
-			       <module>org.wso2.carbon.core.commons.stub/4.0.0</module>
-				<module>org.wso2.carbon.feature.mgt.stub/4.0.0</module>
-				<module>org.wso2.carbon.roles.mgt.stub/4.0.0</module>
-				<module>org.wso2.carbon.server.admin.stub/4.0.0</module>
-				<module>org.wso2.carbon.user.mgt.stub/4.0.0</module>
+                               <module>org.wso2.carbon.authenticator.stub</module>
+			       <module>org.wso2.carbon.core.commons.stub</module>
+				<module>org.wso2.carbon.feature.mgt.stub</module>
+				<module>org.wso2.carbon.roles.mgt.stub</module>
+				<module>org.wso2.carbon.server.admin.stub</module>
+				<module>org.wso2.carbon.user.mgt.stub</module>
 			</modules>
 
     <build>

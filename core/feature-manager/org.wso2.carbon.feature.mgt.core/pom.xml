@@ -21,8 +21,8 @@
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>feature-manager</artifactId>
-        <version>4.0.0</version>
-        <relativePath>../../pom.xml</relativePath>
+        <version>4.1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -32,18 +32,18 @@
     <name>WSO2 Carbon - Feature Manager Core</name>
     <description>This bundle provides the component mgt Core functionalities</description>
     <url>http://wso2.org</url>
-    <version>4.0.5</version>
+    <version>4.1.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.logging</artifactId>
-            <version>4.0.0</version>
+            <version>4.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
 	    <groupId>org.wso2.carbon</groupId>
 	    <artifactId>org.wso2.carbon.utils</artifactId>
-	    <version>4.0.3</version>
+	    <version>4.1.0-SNAPSHOT</version>
 	</dependency>
         <dependency>
             <groupId>org.eclipse.equinox</groupId>

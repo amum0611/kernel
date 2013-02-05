@@ -22,13 +22,13 @@
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-kernel-features</artifactId>
-        <version>4.0.0</version>
-	<relativePath>../../pom.xml</relativePath>
+        <version>4.1.0-SNAPSHOT</version>
+	<relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.core.server.feature</artifactId>
-    <version>4.0.6</version>
+    <version>4.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>WSO2 Carbon - Carbon Server Feature</name>
     <url>http://wso2.org</url>
@@ -49,7 +49,7 @@
                         </goals>
                         <configuration>
                             <id>org.wso2.carbon.core.server</id>
-                            <propertiesFile>../../etc/feature.properties</propertiesFile>
+                            <propertiesFile>../etc/feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
                                     <propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>
@@ -57,15 +57,15 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.core.services:4.0.5</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin:4.0.6</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.server:4.0.2</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.feature.mgt.services:4.0.4</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.cluster.mgt.core:4.0.0</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt:4.0.0</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt:4.0.6</bundleDef>
-				<bundleDef>org.wso2.carbon:org.wso2.carbon.user.core:4.0.6</bundleDef>
-                                <bundleDef>org.apache.ws.security.wso2:wss4j:1.5.11.wso2v5:4.0.0</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.core.services</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.server</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.feature.mgt.services</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.cluster.mgt.core</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt</bundleDef>
+				<bundleDef>org.wso2.carbon:org.wso2.carbon.user.core</bundleDef>
+                                <bundleDef>org.apache.ws.security.wso2:wss4j:1.5.11.wso2v5</bundleDef>
                                 <bundleDef>org.apache.poi.wso2:poi-ooxml:${orbit.version.poi}</bundleDef>
                             </bundles>
                         </configuration>

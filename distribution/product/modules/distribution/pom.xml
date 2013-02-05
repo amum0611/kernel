@@ -22,14 +22,14 @@
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-product</artifactId>
-        <version>4.0.0</version>
-        <relativePath>../../../pom.xml</relativePath>
+        <version>4.1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>wso2carbon</artifactId>
     <packaging>jar</packaging>
-    <version>4.0.4</version>
+    <version>4.1.0-SNAPSHOT</version>
     <name>WSO2 Carbon - Distribution</name>
     <description>WSO2 Carbon Distribution</description>
 
@@ -75,7 +75,7 @@
                                 <artifactItem>
                                     <groupId>org.wso2.carbon</groupId>
                                     <artifactId>wso2carbon-core</artifactId>
-                                    <version>${carbon.platform.patch.version}</version>
+                                    <version>${carbon.product.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>target</outputDirectory>
@@ -103,16 +103,16 @@
                                 <mkdir dir="${tempdir}"/>
                                 <unzip dest="${tempdir}">
                                     <fileset dir="target">
-                                        <include name="wso2carbon-${carbon.platform.patch.version}.zip"/>
+                                        <include name="wso2carbon-${carbon.product.version}.zip"/>
                                     </fileset>
                                 </unzip>
-                                <copy todir="target/wso2carbon-core-${carbon.platform.patch.version}/repository/components"
+                                <copy todir="target/wso2carbon-core-${carbon.product.version}/repository/components"
                                       overwrite="true">
                                     <fileset
-                                            dir="${tempdir}/wso2carbon-${carbon.platform.patch.version}/repository/components">
+                                            dir="${tempdir}/wso2carbon-${carbon.product.version}/repository/components">
                                     </fileset>
                                 </copy>
-                                <delete file="target/wso2carbon-${carbon.platform.patch.version}.zip"/>                                                               
+                                <delete file="target/wso2carbon-${carbon.product.version}.zip"/>                                                               
                                 <delete dir="${tempdir}"/>
                            </tasks>
                         </configuration>
@@ -125,8 +125,8 @@
                                 <delete dir="target/archive-tmp"/>
                                 <delete dir="target/dependency-maven-plugin-markers"/>
                                 <delete dir="target/maven-archiver"/>
-                                <delete dir="target/wso2carbon-core-${carbon.platform.patch.version}"/>
-                                <delete file="target/wso2carbon-${carbon.platform.patch.version}.jar"/>
+                                <delete dir="target/wso2carbon-core-${carbon.product.version}"/>
+                                <delete file="target/wso2carbon-${carbon.product.version}.jar"/>
                                 <delete dir="target/sources"/>
                                 <delete dir="target/site"/>
                                 <delete dir="src/site"/>
@@ -194,7 +194,4 @@
 
         </plugins>
     </build>
-    <properties>
-        <carbon.platform.patch.version>4.0.4</carbon.platform.patch.version>
-    </properties>
 </project>

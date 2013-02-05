@@ -22,14 +22,14 @@
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-kernel</artifactId>
-        <version>4.0.0</version>
-        <relativePath>../../pom.xml</relativePath>
+        <version>4.1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.carbon</groupId>
     <artifactId>org.wso2.carbon.user.mgt</artifactId>
-    <version>4.0.6</version>
+    <version>4.1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - User Management</name>
     <description>A custom wso2 product</description>
@@ -39,17 +39,17 @@
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.user.core</artifactId>
-            <version>${carbon.kernel.patch.version.406}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.user.mgt.common</artifactId>
-            <version>${carbon.kernel.patch.version.406}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.utils</artifactId>
-            <version>${carbon.kernel.patch.version.405}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.logging</artifactId>
-            <version>4.0.0</version>
+            <version>4.1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -123,10 +123,5 @@
 	    </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <carbon.kernel.patch.version.405>4.0.5</carbon.kernel.patch.version.405>
-        <carbon.kernel.patch.version.406>4.0.6</carbon.kernel.patch.version.406>
-    </properties>
 
 </project>

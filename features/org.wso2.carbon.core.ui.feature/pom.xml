@@ -22,14 +22,14 @@
     <parent>
         <groupId>org.wso2.carbon</groupId>
         <artifactId>carbon-kernel-features</artifactId>
-        <version>4.0.0</version>
-	<relativePath>../../pom.xml</relativePath>
+        <version>4.1.0-SNAPSHOT</version>
+	<relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>          
     <artifactId>org.wso2.carbon.core.ui.feature</artifactId>
     <packaging>pom</packaging>
-    <version>4.0.6</version>
+    <version>4.1.0-SNAPSHOT</version>
     <name>WSO2 Carbon - Carbon UI Feature</name>
     <url>http://wso2.org</url>
     <description>This feature contains the carbon core ui features</description>
@@ -49,7 +49,7 @@
                         </goals>
                         <configuration>
                             <id>org.wso2.carbon.core.ui</id>
-                            <propertiesFile>../../etc/feature.properties</propertiesFile>
+                            <propertiesFile>../etc/feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
                                     <propertyDef>org.wso2.carbon.p2.category.type:console</propertyDef>
@@ -58,18 +58,18 @@
                             </adviceFile>
                             <bundles>
 				<bundleDef>org.eclipse.equinox:org.eclipse.equinox.jsp.jasper</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.ui:4.0.6</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.core.commons.stub:4.0.0</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.ui.menu.general:4.0.0</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.i18n:4.0.5</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin.ui:4.0.0</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin.stub:4.0.6</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt.ui:4.0.6</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt.stub:4.0.5</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.feature.mgt.ui:4.0.5</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.feature.mgt.stub:4.0.0</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt.ui:4.0.0</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt.stub:4.0.0</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.ui</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.core.commons.stub</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.ui.menu.general</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.i18n</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin.ui</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin.stub</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt.ui</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt.stub</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.feature.mgt.ui</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.feature.mgt.stub</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt.ui</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt.stub</bundleDef>
                                 <bundleDef>org.ajaxtags.wso2:ajaxtags</bundleDef>
                                 <bundleDef>taglibs.wso2:taglibs.standard</bundleDef>
                             </bundles>

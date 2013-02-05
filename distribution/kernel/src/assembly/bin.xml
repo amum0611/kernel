@@ -17,7 +17,7 @@
  -->
 <assembly>
     <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>wso2carbon-core-4.0.6</baseDirectory>
+    <baseDirectory>wso2carbon-core-${pom.version}</baseDirectory>
     <id>carbon</id>
     <formats>
         <format>zip</format>
@@ -76,13 +76,13 @@
     <files>
         <!--Copy the version service-->
         <file>
-            <source>../../../core/org.wso2.carbon.core/4.0.6/target/Version.aar</source>
+            <source>../../core/org.wso2.carbon.core/target/Version.aar</source>
             <outputDirectory>repository/deployment/server/axis2services</outputDirectory>
             <fileMode>644</fileMode>
         </file>
 	<!--Copy the echo service-->
         <file>
-            <source>../../../core/org.wso2.carbon.core/4.0.6/target/Echo.aar</source>
+            <source>../../core/org.wso2.carbon.core/target/Echo.aar</source>
             <outputDirectory>repository/deployment/server/axis2services</outputDirectory>
             <fileMode>644</fileMode>
         </file>
