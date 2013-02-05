@@ -1,0 +1,24 @@
+
+Apache Commons Neethi-2.0.4 Release Note:
+
+Contains the fix for :
+* WSCOMMONS-322 - Get rid of sun.misc.Service
+* WSCOMMONS-316 - PolicyReference.serialize(..) does not declare policy namespace
+
+
+Feature List:
+
+Adhere the latest WS-Policy 1.2 specification 
+see: http://specs.xmlsoap.org/ws/2004/09/policy/ws-policy.pdf
+
+Provides a convenient API to access and process Policies
+
+Provides an extension model where custom serialization, de-serialization of
+assertion can be supported.
+see: https://svn.apache.org/viewvc/webservices/rampart/trunk/java/modules/rampart-policy/
+
+Provides a mechanism where domain specific types can be used assertion within
+the generic framework
+
+Provides more control to the assertion authors to control behavior of the 
+assertions they implement.

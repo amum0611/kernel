@@ -1,0 +1,151 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <packaging>jar</packaging>
+    <version>1.2.140-wso2v3</version>
+    <name>H2 Database Engine</name>
+
+    <licenses>
+        <license>
+            <name>The H2 License, Version 1.0</name>
+            <url>http://h2database.com/html/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>http://h2database.googlecode.com/svn/trunk</url>
+    </scm>
+
+
+<profiles>
+    <profile>
+        <id>default-profile</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+            <file>
+                <exists>${java.home}/../lib/tools.jar</exists>
+            </file>
+        </activation>
+        <properties>
+            <toolsjar>${java.home}/../lib/tools.jar</toolsjar>
+        </properties>
+    </profile>
+    <profile>
+        <id>mac-profile</id>
+        <activation>
+            <activeByDefault>false</activeByDefault>
+            <file>
+                <exists>${java.home}/../Classes/classes.jar</exists>
+            </file>
+        </activation>
+        <properties>
+            <toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
+        </properties>
+    </profile>
+</profiles>
+
+
+    <dependencies>
+        <dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>servlet-api</artifactId>
+	    <version>2.4</version>
+         </dependency>
+        <dependency>
+	    <groupId>org.apache.felix</groupId>
+	    <artifactId>org.osgi.core</artifactId>
+	    <version>1.2.0</version>
+        </dependency>
+        <dependency>
+	   <groupId>org.slf4j</groupId>
+	   <artifactId>slf4j-api</artifactId>
+	   <version>1.5.0</version>
+        </dependency>
+        <dependency>
+	  <groupId>org.apache.lucene</groupId>
+	  <artifactId>lucene-core</artifactId>
+	  <version>2.2.0</version>
+       </dependency>
+    </dependencies>
+
+    <build> 
+        <extensions>
+      	    <extension>
+        	<groupId>org.apache.maven.wagon</groupId>
+        	<artifactId>wagon-ssh</artifactId>
+        	<version>2.1</version>
+      	    </extension>
+    	</extensions>
+	<plugins> 
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+              <classesDirectory>bin</classesDirectory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <excludes>
+                <exclude>org/h2/build/**</exclude>
+		<exclude>org/h2/dev/**</exclude>
+		<exclude>org/h2/samples/**</exclude>
+		<exclude>org/h2/test/**</exclude>
+                <exclude>org/h2/jcr/**</exclude>
+		<exclude>**/*.bat</exclude>
+		<exclude>**/*.sh</exclude>
+		<exclude>**/*.txt</exclude>
+              </excludes>
+              <archive>
+                <manifestFile>src/main/META-INF/MANIFEST.MF</manifestFile>
+              </archive>
+            </configuration>
+          </plugin> 
+
+	<plugin>
+	  <artifactId>maven-antrun-plugin</artifactId>
+	  <executions>
+	    <execution>
+	      <phase>process-resources</phase>
+	      <configuration>
+		<tasks>
+		  <ant antfile="build.xml" target="compile">
+     <property name="tools-jar" value="${toolsjar}" />     
+    </ant>
+		</tasks>
+	      </configuration>
+	      <goals>
+		<goal>run</goal>
+	      </goals>
+	    </execution>
+	  </executions>
+          <dependencies>
+                <dependency>
+                  <groupId>com.sun</groupId>
+                  <artifactId>tools</artifactId>
+                  <version>1.5.0</version>
+                  <scope>system</scope>
+                  <systemPath>${toolsjar}</systemPath> 
+                </dependency>
+              </dependencies>
+	</plugin>	
+        </plugins>
+    </build>
+
+     <distributionManagement>
+        <repository>
+            <id>wso2-maven2-repository</id>
+            <name>WSO2 Maven2 Repository</name>
+            <url>scp://dist.wso2.org/home/httpd/dist.wso2.org/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>wso2-maven2-snapshot-repository</id>
+            <name>WSO2 Maven2 Snapshot Repository</name>
+            <url>scp://dist.wso2.org/home/httpd/dist.wso2.org/snapshots/maven2/</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
+

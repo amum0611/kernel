@@ -15,9 +15,9 @@
  ~ limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.1.0-SNAPSHOT"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.1.0-SNAPSHOT http://maven.apache.org/maven-v4.1.0.SNAPSHOT.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.wso2.carbon</groupId>
@@ -28,11 +28,12 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.core.server.feature</artifactId>
+    <version>4.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>WSO2 Carbon - Carbon Server Feature</name>
     <url>http://wso2.org</url>
     <description>This feature contains the carbon core server features</description>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -48,19 +49,24 @@
                         </goals>
                         <configuration>
                             <id>org.wso2.carbon.core.server</id>
-                            <propertiesFile>../../etc/feature.properties</propertiesFile>
+                            <propertiesFile>../etc/feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
                                     <propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>
                                     <propertyDef>org.eclipse.equinox.p2.type.group:false</propertyDef>
                                 </properties>
-                            </adviceFile>                               
+                            </adviceFile>
                             <bundles>
-                                <!--bundleDef>org.wso2.carbon:org.wso2.carbon.core.services:4.1.0-SNAPSHOT</bundleDef-->
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.server:4.1.0-SNAPSHOT</bundleDef>
-                                <!--bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt:4.1.0-SNAPSHOT</bundleDef-->
-                                <bundleDef>org.apache.ws.security.wso2:wss4j:1.5.11.wso2v5:4.1.0-SNAPSHOT</bundleDef>
-                                <!--<bundleDef>org.apache.poi.wso2:poi-ooxml:${orbit.version.poi}</bundleDef>-->
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.core.services</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.server.admin</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.registry.server</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.feature.mgt.services</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.cluster.mgt.core</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.user.mgt</bundleDef>
+				<bundleDef>org.wso2.carbon:org.wso2.carbon.user.core</bundleDef>
+                                <bundleDef>org.apache.ws.security.wso2:wss4j:1.5.11.wso2v5</bundleDef>
+                                <bundleDef>org.apache.poi.wso2:poi-ooxml:${orbit.version.poi}</bundleDef>
                             </bundles>
                         </configuration>
                     </execution>
@@ -68,5 +74,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>
