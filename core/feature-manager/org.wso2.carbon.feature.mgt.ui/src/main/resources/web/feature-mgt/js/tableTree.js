@@ -13,13 +13,13 @@ function collapseTree(imgobj) {
         imgobj.src = plusIcon;
     }
     var nextTr = nextObject(tr);
-    while (getNumOfColspans(nextTr) < myColspans && nextTr != null) {
+    while ((parseInt(getNumOfColspans(nextTr)) < parseInt(myColspans)) && nextTr != null) {
         var imgs = null;
         var allImages = YAHOO.util.Dom.getElementsByClassName("ui-plusMinusIcon", "IMG", nextTr);
         if (allImages.length > 0) {
             imgs = allImages[0];
         }
-        if (todo == "show" && (myColspans - getNumOfColspans(nextTr)) == 1) {
+        if (todo == "show" && (parseInt(myColspans) - parseInt(getNumOfColspans(nextTr))) == 1) {
             nextTr.style.display = "";
             if (imgs != null) {
                 imgs.src = plusIcon;
