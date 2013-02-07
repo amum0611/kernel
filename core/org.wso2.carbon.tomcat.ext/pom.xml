@@ -48,8 +48,8 @@
             <version>1.0.200.v20090520-1800</version>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>javax.servlet</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>

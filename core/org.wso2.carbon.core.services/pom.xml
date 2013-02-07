@@ -115,7 +115,7 @@
                         </Export-Package>
                         <Import-Package>
                             org.apache.axis2.*; version="${imp.pkg.version.axis2}",
-                            javax.servlet.http;version="2.4.0",
+                            javax.servlet.http;version="3.0.0",
                             org.osgi.framework.*,
                             org.osgi.util.*,
                             org.osgi.service.*,
