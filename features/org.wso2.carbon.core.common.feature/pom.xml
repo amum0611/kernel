@@ -59,10 +59,11 @@
                             <bundles>
 			        <bundleDef>org.eclipse.equinox:org.eclipse.equinox.http.servlet:1.0.200.v20090520-1800-wso2v1</bundleDef>
                                 <bundleDef>org.eclipse.equinox:org.eclipse.equinox.http.helper:1.0.0</bundleDef>
-                                <bundleDef>org.eclipse.equinox:javax.servlet.jsp:2.0.0.v200806031607</bundleDef>
-                                <bundleDef>org.eclipse.equinox:org.apache.commons.el:1.0.0.v200806031608</bundleDef>
+                                <bundleDef>org.eclipse.equinox:javax.servlet.jsp:${version.equinox.javax.servlet.jsp}</bundleDef>
+                                <bundleDef>org.apache.tomcat.jasper.el.wso2:tomcat-jasper-el:7.0.34.wso2v1</bundleDef>
+				<bundleDef>org.eclipse.equinox:javax.el:${version.equinox.javax.el}</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.utils</bundleDef>
-				<bundleDef>org.wso2.carbon:javax.servlet:3.0.0.wso2v1</bundleDef>
+				<bundleDef>org.eclipse.equinox:javax.servlet:${version.equinox.javax.servlet}</bundleDef>
                                 <bundleDef>org.apache.tomcat.wso2:tomcat:7.0.28.wso2v1</bundleDef>
                                 <bundleDef>org.apache.tomcat.ha.wso2:tomcat-ha:7.0.28.wso2v1</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.tomcat</bundleDef>
@@ -132,9 +133,9 @@
                                 <bundleDef>org.apache.poi.wso2:poi-scratchpad:3.5.0.wso2v1</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.addressing</bundleDef>
                                 <bundleDef>com.sun.xml.bind.wso2:jaxb:2.2.5.wso2v1</bundleDef>
-				                <bundleDef>com.jezhumble.wso2:javasysmon:0.3.3.wso2v1</bundleDef>
+		                <bundleDef>com.jezhumble.wso2:javasysmon:0.3.3.wso2v1</bundleDef>
                                 <bundleDef>org.apache.tomcat.wso2:jdbc-pool:7.0.28.wso2v1</bundleDef>
-                                <bundleDef>org.eclipse.equinox:org.apache.jasper:5.5.17.v200806031609</bundleDef>
+                                <bundleDef>org.eclipse.equinox:org.apache.jasper.glassfish:${version.equinox.jasper}</bundleDef>
 				<bundleDef>org.wso2.carbon:org.wso2.carbon.framework.exporter</bundleDef>
                             </bundles>
                         </configuration>
