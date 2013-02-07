@@ -1069,9 +1069,9 @@
                 <version>${carbon.platform.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId> </>
+                <groupId>javax.servlet.jsp.jstl.wso2</groupId>
                 <artifactId>jstl</artifactId>
-                <version>1.2</version>
+                <version>1.2.0.wso2v1</version>
             </dependency>
             <dependency>
                 <groupId>aopalliance</groupId>
