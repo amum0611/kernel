@@ -57,7 +57,7 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-				<bundleDef>org.eclipse.equinox:org.eclipse.equinox.jsp.jasper</bundleDef>
+				<bundleDef>org.eclipse.equinox:org.apache.jasper.glassfish</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.ui</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.core.commons.stub</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.ui.menu.general</bundleDef>
@@ -71,7 +71,7 @@
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt.ui</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.roles.mgt.stub</bundleDef>
                                 <bundleDef>org.ajaxtags.wso2:ajaxtags</bundleDef>
-                                <bundleDef>taglibs.wso2:taglibs.standard</bundleDef>
+                                <bundleDef>javax.servlet.jsp.jstl.wso2:jstl</bundleDef>
                             </bundles>
                         </configuration>
                     </execution>
