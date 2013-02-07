@@ -136,6 +136,7 @@
 		                <bundleDef>com.jezhumble.wso2:javasysmon:0.3.3.wso2v1</bundleDef>
                                 <bundleDef>org.apache.tomcat.wso2:jdbc-pool:7.0.28.wso2v1</bundleDef>
                                 <bundleDef>org.eclipse.equinox:org.apache.jasper.glassfish:${version.equinox.jasper}</bundleDef>
+				<bundleDef>org.wso2.carbon:org.wso2.carbon.apache.jasper.fragment:${project.version}</bundleDef>
 				<bundleDef>org.wso2.carbon:org.wso2.carbon.framework.exporter</bundleDef>
                             </bundles>
                         </configuration>
