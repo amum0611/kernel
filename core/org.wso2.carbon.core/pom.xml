@@ -25,7 +25,7 @@
         <version>4.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.core</artifactId>
     <version>4.1.0-SNAPSHOT</version>
@@ -52,7 +52,7 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
- 	  <dependency>
+        <dependency>
             <groupId>bouncycastle</groupId>
             <artifactId>bcprov-jdk15</artifactId>
             <version>132</version>
@@ -90,49 +90,49 @@
         <dependency>
             <groupId>org.apache.axis2.wso2</groupId>
             <artifactId>axis2</artifactId>
-	    <version>1.6.1.wso2v7</version>
+            <version>1.6.1.wso2v7</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.logging</artifactId>
             <version>4.1.0-SNAPSHOT</version>
         </dependency>
-		<dependency>
-			<groupId>org.apache.neethi.wso2</groupId>
-			<artifactId>neethi</artifactId>
-			<version>${orbit.version.neethi}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.neethi</groupId>
-					<artifactId>neethi</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents.wso2</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>${orbit.version.httpcore}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.neethi.wso2</groupId>
+            <artifactId>neethi</artifactId>
+            <version>${orbit.version.neethi}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.neethi</groupId>
+                    <artifactId>neethi</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.wso2</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${orbit.version.httpcore}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.tomcat.ha.wso2</groupId>
             <artifactId>tomcat-ha</artifactId>
             <version>${orbit.version.tomcat}</version>
             <exclusions>
-				<exclusion>
-					<groupId>org.apache.tomcat</groupId>
-					<artifactId>tomcat-coyote</artifactId>
-				</exclusion>
                 <exclusion>
-					<groupId>org.apache.tomcat</groupId>
-					<artifactId>tomcat-servlet-api</artifactId>
-				</exclusion>
-			</exclusions>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-coyote</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-		<dependency>
-			<groupId>wsdl4j.wso2</groupId>
-			<artifactId>wsdl4j</artifactId>
-			<version>${orbit.version.wsdl4j}</version>
-		</dependency>
+        <dependency>
+            <groupId>wsdl4j.wso2</groupId>
+            <artifactId>wsdl4j</artifactId>
+            <version>${orbit.version.wsdl4j}</version>
+        </dependency>
         <dependency>
             <groupId>com.h2database.wso2</groupId>
             <artifactId>h2-database-engine</artifactId>
@@ -175,7 +175,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                
+
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -195,8 +195,8 @@
                             org.apache.axiom.*; version="${imp.pkg.version.axiom}",
                             org.apache.neethi.*; version="${neethi.osgi.version.range}",
                             javax.xml.namespace; version=0.0.0,
-                            javax.servlet; version=3.0.0,
-                            javax.servlet.http; version=3.0.0,
+                            javax.servlet; version="${imp.pkg.version.javax.servlet}",
+                            javax.servlet.http; version="${imp.pkg.version.javax.servlet}",
                             javax.xml.stream.*; version=1.0.1,
                             org.wso2.carbon.registry.core.service,
                             org.wso2.carbon.user.core.*; version=0.0.0,
@@ -220,9 +220,9 @@
                     <testFailureIgnore>false</testFailureIgnore>
                     <excludes>
                         <exclude>**/BaseTestCase.java</exclude>
-			<!--excluding failing unit tests temporarily-->
-			<exclude>**/PersistenceUtilsTest.java</exclude>
-			<exclude>**/PersistenceManagerTest.java</exclude>
+                        <!--excluding failing unit tests temporarily-->
+                        <exclude>**/PersistenceUtilsTest.java</exclude>
+                        <exclude>**/PersistenceManagerTest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -250,7 +250,7 @@
                                 </copy>
                                 <jar destfile="target/Version.aar" basedir="target/version"/>
                                 <delete dir="target/version"/>
-                                
+
                                 <mkdir dir="target/echo/META-INF"/>
                                 <copy todir="target/echo">
                                     <fileset dir="target/classes">

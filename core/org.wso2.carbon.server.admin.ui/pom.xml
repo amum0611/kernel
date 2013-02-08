@@ -70,7 +70,8 @@
                         <Import-Package>
                             !org.wso2.carbon.server.admin.ui.i18n,
 			                org.wso2.carbon.admin.stub.*;version="${carbon.platform.package.import.version.range}",
-                            javax.servlet.*;version="3.0.0",
+                            javax.servlet; version="${imp.pkg.version.javax.servlet}",
+                            javax.servlet.http; version="${imp.pkg.version.javax.servlet}",
                             *;resolution:=optional
                         </Import-Package>
                         <Carbon-Component>UIBundle</Carbon-Component>

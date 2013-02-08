@@ -18,15 +18,13 @@
 
 package org.wso2.carbon.core.services.authentication;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
@@ -147,6 +145,26 @@ public class TestServletRequest implements HttpServletRequest {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public boolean authenticate(HttpServletResponse httpServletResponse) throws IOException, ServletException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void login(String s, String s1) throws ServletException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void logout() throws ServletException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<Part> getParts() throws IOException, ServletException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Part getPart(String s) throws IOException, ServletException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public Object getAttribute(String s) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -261,5 +279,33 @@ public class TestServletRequest implements HttpServletRequest {
 
     public int getLocalPort() {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public ServletContext getServletContext() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public AsyncContext startAsync() throws IllegalStateException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isAsyncStarted() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isAsyncSupported() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public AsyncContext getAsyncContext() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public DispatcherType getDispatcherType() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
