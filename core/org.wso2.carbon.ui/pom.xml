@@ -130,12 +130,6 @@
             <groupId>org.eclipse.equinox</groupId>
             <artifactId>org.apache.jasper.glassfish</artifactId>
             <version>${version.equinox.jasper}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!--dependency>
             <groupId>org.eclipse.equinox</groupId>
@@ -155,10 +149,18 @@
             <artifactId>jstl</artifactId>
             <version>1.2.0.wso2v1</version>
             <exclusions>
-                <!--exclusion>
+                <exclusion>
                     <groupId>javax.servlet</groupId>
                     <artifactId>servlet-api</artifactId>
-                </exclusion-->
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet.jsp.jstl</groupId>
+                    <artifactId>jstl-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet.jsp.jstl</groupId>
+                    <artifactId>jstl-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>

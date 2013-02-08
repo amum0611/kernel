@@ -17,11 +17,8 @@ package org.wso2.carbon.ui;
 
 import org.osgi.framework.Bundle;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import javax.servlet.*;
+import javax.servlet.descriptor.JspConfigDescriptor;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,10 +31,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.Permission;
 import java.security.PermissionCollection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>
@@ -273,6 +267,10 @@ public class JspServlet extends HttpServlet {
             return delegate.getInitParameterNames();
         }
 
+        public boolean setInitParameter(String s, String s1) {
+            return delegate.setInitParameter(s,s1);
+        }
+
         public int getMajorVersion() {
             return delegate.getMajorVersion();
         }
@@ -283,6 +281,14 @@ public class JspServlet extends HttpServlet {
 
         public int getMinorVersion() {
             return delegate.getMinorVersion();
+        }
+
+        public int getEffectiveMajorVersion() {
+            return delegate.getEffectiveMajorVersion();
+        }
+
+        public int getEffectiveMinorVersion() {
+            return delegate.getEffectiveMinorVersion();
         }
 
         public RequestDispatcher getNamedDispatcher(String arg0) {
@@ -306,6 +312,98 @@ public class JspServlet extends HttpServlet {
 
         public String getServletContextName() {
             return delegate.getServletContextName();
+        }
+
+        public ServletRegistration.Dynamic addServlet(String s, String s1) {
+            return delegate.addServlet(s, s1);
+        }
+
+        public ServletRegistration.Dynamic addServlet(String s, Servlet servlet) {
+            return delegate.addServlet(s, servlet);
+        }
+
+        public ServletRegistration.Dynamic addServlet(String s, Class<? extends Servlet> aClass) {
+            return delegate.addServlet(s, aClass);
+        }
+
+        public <T extends Servlet> T createServlet(Class<T> tClass) throws ServletException {
+            return delegate.createServlet(tClass);
+        }
+
+        public ServletRegistration getServletRegistration(String s) {
+            return delegate.getServletRegistration(s);
+        }
+
+        public Map<String, ? extends ServletRegistration> getServletRegistrations() {
+            return delegate.getServletRegistrations();
+        }
+
+        public FilterRegistration.Dynamic addFilter(String s, String s1) {
+            return delegate.addFilter(s,s1);
+        }
+
+        public FilterRegistration.Dynamic addFilter(String s, Filter filter) {
+            return delegate.addFilter(s, filter);
+        }
+
+        public FilterRegistration.Dynamic addFilter(String s, Class<? extends Filter> aClass) {
+            return delegate.addFilter(s, aClass);
+        }
+
+        public <T extends Filter> T createFilter(Class<T> tClass) throws ServletException {
+            return delegate.createFilter(tClass);
+        }
+
+        public FilterRegistration getFilterRegistration(String s) {
+            return delegate.getFilterRegistration(s);
+        }
+
+        public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
+            return delegate.getFilterRegistrations();
+        }
+
+        public SessionCookieConfig getSessionCookieConfig() {
+            return delegate.getSessionCookieConfig();
+        }
+
+        public void setSessionTrackingModes(Set<SessionTrackingMode> sessionTrackingModes) throws IllegalStateException, IllegalArgumentException {
+            delegate.setSessionTrackingModes(sessionTrackingModes);
+        }
+
+        public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
+            return delegate.getDefaultSessionTrackingModes();
+        }
+
+        public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
+            return delegate.getEffectiveSessionTrackingModes();
+        }
+
+        public void addListener(Class<? extends EventListener> aClass) {
+            delegate.addListener(aClass);
+        }
+
+        public void addListener(String s) {
+            delegate.addListener(s);
+        }
+
+        public <T extends EventListener> void addListener(T t) {
+            delegate.addListener(t);
+        }
+
+        public <T extends EventListener> T createListener(Class<T> tClass) throws ServletException {
+            return delegate.createListener(tClass);
+        }
+
+        public void declareRoles(String... strings) {
+            delegate.declareRoles(strings);
+        }
+
+        public ClassLoader getClassLoader() {
+            return delegate.getClassLoader();
+        }
+
+        public JspConfigDescriptor getJspConfigDescriptor() {
+            return delegate.getJspConfigDescriptor();
         }
 
         /**
