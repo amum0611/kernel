@@ -15,15 +15,13 @@
  */
 package org.wso2.carbon.core.transports.metering;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
@@ -132,7 +130,27 @@ public class MeteredServletRequest implements HttpServletRequest {
 	    return wrappedHttpServletRequest.isRequestedSessionIdFromUrl();
 	}
 
-	public boolean isRequestedSessionIdFromURL() {
+    public boolean authenticate(HttpServletResponse httpServletResponse) throws IOException, ServletException {
+        return wrappedHttpServletRequest.authenticate(httpServletResponse);
+    }
+
+    public void login(String s, String s1) throws ServletException {
+        wrappedHttpServletRequest.login(s, s1);
+    }
+
+    public void logout() throws ServletException {
+        wrappedHttpServletRequest.logout();
+    }
+
+    public Collection<Part> getParts() throws IOException, ServletException {
+        return wrappedHttpServletRequest.getParts();
+    }
+
+    public Part getPart(String s) throws IOException, ServletException {
+        return wrappedHttpServletRequest.getPart(s);
+    }
+
+    public boolean isRequestedSessionIdFromURL() {
 	    return wrappedHttpServletRequest.isRequestedSessionIdFromURL();
 	}
 
@@ -192,7 +210,35 @@ public class MeteredServletRequest implements HttpServletRequest {
 	    return wrappedHttpServletRequest.getLocalPort();
 	}
 
-	public String getParameter(String arg0) {
+    public ServletContext getServletContext() {
+        return wrappedHttpServletRequest.getServletContext();
+    }
+
+    public AsyncContext startAsync() throws IllegalStateException {
+        return wrappedHttpServletRequest.startAsync();
+    }
+
+    public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
+        return wrappedHttpServletRequest.startAsync();
+    }
+
+    public boolean isAsyncStarted() {
+        return wrappedHttpServletRequest.isAsyncStarted();
+    }
+
+    public boolean isAsyncSupported() {
+        return wrappedHttpServletRequest.isAsyncSupported();
+    }
+
+    public AsyncContext getAsyncContext() {
+        return wrappedHttpServletRequest.getAsyncContext();
+    }
+
+    public DispatcherType getDispatcherType() {
+        return wrappedHttpServletRequest.getDispatcherType();
+    }
+
+    public String getParameter(String arg0) {
 	    return wrappedHttpServletRequest.getParameter(arg0);
 	}
 

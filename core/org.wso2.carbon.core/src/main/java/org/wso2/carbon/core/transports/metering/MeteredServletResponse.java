@@ -20,6 +20,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Locale;
 
 /**
@@ -101,7 +102,23 @@ public class MeteredServletResponse implements HttpServletResponse {
 		wrappedHttpServletResponse.setStatus(arg0, arg1);
 	}
 
-	public void setStatus(int arg0) {
+    public int getStatus() {
+        return wrappedHttpServletResponse.getStatus();
+    }
+
+    public String getHeader(String s) {
+        return wrappedHttpServletResponse.getHeader(s);
+    }
+
+    public Collection<String> getHeaders(String s) {
+        return wrappedHttpServletResponse.getHeaders(s);
+    }
+
+    public Collection<String> getHeaderNames() {
+        return wrappedHttpServletResponse.getHeaderNames();
+    }
+
+    public void setStatus(int arg0) {
 		wrappedHttpServletResponse.setStatus(arg0);
 	}
 
