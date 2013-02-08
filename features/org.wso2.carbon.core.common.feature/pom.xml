@@ -57,8 +57,8 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-			        <bundleDef>org.eclipse.equinox:org.eclipse.equinox.http.servlet:1.0.200.v20090520-1800-wso2v1</bundleDef>
-                                <bundleDef>org.eclipse.equinox:org.eclipse.equinox.http.helper:1.0.0</bundleDef>
+			        <bundleDef>org.eclipse.equinox:org.eclipse.equinox.http.servlet</bundleDef>
+                                <bundleDef>org.eclipse.equinox:org.eclipse.equinox.http.helper</bundleDef>
                                 <bundleDef>org.eclipse.equinox:javax.servlet.jsp:${version.equinox.javax.servlet.jsp}</bundleDef>
                                 <bundleDef>org.apache.tomcat.jasper.el.wso2:tomcat-jasper-el:7.0.34.wso2v1</bundleDef>
 				<bundleDef>org.eclipse.equinox:javax.el:${version.equinox.javax.el}</bundleDef>
