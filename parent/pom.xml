@@ -165,11 +165,19 @@
         <version.equinox.core.contenttype>3.4.200.v20120523-2004</version.equinox.core.contenttype>
         <version.equinox.core.expressions>3.4.401.v20120627-124442</version.equinox.core.expressions>
         <version.equinox.core.jobs>3.5.300.v20120622-204750</version.equinox.core.jobs>
+	<version.equinox.console>1.0.0.v20120522-1841</version.equinox.console>
 
+	<version.equinox.http.servlet>1.1.300.v20120522-1841</version.equinox.http.servlet>
+	<version.equinox.http.helper>1.1.0.wso2v1</version.equinox.http.helper>
+        <version.equinox.jsp.jasper>1.0.400.v20120522-2049</version.equinox.jsp.jasper>
 	<version.equinox.javax.servlet>3.0.0.v201112011016</version.equinox.javax.servlet>
         <version.equinox.javax.el>2.2.0.v201108011116</version.equinox.javax.el>
         <version.equinox.javax.servlet.jsp>2.2.0.v201112011158</version.equinox.javax.servlet.jsp>
         <version.equinox.jasper>2.2.2.v201205150955</version.equinox.jasper>
+
+	<version.apache.felix.gogo.shell>0.8.0.v201110170705</version.apache.felix.gogo.shell>
+	<version.apache.felix.gogo.runtime>0.8.0.v201108120515</version.apache.felix.gogo.runtime>
+	<version.apache.felix.gogo.command>0.8.0.v201108120515</version.apache.felix.gogo.command>
 
         <carbon.p2.plugin.version>1.5</carbon.p2.plugin.version>
 
@@ -548,6 +556,11 @@
                 <artifactId>org.eclipse.core.runtime</artifactId>
                 <version>${version.equinox.core.runtime}</version>
             </dependency>
+	    <dependency>
+                <groupId>org.eclipse.equinox</groupId>
+                <artifactId>org.eclipse.equinox.console</artifactId>
+                <version>${version.equinox.console}</version>
+            </dependency>
             <dependency>
                 <groupId>org.eclipse.ecf</groupId>
                 <artifactId>org.eclipse.ecf</artifactId>
@@ -588,18 +601,18 @@
             <dependency>
                 <groupId>org.eclipse.equinox</groupId>
                 <artifactId>org.eclipse.equinox.http.servlet</artifactId>
-                <version>1.0.200.v20090520-1800-wso2v1</version>
+                <version>${version.equinox.http.servlet}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.equinox</groupId>
                 <artifactId>org.eclipse.equinox.http.helper</artifactId>
-                <version>1.1.0.wso2v1</version>
+                <version>${version.equinox.http.helper}</version>
             </dependency>
-            <!--dependency>
+            <dependency>
                 <groupId>org.eclipse.equinox</groupId>
                 <artifactId>org.eclipse.equinox.jsp.jasper</artifactId>
-                <version>1.0.200.v20090520-1800</version>
-            </dependency-->
+                <version>${version.equinox.jsp.jasper}</version>
+            </dependency>
             <dependency>
                 <groupId>org.eclipse.equinox</groupId>
                 <artifactId>javax.servlet.jsp</artifactId>
@@ -610,15 +623,26 @@
                 <artifactId>org.apache.jasper.glassfish</artifactId>
                 <version>${version.equinox.jasper}</version>
             </dependency>
-            <!--dependency>
-                <groupId>org.eclipse.equinox</groupId>
-                <artifactId>org.apache.commons.el</artifactId>
-                <version>1.0.0.v200806031608</version>
-            </dependency-->
 	    <dependency>
                 <groupId>org.eclipse.equinox</groupId>
                 <artifactId>javax.el</artifactId>
                 <version>2.2.0.v201108011116</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.gogo.command</artifactId>
+                <version>${version.apache.felix.gogo.command}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.gogo.shell</artifactId>
+                <version>${version.apache.felix.gogo.shell}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.gogo.runtime</artifactId>
+                <version>${version.apache.felix.gogo.runtime}</version>
             </dependency>
 
             <dependency>
@@ -638,11 +662,6 @@
                 <artifactId>javax.servlet</artifactId>
                 <version>${version.equinox.javax.servlet}</version>
             </dependency>
-	    <!--dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>javax.servlet</artifactId>
-                <version>3.0.0.wso2v1</version>
-            </dependency-->
             <dependency>
                 <groupId>org.apache.ws.security.wso2</groupId>
                 <artifactId>wss4j</artifactId>
