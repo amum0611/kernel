@@ -80,7 +80,8 @@
                             org.osgi.framework.*,
                             org.wso2.carbon.bridge.*,
                             org.eclipse.equinox.http.servlet,
-                            javax.servlet.http;version="3.0.0",
+                            javax.servlet; version="${imp.pkg.version.javax.servlet}",
+                            javax.servlet.http; version="${imp.pkg.version.javax.servlet}",
                             *;resolution:=optional
                         </Import-Package>
                     </instructions>

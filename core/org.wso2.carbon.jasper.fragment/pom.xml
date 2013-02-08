@@ -39,13 +39,13 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-			<Private-Package>
-			    org.wso2.carbon.apache.jasper.fragment
-			</Private-Package>
-			<Import-Package>
-                            javax.servlet.jsp.resources;version="2.2.0"
+                        <Private-Package>
+                            org.wso2.carbon.apache.jasper.fragment
+                        </Private-Package>
+                        <Import-Package>
+                            javax.servlet.jsp.resources; version="${imp.pkg.version.javax.servlet.jsp}"
                         </Import-Package>
-			<Fragment-Host>org.apache.jasper.glassfish</Fragment-Host>
+                        <Fragment-Host>org.apache.jasper.glassfish</Fragment-Host>
                     </instructions>
                 </configuration>
             </plugin>

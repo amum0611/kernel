@@ -9,96 +9,96 @@
 	the specific language governing permissions and ~ limitations under the License. -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>org.wso2.carbon</groupId>
-		<artifactId>carbon-kernel</artifactId>
-		<version>4.1.0-SNAPSHOT</version>
-                <relativePath>../pom.xml</relativePath>
-	</parent>
-
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>org.wso2.carbon.utils</artifactId>
-	<packaging>bundle</packaging>
+    <parent>
+        <groupId>org.wso2.carbon</groupId>
+        <artifactId>carbon-kernel</artifactId>
         <version>4.1.0-SNAPSHOT</version>
-	<name>WSO2 Carbon - Utilities</name>
-	<description>OSGi Bundle for Carbon Utils</description>
-	<url>http://wso2.org</url>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-	<dependencies>
-		<dependency>
-			<groupId>net.sf.jsr107cache</groupId>
-			<artifactId>jsr107cache</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.carbon</groupId>
-			<artifactId>org.wso2.carbon.logging</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.carbon</groupId>
-			<artifactId>org.wso2.carbon.queuing</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.carbon</groupId>
-			<artifactId>org.wso2.carbon.base</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.carbon</groupId>
-			<artifactId>org.wso2.carbon.caching.core</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.wso2.carbon.utils</artifactId>
+    <packaging>bundle</packaging>
+    <version>4.1.0-SNAPSHOT</version>
+    <name>WSO2 Carbon - Utilities</name>
+    <description>OSGi Bundle for Carbon Utils</description>
+    <url>http://wso2.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.sf.jsr107cache</groupId>
+            <artifactId>jsr107cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.logging</artifactId>
             <version>${project.parent.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.infinispan</groupId>
-					<artifactId>infinispan-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.osgi</groupId>
-			<artifactId>org.eclipse.osgi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.axis2.wso2</groupId>
-			<artifactId>axis2</artifactId>
-			<version>1.6.1.wso2v7</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.igniterealtime</groupId>
-					<artifactId>smack</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.igniterealtime.smack.wso2</groupId>
-			<artifactId>smack</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.igniterealtime.smack.wso2</groupId>
-			<artifactId>smackx</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>jaxen</groupId>
-			<artifactId>jaxen</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-fileupload.wso2</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>${orbit.version.commons.fileupload}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.ant.wso2</groupId>
-			<artifactId>ant</artifactId>
-			<version>${orbit.version.ant}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.equinox</groupId>
-			<artifactId>javax.servlet</artifactId>
-			<version>${version.equinox.javax.servlet}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.queuing</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.base</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.caching.core</artifactId>
+            <version>${project.parent.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.infinispan</groupId>
+                    <artifactId>infinispan-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.osgi</groupId>
+            <artifactId>org.eclipse.osgi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2.wso2</groupId>
+            <artifactId>axis2</artifactId>
+            <version>1.6.1.wso2v7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.igniterealtime</groupId>
+                    <artifactId>smack</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.igniterealtime.smack.wso2</groupId>
+            <artifactId>smack</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.igniterealtime.smack.wso2</groupId>
+            <artifactId>smackx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload.wso2</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${orbit.version.commons.fileupload}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant.wso2</groupId>
+            <artifactId>ant</artifactId>
+            <version>${orbit.version.ant}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>javax.servlet</artifactId>
+            <version>${version.equinox.javax.servlet}</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient.wso2</groupId>
@@ -112,24 +112,24 @@
 
     </dependencies>
 
-	<build>
-		<plugins>
+    <build>
+        <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-scr-plugin</artifactId>
             </plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
 
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-Vendor>WSO2 Inc</Bundle-Vendor>
-						<Bundle-SymbolicName>org.wso2.carbon.utils</Bundle-SymbolicName>
-						<Export-Package>
-							org.wso2.carbon,
-							org.wso2.carbon.utils.*,
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Vendor>WSO2 Inc</Bundle-Vendor>
+                        <Bundle-SymbolicName>org.wso2.carbon.utils</Bundle-SymbolicName>
+                        <Export-Package>
+                            org.wso2.carbon,
+                            org.wso2.carbon.utils.*,
                             org.wso2.carbon.context,
                             !org.wso2.carbon.context.internal
                         </Export-Package>
@@ -137,29 +137,29 @@
                         <Private-Package>
                             org.wso2.carbon.context.internal,
                         </Private-Package>
-						<Import-Package>
-							!org.wso2.carbon,
-							!org.wso2.carbon.utils.*,
+                        <Import-Package>
+                            !org.wso2.carbon,
+                            !org.wso2.carbon.utils.*,
                             !org.wso2.carbon.context,
-							org.apache.axis2.*; version="${imp.pkg.version.axis2}",
-							org.apache.axiom.*; version="${imp.pkg.version.axiom}",
-							javax.xml.stream.*; version="1.0.1",
-							*;resolution:=optional
+                            org.apache.axis2.*; version="${imp.pkg.version.axis2}",
+                            org.apache.axiom.*; version="${imp.pkg.version.axiom}",
+                            javax.xml.stream.*; version="1.0.1",
+                            *;resolution:=optional
                         </Import-Package>
-						<DynamicImport-Package>*</DynamicImport-Package>
-						<Embed-Dependency>
-							bcprov-jdk15;scope=compile|runtime;inline=false;
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Embed-Dependency>
+                            bcprov-jdk15;scope=compile|runtime;inline=false;
                         </Embed-Dependency>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-	<properties>
-		<orbit.version.commons.fileupload>1.2.0.wso2v1</orbit.version.commons.fileupload>
-		<orbit.version.ant>1.7.0.wso2v1</orbit.version.ant>
+    <properties>
+        <orbit.version.commons.fileupload>1.2.0.wso2v1</orbit.version.commons.fileupload>
+        <orbit.version.ant>1.7.0.wso2v1</orbit.version.ant>
 
-	</properties>
+    </properties>
 
 </project>
