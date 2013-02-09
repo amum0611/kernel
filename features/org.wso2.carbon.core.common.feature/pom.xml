@@ -60,12 +60,12 @@
 			        <bundleDef>org.eclipse.equinox:org.eclipse.equinox.http.servlet</bundleDef>
                                 <bundleDef>org.eclipse.equinox:org.eclipse.equinox.http.helper</bundleDef>
                                 <bundleDef>org.eclipse.equinox:javax.servlet.jsp:${version.equinox.javax.servlet.jsp}</bundleDef>
-                                <bundleDef>org.apache.tomcat.jasper.el.wso2:tomcat-jasper-el:7.0.34.wso2v1</bundleDef>
+                                <bundleDef>org.apache.tomcat.jasper.el.wso2:tomcat-jasper-el:${orbit.version.tomcat}</bundleDef>
 				<bundleDef>org.eclipse.equinox:javax.el:${version.equinox.javax.el}</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.utils</bundleDef>
 				<bundleDef>org.eclipse.equinox:javax.servlet:${version.equinox.javax.servlet}</bundleDef>
-                                <bundleDef>org.apache.tomcat.wso2:tomcat:7.0.28.wso2v1</bundleDef>
-                                <bundleDef>org.apache.tomcat.ha.wso2:tomcat-ha:7.0.28.wso2v1</bundleDef>
+                                <bundleDef>org.apache.tomcat.wso2:tomcat:${orbit.version.tomcat}</bundleDef>
+                                <bundleDef>org.apache.tomcat.ha.wso2:tomcat-ha:${orbit.version.tomcat}</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.tomcat</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.tomcat.ext</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.tomcat.patch</bundleDef>
@@ -108,7 +108,7 @@
                                 <bundleDef>opensaml.wso2:opensaml2:2.4.1.wso2v1</bundleDef>
                                 <bundleDef>org.apache.abdera.wso2:abdera:1.0.0.wso2v3</bundleDef>
                                 <bundleDef>org.apache.axis2.wso2:axis2:${orbit.patch.version.axis2}</bundleDef>
-                                <bundleDef>org.apache.tomcat.wso2:tribes:7.0.28.wso2v1</bundleDef>
+                                <bundleDef>org.apache.tomcat.wso2:tribes:${orbit.version.tomcat}</bundleDef>
                                 <bundleDef>org.apache.tiles.wso2:tiles-jsp:2.0.5.wso2v1</bundleDef>
                                 <bundleDef>org.apache.ant.wso2:ant:1.7.0.wso2v1</bundleDef>
                                 <bundleDef>org.apache.xmlbeans.wso2:xmlbeans:2.3.0.wso2v1</bundleDef>
@@ -134,7 +134,7 @@
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.addressing</bundleDef>
                                 <bundleDef>com.sun.xml.bind.wso2:jaxb:2.2.5.wso2v1</bundleDef>
 		                <bundleDef>com.jezhumble.wso2:javasysmon:0.3.3.wso2v1</bundleDef>
-                                <bundleDef>org.apache.tomcat.wso2:jdbc-pool:7.0.28.wso2v1</bundleDef>
+                                <bundleDef>org.apache.tomcat.wso2:jdbc-pool:${orbit.version.tomcat}</bundleDef>
                                 <bundleDef>org.eclipse.equinox:org.apache.jasper.glassfish:${version.equinox.jasper}</bundleDef>
 				<bundleDef>org.wso2.carbon:org.wso2.carbon.apache.jasper.fragment:${project.version}</bundleDef>
 				<bundleDef>org.wso2.carbon:org.wso2.carbon.framework.exporter</bundleDef>
