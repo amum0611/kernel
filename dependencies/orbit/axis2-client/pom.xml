@@ -187,7 +187,7 @@
 	    <dependency>
             <groupId>org.apache.axis2.wso2</groupId>
             <artifactId>axis2-json</artifactId>
-            <version>${version.axis2}</version>
+            <version>${orbit.version.axis2}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.woden.wso2</groupId>
