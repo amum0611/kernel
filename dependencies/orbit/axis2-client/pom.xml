@@ -34,7 +34,7 @@
     <description>
         A single JAR file containing all the client side libraries
     </description>
-    <version>${orbit.patch.version.axis2}</version>
+    <version>${orbit.version.axis2}</version>
     <url>http://wso2.org</url>
 
     <dependencies>
@@ -79,13 +79,13 @@
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-adb</artifactId>
-            <version>${axis2.patch.version}</version>
+            <version>${version.axis2}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-kernel</artifactId>
-            <version>${axis2.patch.version}</version>
+            <version>${version.axis2}</version>
             <optional>true</optional>
             <exclusions>
                 <exclusion>
@@ -145,7 +145,7 @@
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-mtompolicy</artifactId>
-            <version>${axis2.patch.version}</version>
+            <version>${version.axis2}</version>
             <optional>true</optional>
             <exclusions>
                 <exclusion>
@@ -169,7 +169,7 @@
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-transport-http</artifactId>
-            <version>${axis2.patch.version}</version>
+            <version>${version.axis2}</version>
             <optional>true</optional>
             <exclusions>
                 <exclusion>
@@ -181,13 +181,13 @@
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-transport-local</artifactId>
-            <version>${axis2.patch.version}</version>
+            <version>${version.axis2}</version>
             <optional>true</optional>
         </dependency>
 	    <dependency>
             <groupId>org.apache.axis2.wso2</groupId>
             <artifactId>axis2-json</artifactId>
-            <version>${orbit.patch.version.axis2}</version>
+            <version>${version.axis2}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.woden.wso2</groupId>
@@ -289,8 +289,8 @@
                             org.apache.axiom.*; version="${imp.pkg.version.axiom}",
                             org.apache.neethi.*; version="${imp.pkg.version.neethi}",
 			    org.wso2.securevault.*; version="${securevault.version}",
-                            javax.servlet; version=2.4.0,
-                            javax.servlet.http; version=2.4.0,
+                            javax.servlet; version="${imp.pkg.version.javax.servlet}",
+                            javax.servlet.http; version="${imp.pkg.version.javax.servlet}",
                             javax.xml.stream.*; version="1.0.1",
                             javax.mail.*; version="1.4.0",
                             javax.wsdl.*; version="1.6.2",
@@ -309,9 +309,7 @@
     </build>
 
     <properties>
-        <orbit.patch.version.axis2>1.6.1.wso2v8</orbit.patch.version.axis2>
-        <axis2.patch.version>1.6.1-wso2v8</axis2.patch.version>
-        <transport.version>1.1.0-wso2v4</transport.version>
+        <transport.version>${version.axis2.transport}</transport.version>
         <xmlbeans.version>2.3.0</xmlbeans.version>
     </properties>
 </project>
