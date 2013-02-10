@@ -32,7 +32,7 @@
     <artifactId>axiom</artifactId>
     <packaging>bundle</packaging>
     <name>axiom.wso2</name>
-    <version>1.2.11.wso2v3</version>
+    <version>1.2.11.wso2v4</version>
     <description>
         org.wso2.carbon.axiom. This bundle will contain all axiom
         releated packages. This also include xml-apis, xml-resolver,
@@ -227,8 +227,8 @@
     </build>
 
     <properties>
-        <axiom.version>1.2.11-wso2v3</axiom.version>
-        <jaxen.version>1.1.1</jaxen.version>
+        <axiom.version>${orbit.version.axiom}</axiom.version>
+        <jaxen.version>${version.jaxen}</jaxen.version>
         <javax.mail.version>1.4</javax.mail.version>
         <dom4j.version>1.6.1</dom4j.version>
         <maven.bundle.plugin.version>1.4.0</maven.bundle.plugin.version>
