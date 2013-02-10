@@ -227,7 +227,7 @@
     </build>
 
     <properties>
-        <axiom.version>${orbit.version.axiom}</axiom.version>
+        <axiom.version>${version.axiom}</axiom.version>
         <jaxen.version>${version.jaxen}</jaxen.version>
         <javax.mail.version>1.4</javax.mail.version>
         <dom4j.version>1.6.1</dom4j.version>
