@@ -36,6 +36,7 @@
 
             <modules>
                 <module>axis2/1.6.1-wso2v8</module>
+		<module>axiom/1.2.11-wso2v4</module>
 	        <module>equinox-utilities/org.eclipse.equinox.http.helper/1.1.0.wso2v1</module>	
 		<!-- orbit/modules -->
                 <module>orbit/axis2</module>
