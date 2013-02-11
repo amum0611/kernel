@@ -202,6 +202,9 @@
         <exp.pkg.version.javax.servlet.jsp.jstl>1.2.0</exp.pkg.version.javax.servlet.jsp.jstl>
         <imp.pkg.version.javax.servlet.jsp.jstl>[1.2.0, 1.3.0)</imp.pkg.version.javax.servlet.jsp.jstl>
 
+        <!-- Glassfish el-impl  -->
+        <orbit.version.el.impl>2.2.wso2v1</orbit.version.el.impl>
+
         <!-- H2 Database Engine -->
         <version.h2.engine>1.2.140.wso2v3</version.h2.engine>
         <orbit.version.h2.engine>1.2.140.wso2v3</orbit.version.h2.engine>
