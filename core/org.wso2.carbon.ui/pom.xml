@@ -147,7 +147,7 @@
         <dependency>
             <groupId>javax.servlet.jsp.jstl.wso2</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.2.0.wso2v1</version>
+            <version>${orbit.version.jstl}</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.servlet</groupId>
