@@ -80,7 +80,7 @@
         <commons.logging.version>1.1.1</commons.logging.version>
         <fi.version>1.2.7</fi.version>
         <geronimo.spec.activation.version>1.0.2</geronimo.spec.activation.version>
-        <geronimo.spec.annotation.version>1.1</geronimo.spec.annotation.version>
+        <geronimo.spec.annotation.version>1.1.1</geronimo.spec.annotation.version>
         <geronimo.spec.javamail.version>1.6</geronimo.spec.javamail.version>
         <geronimo.spec.stax.version>1.0.1</geronimo.spec.stax.version>
         <geronimo.spec.metadata.version>1.1.2</geronimo.spec.metadata.version>
@@ -1124,7 +1124,7 @@
                      use an empty reportSet -->
                 <reportSets>
                     <reportSet>
-                        <reports />
+                        <reports/>
                     </reportSet>
                 </reportSets>
             </plugin>
